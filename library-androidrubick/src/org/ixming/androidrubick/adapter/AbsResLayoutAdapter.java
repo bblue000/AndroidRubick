@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 /**
  * {@inheritDoc}
  * 
- * 基于layout xml的Adapter基类，子类需要提供layou ID及必要方法即可
+ * 基于layout xml的Adapter基类，子类需要提供layout ID及必要方法即可
  * 
  * @author YinYong
  * @version 1.0
@@ -30,13 +30,14 @@ public abstract class AbsResLayoutAdapter<D, H> extends AbsDataAdapter<D, H>{
 	 * provide a layout resource ID from outside(in sub classes)
 	 */
 	protected abstract int provideLayoutResId();
-	
-	/**
-	 * create a new view holder, using the view of a specific position
-	 * @param position the specific position
-	 * @param view the content view
-	 * @return a new view holder, specified by specific Derived classes
-	 */
+
+    /**
+     * create a new view
+     * @param context context
+     * @param position the specific position
+     * @param parent parent view
+     * @return a new view
+     */
 	public final View newView(Context context, int position, ViewGroup parent) {
 		return LayoutInflater.from(context).inflate(mLayoutId, parent, false);
 	}

@@ -54,7 +54,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 
 	private Context mContext;
 	private ArrayList<D> mContentList;
-	private OnDataSetChangedLisener mOnDataSetChangedLisener;
+	private OnDataSetChangedListener mOnDataSetChangedListener;
 	
 	/**
 	 * @param context we recommend you to use an activity context
@@ -65,7 +65,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	}
 	
 	private boolean mIsFinalized = false;
-	private final void ensureNotFinalized() {
+	private void ensureNotFinalized() {
 		if (mIsFinalized) {
 			throw new IllegalStateException("the adapter has been finalized!");
 		}
@@ -84,7 +84,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	protected final Handler getHandler() {
 		return BaseApplication.getHandler();
 	}
-	
+
 	public synchronized void finalizeAdapter() {
 		if (null == mContentList) {
 			 return ;
@@ -95,8 +95,8 @@ implements AdapterChangeable<D>, OnItemClickListener {
 		mIsFinalized = true;
 	}
 	
-	public void setOnDataSetChangedLisener(OnDataSetChangedLisener listener) {
-		mOnDataSetChangedLisener = listener;
+	public void setOnDataSetChangedListener(OnDataSetChangedListener listener) {
+		mOnDataSetChangedListener = listener;
 	}
 	
 	@Override
@@ -128,6 +128,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 		if (null == convertView) {
 			convertView = newView(mContext, position, parent);
 			holder = newHolder(position, convertView);
+            injectHolder(holder, convertView);
 			convertView.setTag(holder);
 		} else {
 			holder = (H) convertView.getTag();
@@ -137,17 +138,18 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	}
 	
 	/**
-	 * create a new view holder, using the view of a specific position
+	 * create a new view
+	 * @param context context
 	 * @param position the specific position
-	 * @param view the content view
-	 * @return a new view holder, specified by specific Derived classes
+	 * @param parent parent view
+	 * @return a new view
 	 */
 	protected abstract View newView(Context context, int position, ViewGroup parent) ;
 	
 	/**
 	 * create a new view holder, using the view of a specific position
 	 * @param position the specific position
-	 * @param view the content view
+	 * @param contentView the content view
 	 * @return a new view holder, specified by specific Derived classes
 	 */
 	protected abstract H newHolder(int position, View contentView) ;
@@ -167,25 +169,33 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	 * @param newCount 新的数据个数
 	 */
 	protected final void postDataSetChanged(final int oldCount, final int newCount) {
-		if (null == mOnDataSetChangedLisener) {
+		if (null == mOnDataSetChangedListener) {
 			return ;
 		}
 		if (AndroidUtils.isMainThread()) {
-			mOnDataSetChangedLisener.OnDataSetChanged(oldCount, newCount);
+			mOnDataSetChangedListener.OnDataSetChanged(oldCount, newCount);
 		} else {
 			getHandler().post(new Runnable() {
 				@Override
 				public void run() {
-					if (null != mOnDataSetChangedLisener) {
-						mOnDataSetChangedLisener.OnDataSetChanged(
-								oldCount, newCount);
+					if (null != mOnDataSetChangedListener) {
+						mOnDataSetChangedListener.OnDataSetChanged(
+                                oldCount, newCount);
 					}
 				}
 			});
 		}
 	}
-	
-	private AbsDataAdapter<D, H> notifyAndReturnSelf() {
+
+    /**
+     * 通知数据变化，并返回当前对象；
+     * <br/><br/>
+     * <b>注：</b>正常情况下，数据更新，通知UI更新，
+     * 所以默认实现基于此种情况；如果不需要更新UI，可以覆写此方法
+     *
+     * @return current instance
+     */
+	protected AbsDataAdapter<D, H> notifyAndReturnSelf() {
 		notifyDataSetChanged();
 		return this;
 	}
@@ -222,7 +232,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	@Override
 	public final AbsDataAdapter<D, H> removeData(int position) {
 		ensureNotFinalized();
-		if (position > -1 && position < mContentList.size()) {
+		if (containsContentIndex(position)) {
 			final int oldCount = getCount();
 			mContentList.remove(position);
 			final int newCount = getCount();
@@ -234,7 +244,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	@Override
 	public final AbsDataAdapter<D, H> removeData(int from, int to) {
 		ensureNotFinalized();
-		if (from > -1 && from < mContentList.size()) {
+		if (containsContentIndex(from)) {
 			final int oldCount = getCount();
 			ListIterator<D> ite = mContentList.listIterator(from);
 			
@@ -319,7 +329,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	@Override
 	public final AbsDataAdapter<D, H> update(int position, D t) {
 		ensureNotFinalized();
-		if (position > -1 && position < getCount()) {
+		if (containsContentIndex(position)) {
 			final int oldCount = getCount();
 			mContentList.set(position, t);
 			final int newCount = getCount();
@@ -331,7 +341,7 @@ implements AdapterChangeable<D>, OnItemClickListener {
 	@Override
 	public final AbsDataAdapter<D, H> update(int fromPos, Collection<D> c) {
 		ensureNotFinalized();
-		if (fromPos > -1 && fromPos < getCount() && null != c) {
+		if (containsContentIndex(fromPos) && null != c) {
 			final int oldCount = getCount();
 			Iterator<D> it = c.iterator();
 			for (int i = fromPos; i < oldCount && it.hasNext(); i++) {
@@ -342,7 +352,21 @@ implements AdapterChangeable<D>, OnItemClickListener {
 		}
 		return notifyAndReturnSelf();
 	}
-	
+
+    /**
+     * 当前Adapter是否包括指定的postion
+     */
+    public boolean containsPos(int pos) {
+        return pos >= 0 && pos < getCount();
+    }
+
+    /**
+     * 当前Adapter中的mContentLiST是否包括指定的索引
+     */
+    protected final boolean containsContentIndex(int index) {
+        return index >= 0 && index < mContentList.size();
+    }
+
 	/**
 	 * 注入Holder
 	 * @param target 目标注入对象

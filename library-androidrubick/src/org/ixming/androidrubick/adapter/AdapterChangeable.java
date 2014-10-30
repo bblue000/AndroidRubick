@@ -76,14 +76,14 @@ interface AdapterChangeable<T> {
 	
 	/**
 	 * update the specific position item, and then should call notifyDataSetChanged
-	 * @param m new data Map to append
+	 * @param t new data to update
 	 */
 	AdapterChangeable<T> update(int position, T t);
 	
 	/**
 	 * update items from the specific position with data in collection c, 
 	 * and then should call notifyDataSetChanged
-	 * @param m new data Map to append
+	 * @param c new data to update
 	 */
 	AdapterChangeable<T> update(int fromPos, Collection<T> c);
 }

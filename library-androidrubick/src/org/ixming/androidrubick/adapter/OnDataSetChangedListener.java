@@ -6,7 +6,7 @@ package org.ixming.androidrubick.adapter;
  * @author YinYong
  * @version 1.0
  */
-public interface OnDataSetChangedLisener {
+public interface OnDataSetChangedListener {
 
 	/**
 	 * 通知外界内部数据的个数发生了变化。（即使个数没有变也会触发，这是一个数据变化的监听）
