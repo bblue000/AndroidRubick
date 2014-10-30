@@ -12,7 +12,7 @@
  *	}
  *
  *	class ViewHolder {
- *		&#064ViewInject(id = R.id.main_view_person_name_tv)
+ *		&#064ViewById(id = R.id.main_view_person_name_tv)
  *		TextView mName_TV;
  *	}
  *
