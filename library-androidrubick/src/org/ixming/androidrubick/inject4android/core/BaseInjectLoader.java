@@ -7,6 +7,7 @@ import org.ixming.androidrubick.inject4android.annotation.OnClick;
 import org.ixming.androidrubick.inject4android.annotation.ResById;
 import org.ixming.androidrubick.inject4android.annotation.ViewById;
 import org.ixming.androidrubick.inject4android.themed.ThemedResInject;
+import org.ixming.androidrubick.utils.Primitives;
 
 import android.app.Activity;
 import android.content.Context;
@@ -133,7 +134,11 @@ implements IViewFinder, IInjectorInterfaces {
 				params = new Object[] { view };
 			} else {
 				// 所有的参数赋值null
-				params = new Object[paramClasses.length];
+                params = new Object[paramClasses.length];
+                // TODO set default value
+                for (int i = 0; i < paramClasses.length; i++) {
+                    params[i] = Primitives.defValOf(paramClasses[i]);
+                }
 			}
 		}
 		view.setOnClickListener(new View.OnClickListener() {

@@ -3,11 +3,11 @@ package org.ixming.androidrubick.utils;
 public class ReflectUtils {
 
 	private ReflectUtils() { }
-	
+
 	/**
 	 * 判断一个对象是target的子类实例
 	 */
-	public static boolean isTypeOf(Class<?> target, Object instance) {
+	public static boolean instanceOf(Class<?> target, Object instance) {
 		return isTypeOf(target, instance.getClass());
 	}
 	

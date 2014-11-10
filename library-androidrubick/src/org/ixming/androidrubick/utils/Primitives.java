@@ -29,86 +29,113 @@ import java.util.Map;
  * @author Kevin Bourrillion
  */
 public final class Primitives {
-  private Primitives() {}
+    private Primitives() {
+    }
 
-  /** A map from primitive types to their corresponding wrapper types. */
-  private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;
+    /**
+     * A map from primitive types to their corresponding wrapper types.
+     */
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;
 
-  /** A map from wrapper types to their corresponding primitive types. */
-  private static final Map<Class<?>, Class<?>> WRAPPER_TO_PRIMITIVE_TYPE;
+    /**
+     * A map from wrapper types to their corresponding primitive types.
+     */
+    private static final Map<Class<?>, Class<?>> WRAPPER_TO_PRIMITIVE_TYPE;
 
-  // Sad that we can't use a BiMap. :(
+    /**
+     * A map from wrapper types to their corresponding primitive types.
+     */
+    private static final Map<Class<?>, Object> PRIMITIVE_TYPE_DEFVAL;
 
-  static {
-    Map<Class<?>, Class<?>> primToWrap = new HashMap<Class<?>, Class<?>>(16);
-    Map<Class<?>, Class<?>> wrapToPrim = new HashMap<Class<?>, Class<?>>(16);
+    // Sad that we can't use a BiMap. :(
 
-    add(primToWrap, wrapToPrim, boolean.class, Boolean.class);
-    add(primToWrap, wrapToPrim, byte.class, Byte.class);
-    add(primToWrap, wrapToPrim, char.class, Character.class);
-    add(primToWrap, wrapToPrim, double.class, Double.class);
-    add(primToWrap, wrapToPrim, float.class, Float.class);
-    add(primToWrap, wrapToPrim, int.class, Integer.class);
-    add(primToWrap, wrapToPrim, long.class, Long.class);
-    add(primToWrap, wrapToPrim, short.class, Short.class);
-    add(primToWrap, wrapToPrim, void.class, Void.class);
+    static {
+        Map<Class<?>, Class<?>> primToWrap = new HashMap<Class<?>, Class<?>>(16);
+        Map<Class<?>, Class<?>> wrapToPrim = new HashMap<Class<?>, Class<?>>(16);
+        Map<Class<?>, Object> primVal = new HashMap<Class<?>, Object>(16);
 
-    PRIMITIVE_TO_WRAPPER_TYPE = Collections.unmodifiableMap(primToWrap);
-    WRAPPER_TO_PRIMITIVE_TYPE = Collections.unmodifiableMap(wrapToPrim);
-  }
+        add(primToWrap, wrapToPrim, primVal, boolean.class, Boolean.class, false);
+        add(primToWrap, wrapToPrim, primVal, byte.class, Byte.class, NumberUtils.BYTE_ZERO);
+        add(primToWrap, wrapToPrim, primVal, char.class, Character.class, NumberUtils.CHAR_ZERO);
+        add(primToWrap, wrapToPrim, primVal, double.class, Double.class, NumberUtils.DOUBLE_ZERO);
+        add(primToWrap, wrapToPrim, primVal, float.class, Float.class, NumberUtils.FLOAT_ZERO);
+        add(primToWrap, wrapToPrim, primVal, int.class, Integer.class, NumberUtils.INT_ZERO);
+        add(primToWrap, wrapToPrim, primVal, long.class, Long.class, NumberUtils.LONG_ZERO);
+        add(primToWrap, wrapToPrim, primVal, short.class, Short.class, NumberUtils.SHORT_ZERO);
+        add(primToWrap, wrapToPrim, primVal, void.class, Void.class, null);
 
-  private static void add(Map<Class<?>, Class<?>> forward,
-      Map<Class<?>, Class<?>> backward, Class<?> key, Class<?> value) {
-    forward.put(key, value);
-    backward.put(value, key);
-  }
+        PRIMITIVE_TO_WRAPPER_TYPE = Collections.unmodifiableMap(primToWrap);
+        WRAPPER_TO_PRIMITIVE_TYPE = Collections.unmodifiableMap(wrapToPrim);
+        PRIMITIVE_TYPE_DEFVAL = Collections.unmodifiableMap(primVal);
+    }
 
-  /**
-   * Returns true if this type is a primitive.
-   */
-  public static boolean isPrimitive(Type type) {
-    return PRIMITIVE_TO_WRAPPER_TYPE.containsKey(type);
-  }
+    private static void add(Map<Class<?>, Class<?>> forward,
+                            Map<Class<?>, Class<?>> backward,
+                            Map<Class<?>, Object> primVal,
+                            Class<?> key, Class<?> value,
+                            Object typeDefVal) {
+        forward.put(key, value);
+        backward.put(value, key);
+        primVal.put(key, typeDefVal);
+    }
 
-  /**
-   * Returns {@code true} if {@code type} is one of the nine
-   * primitive-wrapper types, such as {@link Integer}.
-   *
-   * @see Class#isPrimitive
-   */
-  public static boolean isWrapperType(Type type) {
-    return WRAPPER_TO_PRIMITIVE_TYPE.containsKey(type);
-  }
+    /**
+     * Returns true if this type is a primitive.
+     */
+    public static boolean isPrimitive(Type type) {
+        return PRIMITIVE_TO_WRAPPER_TYPE.containsKey(type);
+    }
 
-  /**
-   * Returns the corresponding wrapper type of {@code type} if it is a primitive
-   * type; otherwise returns {@code type} itself. Idempotent.
-   * <pre>
-   *     wrap(int.class) == Integer.class
-   *     wrap(Integer.class) == Integer.class
-   *     wrap(String.class) == String.class
-   * </pre>
-   */
-  public static <T> Class<T> wrap(Class<T> type) {
-    // cast is safe: long.class and Long.class are both of type Class<Long>
-    @SuppressWarnings("unchecked")
-    Class<T> wrapped = (Class<T>) PRIMITIVE_TO_WRAPPER_TYPE.get(type);
-    return (wrapped == null) ? type : wrapped;
-  }
+    /**
+     * Returns {@code true} if {@code type} is one of the nine
+     * primitive-wrapper types, such as {@link Integer}.
+     *
+     * @see Class#isPrimitive
+     */
+    public static boolean isWrapperType(Type type) {
+        return WRAPPER_TO_PRIMITIVE_TYPE.containsKey(type);
+    }
 
-  /**
-   * Returns the corresponding primitive type of {@code type} if it is a
-   * wrapper type; otherwise returns {@code type} itself. Idempotent.
-   * <pre>
-   *     unwrap(Integer.class) == int.class
-   *     unwrap(int.class) == int.class
-   *     unwrap(String.class) == String.class
-   * </pre>
-   */
-  public static <T> Class<T> unwrap(Class<T> type) {
-    // cast is safe: long.class and Long.class are both of type Class<Long>
-    @SuppressWarnings("unchecked")
-    Class<T> unwrapped = (Class<T>) WRAPPER_TO_PRIMITIVE_TYPE.get(type);
-    return (unwrapped == null) ? type : unwrapped;
-  }
+    /**
+     * Returns the corresponding wrapper type of {@code type} if it is a primitive
+     * type; otherwise returns {@code type} itself. Idempotent.
+     * <pre>
+     *     wrap(int.class) == Integer.class
+     *     wrap(Integer.class) == Integer.class
+     *     wrap(String.class) == String.class
+     * </pre>
+     */
+    public static <T> Class<T> wrap(Class<T> type) {
+        // cast is safe: long.class and Long.class are both of type Class<Long>
+        @SuppressWarnings("unchecked")
+        Class<T> wrapped = (Class<T>) PRIMITIVE_TO_WRAPPER_TYPE.get(type);
+        return (wrapped == null) ? type : wrapped;
+    }
+
+    /**
+     * Returns the corresponding primitive type of {@code type} if it is a
+     * wrapper type; otherwise returns {@code type} itself. Idempotent.
+     * <pre>
+     *     unwrap(Integer.class) == int.class
+     *     unwrap(int.class) == int.class
+     *     unwrap(String.class) == String.class
+     * </pre>
+     */
+    public static <T> Class<T> unwrap(Class<T> type) {
+        // cast is safe: long.class and Long.class are both of type Class<Long>
+        @SuppressWarnings("unchecked")
+        Class<T> unwrapped = (Class<T>) WRAPPER_TO_PRIMITIVE_TYPE.get(type);
+        return (unwrapped == null) ? type : unwrapped;
+    }
+
+    /**
+     * return default value of specific type
+     *
+     * @param type specific type
+     * @return default value of this type
+     */
+    public static Object defValOf(Class<?> type) {
+        Object value = PRIMITIVE_TYPE_DEFVAL.get(type);
+        return value;
+    }
 }

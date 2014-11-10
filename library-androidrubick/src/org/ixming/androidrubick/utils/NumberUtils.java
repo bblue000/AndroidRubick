@@ -13,6 +13,7 @@ public class NumberUtils {
 	private NumberUtils() { /*no instance*/ }
 	
 	public static final byte BYTE_ZERO = (byte) 0;
+	public static final byte CHAR_ZERO = (char) 0;
 	public static final short SHORT_ZERO = (short) 0;
 	public static final int INT_ZERO = 0;
 	public static final long LONG_ZERO = 0L;
