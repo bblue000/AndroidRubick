@@ -119,5 +119,6 @@ android {
 // ÏîÄ¿ÒÀÀµ
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile project(':androidrubick')
     //compile 'com.android.support:support-v4:22.0.0'
 }
