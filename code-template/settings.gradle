@@ -1,0 +1,6 @@
+// 默认找项目下同名文件夹作为项目根目录
+include ':app_name'		// 对应{projectDir}/app_name文件夹下的项目
+        ':librarys:library-1',	// 对应{projectDir}/libraries/library-1文件夹下的项目
+
+// 重定向默认的项目文件夹
+project(':librarys:library-2').projectDir = new File('librarys/librarys/library-2')
