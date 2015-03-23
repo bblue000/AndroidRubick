@@ -1,5 +1,7 @@
 package org.androidrubick.app;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -52,6 +54,15 @@ public abstract class BaseActivity extends FragmentActivity implements IUIFlow {
         return mRootView;
     }
 
+    @Override
+    public void startActivity(Class<? extends Activity> clz) {
+        startActivity(new Intent(this, clz));
+    }
+
+    @Override
+    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
+        startActivityForResult();
+    }
 }
 
 

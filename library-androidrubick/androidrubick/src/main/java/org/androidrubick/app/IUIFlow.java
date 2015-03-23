@@ -1,5 +1,6 @@
 package org.androidrubick.app;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
@@ -67,5 +68,9 @@ interface IUIFlow {
      * this method returns the pure View.
      */
     View getRootView();
+
+    void startActivity(Class<? extends Activity> clz);
+
+    void startActivityForResult(Class<? extends Activity> clz, int requestCode);
 
 }
