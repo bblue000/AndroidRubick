@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 
+import androidrubick.utils.Objects;
+
 /**
  * 应用的基类，封装一些应用全局调用的对象及API（to be continued），
  * 
@@ -34,16 +36,10 @@ public class BaseApplication extends Application {
 	 * @return 整个APP可以使用的Context
 	 */
 	public static Application getAppContext() {
-		checkNull(sApplication);
+        Objects.checkNotNull(sApplication, "check whether the app has a Application "
+                + "class extends BaseApplication ? or forget to "
+                + "invoke super class's constructor first!");
 		return sApplication;
-	}
-	
-	private static void checkNull(Object obj) {
-		if (null == obj) {
-			throw new RuntimeException("check whether the app has a Application "
-					+ "class extends BaseApplication ? or forget to " 
-					+ "invoke super class's constructor first!");
-		}
 	}
 	
 	private static void checkHandler() {
@@ -65,20 +61,31 @@ public class BaseApplication extends Application {
 	 * 强杀本进程
 	 */
 	public static void killProcess() {
-		Process.killProcess(Process.myPid());
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Process.killProcess(Process.myPid());
+            }
+        }, 500L);
 	}
 
     /**
      * 强杀应用相关的进程
      */
     public static void killAllProcesses() {
-        try {
-            killProcess();
-            System.exit(0);
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    killProcess();
+                    System.exit(0);
 
-            ActivityManager am = (ActivityManager) getAppContext().getSystemService(Context.ACTIVITY_SERVICE);
-            am.killBackgroundProcesses(getAppContext().getPackageName());
-        } catch (Exception e) { }
+                    ActivityManager am = (ActivityManager) getAppContext().getSystemService(Context.ACTIVITY_SERVICE);
+                    am.killBackgroundProcesses(getAppContext().getPackageName());
+
+                } catch (Exception e) { }
+            }
+        }, 500L);
     }
 
 }

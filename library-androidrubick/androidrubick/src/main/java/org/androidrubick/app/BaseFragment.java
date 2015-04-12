@@ -1,6 +1,8 @@
 package org.androidrubick.app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,7 +26,7 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
     /**
      * 持有该Fragment的FragmentActivity的引用
      */
-    protected FragmentActivity fragmentActivity;
+    protected FragmentActivity mFragmentActivity;
 
     /**
      * Called to do initial creation of a fragment.  This is called after
@@ -102,20 +104,20 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // 给一些变量赋值
-        fragmentActivity = getActivity();
+        mFragmentActivity = getActivity();
 
-        ButterKnife.inject(this, getRootView());
+        ButterKnife.inject(this, mRootView);
         // 细分生命周期
         initView(mRootView, savedInstanceState);
-        initListener();
-        updateDataToUI();
+        initListener(mRootView, savedInstanceState);
+        initData(mRootView, savedInstanceState);
     }
 
-    public final FragmentActivity getFragmentActivity() {
-        return isAddToActivity() ? getActivity() : fragmentActivity;
+    public FragmentActivity getFragmentActivity() {
+        return isAddToActivity() ? getActivity() : mFragmentActivity;
     }
 
-    public final boolean isAddToActivity() {
+    public boolean isAddToActivity() {
         return isAdded();
     }
 
@@ -146,5 +148,17 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
     public <T extends View> T findViewById(int id) {
         ensureRootViewCreated();
         return (T) getRootView().findViewById(id);
+    }
+
+    @Override
+    public void startActivity(Class<? extends Activity> clz) {
+        final Activity activity = getFragmentActivity();
+        activity.startActivity(new Intent(activity, clz));
+    }
+
+    @Override
+    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
+        final Activity activity = getFragmentActivity();
+        activity.startActivityForResult(new Intent(activity, clz), requestCode);
     }
 }

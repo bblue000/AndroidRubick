@@ -1,4 +1,4 @@
-package org.androidrubick.encode;
+package androidrubick.encode;
 
 import java.util.Arrays;
 

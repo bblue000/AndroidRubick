@@ -40,8 +40,8 @@ public abstract class BaseActivity extends FragmentActivity implements IUIFlow {
 
         ButterKnife.inject(this, mRootView);
         initView(mRootView, savedInstanceState);
-        initListener();
-        updateDataToUI();
+        initListener(mRootView, savedInstanceState);
+        initData(mRootView, savedInstanceState);
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class BaseActivity extends FragmentActivity implements IUIFlow {
 
     @Override
     public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
-        startActivityForResult();
+        startActivityForResult(new Intent(this, clz), requestCode);
     }
 }
 

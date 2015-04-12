@@ -24,43 +24,43 @@ public class FrameworkLog {
         out_print_error = debug;
     }
 	
-	public static void i(String tag, String msg) {
+	public static void i(String tag, String msg, Object...args) {
 		if (out_print_info) {
-			Log.i(tag, msg);
+			Log.i(tag, String.format(msg, args));
 		}
 	}
 
-	public static void i(Class<?> c, String msg) {
-		i(c.getSimpleName(), msg);
+	public static void i(Class<?> c, String msg, Object...args) {
+		i(c.getSimpleName(), String.format(msg, args));
 	}
 
-	public static void d(String tag, String msg) {
+	public static void d(String tag, String msg, Object...args) {
 		if (out_print_debug) {
-			Log.d(tag, msg);
+			Log.d(tag, String.format(msg, args));
 		}
 	}
 
-	public static void d(Class<?> c, String msg) {
-		d(c.getSimpleName(), msg);
+	public static void d(Class<?> c, String msg, Object...args) {
+		d(c.getSimpleName(), String.format(msg, args));
 	}
 
-	public static void w(String tag, String msg) {
+	public static void w(String tag, String msg, Object...args) {
 		if (out_print_warn) {
-			Log.w(tag, msg);
+			Log.w(tag, String.format(msg, args));
 		}
 	}
 
-	public static void w(Class<?> c, String msg) {
-		w(c.getSimpleName(), msg);
+	public static void w(Class<?> c, String msg, Object...args) {
+		w(c.getSimpleName(), String.format(msg, args));
 	}
 
-	public static void e(String tag, String msg) {
+	public static void e(String tag, String msg, Object...args) {
 		if (out_print_error) {
-			Log.e(tag, msg);
+			Log.e(tag, String.format(msg, args));
 		}
 	}
 
-	public static void e(Class<?> c, String msg) {
-		e(c.getSimpleName(), msg);
+	public static void e(Class<?> c, String msg, Object...args) {
+		e(c.getSimpleName(), String.format(msg, args));
 	}
 }

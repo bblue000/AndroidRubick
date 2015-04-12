@@ -1,7 +1,8 @@
-package org.androidrubick.encode;
+package androidrubick.encode;
 
 import java.security.Key;
 import java.security.MessageDigest;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;

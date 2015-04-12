@@ -20,7 +20,7 @@ interface IUIFlow {
      * 如果想设置特定的View，可以调用{@link #provideLayoutView()}
      *
      * <br/>
-     * define the layout res of the activity
+     * define the layout res of the activity/fragment
      */
     int provideLayoutResId();
 
@@ -32,45 +32,67 @@ interface IUIFlow {
      * 先通过{@link #provideLayoutResId()}获取，再通过{@link #provideLayoutView()}。
      *
      * <p/>
-     * define the content view of the activity
+     * define the content view of the activity/fragment
      */
     View provideLayoutView();
 
     /**
-     * 在onCreate中调用，在initData之前调用
+     * 在{@link android.app.Activity#onCreate(android.os.Bundle)}中调用，
+     * 在{@link #initListener(android.view.View, android.os.Bundle)}之前调用
      *
      * <p/>
-     * called before {@link #updateDataToUI()} while
-     * {@link android.app.Activity#onCreate(android.os.Bundle)} is running
      *
-     * @param view root view of the activity
+     * @param view root view of the activity/fragment
      *
      */
     void initView(View view, Bundle savedInstanceState);
 
     /**
-     * 在onCreate中调用，initView, initData之后被调用
-     * @added 1.0
+     * 在{@link android.app.Activity#onCreate(android.os.Bundle)}中调用，
+     * 在{@link #initView(View, android.os.Bundle)}之后被调用
+     *
+     * @param view root view of the activity/fragment
      */
-    void initListener();
+    void initListener(View view, Bundle savedInstanceState);
 
     /**
-     * 在onCreate中调用，在initView和initListener之后调用
+     * 在{@link android.app.Activity#onCreate(android.os.Bundle)}中调用，
+     * 在{@link #initView(View, android.os.Bundle)}和{@link #initListener(android.view.View, android.os.Bundle)}之后调用
+     *
+     * <p/>
+     *
+     * @param view root view of the activity/fragment
+     *
+     */
+    void initData(View view, Bundle savedInstanceState) ;
+
+    /**
+     * 一个内置的用于更新UI的方法
      *
      * <br/>
-     * called immediately after {@link #initView(android.view.View, android.os.Bundle)} while
-     * {@link android.app.Activity#onCreate(android.os.Bundle)} is running
      *
      */
     void updateDataToUI() ;
 
     /**
-     * this method returns the pure View.
+     * this method returns the pure View.（并非是{@link android.view.Window#getDecorView()}）
      */
     View getRootView();
 
+    /**
+     *
+     * 启动指定的Activity
+     *
+     * @param clz an Activity Class
+     */
     void startActivity(Class<? extends Activity> clz);
 
+    /**
+     *
+     * 启动指定的Activity
+     *
+     * @param clz an Activity Class
+     */
     void startActivityForResult(Class<? extends Activity> clz, int requestCode);
 
 }

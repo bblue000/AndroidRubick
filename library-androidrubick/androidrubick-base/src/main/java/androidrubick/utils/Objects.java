@@ -335,11 +335,15 @@ public class Objects {
         return (o == null) ? nullString : o.toString();
     }
 
+    public static boolean isNull(Object o) {
+        return null == o;
+    }
+
     /**
      * 判断一个对象是否为“空”——null 或者是对象意义上的空，如空字符串
      */
     public static boolean isEmpty(Object o) {
-        if (null == o) {
+        if (isNull(o)) {
             return true;
         }
         if (o instanceof CharSequence) {

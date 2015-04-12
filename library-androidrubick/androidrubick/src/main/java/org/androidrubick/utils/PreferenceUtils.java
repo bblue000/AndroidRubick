@@ -15,7 +15,15 @@ public class PreferenceUtils {
 private PreferenceUtils() { }
 	
 	public static int MODE = Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS;
-	
+
+    /**
+     * 设置SharedPreference模式
+     * @param mode
+     */
+    public static void setMode(int mode) {
+        MODE = mode;
+    }
+
 	public static long getValue(Context context, String node, String key,
 			long defaultValue) {
 		return context.getSharedPreferences(node, MODE).getLong(

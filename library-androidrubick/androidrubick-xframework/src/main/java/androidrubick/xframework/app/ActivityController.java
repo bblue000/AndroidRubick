@@ -1,4 +1,4 @@
-package org.androidrubick.app;
+package androidrubick.xframework.app;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,13 +9,15 @@ import org.androidrubick.utils.AndroidUtils;
 import androidrubick.utils.Objects;
 
 /**
- * somthing
+ * 工具类：提供{@link androidrubick.xframework.app.IActivityController}相关的静态调用方法
  *
  * <p/>
  *
- * Created by Yin Yong on 2015/3/24 0024.
+ * Created by Yin Yong on 2015/4/10 0010.
  */
 public class ActivityController {
+
+    private ActivityController() { /* no instance needed */ }
 
     public static void startActivity(Context context, Intent intent) {
         Objects.checkNotNull(intent, "intent should not be null");
