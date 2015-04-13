@@ -28,7 +28,7 @@ package androidrubick.utils;
  * @author Kevin Bourrillion
  * @since 2.0 (imported from Google Collections Library)
  */
-public interface Function<F, T> {
+public interface Function<I, R> {
   /**
    * Returns the result of applying this function to {@code input}. This method is <i>generally
    * expected</i>, but not absolutely required, to have the following properties:
@@ -43,7 +43,7 @@ public interface Function<F, T> {
    * @throws NullPointerException if {@code input} is null and this function does not accept null
    *     arguments
    */
-  T apply(F input);
+  R apply(I input);
 
   /**
    * Indicates whether another object is equal to this function.

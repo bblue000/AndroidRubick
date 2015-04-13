@@ -2,8 +2,6 @@ package androidrubick.text;
 
 import java.util.regex.Pattern;
 
-import androidrubick.utils.Objects;
-
 /**
  * 简单的字符串验证类
  *
@@ -25,6 +23,9 @@ public class SimpleTextValiates {
     public static final String PATTERN_DOMAIN = "^(?i:(http\\://))[/\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
     public static final String PATTERN_HTTP = "^(?i:(http\\://))[/\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
 
+    /**
+     * 判断字符串是否是手机号（简单版）：十一位数字，以1为开头的
+     */
     public static boolean simpleValidateCellphone(CharSequence charSequence) {
         return checkEmptyThenValidate(PATTERN_CELLPHONE, charSequence);
     }
@@ -33,6 +34,9 @@ public class SimpleTextValiates {
         return checkEmptyThenValidate(PATTERN_MAIL, charSequence);
     }
 
+    /**
+     * 是否是纯数字（没有小数点和正负号）
+     */
     public static boolean isPureNumber(CharSequence charSequence) {
         if (Strings.isEmpty(charSequence)) {
             return false;
@@ -69,6 +73,9 @@ public class SimpleTextValiates {
         return true;
     }
 
+    /**
+     * 是否是数字（实数）
+     */
     public static boolean isNumber(CharSequence charSequence) {
         return checkEmptyThenValidate(PATTERN_NUMBER, charSequence);
     }
