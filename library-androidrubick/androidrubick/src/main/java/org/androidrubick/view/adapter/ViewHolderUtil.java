@@ -6,6 +6,7 @@ import android.view.View;
 import org.androidrubick.R;
 
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 
 /**
  * somthing
@@ -19,7 +20,7 @@ public class ViewHolderUtil {
     private ViewHolderUtil() { /* no instance needed */ }
 
     public static <T extends View> T get(View view, int id) {
-        Objects.checkNotNull(view, "param view is null");
+        Preconditions.checkNotNull(view, "param view is null");
         SparseArray<? extends View> sparseArray = Objects.getAs(view.getTag(R.id.org_androidrubick_view_adapter_viewholderutil));
         if (null == sparseArray) {
             sparseArray = new SparseArray<View>();

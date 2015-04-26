@@ -3,6 +3,7 @@ package androidrubick.xframework.events.internal;
 import java.lang.reflect.Method;
 
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 import androidrubick.utils.Reflects;
 import androidrubick.xframework.events.annotation.XEvent;
 
@@ -21,7 +22,7 @@ public class XEventAnnotationProcessor {
     static final String PATH_PREFIX_ANDROIDRUBICK = "androidrubick.";
 
     public static void inject(Object target) {
-        Objects.checkNotNull(target, "target object is null");
+        Preconditions.checkNotNull(target, "target object is null");
         Class<?> targetClass = target.getClass();
         injectTargetClassMethods(target, targetClass);
     }
@@ -53,8 +54,8 @@ public class XEventAnnotationProcessor {
             return;
         }
         String eventActions[] = methodXEventAnnotation.value();
-        Objects.checkArgument(!Objects.isEmpty(eventActions), "XEvent should define value");
-        XEventBus.getInstance().register(new Subscription(target, method), eventActions);
+        Preconditions.checkArgument(!Objects.isEmpty(eventActions), "XEvent should define value");
+        XEventBus.getInstance().register(new Subscription(target, method), (Object[]) eventActions);
     }
 
     static boolean shouldFilterClass(Class<?> targetClass) {

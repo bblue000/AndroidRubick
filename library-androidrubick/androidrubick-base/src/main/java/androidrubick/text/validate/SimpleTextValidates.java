@@ -1,6 +1,9 @@
-package androidrubick.text;
+package androidrubick.text.validate;
 
 import java.util.regex.Pattern;
+
+import androidrubick.text.Patterns;
+import androidrubick.text.Strings;
 
 /**
  * 简单的字符串验证类
@@ -9,16 +12,13 @@ import java.util.regex.Pattern;
  *
  * Created by yong01.yin on 2014/12/29.
  */
-public class SimpleTextValiates {
+public class SimpleTextValidates {
 
-    private SimpleTextValiates() {}
+    private SimpleTextValidates() {}
 
-    public static final String PATTERN_CELLPHONE = "^[1]\\d{10}$";
-    public static final String PATTERN_MAIL = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
-    public static final String PATTERN_NUMBER = "^(-)?\\d+([.]\\d+)?$";
-    public static final String PATTERN_SINGLE_CHINESE = "[\\u4e00-\\u9fa5]";
-    public static final String PATTERN_CHINESE = "^[\\u4e00-\\u9fa5]+$";
-    public static final String PATTERN_NONE_CHINESE = "^[^\\u4e00-\\u9fa5]+$";
+    public static final String PATTERN_NUMBER = "^(\\-)?\\d+(\\.\\d+)?$";
+    public static final String PATTERN_CHINESE = "^" + Patterns.LanguagePatterns.CHINESE_CHAR + "+$";
+    public static final String PATTERN_NONE_CHINESE = "^" + Patterns.LanguagePatterns.NON_CHINESE_CHAR + "+$";
 
     public static final String PATTERN_DOMAIN = "^(?i:(http\\://))[/\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
     public static final String PATTERN_HTTP = "^(?i:(http\\://))[/\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
@@ -27,11 +27,11 @@ public class SimpleTextValiates {
      * 判断字符串是否是手机号（简单版）：十一位数字，以1为开头的
      */
     public static boolean simpleValidateCellphone(CharSequence charSequence) {
-        return checkEmptyThenValidate(PATTERN_CELLPHONE, charSequence);
+        return checkEmptyThenValidate(Patterns.PhonePatterns.CELL_PHONE, charSequence);
     }
 
     public static boolean validateMail(CharSequence charSequence) {
-        return checkEmptyThenValidate(PATTERN_MAIL, charSequence);
+        return checkEmptyThenValidate(Patterns.EmailPatterns.EMAIL, charSequence);
     }
 
     /**
@@ -84,12 +84,25 @@ public class SimpleTextValiates {
         return checkEmptyThenValidate("^[a-z][a-z0-9_]{" + Math.max(0, minLen - 1) + "," + Math.max(0, maxlen - 1) + "}$", charSequence);
     }
 
+    /**
+     * 简单验证是否全是中文字符（一般用作单行表单数据验证）
+     */
     public static boolean isChinese(CharSequence charSequence) {
         return checkEmptyThenValidate(PATTERN_CHINESE, charSequence);
     }
 
+    /**
+     * 简单验证是否含有中文字符（一般用作单行表单数据验证）
+     */
     public static boolean hasChinese(CharSequence charSequence) {
         return !checkEmptyThenValidate(PATTERN_NONE_CHINESE, charSequence);
+    }
+
+    /**
+     * 简单验证是否是正确的URL（[schema://]domain[:port][/path][?query][#fragment]）
+     */
+    public static boolean isValidUrl(CharSequence charSequence) {
+        return checkEmptyThenValidate(Patterns.URLPatterns.URL, charSequence);
     }
 
     private static final boolean checkEmptyThenValidate(String regex, CharSequence input) {

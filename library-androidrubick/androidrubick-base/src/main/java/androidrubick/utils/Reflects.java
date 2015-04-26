@@ -31,6 +31,17 @@ public class Reflects {
         return values;
     }
 
+//    /**
+//     * 从<code>clz</code>指定的类遍历查找到{@linkplain java.lang.Object}
+//     * @param clz 指定类
+//     * @param methodName 方法名
+//     * @param params 方法参数类型
+//     * @return
+//     */
+//    public static Method getDeclaredMehod(Class<?> clz, String methodName, Class<?>...params) {
+//
+//    }
+
     /**
      * 调用方法
      *

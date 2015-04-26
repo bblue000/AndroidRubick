@@ -1,9 +1,10 @@
 package androidrubick.text;
 
-import static androidrubick.utils.Objects.*;
+import static androidrubick.utils.Preconditions.*;
 
 /**
  * utilities of string
+ *
  * @author Yin Yong
  * @version 1.0
  */

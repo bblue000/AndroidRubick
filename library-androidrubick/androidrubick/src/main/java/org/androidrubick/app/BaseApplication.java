@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 
-import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 
 /**
  * 应用的基类，封装一些应用全局调用的对象及API（to be continued），
@@ -36,7 +36,7 @@ public class BaseApplication extends Application {
 	 * @return 整个APP可以使用的Context
 	 */
 	public static Application getAppContext() {
-        Objects.checkNotNull(sApplication, "check whether the app has a Application "
+        Preconditions.checkNotNull(sApplication, "check whether the app has a Application "
                 + "class extends BaseApplication ? or forget to "
                 + "invoke super class's constructor first!");
 		return sApplication;

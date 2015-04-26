@@ -76,12 +76,10 @@ public class ToastUtils {
 	}
 	
 	private static void showToast0(CharSequence message, int length){
-		try {
-			Toast temp = ensureToastInstance(getContext());
-			temp.setDuration(length);
-			temp.setText(message);
-			temp.show();
-		} catch (Exception e) { }
+        Toast temp = ensureToastInstance(getContext());
+        temp.setDuration(length);
+        temp.setText(message);
+        temp.show();
 	}
 
 }

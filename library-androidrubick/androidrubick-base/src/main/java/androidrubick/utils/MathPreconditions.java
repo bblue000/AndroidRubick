@@ -3,6 +3,10 @@ package androidrubick.utils;
 import java.math.BigInteger;
 
 /**
+ * 包含数学计算、比较等相关验证的工具类；
+ *
+ * <br/>
+ *
  * 验证参数是否符合条件，如果不符合则抛出{@link java.lang.IllegalArgumentException}异常
  *
  * <p/>
