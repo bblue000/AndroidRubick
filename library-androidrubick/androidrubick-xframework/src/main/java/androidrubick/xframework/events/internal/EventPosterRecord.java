@@ -14,9 +14,9 @@ public class EventPosterRecord {
     final Object data;
     final List<EventObserverRecord> observers;
 
-    EventPosterRecord(Object _action, List<EventObserverRecord> _receivers, Object _data) {
+    EventPosterRecord(Object _action, List<EventObserverRecord> _observers, Object _data) {
         action = _action;
-        observers = _receivers;
+        observers = _observers;
         data = _data;
     }
 }

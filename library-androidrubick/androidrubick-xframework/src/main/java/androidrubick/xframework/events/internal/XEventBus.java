@@ -6,8 +6,9 @@ import java.util.List;
 
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
+import androidrubick.xframework.events.IEventAPI;
 
-/* package */ class XEventBus {
+/* package */ class XEventBus implements IEventAPI<Object, Object, EventSubscriber>, SubscriptionMonitor {
 
     private static final String TAG = XEventBus.class.getSimpleName();
     private static final boolean DEBUG = false;
@@ -26,30 +27,33 @@ import androidrubick.utils.Objects;
         }
     }
 
-    private final HashMap<Subscription, List<Object>> mReceivers
-            = new HashMap<Subscription, List<Object>>();
+    private final HashMap<EventSubscriber, List<Object>> mReceivers
+            = new HashMap<EventSubscriber, List<Object>>();
     private final HashMap<Object, List<EventObserverRecord>> mActions
             = new HashMap<Object, List<EventObserverRecord>>();
     private final ArrayList<EventPosterRecord> mPendingBroadcasts
             = new ArrayList<EventPosterRecord>();
     private XEventBus() {
+        EventSubscriber.setSubscriptionMonitor(this);
     }
 
     /**
      * 注册事件，当<code>actions</code>中的任意事件触发时，subscription将会调用目标方法
      *
-     * @param subscription 触发执行器
+     * @param eventSubscriber 触发执行器
      * @param actions 事件
      */
-    public void register(Subscription subscription, Object...actions) {
-        if (Objects.isNull(subscription) || Objects.isEmpty(actions)) {
+    @Override
+    public void register(EventSubscriber eventSubscriber, Object...actions) {
+        EventSubscriber.checkRelease();
+        if (Objects.isNull(eventSubscriber) || Objects.isEmpty(actions)) {
             return;
         }
         synchronized (mReceivers) {
-            List<Object> cachedActions = mReceivers.get(subscription);
+            List<Object> cachedActions = mReceivers.get(eventSubscriber);
             if (Objects.isNull(cachedActions)) {
                 cachedActions = new ArrayList<Object>(DEFAULT_SIZE);
-                mReceivers.put(subscription, cachedActions);
+                mReceivers.put(eventSubscriber, cachedActions);
             }
             for (Object action : actions) {
                 cachedActions.add(action);
@@ -58,7 +62,7 @@ import androidrubick.utils.Objects;
                     entries = new ArrayList<EventObserverRecord>(DEFAULT_SIZE);
                     mActions.put(action, entries);
                 }
-                entries.add(new EventObserverRecord(action, subscription));
+                entries.add(new EventObserverRecord(action, eventSubscriber));
             }
         }
     }
@@ -67,44 +71,46 @@ import androidrubick.utils.Objects;
      * 注销事件，当<code>actions</code>为空时，所有subscription注册的事件都会注销；
      * 不为空时，注销指定的事件
      *
-     * @param subscription 触发执行器
+     * @param eventSubscriber 触发执行器
      * @param actions 事件
      */
-    public void unregister(Subscription subscription, Object...actions) {
+    @Override
+    public void unregister(EventSubscriber eventSubscriber, Object...actions) {
+        EventSubscriber.checkRelease();
         synchronized (mReceivers) {
             List<Object> unregisterActions;
             if (Objects.isEmpty(actions)) {
-                unregisterActions = mReceivers.remove(subscription);
+                unregisterActions = mReceivers.remove(eventSubscriber);
                 if (Objects.isNull(unregisterActions)) {
                     return ;
                 }
                 for (int i = 0; i < unregisterActions.size(); i++) {
                     Object action = unregisterActions.get(i);
-                    unregisterAction(subscription, action);
+                    unregisterAction(eventSubscriber, action);
                 }
             } else {
-                List<Object> cachedActions = mReceivers.get(subscription);
+                List<Object> cachedActions = mReceivers.get(eventSubscriber);
                 if (Objects.isNull(cachedActions)) {
                     return ;
                 }
                 for (Object action : actions) {
                     if (cachedActions.remove(action)) {
-                        unregisterAction(subscription, action);
+                        unregisterAction(eventSubscriber, action);
                     }
                 }
             }
         }
     }
 
-    private void unregisterAction(Subscription subscription, Object action) {
+    private void unregisterAction(EventSubscriber eventSubscriber, Object action) {
         List<EventObserverRecord> receivers = mActions.get(action);
         if (Objects.isNull(receivers)) {
             return ;
         }
         for (int k = 0; k < receivers.size(); k++) {
             EventObserverRecord eventObserverRecord = receivers.get(k);
-            Subscription temp = eventObserverRecord.subscription;
-            if (Objects.equals(temp, subscription)) {
+            EventSubscriber temp = eventObserverRecord.eventSubscriber;
+            if (Objects.equals(temp, eventSubscriber)) {
                 receivers.remove(k);
                 k--;
             }
@@ -119,10 +125,12 @@ import androidrubick.utils.Objects;
      * the Intent this function will block and immediately dispatch them before
      * returning.
      */
+    @Override
     public void post(Object action) {
         post(action, null);
     }
 
+    @Override
     public void post(Object action, Object data) {
         synchronized (mReceivers) {
             List<EventObserverRecord> entries = mActions.get(action);
@@ -162,10 +170,12 @@ import androidrubick.utils.Objects;
         executePendingBroadcasts(mPendingBroadcasts);
     }
 
+    @Override
     public void postToMain(Object action) {
 
     }
 
+    @Override
     public void postToMain(Object action, Object data) {
 
     }
@@ -182,10 +192,20 @@ import androidrubick.utils.Objects;
                 EventPosterRecord br = brs[i];
                 for (int j = 0; j < br.observers.size(); j++) {
                     EventObserverRecord eventObserverRecord = br.observers.get(j);
-                    eventObserverRecord.subscription.invoke(br.data);
+                    eventObserverRecord.eventSubscriber.invoke(br.data);
                 }
             }
         }
     }
 
+    /**
+     * 自动清理
+     *
+     * @param eventSubscriber
+     */
+    @Override
+    public void onInstanceReleased(EventSubscriber eventSubscriber) {
+        FrameworkLog.d(TAG, "released = " + eventSubscriber);
+        unregister(eventSubscriber);
+    }
 }

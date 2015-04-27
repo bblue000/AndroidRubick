@@ -12,6 +12,8 @@ import androidrubick.xframework.events.annotation.XEvent;
  *
  * <p/>
  *
+ * @hide
+ *
  * Created by Yin Yong on 2015/4/12 0012.
  */
 public class XEventAnnotationProcessor {
@@ -35,6 +37,14 @@ public class XEventAnnotationProcessor {
         XEventBus.getInstance().post(action, data);
     }
 
+    public static void postToMain(String action) {
+        postToMain(action);
+    }
+
+    public static void postToMain(String action, Object data) {
+        XEventBus.getInstance().postToMain(action, data);
+    }
+
     static void injectTargetClassMethods(Object target, Class<?> targetClass) {
         Class<?> curClass = targetClass;
         while (!shouldFilterClass(curClass)) {
@@ -55,7 +65,7 @@ public class XEventAnnotationProcessor {
         }
         String eventActions[] = methodXEventAnnotation.value();
         Preconditions.checkArgument(!Objects.isEmpty(eventActions), "XEvent should define value");
-        XEventBus.getInstance().register(new Subscription(target, method), (Object[]) eventActions);
+        XEventBus.getInstance().register(new EventSubscriber(target, method), (Object[]) eventActions);
     }
 
     static boolean shouldFilterClass(Class<?> targetClass) {

@@ -9,21 +9,21 @@ package androidrubick.xframework.events.internal;
 /*package*/ class EventObserverRecord {
 
     final Object action;
-    final Subscription subscription;
+    final EventSubscriber eventSubscriber;
     // temp state
     boolean broadcasting;
 
-    public EventObserverRecord(Object _action, Subscription _subscription) {
+    public EventObserverRecord(Object _action, EventSubscriber _eventSubscriber) {
         super();
         action = _action;
-        subscription = _subscription;
+        eventSubscriber = _eventSubscriber;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(128);
         builder.append("EventObserver{");
-        builder.append(subscription);
+        builder.append(eventSubscriber);
         builder.append(" action=");
         builder.append(action);
         builder.append("}");

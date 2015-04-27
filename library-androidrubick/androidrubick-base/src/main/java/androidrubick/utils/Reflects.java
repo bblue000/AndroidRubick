@@ -68,6 +68,32 @@ public class Reflects {
     }
 
     /**
+     * 调用方法，将会抛出方法调用的异常
+     *
+     * @param target 需要调用的方法所在的对象
+     * @param method 方法
+     * @param params 调用方法传入的参数
+     * @param <Result> 泛型的返回类型
+     * @return 如果方法调用完，返回方法对应的返回值；如果有异常则返回null
+     */
+    public static <Result>Result invokeThrow(Object target, Method method, Object...params) throws Exception {
+        boolean isAccessible = method.isAccessible();
+        if (!isAccessible) {
+            method.setAccessible(true);
+        }
+        Result result;
+        try {
+            result = (Result) method.invoke(target, params);
+        } catch (Exception e) {
+            throw e;
+        }
+        if (!isAccessible) {
+            method.setAccessible(isAccessible);
+        }
+        return result;
+    }
+
+    /**
      * 获取<code>clz</code>中申明的所有方法
      * @param clz 目标类
      * @return <code>clz</code>中申明的所有方法，如果clz为null，返回null
