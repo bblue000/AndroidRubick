@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import androidrubick.text.Strings;
+
 /**
  * Helper functions that can operate on any {@code Object}.
  * <br/>
@@ -76,14 +78,24 @@ public class Objects {
      * Returns "null" for null or {@code o.toString()}.
      */
     public static String toString(Object o) {
-        return toString(o, "null");
+        return toString(o, Strings.NULL);
     }
 
     /**
      * Returns {@code nullString} for null or {@code o.toString()}.
      */
     public static String toString(Object o, String nullString) {
-        return (o == null) ? nullString : o.toString();
+        return (o == null) ? nullString : toStringInternal(o);
+    }
+
+    private static String toStringInternal(Object o) {
+//        Class<?> clzOfO = o.getClass();
+//        if (clzOfO.isArray()) {
+//
+//        } else if () {
+//
+//        }
+        return o.toString();
     }
 
     public static boolean isNull(Object o) {
@@ -132,6 +144,16 @@ public class Objects {
         } catch (Exception e) {
             return (T)null;
         }
+    }
+
+    /**
+     * 如果指定对象为空，则返回代替对象
+     * @param o 目标对象
+     * @param another 代替对象
+     * @return 如果指定对象不为空，则返回原对象<code>o</code>；如果指定对象为空，则返回代替对象<code>another</code>。
+     */
+    public static <T, U extends T>T getOr(T o, U another) {
+        return isNull(o) ? another : o;
     }
 
     public static <T>T defValue(Class<T> type) {
