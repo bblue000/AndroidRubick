@@ -1,4 +1,4 @@
-package androidrubick.xframework.app;
+package androidrubick.xframework.app.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 
 /**
- * 工具类：提供{@link androidrubick.xframework.app.IActivityController}相关的静态调用方法
+ * 工具类：提供{@link IActivityController}相关的静态调用方法
  *
  * <p/>
  *

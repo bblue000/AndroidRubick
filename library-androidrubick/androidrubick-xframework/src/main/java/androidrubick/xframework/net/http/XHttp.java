@@ -1,7 +1,7 @@
 package androidrubick.xframework.net.http;
 
 /**
- * somthing
+ * 提供HTTP请求相关的操作
  *
  * <p/>
  *

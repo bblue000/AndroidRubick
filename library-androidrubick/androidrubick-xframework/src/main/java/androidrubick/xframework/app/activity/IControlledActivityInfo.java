@@ -1,4 +1,4 @@
-package androidrubick.xframework.app;
+package androidrubick.xframework.app.activity;
 
 import android.app.Activity;
 
