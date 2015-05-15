@@ -1,6 +1,7 @@
 package androidrubick.text;
 
 import java.util.Collection;
+import java.util.Map;
 
 import androidrubick.utils.Function;
 import androidrubick.utils.Functions;
@@ -70,6 +71,25 @@ public class Prints {
         StringBuilder temp = new StringBuilder(c.size() * 32);
         int i = 0;
         for (T t : c) {
+            if (i > 0) {
+                temp.append(sep);
+            }
+            temp.append(propertyGetter.apply(t));
+            i++;
+        }
+        return temp.toString();
+    }
+
+    public static <K, V>String join(Map<K, V> map, Function<Map.Entry<K, V>, String> propertyGetter, String sep) {
+        if (Objects.isEmpty(map)) {
+            return Strings.EMPTY;
+        }
+        if (null == sep) {
+            sep = Strings.EMPTY;
+        }
+        StringBuilder temp = new StringBuilder(map.size() * 32 * 2);
+        int i = 0;
+        for (Map.Entry<K, V> t : map.entrySet()) {
             if (i > 0) {
                 temp.append(sep);
             }
