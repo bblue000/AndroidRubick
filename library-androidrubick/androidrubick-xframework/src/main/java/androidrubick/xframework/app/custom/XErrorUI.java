@@ -39,7 +39,7 @@ public class XErrorUI {
     }
 
     /**
-     * 显示提示
+     * 显示错误提示
      */
     public void show() {
         ToastUtils.showToast(mMessage);

@@ -10,6 +10,8 @@ import org.apache.http.params.HttpParams;
 import java.io.IOException;
 import java.util.Map;
 
+import androidrubick.xframework.net.http.request.XHttpRequest;
+
 /**
  *
  * API 9之前使用{@link org.apache.http.client.HttpClient}。
