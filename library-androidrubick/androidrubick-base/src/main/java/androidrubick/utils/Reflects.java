@@ -10,6 +10,8 @@ import java.lang.reflect.Method;
  * <p/>
  *
  * Created by Yin Yong on 2015/4/11 0011.
+ *
+ * @since 1.0
  */
 public class Reflects {
 
@@ -19,6 +21,8 @@ public class Reflects {
      * 根据参数类型数组<code>parameters</code>返回带有对应默认值的值数组
      * @param parameters 参数类型数组
      * @return 带有对应默认值的值数组
+     *
+     * @since 1.0
      */
     public static Object[] genDefaultMethodArgsByParameters(Class<?>...parameters) {
         if (null == parameters || parameters.length == 0) {
@@ -50,6 +54,8 @@ public class Reflects {
      * @param params 调用方法传入的参数
      * @param <Result> 泛型的返回类型
      * @return 如果方法调用完，返回方法对应的返回值；如果有异常则返回null
+     *
+     * @since 1.0
      */
     public static <Result>Result invoke(Object target, Method method, Object...params) {
         try {
@@ -75,6 +81,8 @@ public class Reflects {
      * @param params 调用方法传入的参数
      * @param <Result> 泛型的返回类型
      * @return 如果方法调用完，返回方法对应的返回值；如果有异常则返回null
+     *
+     * @since 1.0
      */
     public static <Result>Result invokeThrow(Object target, Method method, Object...params) throws Exception {
         boolean isAccessible = method.isAccessible();
@@ -97,6 +105,8 @@ public class Reflects {
      * 获取<code>clz</code>中申明的所有方法
      * @param clz 目标类
      * @return <code>clz</code>中申明的所有方法，如果clz为null，返回null
+     *
+     * @since 1.0
      */
     public static Method[] getDeclaredMehods(Class<?> clz) {
         try {

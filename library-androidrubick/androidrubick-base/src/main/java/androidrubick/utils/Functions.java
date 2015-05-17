@@ -6,6 +6,8 @@ package androidrubick.utils;
  * <p/>
  *
  * Created by Yin Yong on 2015/3/27.
+ *
+ * @since 1.0
  */
 public class Functions {
 
@@ -17,6 +19,14 @@ public class Functions {
             return Objects.toString(input);
         }
     }
+
+    /**
+     * 一个类似调用{@link Object#toString()}的函数
+     *
+     * @see androidrubick.utils.Objects#toString(Object)
+     *
+     * @since 1.0
+     */
     public static final ToStringFunc TO_STRING = new ToStringFunc();
 
 }

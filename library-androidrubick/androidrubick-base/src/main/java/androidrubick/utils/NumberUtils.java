@@ -3,7 +3,8 @@ package androidrubick.utils;
 /**
  * utilities of number
  * @author Yin Yong
- * @version 1.0
+ *
+ * @since 1.0
  */
 public class NumberUtils {
 
@@ -31,6 +32,8 @@ public class NumberUtils {
 	 * </p>
 	 * @param string 源字符串
 	 * @return 转为byte后的数值，默认为{@link #BYTE_ZERO}
+     *
+     * @since 1.0
 	 */
 	public static byte getByte(String string) {
 		return getByte(string, BYTE_ZERO);
@@ -45,6 +48,8 @@ public class NumberUtils {
 	 * @param string 源字符串
 	 * @param defVal 转换错误后作为替代的值
 	 * @return 转为byte后的数值，默认为defVal
+     *
+     * @since 1.0
 	 */
 	public static byte getByte(String string, byte defVal) {
 		try {
@@ -62,6 +67,8 @@ public class NumberUtils {
 	 * </p>
 	 * @param string 源字符串
 	 * @return 转为short后的数值，默认为{@link #SHORT_ZERO}
+     *
+     * @since 1.0
 	 */
 	public static short getShort(String string) {
 		return getShort(string, SHORT_ZERO);
@@ -76,6 +83,8 @@ public class NumberUtils {
 	 * @param string 源字符串
 	 * @param defVal 转换错误后作为替代的值
 	 * @return 转为short后的数值，默认为defVal
+     *
+     * @since 1.0
 	 */
 	public static short getShort(String string, short defVal) {
 		try {
@@ -93,6 +102,8 @@ public class NumberUtils {
 	 * </p>
 	 * @param string 源字符串
 	 * @return 转为int后的数值，默认为{@link #INT_ZERO}
+     *
+     * @since 1.0
 	 */
 	public static int getInt(String string) {
 		return getInt(string, INT_ZERO);
@@ -107,6 +118,8 @@ public class NumberUtils {
 	 * @param string 源字符串
 	 * @param defVal 转换错误后作为替代的值
 	 * @return 转为int后的数值，默认为defVal
+     *
+     * @since 1.0
 	 */
 	public static int getInt(String string, int defVal) {
 		try {
@@ -124,6 +137,8 @@ public class NumberUtils {
 	 * </p>
 	 * @param string 源字符串
 	 * @return 转为long后的数值，默认为{@link #LONG_ZERO}
+     *
+     * @since 1.0
 	 */
 	public static long getLong(String string) {
 		return getLong(string, LONG_ZERO);
@@ -138,6 +153,8 @@ public class NumberUtils {
 	 * @param string 源字符串
 	 * @param defVal 转换错误后作为替代的值
 	 * @return 转为long后的数值，默认为defVal
+     *
+     * @since 1.0
 	 */
 	public static long getLong(String string, long defVal) {
 		try {
@@ -147,10 +164,33 @@ public class NumberUtils {
 		}
 	}
 
+    /**
+     * 从String转为float。
+     * <p>
+     * 与{@link java.lang.Float#parseFloat(String)}不同的是，
+     * 在转换错误时，我们不让异常抛出，而是使用默认值代替，默认为{@link #FLOAT_ZERO}。
+     * </p>
+     * @param string 源字符串
+     * @return 转为float后的数值，默认为{@link #FLOAT_ZERO}
+     *
+     * @since 1.0
+     */
 	public static float getFloat(String string) {
 		return getFloat(string, FLOAT_ZERO);
 	}
-	
+
+    /**
+     * 从String转为float，可能发生转换的错误，此时使用defVal作为代替。
+     * <p>
+     * 与{@link Float#parseFloat(String)}不同的是，
+     * 在转换错误时，我们不让异常抛出，而是使用默认值代替，默认为defVal
+     * </p>
+     * @param string 源字符串
+     * @param defVal 转换错误后作为替代的值
+     * @return 转为float后的数值，默认为defVal
+     *
+     * @since 1.0
+     */
 	public static float getFloat(String string, float defVal) {
 		try {
 			return Float.parseFloat(string);
@@ -159,10 +199,33 @@ public class NumberUtils {
 		}
 	}
 
+    /**
+     * 从String转为double。
+     * <p>
+     * 与{@link java.lang.Double#parseDouble(String)}不同的是，
+     * 在转换错误时，我们不让异常抛出，而是使用默认值代替，默认为{@link #DOUBLE_ZERO}。
+     * </p>
+     * @param string 源字符串
+     * @return 转为double后的数值，默认为{@link #DOUBLE_ZERO}
+     *
+     * @since 1.0
+     */
 	public static double getDouble(String string) {
 		return getDouble(string, DOUBLE_ZERO);
 	}
-	
+
+    /**
+     * 从String转为double，可能发生转换的错误，此时使用defVal作为代替。
+     * <p>
+     * 与{@link Double#parseDouble(String)}不同的是，
+     * 在转换错误时，我们不让异常抛出，而是使用默认值代替，默认为defVal
+     * </p>
+     * @param string 源字符串
+     * @param defVal 转换错误后作为替代的值
+     * @return 转为double后的数值，默认为defVal
+     *
+     * @since 1.0
+     */
 	public static double getDouble(String string, double defVal) {
 		try {
 			return Double.parseDouble(string);
@@ -176,6 +239,8 @@ public class NumberUtils {
 	 * @param d 原数值
 	 * @param scale 定义保留小数点后的几位
 	 * @return 经过格式化后的字符串
+     *
+     * @since 1.0
 	 */
 	public static String format(double d, int scale) {
 		if (scale <= 0) {
@@ -198,6 +263,8 @@ public class NumberUtils {
 	 * @param d 数值
 	 * @param ignorePositive 如果是正数，是否需要返回符号，如果为false，则为空字符串。
 	 * @return
+     *
+     * @since 1.0
 	 */
 	public static String getNumberSign(double d, boolean ignorePositive) {
 		if (d == DOUBLE_ZERO) {
@@ -215,6 +282,8 @@ public class NumberUtils {
 	 * @param incrementBetweenUnits 相邻单位之间的变化数值，比如长度中以10为换算，则incrementBetweenUnits为10
 	 * @param units 字符串单位阶数数组
 	 * @return 经过格式化后的字符串
+     *
+     * @since 1.0
 	 */
 	public static String formatByUnit(int i, int incrementBetweenUnits, String...units) {
 		if (incrementBetweenUnits <= 0) {
@@ -247,6 +316,8 @@ public class NumberUtils {
 	 * @param scale 最终返回的字符串中，数值的小数点后位数
 	 * @param units 字符串单位阶数数组
 	 * @return 经过格式化后的字符串
+     *
+     * @since 1.0
 	 */
 	public static String formatByUnit(double d, double incrementBetweenUnits, int scale, String...units) {
 		return formatByUnit(d, incrementBetweenUnits, incrementBetweenUnits, scale, units);
@@ -263,6 +334,8 @@ public class NumberUtils {
 	 * @param scale 最终返回的字符串中，数值的小数点后位数
 	 * @param units 字符串单位阶数数组
 	 * @return 经过格式化后的字符串
+     *
+     * @since 1.0
 	 */
 	public static String formatByUnit(double d, double incrementBetweenUnits,
 			double offset, int scale, String...units) {

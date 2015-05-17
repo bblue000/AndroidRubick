@@ -13,6 +13,8 @@ import java.util.Comparator;
  * <p/>
  *
  * Created by Yin Yong on 2015/4/25 0025.
+ *
+ * @since 1.0
  */
 public class ArraysCompat {
 

@@ -13,10 +13,14 @@ import androidrubick.utils.Objects;
  * <p/>
  *
  * Created by Yin Yong on 2015/4/25 0025.
+ *
+ * @since 1.0
  */
 public class Prints {
 
     private Prints() { /* no instance needed */ }
+
+    public static final int LEN_PER_WORD = 16;
 
     /**
      * 把数组中的所有元素放入一个字符串。
@@ -25,6 +29,8 @@ public class Prints {
      *
      * @param arr 需要连接的数组
      * @param sep 分隔符
+     *
+     * @since 1.0
      */
     public static <T>String join(T[] arr, String sep) {
         return join(arr, Functions.TO_STRING, sep);
@@ -39,15 +45,15 @@ public class Prints {
      * @param arr 需要连接的数组
      * @param propertyGetter 从数组的单个元素中获取目标值的方法
      * @param sep 分隔符
+     *
+     * @since 1.0
      */
     public static <T>String join(T[] arr, Function<? super T, String> propertyGetter, String sep) {
         if (Objects.isEmpty(arr)) {
             return Strings.EMPTY;
         }
-        if (null == sep) {
-            sep = Strings.EMPTY;
-        }
-        StringBuilder temp = new StringBuilder(arr.length * 32);
+        sep = Objects.getOr(sep, Strings.EMPTY);
+        StringBuilder temp = new StringBuilder(arr.length * LEN_PER_WORD);
         for (int i = 0; i < arr.length; i++) {
             if (i > 0) {
                 temp.append(sep);
@@ -65,10 +71,8 @@ public class Prints {
         if (Objects.isEmpty(c)) {
             return Strings.EMPTY;
         }
-        if (null == sep) {
-            sep = Strings.EMPTY;
-        }
-        StringBuilder temp = new StringBuilder(c.size() * 32);
+        sep = Objects.getOr(sep, Strings.EMPTY);
+        StringBuilder temp = new StringBuilder(c.size() * LEN_PER_WORD);
         int i = 0;
         for (T t : c) {
             if (i > 0) {
@@ -87,7 +91,7 @@ public class Prints {
         if (null == sep) {
             sep = Strings.EMPTY;
         }
-        StringBuilder temp = new StringBuilder(map.size() * 32 * 2);
+        StringBuilder temp = new StringBuilder(map.size() * LEN_PER_WORD * 2);
         int i = 0;
         for (Map.Entry<K, V> t : map.entrySet()) {
             if (i > 0) {

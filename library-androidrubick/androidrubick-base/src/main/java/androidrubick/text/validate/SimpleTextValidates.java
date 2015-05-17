@@ -11,6 +11,8 @@ import androidrubick.text.Strings;
  * <p/>
  *
  * Created by yong01.yin on 2014/12/29.
+ *
+ * @since 1.0
  */
 public class SimpleTextValidates {
 
@@ -25,6 +27,8 @@ public class SimpleTextValidates {
 
     /**
      * 判断字符串是否是手机号（简单版）：十一位数字，以1为开头的
+     *
+     * @since 1.0
      */
     public static boolean simpleValidateCellphone(CharSequence charSequence) {
         return checkEmptyThenValidate(Patterns.PhonePatterns.CELL_PHONE, charSequence);
@@ -36,6 +40,8 @@ public class SimpleTextValidates {
 
     /**
      * 是否是纯数字（没有小数点和正负号）
+     *
+     * @since 1.0
      */
     public static boolean isPureNumber(CharSequence charSequence) {
         if (Strings.isEmpty(charSequence)) {
@@ -75,6 +81,8 @@ public class SimpleTextValidates {
 
     /**
      * 是否是数字（实数）
+     *
+     * @since 1.0
      */
     public static boolean isNumber(CharSequence charSequence) {
         return checkEmptyThenValidate(PATTERN_NUMBER, charSequence);
@@ -86,6 +94,8 @@ public class SimpleTextValidates {
 
     /**
      * 简单验证是否全是中文字符（一般用作单行表单数据验证）
+     *
+     * @since 1.0
      */
     public static boolean isChinese(CharSequence charSequence) {
         return checkEmptyThenValidate(PATTERN_CHINESE, charSequence);
@@ -93,6 +103,8 @@ public class SimpleTextValidates {
 
     /**
      * 简单验证是否含有中文字符（一般用作单行表单数据验证）
+     *
+     * @since 1.0
      */
     public static boolean hasChinese(CharSequence charSequence) {
         return !checkEmptyThenValidate(PATTERN_NONE_CHINESE, charSequence);
@@ -100,6 +112,8 @@ public class SimpleTextValidates {
 
     /**
      * 简单验证是否是正确的URL（[schema://]domain[:port][/path][?query][#fragment]）
+     *
+     * @since 1.0
      */
     public static boolean isValidUrl(CharSequence charSequence) {
         return checkEmptyThenValidate(Patterns.URLPatterns.URL, charSequence);

@@ -22,7 +22,7 @@ public class FileUtils {
 	/**
 	 * 以M为单位
      *
-	 * @added 1.0
+     * @since 1.0
 	 */
 	public static String calFileSizeString(double bytes) {
 		if (0D >= bytes) {
@@ -33,6 +33,8 @@ public class FileUtils {
 
     /**
      * 文件是否存在
+     *
+     * @since 1.0
      */
     public static boolean exists(File file) {
         return file.exists();
@@ -42,6 +44,8 @@ public class FileUtils {
      * 创建指定文件（非文件夹，文件夹的创建）
      *
      * @return 如果文件已存在或者被创建成功，返回TRUE，否则返回false。
+     *
+     * @since 1.0
      */
     public static boolean createFile(File file) throws IOException {
         if (exists(file)) {
@@ -71,6 +75,8 @@ public class FileUtils {
      * @return 如果文件夹已存在或者被创建成功，返回TRUE，否则返回false。
      *
      * @throws IOException 特别地，如果指定的路径是一个已存在的文件，将抛出异常
+     *
+     * @since 1.0
      */
     public static boolean createDir(File dir) throws IOException {
         if (exists(dir)) {
@@ -90,6 +96,8 @@ public class FileUtils {
      * @param file 指定的文件对象
      * @param deleteRoot 如果该文件是文件夹，是否删除该文件夹
      * @return 如果最终指定的文件不再存在，则返回TRUE
+     *
+     * @since 1.0
      */
     public static boolean deleteFile(File file, boolean deleteRoot) {
         if (!exists(file)) {
@@ -120,6 +128,8 @@ public class FileUtils {
      *
      * @throws IOException 如果找不到文件，将抛出该异常/访问权限、异常等，
      * 或者如果对应地址为文件夹，将抛出该异常
+     *
+     * @since 1.0
      */
     public static FileInputStream openFileInput(File file) throws IOException {
         if (exists(file)) {
@@ -142,6 +152,8 @@ public class FileUtils {
      * @param createIfUnExists 如果文件不存在，是否创建
      *
      * @return file指定的FileOutputStream
+     *
+     * @since 1.0
      */
     public static FileOutputStream openFileOutput(File file, boolean createIfUnExists)
             throws IOException {
@@ -158,6 +170,8 @@ public class FileUtils {
      *
      * @throws IOException 文件不存在且createIfUnExists == false，
      * 或file指定的路径非文件，或其他异常
+     *
+     * @since 1.0
      */
     public static FileOutputStream openFileOutput(File file,
                                                   boolean createIfUnExists, boolean append) throws IOException {
@@ -179,6 +193,8 @@ public class FileUtils {
     /**
      * 相当于save(String path, InputStream ins, false)，
      * 即非叠加模式写入，不关闭参数 <code>InputStream ins</code> （无论成功与否）
+     *
+     * @since 1.0
      */
     public static boolean save(File file, InputStream ins) throws IOException {
         return save(file, ins, false);
@@ -187,6 +203,8 @@ public class FileUtils {
     /**
      * 相当于save(String path, InputStream ins, boolean append, false)，
      * 即不关闭参数 <code>InputStream ins</code> （无论成功与否）
+     *
+     * @since 1.0
      */
     public static boolean save(File file, InputStream ins, boolean append)
             throws IOException {
@@ -203,6 +221,8 @@ public class FileUtils {
      *
      * @see {@link #openFileOutput(File, boolean)}
      * @see {@link #openFileOutput(File, boolean, boolean)}
+     *
+     * @since 1.0
      */
     public static boolean save(File file, InputStream ins, boolean append,
                                boolean closeIns) throws IOException {
@@ -226,6 +246,8 @@ public class FileUtils {
 
     /**
      * 计算指定文件/文件夹的大小
+     *
+     * @since 1.0
      */
     public static long caculateFileSize(File file) {
         if (null == file || !file.exists()) {
@@ -248,6 +270,8 @@ public class FileUtils {
     /**
      * copy a file from srcFile to destFile, return true if succeed, return
      * false on failure
+     *
+     * @since 1.0
      */
     public static boolean copyToFile(File srcFile, File destFile) {
         try {
@@ -266,6 +290,8 @@ public class FileUtils {
     /**
      * Copy data from a source stream to destFile.
      * Return true if succeed, return false if failed.
+     *
+     * @since 1.0
      */
     public static boolean copyToFile(InputStream inputStream, File destFile) {
         try {
@@ -296,6 +322,8 @@ public class FileUtils {
     /**
      * Copy data from a source stream to destFile, and then delete the source file.
      * Return true if succeed, return false if failed.
+     *
+     * @since 1.0
      */
     public static boolean cutToFile(File srcFile, File destFile) {
         return copyToFile(srcFile, destFile) && deleteFile(srcFile, true);
@@ -308,6 +336,8 @@ public class FileUtils {
      * @param ellipsis to add of the file was truncated (can be null)
      * @return the contents of the file, possibly truncated
      * @throws IOException if something goes wrong reading the file
+     *
+     * @since 1.0
      */
     public static String readTextFile(File file, int max, String ellipsis) throws IOException {
         try {
@@ -367,6 +397,8 @@ public class FileUtils {
      * @param file
      * @param string
      * @return return true if succeed, return false if fail
+     *
+     * @since 1.0
      */
     public static boolean stringToFile(File file, String string) {
         try {

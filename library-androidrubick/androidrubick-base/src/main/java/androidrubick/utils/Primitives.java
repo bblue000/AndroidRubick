@@ -27,6 +27,8 @@ import java.util.Map;
  * corresponding wrapper types.
  *
  * @author Kevin Bourrillion
+ *
+ * @since 1.0
  */
 public final class Primitives {
     private Primitives() {
@@ -81,6 +83,8 @@ public final class Primitives {
 
     /**
      * Returns true if this type is a primitive.
+     *
+     * @since 1.0
      */
     public static boolean isPrimitive(Type type) {
         return PRIMITIVE_TO_WRAPPER_TYPE.containsKey(type);
@@ -91,6 +95,8 @@ public final class Primitives {
      * primitive-wrapper types, such as {@link Integer}.
      *
      * @see Class#isPrimitive
+     *
+     * @since 1.0
      */
     public static boolean isWrapperType(Type type) {
         return WRAPPER_TO_PRIMITIVE_TYPE.containsKey(type);
@@ -104,6 +110,8 @@ public final class Primitives {
      *     wrap(Integer.class) == Integer.class
      *     wrap(String.class) == String.class
      * </pre>
+     *
+     * @since 1.0
      */
     public static <T> Class<T> wrap(Class<T> type) {
         // cast is safe: long.class and Long.class are both of type Class<Long>
@@ -120,6 +128,8 @@ public final class Primitives {
      *     unwrap(int.class) == int.class
      *     unwrap(String.class) == String.class
      * </pre>
+     *
+     * @since 1.0
      */
     public static <T> Class<T> unwrap(Class<T> type) {
         // cast is safe: long.class and Long.class are both of type Class<Long>
@@ -133,6 +143,8 @@ public final class Primitives {
      *
      * @param type specific type
      * @return default value of this type
+     *
+     * @since 1.0
      */
     public static Object defValueOf(Class<?> type) {
         Object value = PRIMITIVE_TYPE_DEFVAL.get(type);

@@ -7,6 +7,8 @@ import android.util.Log;
  * 
  * @author yong01.yin
  *
+ * @since 1.0
+ *
  */
 public class FrameworkLog {
 

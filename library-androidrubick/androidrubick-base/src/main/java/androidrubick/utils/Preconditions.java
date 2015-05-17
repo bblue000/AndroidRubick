@@ -31,6 +31,8 @@ package androidrubick.utils;
  * <p/>
  *
  * Created by Yin Yong on 2015/4/24 0024.
+ *
+ * @since 1.0
  */
 public class Preconditions {
 
@@ -42,9 +44,11 @@ public class Preconditions {
      * @param reference an object reference
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
+     *
+     * @since 1.0
      */
     public static <T> T checkNotNull(T reference) {
-        if (reference == null) {
+        if (Objects.isNull(reference)) {
             throw new NullPointerException();
         }
         return reference;
@@ -58,9 +62,11 @@ public class Preconditions {
      *     string using {@link String#valueOf(Object)}
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
+     *
+     * @since 1.0
      */
     public static <T> T checkNotNull(T reference, Object errorMessage) {
-        if (reference == null) {
+        if (Objects.isNull(reference)) {
             throw new NullPointerException(String.valueOf(errorMessage));
         }
         return reference;
@@ -79,11 +85,13 @@ public class Preconditions {
      *     are converted to strings using {@link String#valueOf(Object)}.
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
+     *
+     * @since 1.0
      */
     public static <T> T checkNotNull(T reference,
                                      String errorMessageTemplate,
                                      Object... errorMessageArgs) {
-        if (reference == null) {
+        if (Objects.isNull(reference)) {
             // If either of these parameters is null, the right thing happens anyway
             throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -95,6 +103,8 @@ public class Preconditions {
      *
      * @param expression a boolean expression
      * @throws IllegalArgumentException if {@code expression} is false
+     *
+     * @since 1.0
      */
     public static void checkArgument(boolean expression) {
         if (!expression) {
@@ -109,6 +119,8 @@ public class Preconditions {
      * @param errorMessage the exception message to use if the check fails; will be converted to a
      *     string using {@link String#valueOf(Object)}
      * @throws IllegalArgumentException if {@code expression} is false
+     *
+     * @since 1.0
      */
     public static void checkArgument(boolean expression, Object errorMessage) {
         if (!expression) {
@@ -130,6 +142,8 @@ public class Preconditions {
      * @throws IllegalArgumentException if {@code expression} is false
      * @throws NullPointerException if the check fails and either {@code errorMessageTemplate} or
      *     {@code errorMessageArgs} is null (don't let this happen)
+     *
+     * @since 1.0
      */
     public static void checkArgument(boolean expression,
                                      String errorMessageTemplate,
@@ -145,6 +159,8 @@ public class Preconditions {
      *
      * @param expression a boolean expression
      * @throws IllegalStateException if {@code expression} is false
+     *
+     * @since 1.0
      */
     public static void checkState(boolean expression) {
         if (!expression) {
@@ -160,6 +176,8 @@ public class Preconditions {
      * @param errorMessage the exception message to use if the check fails; will be converted to a
      *     string using {@link String#valueOf(Object)}
      * @throws IllegalStateException if {@code expression} is false
+     *
+     * @since 1.0
      */
     public static void checkState(boolean expression, Object errorMessage) {
         if (!expression) {
@@ -182,6 +200,8 @@ public class Preconditions {
      * @throws IllegalStateException if {@code expression} is false
      * @throws NullPointerException if the check fails and either {@code errorMessageTemplate} or
      *     {@code errorMessageArgs} is null (don't let this happen)
+     *
+     * @since 1.0
      */
     public static void checkState(boolean expression,
                                   String errorMessageTemplate,
@@ -197,6 +217,8 @@ public class Preconditions {
      *
      * @param expression a boolean expression
      * @throws UnsupportedOperationException if {@code expression} is false
+     *
+     * @since 1.0
      */
     public static void checkOperation(boolean expression) {
         if (!expression) {
@@ -211,6 +233,8 @@ public class Preconditions {
      * @param errorMessage the exception message to use if the check fails; will be converted to a
      *     string using {@link String#valueOf(Object)}
      * @throws UnsupportedOperationException if {@code expression} is false
+     *
+     * @since 1.0
      */
     public static void checkOperation(boolean expression, Object errorMessage) {
         if (!expression) {
@@ -233,6 +257,8 @@ public class Preconditions {
      * @throws UnsupportedOperationException if {@code expression} is false
      * @throws NullPointerException if the check fails and either {@code errorMessageTemplate} or
      *     {@code errorMessageArgs} is null (don't let this happen)
+     *
+     * @since 1.0
      */
     public static void checkOperation(boolean expression,
                                       String errorMessageTemplate,
@@ -251,6 +277,8 @@ public class Preconditions {
      * @param template a non-null string containing 0 or more {@code %s} placeholders.
      * @param args the arguments to be substituted into the message template. Arguments are converted
      *     to strings using {@link String#valueOf(Object)}. Arguments can be null.
+     *
+     * @since 1.0
      */
     // Note that this is somewhat-improperly used from Verify.java as well.
     static String format(String template, Object... args) {

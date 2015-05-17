@@ -6,6 +6,8 @@ package androidrubick.net;
  * <p/>
  * <p/>
  * Created by Yin Yong on 15/5/15.
+ *
+ * @since 1.0
  */
 public enum HttpMethod {
 
@@ -24,7 +26,9 @@ public enum HttpMethod {
     }
 
     /**
-     * 获取
+     * 获取请求方法名称
+     *
+     * @since 1.0
      */
     public String getName() {
         return this.name;

@@ -21,12 +21,7 @@ package androidrubick.utils;
  *
  * <p>The {@link Functions} class provides common functions and related utilites.
  *
- * <p>See the Guava User Guide article on <a href=
- * "http://code.google.com/p/guava-libraries/wiki/FunctionalExplained">the use of {@code
- * Function}</a>.
- *
- * @author Kevin Bourrillion
- * @since 2.0 (imported from Google Collections Library)
+ * @since 1.0
  */
 public interface Function<I, R> {
   /**
@@ -42,6 +37,8 @@ public interface Function<I, R> {
    *
    * @throws NullPointerException if {@code input} is null and this function does not accept null
    *     arguments
+   *
+   * @since 1.0
    */
   R apply(I input);
 
@@ -54,6 +51,8 @@ public interface Function<I, R> {
    * <i>typically</i> means that {@code Objects.equal(this.apply(f), that.apply(f))} is true for all
    * {@code f} of type {@code F}. Note that a {@code false} result from this method does not imply
    * that the functions are known <i>not</i> to be interchangeable.
+   *
+   * @since 1.0
    */
   @Override
   boolean equals(Object object);

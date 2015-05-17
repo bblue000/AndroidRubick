@@ -346,6 +346,7 @@ public final class MimeUtils {
 		add("x-conference/x-cooltalk", "ice");
 		add("x-epoc/x-sisx-app", "sisx");
 		add("application","jar");
+		add("application/json","json");
 		applyOverrides();
 	}
 

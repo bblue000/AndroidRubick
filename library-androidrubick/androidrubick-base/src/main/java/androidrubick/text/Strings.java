@@ -6,7 +6,8 @@ import static androidrubick.utils.Preconditions.*;
  * utilities of string
  *
  * @author Yin Yong
- * @version 1.0
+ *
+ * @since 1.0
  */
 public class Strings {
 
@@ -17,10 +18,14 @@ public class Strings {
 	
 	/**
 	 * null-value String
+     *
+     * @since 1.0
 	 */
     public static final String NULL = "null";
 	/**
 	 * empty String
+     *
+     * @since 1.0
 	 */
     public static final String EMPTY = "";
 
@@ -31,6 +36,8 @@ public class Strings {
 	 * @param target target string to check
 	 * @param checkContentNull if is set true,
 	 * it'll also check if it is a "null" string, ignoring Case.
+     *
+     * @since 1.0
 	 */
 	public static boolean isEmpty(CharSequence target, boolean checkContentNull) {
 		// check if target is null, or a len == 0 string
@@ -43,6 +50,8 @@ public class Strings {
 	 * check this target string is null or empty;
 	 * @param target target string to check
 	 * @see #isEmpty(CharSequence, boolean) isEmpty(String, false)
+     *
+     * @since 1.0
 	 */
 	public static boolean isEmpty(CharSequence target) {
 		return isEmpty(target, false);
@@ -66,6 +75,8 @@ public class Strings {
      * @param padChar the character to insert at the beginning of the result until
      *     the minimum length is reached
      * @return the padded string
+     *
+     * @since 1.0
      */
     public static String padStart(String string, int minLength, char padChar) {
         checkNotNull(string);  // eager for GWT.
@@ -98,6 +109,8 @@ public class Strings {
      * @param padChar the character to append to the end of the result until the
      *     minimum length is reached
      * @return the padded string
+     *
+     * @since 1.0
      */
     public static String padEnd(String string, int minLength, char padChar) {
         checkNotNull(string);  // eager for GWT.
@@ -122,6 +135,8 @@ public class Strings {
      * @return a string containing {@code string} repeated {@code count} times
      *     (the empty string if {@code count} is zero)
      * @throws IllegalArgumentException if {@code count} is negative
+     *
+     * @since 1.0
      */
     public static String repeat(String string, int count) {
         checkNotNull(string);  // eager for GWT.
@@ -156,7 +171,7 @@ public class Strings {
      * taking care not to split surrogate pairs. If {@code a} and {@code b} have
      * no common prefix, returns the empty string.
      *
-     * @since 11.0
+     * @since 1.0
      */
     public static String commonPrefix(CharSequence a, CharSequence b) {
         checkNotNull(a);
@@ -179,7 +194,7 @@ public class Strings {
      * taking care not to split surrogate pairs. If {@code a} and {@code b} have
      * no common suffix, returns the empty string.
      *
-     * @since 11.0
+     * @since 1.0
      */
     public static String commonSuffix(CharSequence a, CharSequence b) {
         checkNotNull(a);
@@ -201,6 +216,8 @@ public class Strings {
     /**
      * True when a valid surrogate pair starts at the given {@code index} in the
      * given {@code string}. Out-of-range indexes return false.
+     *
+     * @since 1.0
      */
     public static boolean validSurrogatePairAt(CharSequence string, int index) {
         return index >= 0 && index <= (string.length() - 2)

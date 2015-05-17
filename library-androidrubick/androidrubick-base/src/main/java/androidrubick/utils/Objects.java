@@ -98,6 +98,97 @@ public class Objects {
         return o.toString();
     }
 
+    /**
+     * Creates an instance of {@link ToStringHelper}.
+     *
+     * <p>This is helpful for implementing {@link Object#toString()}.
+     * Specification by example: <pre>   {@code
+     *   // Returns "ClassName{}"
+     *   Objects.toStringHelper(this)
+     *       .toString();
+     *
+     *   // Returns "ClassName{x=1}"
+     *   Objects.toStringHelper(this)
+     *       .add("x", 1)
+     *       .toString();
+     *
+     *   // Returns "MyObject{x=1}"
+     *   Objects.toStringHelper("MyObject")
+     *       .add("x", 1)
+     *       .toString();
+     *
+     *   // Returns "ClassName{x=1, y=foo}"
+     *   Objects.toStringHelper(this)
+     *       .add("x", 1)
+     *       .add("y", "foo")
+     *       .toString();
+     *
+     *   // Returns "ClassName{x=1}"
+     *   Objects.toStringHelper(this)
+     *       .omitNullValues()
+     *       .add("x", 1)
+     *       .add("y", null)
+     *       .toString();
+     *   }}</pre>
+     *
+     * <p>Note that in GWT, class names are often obfuscated.
+     *
+     * @param self the object to generate the string for (typically {@code this}),
+     *        used only for its class name
+     */
+    public static ToStringHelper toStringHelper(Object self) {
+        return new ToStringHelper(simpleName(self.getClass()));
+    }
+
+    /**
+     * Creates an instance of {@link ToStringHelper} in the same manner as
+     * {@link Objects#toStringHelper(Object)}, but using the name of {@code clazz}
+     * instead of using an instance's {@link Object#getClass()}.
+     *
+     * <p>Note that in GWT, class names are often obfuscated.
+     *
+     * @param clazz the {@link Class} of the instance
+     */
+    public static ToStringHelper toStringHelper(Class<?> clazz) {
+        return new ToStringHelper(simpleName(clazz));
+    }
+
+    /**
+     * Creates an instance of {@link ToStringHelper} in the same manner as
+     * {@link Objects#toStringHelper(Object)}, but using {@code className} instead
+     * of using an instance's {@link Object#getClass()}.
+     *
+     * @param className the name of the instance type
+     */
+    public static ToStringHelper toStringHelper(String className) {
+        return new ToStringHelper(className);
+    }
+
+    /**
+     * {@link Class#getSimpleName()} is not GWT compatible yet, so we
+     * provide our own implementation.
+     */
+    private static String simpleName(Class<?> clazz) {
+        String name = clazz.getName();
+
+        // the nth anonymous class has a class name ending in "Outer$n"
+        // and local inner classes have names ending in "Outer.$1Inner"
+        name = name.replaceAll("\\$[0-9]+", "\\$");
+
+        // we want the name of the inner class all by its lonesome
+        int start = name.lastIndexOf('$');
+
+        // if this isn't an inner class, just find the start of the
+        // top level class name.
+        if (start == -1) {
+            start = name.lastIndexOf('.');
+        }
+        return name.substring(start + 1);
+    }
+
+    /**
+     * 判断一个对象是否为空
+     */
     public static boolean isNull(Object o) {
         return null == o;
     }

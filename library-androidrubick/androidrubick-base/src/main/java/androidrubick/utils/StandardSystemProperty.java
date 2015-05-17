@@ -23,8 +23,7 @@ package androidrubick.utils;
  * <p/>
  * from guava
  *
- * @author Kurt Alfred Kluever
- * @since 15.0
+ * @since 1.0
  */
 public enum StandardSystemProperty {
 

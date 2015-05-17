@@ -12,6 +12,8 @@ import java.math.BigInteger;
  * <p/>
  *
  * Created by yong01.yin on 2015/1/5.
+ *
+ * @since 1.0
  */
 public class MathPreconditions {
 

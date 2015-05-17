@@ -17,6 +17,8 @@ import java.io.Writer;
  * 
  * @author Yin Yong
  *
+ * @since 1.0
+ *
  */
 public class IOUtils {
 
@@ -34,6 +36,8 @@ public class IOUtils {
 	 * @param close 写入完成或者出错后是否需要关闭所有流
 	 * @return true代表写入成功
 	 * @throws java.io.IOException IO异常
+     *
+     * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, OutputStream out,
 			boolean close) throws IOException {
@@ -66,6 +70,8 @@ public class IOUtils {
 	 * @param close 写入完成或者出错后是否需要关闭所有流
 	 * @return true代表写入成功
 	 * @throws java.io.IOException IO异常
+     *
+     * @since 1.0
 	 */
 	public static boolean writeTo(Reader in, Writer out,
 			boolean close) throws IOException {
@@ -99,6 +105,8 @@ public class IOUtils {
 	 * @param close 写入完成或者出错后是否需要关闭所有流
 	 * @return true代表写入成功
 	 * @throws java.io.IOException IO异常
+     *
+     * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, Writer out,
 			String encoding, boolean close) throws IOException {
@@ -117,6 +125,8 @@ public class IOUtils {
 	 * 读取字节流，并输出为String
 	 * @param in 字节流
 	 * @throws java.io.IOException IO异常
+     *
+     * @since 1.0
 	 */
 	public static String inputStreamToString(InputStream in)
 			throws IOException {
@@ -128,6 +138,8 @@ public class IOUtils {
 	 * @param in 字节流
 	 * @param encoding 编码方式
 	 * @throws java.io.IOException IO异常
+     *
+     * @since 1.0
 	 */
 	public static String inputStreamToString(InputStream in, String encoding)
 			throws IOException {
@@ -154,6 +166,8 @@ public class IOUtils {
 	/**
 	 * 关闭指定的可关闭的I/O
 	 * @param close 一个实现了Closeable的I/O对象
+     *
+     * @since 1.0
 	 */
 	public static void close(Closeable close) {
     	if (null == close) {
