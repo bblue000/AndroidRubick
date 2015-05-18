@@ -1,6 +1,5 @@
 package androidrubick.xframework.net.http.request;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import androidrubick.net.HttpHeaders;
@@ -11,6 +10,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xframework.collect.MapBuilder;
 import androidrubick.xframework.net.http.XHttp;
+import androidrubick.xframework.xbase.config.Configurable;
 
 /**
  * 创建一个HTTP/HTTPS请求：
@@ -66,6 +66,7 @@ import androidrubick.xframework.net.http.XHttp;
  */
 public class XHttpRequestBuilder {
 
+    @Configurable
     private XHttpRequestBuilder() {
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/json;q=1, image/*;q=0.9, text/plain;q=0.8");
@@ -236,7 +237,7 @@ public class XHttpRequestBuilder {
                 break;
             default:
                 // 组合URL
-                url = combineUrlWithParameters(mBaseUrl, mParams);
+                url = combineUrlWithParameters(mBaseUrl, mParams, mParamEncoding);
                 break;
         }
 

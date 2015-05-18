@@ -1,4 +1,4 @@
-package androidrubick.xframework.net.http;
+package androidrubick.xframework.net.http.request;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,6 +10,7 @@ import org.apache.http.params.HttpParams;
 import java.io.IOException;
 import java.util.Map;
 
+import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 
 /**

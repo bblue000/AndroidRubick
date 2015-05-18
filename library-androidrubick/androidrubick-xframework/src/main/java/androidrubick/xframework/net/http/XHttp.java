@@ -1,8 +1,8 @@
 package androidrubick.xframework.net.http;
 
-import java.nio.charset.Charset;
-
 import androidrubick.xframework.net.http.request.XHttpBodyBuilder;
+import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
+import androidrubick.xframework.xbase.config.Configurable;
 
 /**
  * 提供HTTP请求相关的操作
@@ -10,7 +10,11 @@ import androidrubick.xframework.net.http.request.XHttpBodyBuilder;
  * <p/>
  *
  * Created by Yin Yong on 2015/4/29 0029.
+ *
+ * @since 1.0
+ *
  */
+@Configurable
 public class XHttp {
 
     private XHttp() { /* no instance needed */ }
@@ -34,6 +38,10 @@ public class XHttp {
     /**
      * 默认的POST请求内容类型
      */
-    public static final String DEFAULT_OUTPUT_CONTENT_TYPE = XHttpBodyBuilder.FORM_DATA;
+    public static final String DEFAULT_OUTPUT_CONTENT_TYPE = XHttpBodyBuilder.URLENCODED_FORM_DATA;
+
+    public static XHttpRequestBuilder builder() {
+//        return XHttpRequestBuilder.;
+    }
 
 }
