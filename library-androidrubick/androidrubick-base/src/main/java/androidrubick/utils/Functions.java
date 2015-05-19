@@ -13,7 +13,7 @@ public class Functions {
 
     private Functions() {}
 
-    private static class ToStringFunc implements Function<Object, String > {
+    private static class ToStringFunc implements Function<Object, String> {
         @Override
         public String apply(Object input) {
             return Objects.toString(input);
