@@ -76,7 +76,7 @@ public class MapBuilder {
         return this;
     }
 
-    public <K, V>Map<K, V> build() {
+    public Map build() {
         return mMap;
     }
 

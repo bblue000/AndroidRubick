@@ -2,7 +2,9 @@ package androidrubick.xframework.net.http.request;
 
 import java.util.Map;
 
+import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
+import androidrubick.xframework.collect.MapBuilder;
 import androidrubick.xframework.net.http.XHttp;
 
 /**
@@ -22,7 +24,7 @@ public class XHttpBodyBuilder {
     }
 
     public static XHttpBodyBuilder newUrlEncodedBody(Map<String, String> params) {
-        return new XHttpBodyBuilder();
+        return new XHttpBodyBuilder().params(params);
     }
 
     public static XHttpBodyBuilder newMultipart() {
@@ -35,6 +37,7 @@ public class XHttpBodyBuilder {
 
     private String mContentType = XHttp.DEFAULT_OUTPUT_CONTENT_TYPE;
     private byte[] mBody;
+    private Map<String, String> mParams;
     private XHttpBodyBuilder(){}
     private XHttpBodyBuilder(String contentType) {
         mContentType = Preconditions.checkNotNull(contentType, "contentType is null");
@@ -45,6 +48,41 @@ public class XHttpBodyBuilder {
      */
     public String getContentType() {
         return mContentType;
+    }
+
+    /**
+     * 设置单个请求参数
+     *
+     * @param key 单个参数的键值
+     * @param value 单个参数的值
+     *
+     */
+    public XHttpBodyBuilder param(String key, String value) {
+        Preconditions.checkArgument(!Objects.isEmpty(key), "param key is null or empty");
+        prepareParams();
+        mParams.put(key, value);
+        return this;
+    }
+
+    /**
+     *
+     * 设置参数
+     *
+     * @param params 参数信息
+     *
+     */
+    public XHttpBodyBuilder params(Map<String, String> params) {
+        if (!Objects.isEmpty(params)) {
+            prepareParams();
+            mParams.putAll(params);
+        }
+        return this;
+    }
+
+    private void prepareParams() {
+        if (null == mParams) {
+            mParams = MapBuilder.newHashMap(16).build();
+        }
     }
 
     /**

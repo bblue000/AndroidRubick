@@ -12,13 +12,28 @@ package androidrubick.net;
 public enum HttpMethod {
 
     GET("GET"),
-    POST("POST"),
-    PUT("PUT"),
+    POST("POST") {
+        @Override
+        public boolean canContainBody() {
+            return true;
+        }
+    },
+    PUT("PUT") {
+        @Override
+        public boolean canContainBody() {
+            return true;
+        }
+    },
     DELETE("DELETE"),
     HEAD("HEAD"),
     OPTIONS("OPTIONS"),
     TRACE("TRACE"),
-    PATCH("PATCH");
+    PATCH("PATCH") {
+        @Override
+        public boolean canContainBody() {
+            return true;
+        }
+    };
 
     private String name;
     private HttpMethod(String name) {
@@ -32,6 +47,10 @@ public enum HttpMethod {
      */
     public String getName() {
         return this.name;
+    }
+
+    public boolean canContainBody() {
+        return false;
     }
 
 }

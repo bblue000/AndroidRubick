@@ -10,8 +10,8 @@ import org.apache.http.params.HttpParams;
 import java.io.IOException;
 import java.util.Map;
 
+import androidrubick.net.HttpMethod;
 import androidrubick.xframework.net.http.XHttp;
-import androidrubick.xframework.net.http.request.XHttpRequest;
 
 /**
  *
@@ -25,11 +25,15 @@ public class XHttpRequestPreG extends XHttpRequest {
 
     private static HttpClient sHttpClient;
 
+    protected XHttpRequestPreG(String mUrl, HttpMethod mMethod, Map<String, String> mHeaders, byte[] mBody, int mConnectionTimeout, int mSocketTimeout) {
+        super(mUrl, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
+    }
+
     @Override
     public HttpResponse performRequest() throws IOException {
         HttpClient httpClient = prepareHttpClient();
         HttpUriRequest httpRequest = createHttpRequest();
-        addHeaders(httpRequest, mHeaders);
+        addHeaders(httpRequest, getHeaders());
         addParams(httpRequest);
         return httpClient.execute(httpRequest);
     }

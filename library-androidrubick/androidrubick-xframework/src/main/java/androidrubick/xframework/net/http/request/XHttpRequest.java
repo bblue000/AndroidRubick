@@ -5,6 +5,7 @@ import org.apache.http.HttpResponse;
 import java.io.IOException;
 import java.util.Map;
 
+import androidrubick.net.HttpMethod;
 import androidrubick.xframework.net.http.XHttp;
 
 /**
@@ -16,13 +17,46 @@ import androidrubick.xframework.net.http.XHttp;
  */
 public abstract class XHttpRequest {
 
-    protected String mUrl;
-    protected String mMethod;
-    protected Map<String, String> mHeaders;
-    protected byte[] mBody;
+    private String mUrl;
+    private HttpMethod mMethod;
+    private Map<String, String> mHeaders;
+    private byte[] mBody;
 
-    protected int mConnectionTimeout = XHttp.DEFAULT_TIMEOUT;
-    protected int mSocketTimeout = XHttp.DEFAULT_TIMEOUT;
+    private int mConnectionTimeout = XHttp.DEFAULT_TIMEOUT;
+    private int mSocketTimeout = XHttp.DEFAULT_TIMEOUT;
+    protected XHttpRequest(String url, HttpMethod method, Map<String, String> header,
+                           byte[] body, int connectionTimeout, int socketTimeout) {
+        this.mUrl = url;
+        this.mMethod = method;
+        this.mHeaders = header;
+        this.mBody = body;
+        this.mConnectionTimeout = connectionTimeout;
+        this.mSocketTimeout = socketTimeout;
+    }
+
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public HttpMethod getMethod() {
+        return mMethod;
+    }
+
+    public Map<String, String> getHeaders() {
+        return mHeaders;
+    }
+
+    public byte[] getBody() {
+        return mBody;
+    }
+
+    public int getConnectionTimeout() {
+        return mConnectionTimeout;
+    }
+
+    public int getSocketTimeout() {
+        return mSocketTimeout;
+    }
 
     /**
      * 请求

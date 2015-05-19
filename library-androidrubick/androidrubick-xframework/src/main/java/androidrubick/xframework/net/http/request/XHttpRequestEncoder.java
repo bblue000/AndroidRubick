@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttp;
+import androidrubick.xframework.xbase.config.Configurable;
 
 /**
  * 加密请求参数
@@ -18,6 +19,7 @@ import androidrubick.xframework.net.http.XHttp;
     /**
      * 加密处理参数键
      */
+    @Configurable
     public static String encodeParamKey(String key, String encoding) {
         return encodeByDefault(key, encoding);
     }
@@ -25,6 +27,7 @@ import androidrubick.xframework.net.http.XHttp;
     /**
      * 加密处理参数值
      */
+    @Configurable
     public static String encodeParamValue(String value, String encoding) {
         return encodeByDefault(value, encoding);
     }
