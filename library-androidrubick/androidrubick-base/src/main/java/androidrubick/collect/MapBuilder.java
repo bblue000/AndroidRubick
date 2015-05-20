@@ -1,4 +1,4 @@
-package androidrubick.xframework.collect;
+package androidrubick.collect;
 
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import androidrubick.utils.Objects;
-import androidrubick.xframework.xbase.config.Configurable;
 
 /**
  * 简单的{@link java.util.Map}的创建器
@@ -21,7 +20,6 @@ import androidrubick.xframework.xbase.config.Configurable;
  */
 public class MapBuilder {
 
-    @Configurable
     public static final int DEFAULT_CAPACITY = 1 << 3;
 
     public static MapBuilder newHashMap() {

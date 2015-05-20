@@ -6,7 +6,7 @@ import androidrubick.text.Prints;
 import androidrubick.utils.Function;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.collect.MapBuilder;
+import androidrubick.collect.MapBuilder;
 
 /**
  * 媒体类型

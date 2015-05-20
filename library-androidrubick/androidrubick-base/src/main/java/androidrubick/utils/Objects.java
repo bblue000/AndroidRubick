@@ -247,7 +247,50 @@ public class Objects {
         return isNull(o) ? another : o;
     }
 
+    /**
+     * 如果指定对象不为空，则返回对象1；如果指定对象为空，则返回代替对象2
+     */
+    public static <T, U>U getOr(T o, U sth, U sthAnother) {
+        return isNull(o) ? sth : sthAnother;
+    }
+
     public static <T>T defValue(Class<T> type) {
         return (T) Primitives.defValueOf(type);
+    }
+
+    public static int getLength(Object[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(int[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(char[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(byte[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(long[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(float[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(double[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getSize(Collection<?> c) {
+        return isNull(c) ? 0 : c.size();
+    }
+
+    public static int getSize(Map<?, ?> map) {
+        return isNull(map) ? 0 : map.size();
     }
 }

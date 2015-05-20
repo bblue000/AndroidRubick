@@ -19,6 +19,16 @@ import java.util.Comparator;
 public class ArraysCompat {
 
     private ArraysCompat() { /* no instance needed */ }
+
+    /**
+     * 借用可变参数的便利性，生成一个由参数元素组成的数组
+     *
+     * @param elements 数组元素
+     */
+    public static <T>T[] by(T...elements) {
+        return elements;
+    }
+
     /**
      * Performs a binary search for {@code value} in the ascending sorted array {@code array},
      * in the range specified by fromIndex (inclusive) and toIndex (exclusive).

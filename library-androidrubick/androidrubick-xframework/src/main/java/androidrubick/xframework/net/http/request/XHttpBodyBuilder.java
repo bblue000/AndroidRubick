@@ -4,7 +4,7 @@ import java.util.Map;
 
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.collect.MapBuilder;
+import androidrubick.collect.MapBuilder;
 import androidrubick.xframework.net.http.XHttp;
 
 /**

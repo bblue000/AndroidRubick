@@ -1,5 +1,9 @@
 package androidrubick.text;
 
+import android.util.AndroidRuntimeException;
+
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 
 import androidrubick.utils.Function;
@@ -28,16 +32,6 @@ import static androidrubick.utils.Preconditions.*;
  * <p>If neither {@link #skipNulls()} nor {@link #useForNull(java.lang.CharSequence)} is specified, the joining
  * methods will use {@code null}.
  *
- * <p><b>Warning: joiner instances are always immutable</b>; a configuration method such as {@code
- * useForNull} has no effect on the instance it is invoked on! You must store and use the new joiner
- * instance returned by the method. This makes joiners thread-safe, and safe to store as {@code
- * static final} constants. <pre>   {@code
- *
- *   // Bad! Do not do this!
- *   Joiner joiner = Joiner.on(',');
- *   joiner.skipNulls(); // does nothing!
- *   return joiner.join("wrong", null, "wrong");}</pre>
- *
  * <p/>
  *
  * Created by Yin Yong on 2015/5/19 0019.
@@ -47,10 +41,21 @@ import static androidrubick.utils.Preconditions.*;
 public class Joiner {
 
     /**
-     * 基于指定的分割符一个新的{@link Joiner}对象
+     * 基于空字符串分割符的一个新的{@link Joiner}对象
      *
-     * @param sep
      * @return 基于指定的分割符一个新的{@link Joiner}对象
+     */
+    public static Joiner by() {
+        return new Joiner(Strings.EMPTY);
+    }
+
+    /**
+     * 基于指定的分割符的一个新的{@link Joiner}对象
+     *
+     * @param sep 分割字符串
+     * @return 基于指定的分割符的一个新的{@link Joiner}对象
+     *
+     * @exception java.lang.NullPointerException
      */
     public static Joiner by(CharSequence sep) {
         return new Joiner(sep);
@@ -58,26 +63,51 @@ public class Joiner {
 
     /**
      *
-     * 基于指定的分割字符一个新的{@link Joiner}对象
+     * 基于指定的分割字符的一个新的{@link Joiner}对象
      *
-     * @param sepChar
-     * @return 基于指定的分割字符一个新的{@link Joiner}对象
+     * @param sepChar 分割字符
+     * @return 基于指定的分割字符的一个新的{@link Joiner}对象
      */
     public static Joiner by(char sepChar) {
         return new Joiner(String.valueOf(sepChar));
     }
 
     protected final CharSequence mSep;
+    protected CharSequence mPrefix;
+    protected CharSequence mSuffix;
     protected boolean mSkipNulls;
-    protected CharSequence mNullText;
+    protected CharSequence mNullText = Strings.NULL;
+    protected Function mToStringFunc = Functions.TO_STRING;
     protected Joiner(CharSequence sep) {
-        mSep = sep;
+        this(sep, null, null);
+    }
+    protected Joiner(CharSequence sep, CharSequence prefix, CharSequence suffix) {
+        mSep = checkNotNull(sep, "separator is null");
+        mPrefix = prefix;
+        mSuffix = suffix;
     }
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // 一些设置
+
     /**
-     * 跳过值为null的对象。
+     * 设置前缀、后缀（内容为空时也显示前缀后缀）
+     *
+     * <p/>
+     *
+     * 注意：null将等同于空字符串
+     *
+     * @param prefix 前缀
+     * @param suffix 后缀
+     */
+    public Joiner withPreAndSuffix(CharSequence prefix, CharSequence suffix) {
+        mPrefix = prefix;
+        mSuffix = suffix;
+        return this;
+    }
+
+    /**
+     * 跳过值为null的对象。（默认没有设置此项）
      *
      * <p/>
      *
@@ -87,58 +117,169 @@ public class Joiner {
      */
     public Joiner skipNulls() {
         mSkipNulls = true;
-        mNullText = null;
+        mNullText = Strings.NULL;
         return this;
     }
 
     /**
-     * 用<code>nullText</code>替换值为null的对象的。
+     * 用<code>nullText</code>替换值为null的对象。
+     *
+     * <p/>
+     *
+     * 注意：
+     * <ul>
+     *     <li>该替换值不会应用{@link Function}</li>
+     *     <li>如果为null，将抛出{@link java.lang.NullPointerException}</li>
+     * </ul>
      *
      * <p/>
      *
      * 如果{@link #skipNulls()}在之前调用，则{@link #skipNulls()}失效；
      * <br/>
      * 如果{@link #skipNulls()}在之后调用，则该方法失效；
+     *
+     * @throws java.lang.NullPointerException
      */
     public Joiner useForNull(final CharSequence nullText) {
         mSkipNulls = false;
-        mNullText = nullText;
+        mNullText = checkNotNull(nullText, "nullText is null");
+        return this;
+    }
+
+    /**
+     * 设置默认的{@link Object#toString()}函数，除非使用特定方法传入参数
+     */
+    public <T>Joiner withToStringFunc(Function<T, ? extends CharSequence> toStringFunc) {
+        mToStringFunc = checkNotNull(toStringFunc);
         return this;
     }
 
     // for array
-    public <T>String join(T...tokens) {
-        return join(Functions.TO_STRING, tokens);
+    public String join(Object[] parts) {
+        return join((Function<Object, ? extends CharSequence>) mToStringFunc, parts);
     }
 
-    public <T>String join(Function<? super T, ? extends CharSequence> toStringFunc, T...tokens) {
+    public String join(Function<Object, ? extends CharSequence> toStringFunc, Object[] parts) {
         checkNotNull(toStringFunc);
+        StringBuilder temp = new StringBuilder(calCapacity(Objects.getLength(parts)));
+        return appendTo(temp, toStringFunc, parts).toString();
+    }
 
-        return "";
+    public <T>String join(Collection<T> c) {
+        return join((Function<? super T, ? extends CharSequence>) mToStringFunc, c);
+    }
+
+    public <T>String join(Function<? super T, ? extends CharSequence> toStringFunc, Collection<T> c) {
+        checkNotNull(toStringFunc);
+        StringBuilder temp = new StringBuilder(calCapacity(Objects.getSize(c)));
+        return appendTo(temp, toStringFunc, c).toString();
     }
 
     public <T>String join(Iterable<T> it) {
-        return join(Functions.TO_STRING, it);
+        return join((Function<? super T, ? extends CharSequence>) mToStringFunc, it);
     }
 
     public <T>String join(Function<? super T, ? extends CharSequence> toStringFunc, Iterable<T> iterable) {
-        checkNotNull(toStringFunc);
-        if (Objects.isNull(iterable)) {
-            return Strings.EMPTY;
-        }
-        return join(toStringFunc, iterable.iterator());
+        return join(toStringFunc, Objects.isNull(iterable) ? (Iterator) null : iterable.iterator());
     }
 
     public <T>String join(Iterator<T> it) {
-        return join(Functions.TO_STRING, it);
+        return join((Function<? super T, ? extends CharSequence>) mToStringFunc, it);
     }
 
     public <T>String join(Function<? super T, ? extends CharSequence> toStringFunc, Iterator<T> it) {
-
+        checkNotNull(toStringFunc);
+        StringBuilder temp = new StringBuilder();
+        return appendTo(temp, toStringFunc, it).toString();
     }
 
-    protected <T>CharSequence toStringOf(Function<? super T, ? extends CharSequence> toStringFunc, T value) {
-        return toStringFunc.apply(value);
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // for append to another Appendable
+    public <A extends Appendable>A appendTo(A appendable, Object...parts) {
+        return appendTo(appendable, (Function<Object, ? extends CharSequence>) mToStringFunc, parts);
+    }
+
+    public <A extends Appendable>A appendTo(A appendable, Function<Object, ? extends CharSequence> toStringFunc, Object...parts) {
+        checkNotNull(appendable);
+        checkNotNull(toStringFunc);
+        appendPreOrSuffixIfNeeded(appendable, mPrefix);
+        if (!Objects.isEmpty(parts)) {
+            // 先打印第一个
+            int index = 0;
+            for (; index < parts.length; index++) {
+                if (Objects.isNull(parts[index]) && mSkipNulls) continue;
+                // 添加第一项
+                appendResult(appendable, toStringOf(toStringFunc, parts[index], mNullText));
+                index ++;
+                break;
+            }
+            for (; index < parts.length; index++) {
+                if (Objects.isNull(parts[index]) && mSkipNulls) continue;
+                appendResult(appendable, mSep);
+                appendResult(appendable, toStringOf(toStringFunc, parts[index], mNullText));
+            }
+        }
+        appendPreOrSuffixIfNeeded(appendable, mSuffix);
+        return appendable;
+    }
+
+    public <T, A extends Appendable>A appendTo(A appendable, Iterable<T> iterable) {
+        return (A) appendTo(appendable, mToStringFunc, (Iterable) iterable);
+    }
+
+    public <T, A extends Appendable>A appendTo(A appendable, Function<? super T, ? extends CharSequence> toStringFunc, Iterable<T> iterable) {
+        return (A) appendTo(appendable, toStringFunc, Objects.isNull(iterable) ? (Iterator) null : iterable.iterator());
+    }
+
+    public <T, A extends Appendable>A appendTo(A appendable, Iterator<T> it) {
+        return (A) appendTo(appendable, mToStringFunc, (Iterator) it);
+    }
+
+    public <T, A extends Appendable>A appendTo(A appendable, Function<? super T, ? extends CharSequence> toStringFunc, Iterator<T> it) {
+        checkNotNull(appendable);
+        checkNotNull(toStringFunc);
+        appendPreOrSuffixIfNeeded(appendable, mPrefix);
+        if (!Objects.isNull(it)) {
+            // 先打印第一个
+            while (it.hasNext()) {
+                T item = it.next();
+                if (Objects.isNull(item) && mSkipNulls) continue;
+                // 添加第一项
+                appendResult(appendable, toStringOf(toStringFunc, item, mNullText));
+                break;
+            }
+            while (it.hasNext()) {
+                T item = it.next();
+                if (Objects.isNull(item) && mSkipNulls) continue;
+                appendResult(appendable, mSep);
+                appendResult(appendable, toStringOf(toStringFunc, item, mNullText));
+            }
+        }
+        appendPreOrSuffixIfNeeded(appendable, mSuffix);
+        return appendable;
+    }
+
+    protected void appendPreOrSuffixIfNeeded(Appendable appendable, CharSequence xfix) {
+        if (!Objects.isEmpty(xfix)) {
+            appendResult(appendable, xfix);
+        }
+    }
+
+    protected void appendResult(Appendable appendable, CharSequence result) {
+        try {
+            appendable.append(result);
+        } catch (IOException e) {
+            throw new AndroidRuntimeException(e);
+        }
+    }
+
+    protected <T>CharSequence toStringOf(Function<? super T, ? extends CharSequence> toStringFunc, T value, CharSequence nullText) {
+        return Objects.isNull(value) ? nullText : toStringFunc.apply(value);
+    }
+
+    protected int calCapacity(int size) {
+        return Math.min(Math.max(size * 16, 8), 1 << 16);
     }
 
 }

@@ -1,4 +1,4 @@
-package androidrubick.xframework.collect;
+package androidrubick.collect;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 import androidrubick.utils.Objects;
-import androidrubick.xframework.xbase.config.Configurable;
 
 /**
  * 简单的{@link java.util.Collection}的创建器
@@ -21,7 +20,6 @@ import androidrubick.xframework.xbase.config.Configurable;
  */
 public class CollectionBuilder {
 
-    @Configurable
     public static final int DEFAULT_CAPACITY = 1 << 3;
 
     public static CollectionBuilder newArrayList() {
