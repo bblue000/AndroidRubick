@@ -19,7 +19,7 @@ public class Broadcasts {
      * 注册广播，参数<code> actions </code> 为注册的行为
      */
     public static void registerReceiver(BroadcastReceiver receiver, String...actions) {
-        if (Objects.isEmpty(receiver) || Objects.isEmpty(actions)) {
+        if (Objects.isNull(receiver) || Objects.isEmpty(actions)) {
             return ;
         }
         IntentFilter filter = new IntentFilter();
@@ -33,7 +33,7 @@ public class Broadcasts {
      * 注册广播，参数<code> filters </code> 为注册的行为
      */
     public static void registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-        if (Objects.isEmpty(receiver) || Objects.isEmpty(filter)) {
+        if (Objects.isNull(receiver) || Objects.isNull(filter)) {
             return ;
         }
         BaseApplication.getAppContext().registerReceiver(receiver, filter);
@@ -59,7 +59,7 @@ public class Broadcasts {
      * 发送指定广播
      */
     public static void sendBroadcast(Intent intent) {
-        if (Objects.isEmpty(intent)) {
+        if (Objects.isNull(intent)) {
             return ;
         }
         BaseApplication.getAppContext().sendBroadcast(intent);

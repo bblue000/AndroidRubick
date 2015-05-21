@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import androidrubick.collect.CollectionsCompat;
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Function;
 import androidrubick.utils.Functions;
 import androidrubick.utils.Objects;
@@ -155,13 +157,13 @@ public class Joiner {
     }
 
     // for array
-    public String join(Object[] parts) {
-        return join((Function<Object, ? extends CharSequence>) mToStringFunc, parts);
+    public <T>String join(T[] parts) {
+        return join((Function<? super T, ? extends CharSequence>) mToStringFunc, parts);
     }
 
-    public String join(Function<Object, ? extends CharSequence> toStringFunc, Object[] parts) {
+    public <T>String join(Function<? super T, ? extends CharSequence> toStringFunc, T[] parts) {
         checkNotNull(toStringFunc);
-        StringBuilder temp = new StringBuilder(calCapacity(Objects.getLength(parts)));
+        StringBuilder temp = new StringBuilder(calCapacity(ArraysCompat.getLength(parts)));
         return appendTo(temp, toStringFunc, parts).toString();
     }
 
@@ -171,7 +173,7 @@ public class Joiner {
 
     public <T>String join(Function<? super T, ? extends CharSequence> toStringFunc, Collection<T> c) {
         checkNotNull(toStringFunc);
-        StringBuilder temp = new StringBuilder(calCapacity(Objects.getSize(c)));
+        StringBuilder temp = new StringBuilder(calCapacity(CollectionsCompat.getSize(c)));
         return appendTo(temp, toStringFunc, c).toString();
     }
 
@@ -196,11 +198,11 @@ public class Joiner {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // for append to another Appendable
-    public <A extends Appendable>A appendTo(A appendable, Object...parts) {
-        return appendTo(appendable, (Function<Object, ? extends CharSequence>) mToStringFunc, parts);
+    public <T, A extends Appendable>A appendTo(A appendable, T[] parts) {
+        return appendTo(appendable, (Function<? super T, ? extends CharSequence>) mToStringFunc, parts);
     }
 
-    public <A extends Appendable>A appendTo(A appendable, Function<Object, ? extends CharSequence> toStringFunc, Object...parts) {
+    public <T, A extends Appendable>A appendTo(A appendable, Function<? super T, ? extends CharSequence> toStringFunc, T[] parts) {
         checkNotNull(appendable);
         checkNotNull(toStringFunc);
         appendPreOrSuffixIfNeeded(appendable, mPrefix);

@@ -85,7 +85,7 @@ public class Objects {
      * Returns {@code nullString} for null or {@code o.toString()}.
      */
     public static String toString(Object o, String nullString) {
-        return (o == null) ? nullString : toStringInternal(o);
+        return isNull(o) ? nullString : toStringInternal(o);
     }
 
     private static String toStringInternal(Object o) {
@@ -258,39 +258,4 @@ public class Objects {
         return (T) Primitives.defValueOf(type);
     }
 
-    public static int getLength(Object[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getLength(int[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getLength(char[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getLength(byte[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getLength(long[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getLength(float[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getLength(double[] arr) {
-        return isNull(arr) ? 0 : arr.length;
-    }
-
-    public static int getSize(Collection<?> c) {
-        return isNull(c) ? 0 : c.size();
-    }
-
-    public static int getSize(Map<?, ?> map) {
-        return isNull(map) ? 0 : map.size();
-    }
 }

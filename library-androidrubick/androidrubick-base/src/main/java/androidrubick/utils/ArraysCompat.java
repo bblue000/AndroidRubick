@@ -3,6 +3,8 @@ package androidrubick.utils;
 import java.lang.reflect.Array;
 import java.util.Comparator;
 
+import static androidrubick.utils.Objects.*;
+
 /**
  * {@link java.util.Arrays}的兼容版本
  *
@@ -28,6 +30,38 @@ public class ArraysCompat {
     public static <T>T[] by(T...elements) {
         return elements;
     }
+
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     */
+    public static int getLength(Object[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(int[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(char[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(byte[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(long[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(float[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
+    public static int getLength(double[] arr) {
+        return isNull(arr) ? 0 : arr.length;
+    }
+
 
     /**
      * Performs a binary search for {@code value} in the ascending sorted array {@code array},

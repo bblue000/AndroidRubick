@@ -7,8 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import androidrubick.utils.Objects;
-
 /**
  * 简单的{@link java.util.Map}的创建器
  *
@@ -64,9 +62,7 @@ public class MapBuilder {
     }
 
     public MapBuilder putAll(Map otherMap) {
-        if (!Objects.isEmpty(otherMap)) {
-            mMap.putAll(otherMap);
-        }
+        CollectionsCompat.putAll(mMap, otherMap);
         return this;
     }
 

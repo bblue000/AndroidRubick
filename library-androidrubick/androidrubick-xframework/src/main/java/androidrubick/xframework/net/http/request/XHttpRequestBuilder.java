@@ -15,7 +15,7 @@ import androidrubick.utils.Function;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
-import androidrubick.xframework.net.MediaType;
+import androidrubick.net.MediaType;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.xbase.config.Configurable;
 
@@ -214,7 +214,8 @@ public class XHttpRequestBuilder {
     public XHttpRequestBuilder contentType(String contentType) {
         Preconditions.checkNotNull(contentType, "contentType is null");
         mUserSetContentType = true;
-        return header(HttpHeaders.CONTENT_TYPE, contentType);
+        mContentType = contentType;
+        return this;
     }
 
     /**
@@ -252,7 +253,6 @@ public class XHttpRequestBuilder {
                 try {
                     mBody = parseDefaultContentBody(mParams, mParamEncoding);
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
                     throw new AndroidRuntimeException(e);
                 }
             }

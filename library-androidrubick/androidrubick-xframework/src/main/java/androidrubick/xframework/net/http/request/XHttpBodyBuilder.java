@@ -35,7 +35,7 @@ public class XHttpBodyBuilder {
         return new XHttpBodyBuilder(MULTIPART_FORM_DATA);
     }
 
-    private String mContentType = XHttp.DEFAULT_OUTPUT_CONTENT_TYPE;
+    private String mContentType = XHttp.DEFAULT_OUTPUT_CONTENT_TYPE.name();
     private byte[] mBody;
     private Map<String, String> mParams;
     private XHttpBodyBuilder(){}

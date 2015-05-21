@@ -7,8 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-import androidrubick.utils.Objects;
-
 /**
  * 简单的{@link java.util.Collection}的创建器
  *
@@ -72,9 +70,7 @@ public class CollectionBuilder {
     }
 
     public CollectionBuilder addAll(Collection otherCollection) {
-        if (!Objects.isEmpty(otherCollection)) {
-            mCollection.addAll(otherCollection);
-        }
+        CollectionsCompat.addAll(mCollection, otherCollection);
         return this;
     }
 

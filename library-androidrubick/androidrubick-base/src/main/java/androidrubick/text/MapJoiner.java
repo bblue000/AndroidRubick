@@ -3,6 +3,7 @@ package androidrubick.text;
 import java.util.Iterator;
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.Function;
 import androidrubick.utils.Functions;
 import androidrubick.utils.Objects;
@@ -179,7 +180,7 @@ public class MapJoiner {
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // for append to another Appendable
     public <K, V>String join(Map<K, V> map) {
-        StringBuilder temp = new StringBuilder(calCapacity(Objects.getSize(map)));
+        StringBuilder temp = new StringBuilder(calCapacity(CollectionsCompat.getSize(map)));
         return appendTo(temp, map).toString();
     }
 
