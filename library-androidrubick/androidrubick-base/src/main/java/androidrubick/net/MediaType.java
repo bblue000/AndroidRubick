@@ -263,6 +263,23 @@ public class MediaType {
         return withParameter(CHARSET_ATTRIBUTE, Preconditions.checkNotNull(charset));
     }
 
+    public String type() {
+        return type;
+    }
+
+    public String subtype() {
+        return subtype;
+    }
+
+    /** Returns true if either the type or subtype is the wildcard. */
+    public boolean hasWildcard() {
+        return WILDCARD.equals(type) || WILDCARD.equals(subtype);
+    }
+
+    public String charset() {
+        return CollectionsCompat.isEmpty(this.parameters) ? null : this.parameters.get(CHARSET_ATTRIBUTE);
+    }
+
     protected String generateName() {
         final String typeSep = "/";
         final String parSep = "; ";
@@ -275,6 +292,14 @@ public class MediaType {
                     .appendTo(builder, parameters);
         }
         return builder.toString();
+    }
+
+    /**
+     * 当前对象是否属于{@code mediaTypeRange}，该方法仅仅比较类型和二级类型
+     */
+    public boolean is(MediaType mediaTypeRange) {
+        return (Objects.equals(mediaTypeRange.type, WILDCARD) || Objects.equals(mediaTypeRange.type, this.type))
+                && (Objects.equals(mediaTypeRange.subtype, WILDCARD) || Objects.equals(mediaTypeRange.subtype, this.subtype));
     }
 
     @Override

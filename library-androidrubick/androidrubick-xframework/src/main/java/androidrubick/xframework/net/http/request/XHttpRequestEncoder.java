@@ -2,7 +2,10 @@ package androidrubick.xframework.net.http.request;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
 
+import androidrubick.text.MapJoiner;
+import androidrubick.utils.Function;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.xbase.config.Configurable;
@@ -14,7 +17,25 @@ import androidrubick.xframework.xbase.config.Configurable;
  *
  * Created by Yin Yong on 2015/5/16 0016.
  */
-/*package*/ class XHttpRequestEncoder {
+public class XHttpRequestEncoder {
+
+    @Configurable
+    public static String parseUrlEncodedParameters(Map<String, String> params, final String encoding) {
+        return MapJoiner.by("&", "=")
+                .withToStringFuncOfKey(new Function<String, CharSequence>() {
+                    @Override
+                    public CharSequence apply(String input) {
+                        return XHttpRequestEncoder.encodeParamKey(input, encoding);
+                    }
+                })
+                .withToStringFuncOfValue(new Function<String, CharSequence>() {
+                    @Override
+                    public CharSequence apply(String input) {
+                        return XHttpRequestEncoder.encodeParamValue(input, encoding);
+                    }
+                })
+                .join(params);
+    }
 
     /**
      * 加密处理参数键

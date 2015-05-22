@@ -13,7 +13,7 @@ import androidrubick.xframework.xbase.config.Configurable;
  * 可以通过{@link #builder()}创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest}
  * 的建造器，设置请求必要的元素（如请求URL，方法等）；
  * <br/>
- * 可以通过{@link androidrubick.xframework.net.http.request.XHttpBodyBuilder request body builder}
+ * 可以通过{@link androidrubick.xframework.net.http.request.body.XHttpBody request body builder}
  * 创建{@link androidrubick.net.MediaType#FORM_DATA application/x-www-form-urlencoded}或者
  * {@link androidrubick.net.MediaType#FORM_DATA_MULTIPART multipart/form-data}类型的请求体。
  *
