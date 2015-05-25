@@ -1,13 +1,17 @@
 package androidrubick.xframework.net.http.request.body;
 
+import android.util.AndroidRuntimeException;
+
 import java.io.OutputStream;
 import java.util.Map;
 
+import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
 import androidrubick.xframework.net.http.PredefinedBAOS;
 import androidrubick.xframework.net.http.XHttp;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * 封装POST等含有请求体的请求方法创建请求体的过程
@@ -29,13 +33,24 @@ public abstract class XHttpBody<R extends XHttpBody> {
         return new XHttpMultipartBody();
     }
 
-    static final byte[] NONE_BYTE = new byte[0];
+    public static XHttpJsonBody newJsonBody() {
+        return new XHttpJsonBody();
+    }
 
+
+    // static
+    static final byte[] NONE_BYTE = new byte[0];
+    @Configurable
+    static final int DEFAULT_BODY_SIZE = 512;
+
+
+    // instance
     boolean mUserSetContentType = false;
-    String mContentType = XHttp.DEFAULT_OUTPUT_CONTENT_TYPE.name();
+    String mContentType;
     String mParamEncoding = XHttp.DEFAULT_CHARSET;
-    Map<String, String> mParams;
+    Map<String, Object> mParams;
     byte[] mRawBody;
+    private boolean mIsBuild;
     protected XHttpBody() {
     }
 
@@ -50,7 +65,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * @param value 单个参数的值
      *
      */
-    public R param(String key, String value) {
+    public R param(String key, Object value) {
         Preconditions.checkArgument(!Objects.isEmpty(key), "param key is null or empty");
         prepareParams();
         mParams.put(key, value);
@@ -64,7 +79,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * @param params 参数信息
      *
      */
-    public R params(Map<String, String> params) {
+    public R params(Map<String, ?> params) {
         if (!Objects.isEmpty(params)) {
             prepareParams();
             mParams.putAll(params);
@@ -87,7 +102,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
     }
 
     /**
-     * 直接设置字节流作为请求体的内容
+     * 直接设置字节流作为请求体的内容（如果设置了该值，则无视其他param）
      */
     public R withRawBody(byte[] body) {
         mRawBody = body;
@@ -108,6 +123,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 获取内容类型
      */
     public String getContentType() {
+        checkBuild();
         return mContentType;
     }
 
@@ -115,6 +131,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 获取内容
      */
     public byte[] getBody() {
+        checkBuild();
         PredefinedBAOS out = new PredefinedBAOS(calculateByteSize());
         writeTo(out);
         return out.toByteArray();
@@ -123,18 +140,76 @@ public abstract class XHttpBody<R extends XHttpBody> {
     /**
      * 将body写入到指定输出流中
      */
-    public abstract void writeTo(OutputStream out);
+    public void writeTo(OutputStream out) {
+        checkBuild();
+        try {
+            // if raw body supported
+            if (writeRawBody(out)) {
+                return ;
+            }
+            if (writeGeneratedBody(out)) {
+                return ;
+            }
+        } catch (Exception e) {
+            throw new AndroidRuntimeException(e);
+        }
+    }
+
+    // >>>>>>>>>>>>>>>>>>>>>>
+    // write body internal
+    protected boolean writeRawBody(OutputStream out) throws Exception {
+        if (!Objects.isNull(mRawBody)) {
+            out.write(mRawBody);
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean writeGeneratedBody(OutputStream out) throws Exception {
+        return false;
+    }
 
     /**
      * 简单计算内容长度
-     * @return
      */
-    protected abstract int calculateByteSize();
+    protected int calculateByteSize() {
+        checkBuild();
+        if (null != mRawBody) {
+            return mRawBody.length;
+        }
+        return 0;
+    }
+
+    /**
+     * 是否调用了Build完成了创建过程
+     */
+    protected boolean isBuild() {
+        return mIsBuild;
+    }
+
+    protected void checkBuild() {
+        Preconditions.checkOperation(isBuild(), "%s not build", toString());
+    }
+
+    protected abstract MediaType rawContentType() ;
+
+    protected void validateContentTypeInBuild() {
+        // 如果没有指定指定contentType
+        if (!mUserSetContentType) {
+            MediaType mediaType = rawContentType();
+            if (!Objects.isEmpty(mParamEncoding)) {
+                mediaType = mediaType.withCharset(mParamEncoding);
+            }
+            mContentType = mediaType.name();
+        }
+    }
 
     /**
      * 创建当前的请求体
      */
     public R build() {
+        validateContentTypeInBuild();
+        mIsBuild = true;
         return self();
     }
 }

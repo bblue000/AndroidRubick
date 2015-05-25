@@ -17,7 +17,7 @@ import androidrubick.collect.MapBuilder;
 import androidrubick.net.MediaType;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.xbase.config.Configurable;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * 创建一个HTTP/HTTPS请求：
@@ -172,7 +172,7 @@ public class XHttpRequestBuilder {
      * <p/>
      *
      * 注意：<br/>
-     * 如果是POST等具有请求体的方式，使用{@link #withUrlEncodedBody()}和
+     * 如果是POST等具有请求体的方式，使用{@link #withBody(androidrubick.xframework.net.http.request.body.XHttpBody)}和
      *
      * 创建请求体的创建器。
      *
@@ -197,7 +197,7 @@ public class XHttpRequestBuilder {
      * <p/>
      *
      * 注意：<br/>
-     * 如果是POST等具有请求体的方式，使用{@link #withUrlEncodedBody()}和
+     * 如果是POST等具有请求体的方式，使用{@link #withBody(androidrubick.xframework.net.http.request.body.XHttpBody)}和
      *
      * 创建请求体的创建器。
      *
@@ -240,7 +240,7 @@ public class XHttpRequestBuilder {
      * @see androidrubick.xframework.net.http.request.body.XHttpUrlEncodedBody
      * @see androidrubick.xframework.net.http.request.body.XHttpMultipartBody
      */
-    public XHttpRequestBuilder withXHttpBody(XHttpBody body) {
+    public XHttpRequestBuilder withBody(XHttpBody body) {
         this.mBody = Preconditions.checkNotNull(body);
         return this;
     }
@@ -274,35 +274,37 @@ public class XHttpRequestBuilder {
      */
     public XHttpRequest build() {
         // 如果用户没有设置，根据当前的设置自行决定
-        mMethod = Objects.getOr(mMethod, null != mBody ? HttpMethod.POST : HttpMethod.GET);
+//        mMethod = Objects.getOr(mMethod, null != mBody ? HttpMethod.POST : HttpMethod.GET);
+//
+//        Preconditions.checkArgument(!Objects.isEmpty(mBaseUrl), "url is null");
+//
+//        String url = mBaseUrl;
+//        if (mMethod.canContainBody()) {
+//            // 组合Body
+//            if (null == mBody) {
+//                try {
+//                    mBody = parseDefaultContentBody(mParams, mParamEncoding);
+//                } catch (UnsupportedEncodingException e) {
+//                    throw new AndroidRuntimeException(e);
+//                }
+//            }
+//            if (!mUserSetContentType) {
+//                contentType(MediaType.of().toString());
+//            }
+//        } else {
+//            // 组合URL
+//            url = combineUrlWithParameters(mBaseUrl, mParams, mParamEncoding);
+//        }
+//
+//        // create a request
+//        int version = AndroidUtils.getAndroidSDKVersion();
+//        if (version <= Build.VERSION_CODES.GINGERBREAD) {
+//            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
+//        } else {
+//            return null;
+//        }
 
-        Preconditions.checkArgument(!Objects.isEmpty(mBaseUrl), "url is null");
-
-        String url = mBaseUrl;
-        if (mMethod.canContainBody()) {
-            // 组合Body
-            if (null == mBody) {
-                try {
-                    mBody = parseDefaultContentBody(mParams, mParamEncoding);
-                } catch (UnsupportedEncodingException e) {
-                    throw new AndroidRuntimeException(e);
-                }
-            }
-            if (!mUserSetContentType) {
-                contentType(MediaType.of().toString());
-            }
-        } else {
-            // 组合URL
-            url = combineUrlWithParameters(mBaseUrl, mParams, mParamEncoding);
-        }
-
-        // create a request
-        int version = AndroidUtils.getAndroidSDKVersion();
-        if (version <= Build.VERSION_CODES.GINGERBREAD) {
-            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
-        } else {
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -312,25 +314,6 @@ public class XHttpRequestBuilder {
                 .add("method", this.mMethod.getName())
                 .add("headers", this.mHeaders)
                 .toString();
-    }
-
-    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    // 构建 end
-
-    protected String combineUrlWithParameters(final String baseUrl, Map<String, String> params, String encoding) {
-        if (CollectionsCompat.isEmpty(params)) {
-            return baseUrl;
-        }
-        String query = parseUrlEncodedParameters(params, encoding);
-        return XHttpRequestUtils.appendQuery(baseUrl, query);
-    }
-
-    protected byte[] parseDefaultContentBody(Map<String, String> params, String encoding) throws UnsupportedEncodingException {
-        if (CollectionsCompat.isEmpty(params)) {
-            return null;
-        }
-        String query = parseUrlEncodedParameters(params, encoding);
-        return query.getBytes(encoding);
     }
 
 }

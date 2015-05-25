@@ -39,11 +39,12 @@ public class XHttpRequestPreG extends XHttpRequest {
     }
 
     protected HttpUriRequest createHttpRequest() {
-        if (null == mBody) {
-
-        } else {
-
-        }
+//        if (null == mBody) {
+//
+//        } else {
+//
+//        }
+        return null;
     }
 
     protected HttpClient prepareHttpClient() {
@@ -69,7 +70,7 @@ public class XHttpRequestPreG extends XHttpRequest {
 
     protected void addParams(HttpUriRequest httpRequest) {
         HttpParams httpParams = httpRequest.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, mConnectionTimeout);
-        HttpConnectionParams.setSoTimeout(httpParams, mSocketTimeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, getConnectionTimeout());
+        HttpConnectionParams.setSoTimeout(httpParams, getSocketTimeout());
     }
 }

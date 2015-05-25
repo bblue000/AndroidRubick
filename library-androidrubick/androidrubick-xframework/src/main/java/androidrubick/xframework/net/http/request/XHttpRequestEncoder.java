@@ -1,14 +1,19 @@
 package androidrubick.xframework.net.http.request;
 
+import android.util.AndroidRuntimeException;
+
+import com.google.gson.Gson;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.text.MapJoiner;
+import androidrubick.text.Strings;
 import androidrubick.utils.Function;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.XHttp;
-import androidrubick.xframework.xbase.config.Configurable;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * 加密请求参数
@@ -20,7 +25,10 @@ import androidrubick.xframework.xbase.config.Configurable;
 public class XHttpRequestEncoder {
 
     @Configurable
-    public static String parseUrlEncodedParameters(Map<String, String> params, final String encoding) {
+    private static final Gson sGson = new Gson();
+
+    @Configurable
+    public static String parseUrlEncodedParameters(Map<String, Object> params, final String encoding) {
         return MapJoiner.by("&", "=")
                 .withToStringFuncOfKey(new Function<String, CharSequence>() {
                     @Override
@@ -28,13 +36,28 @@ public class XHttpRequestEncoder {
                         return XHttpRequestEncoder.encodeParamKey(input, encoding);
                     }
                 })
-                .withToStringFuncOfValue(new Function<String, CharSequence>() {
+                .withToStringFuncOfValue(new Function<Object, CharSequence>() {
                     @Override
-                    public CharSequence apply(String input) {
-                        return XHttpRequestEncoder.encodeParamValue(input, encoding);
+                    public CharSequence apply(Object input) {
+                        return XHttpRequestEncoder.encodeParamValue(String.valueOf(input), encoding);
                     }
                 })
                 .join(params);
+    }
+
+    public static String toJson(Map<String, ?> parameters) {
+        if (CollectionsCompat.isEmpty(parameters)) {
+            return Strings.EMPTY;
+        }
+        return sGson.toJson(parameters);
+    }
+
+    public static byte[] getBytes(Object origin, String charset) {
+        try {
+            return String.valueOf(origin).getBytes(charset);
+        } catch (Exception e) {
+            throw new AndroidRuntimeException(e);
+        }
     }
 
     /**

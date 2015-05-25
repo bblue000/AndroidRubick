@@ -2,48 +2,54 @@ package androidrubick.xframework.net.http.request.body;
 
 import java.io.OutputStream;
 
-import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
 
 /**
- * something
+ * 请求体为Json
+ *
+ * <p/>
+ *
+ * 该Json类型为application/json
+ *
  * <p/>
  * <p/>
- * Created by Yin Yong on 15/5/22.
+ * Created by Yin Yong on 15/5/25.
  *
  * @since 1.0
  */
-public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
+public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
 
-    protected XHttpUrlEncodedBody() {
+    private boolean mRawJsonSet;
+    private String mRawJson = Strings.EMPTY;
+
+    protected XHttpJsonBody() {
         super();
     }
 
-    @Override
-    protected MediaType rawContentType() {
-        return MediaType.FORM_DATA;
+    /**
+     * 设置纯JSON文本，一旦设置，无视其他参数设置
+     */
+    public XHttpJsonBody withRawJson(String json) {
+        mRawJsonSet = true;
+        mRawJson = Objects.getOr(json, Strings.EMPTY);
+        return this;
     }
 
     @Override
     protected boolean writeGeneratedBody(OutputStream out) throws Exception {
-        if (CollectionsCompat.isEmpty(this.mParams)) {
-            return false;
-        }
         byte[] body = generateBody();
         out.write(body);
         return true;
     }
 
     protected byte[] generateBody() throws Exception {
-        byte[] body = NONE_BYTE;
-        // 直接写入参数
-        String query = XHttpRequestEncoder.parseUrlEncodedParameters(mParams, mParamEncoding);
-        if (!Objects.isEmpty(query)) {
-            body = XHttpRequestEncoder.getBytes(query, mParamEncoding);
+        if (mRawJsonSet) {
+            return XHttpRequestEncoder.getBytes(mRawJson, mParamEncoding);
         }
-        return body;
+        return XHttpRequestEncoder.getBytes(XHttpRequestEncoder.toJson(mParams), mParamEncoding);
     }
 
     @Override
@@ -58,5 +64,10 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
         } catch (Exception e) {
             return DEFAULT_BODY_SIZE;
         }
+    }
+
+    @Override
+    protected MediaType rawContentType() {
+        return MediaType.JSON;
     }
 }
