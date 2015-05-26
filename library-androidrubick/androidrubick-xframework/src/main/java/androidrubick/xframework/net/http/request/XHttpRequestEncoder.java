@@ -28,7 +28,7 @@ public class XHttpRequestEncoder {
     private static final Gson sGson = new Gson();
 
     @Configurable
-    public static String parseUrlEncodedParameters(Map<String, Object> params, final String encoding) {
+    public static String parseUrlEncodedParameters(Map<String, ?> params, final String encoding) {
         return MapJoiner.by("&", "=")
                 .withToStringFuncOfKey(new Function<String, CharSequence>() {
                     @Override

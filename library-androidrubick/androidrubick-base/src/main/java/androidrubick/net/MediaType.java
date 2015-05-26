@@ -181,6 +181,8 @@ public class MediaType {
     public static final MediaType ZIP = createConstant(APPLICATION_TYPE, "zip");
     public static final MediaType GZIP = createConstant(APPLICATION_TYPE, "x-gzip");
 
+    public static final MediaType OCTET_STREAM = createConstant(APPLICATION_TYPE, "octet-stream");
+
     /**
      * 指定特定主类型的通配类型，如text/*
      */

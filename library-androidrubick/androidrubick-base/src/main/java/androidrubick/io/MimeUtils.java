@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import android.text.TextUtils;
+import androidrubick.utils.Objects;
 
 public final class MimeUtils {
 	private static final Map<String, String> mimeTypeToExtensionMap = new HashMap<String, String>();
@@ -433,7 +433,7 @@ public final class MimeUtils {
 	 * @return True iff there is a mimeType entry in the map.
 	 */
 	public static boolean hasMimeType(String mimeType) {
-		if (TextUtils.isEmpty(mimeType)) {
+		if (Objects.isEmpty(mimeType)) {
 			return false;
 		}
 		return mimeTypeToExtensionMap.containsKey(mimeType);
@@ -447,7 +447,7 @@ public final class MimeUtils {
 	 * @return The MIME type for the given extension or null iff there is none.
 	 */
 	public static String guessMimeTypeFromExtension(String extension) {
-		if (TextUtils.isEmpty(extension)) {
+		if (Objects.isEmpty(extension)) {
 			return null;
 		}
 		return extensionToMimeTypeMap.get(extension);
@@ -461,7 +461,7 @@ public final class MimeUtils {
 	 * @return True iff there is an extension entry in the map.
 	 */
 	public static boolean hasExtension(String extension) {
-		if (TextUtils.isEmpty(extension)) {
+		if (Objects.isEmpty(extension)) {
 			return false;
 		}
 		return extensionToMimeTypeMap.containsKey(extension);
@@ -478,10 +478,21 @@ public final class MimeUtils {
 	 */
 
 	public static String guessExtensionFromMimeType(String mimeType) {
-		if (TextUtils.isEmpty(mimeType)) {
+		if (Objects.isEmpty(mimeType)) {
 			return null;
 		}
 		return mimeTypeToExtensionMap.get(mimeType);
 		// TODO Auto-generated method stub
 	}
+
+    public static String guessMimeTypeByGetExtensionFromSrc(String src) {
+        if (Objects.isEmpty(src)) {
+            return null;
+        }
+        int indexOf = src.lastIndexOf('.');
+        if (indexOf < 0) {
+            return null;
+        }
+        return guessMimeTypeFromExtension(src.substring(indexOf + 1, src.length()));
+    }
 }

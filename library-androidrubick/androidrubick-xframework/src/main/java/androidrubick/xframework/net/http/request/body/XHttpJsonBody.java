@@ -2,13 +2,16 @@ package androidrubick.xframework.net.http.request.body;
 
 import java.io.OutputStream;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
 
 /**
- * 请求体为Json
+ * content type 为<code>application/json</code>的
+ *
+ * 请求体
  *
  * <p/>
  *
@@ -40,6 +43,9 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
 
     @Override
     protected boolean writeGeneratedBody(OutputStream out) throws Exception {
+        if (CollectionsCompat.isEmpty(mParams) && !mRawJsonSet) {
+            return false;
+        }
         byte[] body = generateBody();
         out.write(body);
         return true;

@@ -8,7 +8,10 @@ import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
 
 /**
- * something
+ * content type 为<code>application/x-www-form-urlencoded</code>的
+ *
+ * 请求体
+ *
  * <p/>
  * <p/>
  * Created by Yin Yong on 15/5/22.

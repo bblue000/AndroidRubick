@@ -46,7 +46,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  *     <li>
  *         请求体，有如下几种组合：
  *         <ol>
- *             <li>纯字节流（设置Body-{@link #body(byte[])}和ContentType-{@link #contentType(String)}）</li>
+ *             <li>纯字节流（设置Body-{@link #withBody(androidrubick.xframework.net.http.request.body.XHttpBody)}）</li>
  *             <li>键值对，即类似表单（{@link #param(String, String)}和{@link #params(java.util.Map)}）</li>
  *             <li>...</li>
  *         </ul>
@@ -92,8 +92,6 @@ public class XHttpRequestBuilder {
     private HttpMethod mMethod;
     private Map<String, String> mHeaders;
     private Map<String, String> mParams;
-    private boolean mUserSetContentType = false;
-    private String mContentType = XHttp.DEFAULT_OUTPUT_CONTENT_TYPE.name();
     private String mParamEncoding = XHttp.DEFAULT_CHARSET;
     private int mConnectionTimeout = XHttp.DEFAULT_TIMEOUT;
     private int mSocketTimeout = XHttp.DEFAULT_TIMEOUT;
@@ -274,12 +272,12 @@ public class XHttpRequestBuilder {
      */
     public XHttpRequest build() {
         // 如果用户没有设置，根据当前的设置自行决定
-//        mMethod = Objects.getOr(mMethod, null != mBody ? HttpMethod.POST : HttpMethod.GET);
-//
-//        Preconditions.checkArgument(!Objects.isEmpty(mBaseUrl), "url is null");
-//
-//        String url = mBaseUrl;
-//        if (mMethod.canContainBody()) {
+        mMethod = Objects.getOr(mMethod, null != mBody ? HttpMethod.POST : HttpMethod.GET);
+
+        Preconditions.checkArgument(!Objects.isEmpty(mBaseUrl), "url is null");
+
+        String url = mBaseUrl;
+        if (mMethod.canContainBody() && null != mBody) {
 //            // 组合Body
 //            if (null == mBody) {
 //                try {
@@ -291,11 +289,11 @@ public class XHttpRequestBuilder {
 //            if (!mUserSetContentType) {
 //                contentType(MediaType.of().toString());
 //            }
-//        } else {
-//            // 组合URL
-//            url = combineUrlWithParameters(mBaseUrl, mParams, mParamEncoding);
-//        }
-//
+        } else {
+            // 组合URL
+            url = XHttpRequestUtils.appendQuery(url, XHttpRequestEncoder.parseUrlEncodedParameters(mParams, mParamEncoding));
+        }
+
 //        // create a request
 //        int version = AndroidUtils.getAndroidSDKVersion();
 //        if (version <= Build.VERSION_CODES.GINGERBREAD) {
