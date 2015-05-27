@@ -7,6 +7,7 @@ import java.util.Map;
 
 import androidrubick.net.HttpMethod;
 import androidrubick.xframework.net.http.XHttp;
+import androidrubick.xframework.net.http.request.body.XHttpBody;
 
 /**
  * 封装网络请求
@@ -20,12 +21,12 @@ public abstract class XHttpRequest {
     private String mUrl;
     private HttpMethod mMethod;
     private Map<String, String> mHeaders;
-    private byte[] mBody;
+    private XHttpBody mBody;
 
-    private int mConnectionTimeout = XHttp.DEFAULT_TIMEOUT;
-    private int mSocketTimeout = XHttp.DEFAULT_TIMEOUT;
+    private int mConnectionTimeout;
+    private int mSocketTimeout;
     protected XHttpRequest(String url, HttpMethod method, Map<String, String> header,
-                           byte[] body, int connectionTimeout, int socketTimeout) {
+                           XHttpBody body, int connectionTimeout, int socketTimeout) {
         this.mUrl = url;
         this.mMethod = method;
         this.mHeaders = header;
@@ -46,7 +47,7 @@ public abstract class XHttpRequest {
         return mHeaders;
     }
 
-    public byte[] getBody() {
+    public XHttpBody getBody() {
         return mBody;
     }
 

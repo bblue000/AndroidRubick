@@ -2,6 +2,9 @@ package androidrubick.xframework.net.http.request.body;
 
 import android.util.AndroidRuntimeException;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
+
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -175,6 +178,47 @@ public abstract class XHttpBody<R extends XHttpBody> {
 
     protected void writeEmpty(OutputStream out) throws Exception {
         out.write(NONE_BYTE);
+    }
+
+    /**
+     * 兼容 for HttpClient
+     */
+    public HttpEntity genreateHttpEntity() {
+        checkBuild();
+        try {
+            HttpEntity httpEntity = genreateByRawBody();
+            if (null != httpEntity) {
+                return httpEntity;
+            }
+            httpEntity = genreateByDerived();
+            if (null != httpEntity) {
+                return httpEntity;
+            }
+            return genreateEmpty();
+        } catch (Exception e) {
+            throw new AndroidRuntimeException(e);
+        }
+    }
+
+    protected HttpEntity genreateByRawBody() throws Exception {
+        if (Objects.isNull(mRawBody)) {
+            return null;
+        }
+        ByteArrayEntity httpEntity = new ByteArrayEntity(mRawBody);
+        httpEntity.setContentEncoding(mParamEncoding);
+        httpEntity.setContentType(getContentType());
+        return httpEntity;
+    }
+
+    protected HttpEntity genreateByDerived() throws Exception {
+        return null;
+    }
+
+    protected HttpEntity genreateEmpty() throws Exception {
+        ByteArrayEntity httpEntity = new ByteArrayEntity(NONE_BYTE);
+        httpEntity.setContentEncoding(mParamEncoding);
+        httpEntity.setContentType(getContentType());
+        return httpEntity;
     }
 
     /**

@@ -1,5 +1,7 @@
 package androidrubick.xframework.net.http.request.body;
 
+import org.apache.http.HttpEntity;
+
 import java.io.OutputStream;
 
 import androidrubick.collect.CollectionsCompat;
@@ -61,5 +63,11 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
         } catch (Exception e) {
             return DEFAULT_BODY_SIZE;
         }
+    }
+
+    @Override
+    protected HttpEntity genreateByDerived() throws Exception {
+
+        return super.genreateByDerived();
     }
 }

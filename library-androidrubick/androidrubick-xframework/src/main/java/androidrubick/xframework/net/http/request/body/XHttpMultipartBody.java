@@ -12,6 +12,7 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.collect.MapBuilder;
 import androidrubick.io.IOUtils;
 import androidrubick.io.MimeUtils;
+import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
@@ -82,7 +83,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
     @Override
     protected MediaType rawContentType() {
-        return MediaType.FORM_DATA_MULTIPART.withParameter("boundary", mBoundary);
+        return MediaType.FORM_DATA_MULTIPART.withParameter(HttpHeaderValues.P_BOUNDARY, mBoundary);
     }
 
     @Configurable

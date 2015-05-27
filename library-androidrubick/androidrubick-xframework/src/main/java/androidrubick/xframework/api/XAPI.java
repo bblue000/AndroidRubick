@@ -10,6 +10,15 @@ public class XAPI {
 
     private XAPI() { }
 
+    /**
+     * 默认连接延迟
+     */
+    public static final int DEFAULT_CONNECTION_TIMEOUT = 10000;
+    /**
+     * 默认传输延迟
+     */
+    public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
+
     public static void get() {
 
     }

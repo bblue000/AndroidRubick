@@ -1,7 +1,6 @@
 package androidrubick.xframework.net.http;
 
 import androidrubick.text.Charsets;
-import androidrubick.net.MediaType;
 import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
@@ -31,11 +30,6 @@ public class XHttp {
 
     // configs
     /**
-     * 默认的延迟
-     */
-    public static final int DEFAULT_TIMEOUT = 30000;
-
-    /**
      * 如果使用的时{@link org.apache.http.client.HttpClient}，是否复用一个实例
      */
     public static final boolean REUSE_HTTPCLIENT = true;
@@ -44,11 +38,6 @@ public class XHttp {
      * 默认的编码
      */
     public static final String DEFAULT_CHARSET = Charsets.UTF_8.name();
-
-    /**
-     * 默认的POST请求内容类型
-     */
-    public static final MediaType DEFAULT_OUTPUT_CONTENT_TYPE = MediaType.FORM_DATA;
 
     /**
      * 开始创建一个HTTP request

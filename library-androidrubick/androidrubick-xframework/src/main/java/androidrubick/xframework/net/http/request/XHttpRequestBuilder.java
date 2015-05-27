@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
+import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
@@ -86,6 +87,7 @@ public class XHttpRequestBuilder {
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/json;q=1, image/*;q=0.9, text/plain;q=0.8, */*;q=0.7");
         header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET);
         header(HttpHeaders.ACCEPT_ENCODING, "gzip;q=1, *;q=0");
+        header(HttpHeaders.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
     }
 
     private String mBaseUrl;
@@ -93,8 +95,8 @@ public class XHttpRequestBuilder {
     private Map<String, String> mHeaders;
     private Map<String, String> mParams;
     private String mParamEncoding = XHttp.DEFAULT_CHARSET;
-    private int mConnectionTimeout = XHttp.DEFAULT_TIMEOUT;
-    private int mSocketTimeout = XHttp.DEFAULT_TIMEOUT;
+    private int mConnectionTimeout;
+    private int mSocketTimeout;
     private XHttpBody mBody;
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -278,29 +280,18 @@ public class XHttpRequestBuilder {
 
         String url = mBaseUrl;
         if (mMethod.canContainBody() && null != mBody) {
-//            // 组合Body
-//            if (null == mBody) {
-//                try {
-//                    mBody = parseDefaultContentBody(mParams, mParamEncoding);
-//                } catch (UnsupportedEncodingException e) {
-//                    throw new AndroidRuntimeException(e);
-//                }
-//            }
-//            if (!mUserSetContentType) {
-//                contentType(MediaType.of().toString());
-//            }
         } else {
             // 组合URL
             url = XHttpRequestUtils.appendQuery(url, XHttpRequestEncoder.parseUrlEncodedParameters(mParams, mParamEncoding));
         }
 
-//        // create a request
-//        int version = AndroidUtils.getAndroidSDKVersion();
-//        if (version <= Build.VERSION_CODES.GINGERBREAD) {
-//            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
-//        } else {
-//            return null;
-//        }
+        // create a request
+        int version = 8;//AndroidUtils.getAndroidSDKVersion();
+        if (version <= Build.VERSION_CODES.GINGERBREAD) {
+            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
+        } else {
+            return null;
+        }
 
         return null;
     }
