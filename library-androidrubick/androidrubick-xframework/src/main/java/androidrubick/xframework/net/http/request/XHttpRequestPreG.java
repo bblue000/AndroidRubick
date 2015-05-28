@@ -24,6 +24,7 @@ import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  *
@@ -33,6 +34,7 @@ import androidrubick.xframework.net.http.request.body.XHttpBody;
  * <p/>
  * Created by Yin Yong on 15/5/15.
  */
+@Configurable
 public class XHttpRequestPreG extends XHttpRequest {
 
     private static HttpClient sHttpClient;
@@ -41,12 +43,11 @@ public class XHttpRequestPreG extends XHttpRequest {
         super(url, method, header, body, connectionTimeout, socketTimeout);
     }
 
-
     @Override
     public HttpResponse performRequest() throws IOException {
         HttpClient httpClient = prepareHttpClient();
         HttpUriRequest httpRequest = createHttpRequest();
-        addHeaders(httpRequest, getHeaders());
+        addHeaders(httpRequest);
         addParams(httpRequest);
         return httpClient.execute(httpRequest);
     }
@@ -92,7 +93,8 @@ public class XHttpRequestPreG extends XHttpRequest {
         return request;
     }
 
-    protected void addHeaders(HttpUriRequest httpRequest, Map<String, String> headers) {
+    protected void addHeaders(HttpUriRequest httpRequest) {
+        final Map<String, String> headers = getHeaders();
         if (null == headers || headers.isEmpty()) {
             return;
         }

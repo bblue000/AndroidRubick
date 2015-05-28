@@ -135,7 +135,7 @@ public class XHttpRequestBuilder {
      */
     public XHttpRequestBuilder header(String key, String value) {
         Preconditions.checkArgument(!Objects.isEmpty(key), "header key is null or empty");
-        prepareParams();
+        prepareHeaders();
         mHeaders.put(key, value);
         return this;
     }
@@ -287,13 +287,13 @@ public class XHttpRequestBuilder {
 
         // create a request
         int version = 8;//AndroidUtils.getAndroidSDKVersion();
-        if (version <= Build.VERSION_CODES.GINGERBREAD) {
-            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
-        } else {
-            return null;
-        }
+//        if (version <= Build.VERSION_CODES.GINGERBREAD) {
+//            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
+//        } else {
+//            return null;
+//        }
+        return new XHttpRequestAfterG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
 
-        return null;
     }
 
     @Override
