@@ -8,6 +8,7 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
+import androidrubick.xframework.net.http.request.XHttpRequestUtils;
 
 /**
  * content type 为<code>application/x-www-form-urlencoded</code>的
@@ -66,8 +67,7 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
     }
 
     @Override
-    protected HttpEntity genreateByDerived() throws Exception {
-
-        return super.genreateByDerived();
+    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
+        return XHttpRequestUtils.createByteArrayEntity(generateBody(), getContentType(), mParamEncoding);
     }
 }

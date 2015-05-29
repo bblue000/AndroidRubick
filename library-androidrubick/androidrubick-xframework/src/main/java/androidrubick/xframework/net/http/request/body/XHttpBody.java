@@ -3,7 +3,6 @@ package androidrubick.xframework.net.http.request.body;
 import android.util.AndroidRuntimeException;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.entity.ByteArrayEntity;
 
 import java.io.OutputStream;
 import java.util.Map;
@@ -14,6 +13,7 @@ import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
 import androidrubick.xframework.net.http.PredefinedBAOS;
 import androidrubick.xframework.net.http.XHttp;
+import androidrubick.xframework.net.http.request.XHttpRequestUtils;
 import androidrubick.xframework.xbase.annotation.Configurable;
 import androidrubick.xframework.xbase.annotation.ForTest;
 
@@ -186,39 +186,33 @@ public abstract class XHttpBody<R extends XHttpBody> {
     public HttpEntity genreateHttpEntity() {
         checkBuild();
         try {
-            HttpEntity httpEntity = genreateByRawBody();
+            HttpEntity httpEntity = genreateHttpEntityByRawBody();
             if (null != httpEntity) {
                 return httpEntity;
             }
-            httpEntity = genreateByDerived();
+            httpEntity = genreateHttpEntityByDerived();
             if (null != httpEntity) {
                 return httpEntity;
             }
-            return genreateEmpty();
+            return genreateEmptyHttpEntity();
         } catch (Exception e) {
             throw new AndroidRuntimeException(e);
         }
     }
 
-    protected HttpEntity genreateByRawBody() throws Exception {
+    protected HttpEntity genreateHttpEntityByRawBody() throws Exception {
         if (Objects.isNull(mRawBody)) {
             return null;
         }
-        ByteArrayEntity httpEntity = new ByteArrayEntity(mRawBody);
-        httpEntity.setContentEncoding(mParamEncoding);
-        httpEntity.setContentType(getContentType());
-        return httpEntity;
+        return XHttpRequestUtils.createByteArrayEntity(mRawBody, getContentType(), mParamEncoding);
     }
 
-    protected HttpEntity genreateByDerived() throws Exception {
+    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
         return null;
     }
 
-    protected HttpEntity genreateEmpty() throws Exception {
-        ByteArrayEntity httpEntity = new ByteArrayEntity(NONE_BYTE);
-        httpEntity.setContentEncoding(mParamEncoding);
-        httpEntity.setContentType(getContentType());
-        return httpEntity;
+    protected HttpEntity genreateEmptyHttpEntity() throws Exception {
+        return XHttpRequestUtils.createByteArrayEntity(NONE_BYTE, getContentType(), mParamEncoding);
     }
 
     /**

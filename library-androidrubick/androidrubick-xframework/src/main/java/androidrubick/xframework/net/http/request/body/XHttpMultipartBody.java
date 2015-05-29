@@ -1,5 +1,7 @@
 package androidrubick.xframework.net.http.request.body;
 
+import org.apache.http.HttpEntity;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
+import androidrubick.xframework.net.http.request.XHttpRequestUtils;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
@@ -180,5 +183,13 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(LINE_END);
         dos.write(XHttpRequestEncoder.getBytes(value, mParamEncoding));
         dos.writeBytes(LINE_END);
+    }
+
+    @Override
+    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
+        if (CollectionsCompat.isEmpty(mParams) && CollectionsCompat.isEmpty(mDataMap)) {
+            return null;
+        }
+        return XHttpRequestUtils.createMultiPartEntity(this);
     }
 }
