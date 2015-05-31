@@ -3,17 +3,13 @@ package androidrubick.xframework.net.http.response;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.ReasonPhraseCatalog;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicHttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
-import androidrubick.net.HttpHeaders;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 
@@ -28,25 +24,16 @@ import androidrubick.utils.Objects;
  */
 public abstract class XHttpResponseHolder extends BasicHttpResponse {
 
-    protected XHttpResponseHolder(StatusLine statusline, ReasonPhraseCatalog catalog, Locale locale) {
-        super(statusline, catalog, locale);
-        parseSpecHeaders();
-    }
-
-    protected XHttpResponseHolder(StatusLine statusline) {
-        super(statusline);
-        parseSpecHeaders();
-    }
-
-    protected XHttpResponseHolder(ProtocolVersion ver, int code, String reason) {
-        super(ver, code, reason);
-        parseSpecHeaders();
-    }
-
     protected String mContentType;
     protected String mCharset;
     protected String mContentEncoding;
+    protected long mContentLength;
     protected HttpResponse mWrapped;
+    protected XHttpResponseHolder(StatusLine statusline, HttpEntity httpEntity) {
+        super(statusline);
+        setEntity(httpEntity);
+        parseSpecHeaders();
+    }
     protected XHttpResponseHolder(HttpResponse another) {
         super(another.getStatusLine());
         mWrapped = another;
@@ -56,7 +43,7 @@ public abstract class XHttpResponseHolder extends BasicHttpResponse {
     }
 
     protected void parseSpecHeaders() {
-        Header header = getFirstHeader(HttpHeaders.CONTENT_TYPE);
+        Header header = getEntity().getContentType();
         if (!Objects.isNull(header)) {
             MediaType mediaType = MediaType.parse(header.getValue());
             if (!Objects.isNull(mediaType)) {
@@ -65,10 +52,11 @@ public abstract class XHttpResponseHolder extends BasicHttpResponse {
             }
         }
 
-        header = getFirstHeader(HttpHeaders.CONTENT_ENCODING);
+        header = getEntity().getContentEncoding();
         if (!Objects.isNull(header)) {
             mContentEncoding = header.getValue();
         }
+        mContentLength = getEntity().getContentLength();
     }
 
     public String getContentType() {
@@ -93,6 +81,10 @@ public abstract class XHttpResponseHolder extends BasicHttpResponse {
 
     public String getContentEncoding(String defVal) {
         return Objects.isEmpty(mContentEncoding) ? defVal : mContentEncoding;
+    }
+
+    public long getContentLength() {
+        return mContentLength;
     }
 
     /**

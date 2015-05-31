@@ -131,7 +131,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
         }
         StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                 connection.getResponseCode(), connection.getResponseMessage());
-        XHttpResponseHolder response = new XHttpResponseHolder(responseStatus) {
+        XHttpResponseHolder response = new XHttpResponseHolder(responseStatus, entityFromConnection(connection)) {
             @Override
             public void closeConnection() {
                 consumeContent();
@@ -140,7 +140,6 @@ public class XHttpRequestAfterG extends XHttpRequest {
                 } catch (Throwable t) { }
             }
         };
-        response.setEntity(entityFromConnection(connection));
         for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
             if (!Objects.isNull(header.getKey())) {
                 response.addHeader(header.getKey(), header.getValue().get(0));

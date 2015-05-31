@@ -40,6 +40,7 @@ public class XHttpRequestTest {
             System.out.println("content type = " + response.getContentType());
             System.out.println("content charset = " + response.getContentCharset());
             System.out.println("content encoding = " + response.getContentEncoding());
+            System.out.println("content length = " + response.getContentLength());
 //            System.out.println(result);
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,6 +64,7 @@ public class XHttpRequestTest {
             System.out.println("content type = " + response.getContentType());
             System.out.println("content charset = " + response.getContentCharset());
             System.out.println("content encoding = " + response.getContentEncoding());
+            System.out.println("content length = " + response.getContentLength());
 //            System.out.println(result);
         } catch (IOException e) {
             e.printStackTrace();
