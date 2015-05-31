@@ -18,8 +18,6 @@ import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.utils.StandardSystemProperty;
-import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
 import androidrubick.xframework.net.http.request.XHttpRequestUtils;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
@@ -37,7 +35,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
 public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
     protected static final String TWO_HYPHENS = "--";
-    protected static final String LINE_END = StandardSystemProperty.LINE_SEPARATOR.value();
+    protected static final String LINE_END = "\r\n";
     protected String mBoundary = "--AndroidRubickFormBoundary1314520";
 
     protected Map<String, Object> mDataMap;
@@ -51,7 +49,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
      * @param name 在请求中的字段名称
      */
     public XHttpMultipartBody file(String name, File file) {
-        Preconditions.checkNotNull(file);
+        Preconditions.checkNotNull(file, "file");
         prepareDataMap();
         mDataMap.put(name, file);
         return this;
@@ -61,9 +59,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
      * 该方法设置的请求项的content type将设置为application/octet-stream
      */
     public XHttpMultipartBody rawField(String name, byte[] data) {
-        if (Objects.isNull(data)) {
-            data = NONE_BYTE;
-        }
+        Preconditions.checkNotNull(data, "data");
         prepareDataMap();
         mDataMap.put(name, data);
         return this;
@@ -80,7 +76,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
      * 类型的请求。
      */
     public XHttpMultipartBody useBoundary(String boundary) {
-        mBoundary = Preconditions.checkNotNull(boundary);
+        mBoundary = Preconditions.checkNotNull(boundary, "boundary");
         return this;
     }
 
@@ -118,7 +114,10 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         }
 
         // write end
-        dos.writeBytes(TWO_HYPHENS + mBoundary + TWO_HYPHENS + LINE_END);
+        dos.writeBytes(TWO_HYPHENS);
+        dos.writeBytes(mBoundary);
+        dos.writeBytes(TWO_HYPHENS);
+        dos.writeBytes(LINE_END);
         try {
             dos.flush();
         } catch (Exception e) {}
@@ -129,9 +128,10 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
     protected void writeFile(DataOutputStream dos, String fieldName, File file) throws Exception {
         final String filename = file.getName();
         final InputStream is = new FileInputStream(file);
-        dos.writeBytes(TWO_HYPHENS + mBoundary);
+        dos.writeBytes(TWO_HYPHENS);
+        dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestEncoder.getBytes("Content-Disposition: form-data; name=\""
+        dos.write(XHttpRequestUtils.getBytes("Content-Disposition: form-data; name=\""
                 + fieldName + "\";"
                 + " filename=\"" + filename + "\"", mParamEncoding));
         dos.writeBytes(LINE_END);
@@ -149,9 +149,10 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
     @Configurable
     protected void writeData(DataOutputStream dos, String name, byte[] data) throws IOException {
-        dos.writeBytes(TWO_HYPHENS + mBoundary);
+        dos.writeBytes(TWO_HYPHENS);
+        dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestEncoder.getBytes("Content-Disposition: form-data; name=\""
+        dos.write(XHttpRequestUtils.getBytes("Content-Disposition: form-data; name=\""
                 + name + "\"", mParamEncoding));
         dos.writeBytes(LINE_END);
 
@@ -167,21 +168,19 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
     @Configurable
     protected String guessMediaType(String filename) {
-        String type = null;
-        if (!Objects.isEmpty(filename)) {
-            type = MimeUtils.guessMimeTypeByGetExtensionFromSrc(filename);
-        }
+        String type = MimeUtils.guessMimeTypeByGetExtensionFromSrc(filename);
         return Objects.getOr(type, MediaType.OCTET_STREAM.name());
     }
 
     @Configurable
     protected void writeField(DataOutputStream dos, String key, Object value) throws IOException {
-        dos.writeBytes(TWO_HYPHENS + mBoundary);
+        dos.writeBytes(TWO_HYPHENS);
+        dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestEncoder.getBytes("Content-Disposition: form-data; name=\"" + key + "\"", mParamEncoding));
+        dos.write(XHttpRequestUtils.getBytes("Content-Disposition: form-data; name=\"" + key + "\"", mParamEncoding));
         dos.writeBytes(LINE_END);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestEncoder.getBytes(value, mParamEncoding));
+        dos.write(XHttpRequestUtils.getBytes(value, mParamEncoding));
         dos.writeBytes(LINE_END);
     }
 

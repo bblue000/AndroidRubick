@@ -40,6 +40,11 @@ public class XHttp {
     public static final String DEFAULT_CHARSET = Charsets.UTF_8.name();
 
     /**
+     * HTTPS握手超时时间
+     */
+    public static final int SSL_HANDSHAKE_TIMEOUT = 60 * 1000;
+
+    /**
      * 开始创建一个HTTP request
      *
      * @see androidrubick.xframework.net.http.request.XHttpRequestBuilder

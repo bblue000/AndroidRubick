@@ -8,8 +8,8 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
 import androidrubick.xframework.net.http.request.XHttpRequestUtils;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * content type 为<code>application/json</code>的
@@ -56,9 +56,9 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
 
     protected byte[] generateBody() throws Exception {
         if (mRawJsonSet) {
-            return XHttpRequestEncoder.getBytes(mRawJson, mParamEncoding);
+            return XHttpRequestUtils.getBytes(mRawJson, mParamEncoding);
         }
-        return XHttpRequestEncoder.getBytes(XHttpRequestEncoder.toJson(mParams), mParamEncoding);
+        return XHttpRequestUtils.getBytes(XHttpRequestUtils.toJson(mParams), mParamEncoding);
     }
 
     @Override
@@ -75,11 +75,11 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
         }
     }
 
+    @Configurable
     @Override
     protected MediaType rawContentType() {
         return MediaType.JSON;
     }
-
 
     @Override
     protected HttpEntity genreateHttpEntityByDerived() throws Exception {

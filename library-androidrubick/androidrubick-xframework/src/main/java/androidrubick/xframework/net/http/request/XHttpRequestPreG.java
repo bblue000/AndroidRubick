@@ -1,6 +1,5 @@
 package androidrubick.xframework.net.http.request;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -11,20 +10,19 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xframework.net.http.response.XHttpResponseHolder;
 
 /**
  *
@@ -34,7 +32,6 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  * <p/>
  * Created by Yin Yong on 15/5/15.
  */
-@Configurable
 public class XHttpRequestPreG extends XHttpRequest {
 
     private static HttpClient sHttpClient;
@@ -44,12 +41,24 @@ public class XHttpRequestPreG extends XHttpRequest {
     }
 
     @Override
-    public HttpResponse performRequest() throws IOException {
-        HttpClient httpClient = prepareHttpClient();
-        HttpUriRequest httpRequest = createHttpRequest();
+    public XHttpResponseHolder performRequest() throws IOException {
+        final HttpUriRequest httpRequest = createHttpRequest();
         addHeaders(httpRequest);
         addParams(httpRequest);
-        return httpClient.execute(httpRequest);
+
+        final HttpClient httpClient = prepareHttpClient();
+        return new XHttpResponseHolder(httpClient.execute(httpRequest)) {
+            @Override
+            public void closeConnection() {
+                consumeContent();
+                try {
+                    httpRequest.abort();
+                } catch (Throwable t) { }
+                try {
+                    httpClient.getConnectionManager().closeExpiredConnections();
+                } catch (Throwable t) { }
+            }
+        };
     }
 
     protected HttpUriRequest createHttpRequest() {
@@ -83,7 +92,7 @@ public class XHttpRequestPreG extends XHttpRequest {
                 request = new HttpTrace(getUrl());
                 break;
             case PATCH: {
-                request = new HttpPatch(getUrl());
+                request = new XHttpPatch(getUrl());
                 setEntityIfNonEmptyBody(request);
                 break;
             }
@@ -95,7 +104,7 @@ public class XHttpRequestPreG extends XHttpRequest {
 
     protected void addHeaders(HttpUriRequest httpRequest) {
         final Map<String, String> headers = getHeaders();
-        if (null == headers || headers.isEmpty()) {
+        if (CollectionsCompat.isEmpty(headers)) {
             return;
         }
         for (String key : headers.keySet()) {
@@ -116,12 +125,11 @@ public class XHttpRequestPreG extends XHttpRequest {
     }
 
     protected void setEntityIfNonEmptyBody(HttpUriRequest httpRequest) {
-        HttpMethod method = getMethod();
-        if (!method.canContainBody() || !(httpRequest instanceof HttpEntityEnclosingRequestBase)) {
+        if (!getMethod().canContainBody() || !(httpRequest instanceof HttpEntityEnclosingRequestBase)) {
             return ;
         }
-        XHttpBody body = getBody();
-        if (null == body) {
+        final XHttpBody body = getBody();
+        if (Objects.isNull(body)) {
             return ;
         }
         HttpEntityEnclosingRequestBase request = Objects.getAs(httpRequest);
@@ -130,45 +138,19 @@ public class XHttpRequestPreG extends XHttpRequest {
     }
 
     protected HttpClient prepareHttpClient() {
-        if (XHttp.REUSE_HTTPCLIENT) {
+        if (XHttp.REUSE_HTTPCLIENT && null != sHttpClient) {
             return sHttpClient;
         }
-        HttpClient httpClient = new DefaultHttpClient();
-
+        sHttpClient = null;
+        HttpClient httpClient = createHttpClient();
         if (XHttp.REUSE_HTTPCLIENT) {
             return sHttpClient = httpClient;
         }
         return httpClient;
     }
 
-    /**
-     * The HttpPatch class does not exist in the Android framework, so this has been defined here.
-     */
-    public static final class HttpPatch extends HttpEntityEnclosingRequestBase {
-
-        public final static String METHOD_NAME = "PATCH";
-
-        public HttpPatch() {
-            super();
-        }
-
-        public HttpPatch(final URI uri) {
-            super();
-            setURI(uri);
-        }
-
-        /**
-         * @throws IllegalArgumentException if the uri is invalid.
-         */
-        public HttpPatch(final String uri) {
-            super();
-            setURI(URI.create(uri));
-        }
-
-        @Override
-        public String getMethod() {
-            return METHOD_NAME;
-        }
-
+    protected HttpClient createHttpClient() {
+        return XHttpRequestUtils.createNewHttpClient();
     }
+
 }

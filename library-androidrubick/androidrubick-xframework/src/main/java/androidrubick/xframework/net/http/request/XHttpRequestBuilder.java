@@ -1,21 +1,18 @@
 package androidrubick.xframework.net.http.request;
 
 import android.os.Build;
-import android.util.AndroidRuntimeException;
 
 import org.androidrubick.utils.AndroidUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
+import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
-import androidrubick.net.MediaType;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.xbase.annotation.Configurable;
@@ -53,7 +50,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  *         </ul>
  *     </li>
  *     <li>
- *         请求超时时间（可选，默认为{@link androidrubick.xframework.net.http.XHttp#DEFAULT_TIMEOUT}）
+ *         请求超时时间（可选）
  *         <ul>
  *             <li>统一设置尝试连接时间和读取数据时间（{@link #timeout(int)}）</li>
  *             <li>设置尝试连接时间（{@link #connectionTimeout(int)}）</li>
@@ -84,10 +81,11 @@ public class XHttpRequestBuilder {
     @Configurable
     private XHttpRequestBuilder() {
         // append default headers
-        header(HttpHeaders.ACCEPT, "application/json;q=1, text/json;q=1, image/*;q=0.9, text/plain;q=0.8, */*;q=0.7");
+        header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
         header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET);
-        header(HttpHeaders.ACCEPT_ENCODING, "gzip;q=1, *;q=0");
+        header(HttpHeaders.ACCEPT_ENCODING, "gzip;q=1, *;q=0.1");
         header(HttpHeaders.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        header(HttpHeaders.USER_AGENT, XHttpRequestUtils.getUserAgent());
     }
 
     private String mBaseUrl;
@@ -256,7 +254,7 @@ public class XHttpRequestBuilder {
      * 设置连接超时时间
      */
     public XHttpRequestBuilder connectionTimeout(int timeout) {
-        mConnectionTimeout = timeout;
+        mConnectionTimeout = MathPreconditions.checkNonNegative("timeout", timeout);
         return this;
     }
 
@@ -264,7 +262,7 @@ public class XHttpRequestBuilder {
      * 设置读取/传输数据时间
      */
     public XHttpRequestBuilder socketTimeout(int timeout) {
-        mSocketTimeout = timeout;
+        mSocketTimeout = MathPreconditions.checkNonNegative("timeout", timeout);
         return this;
     }
 
@@ -278,22 +276,16 @@ public class XHttpRequestBuilder {
 
         Preconditions.checkArgument(!Objects.isEmpty(mBaseUrl), "url is null");
 
-        String url = mBaseUrl;
-        if (mMethod.canContainBody() && null != mBody) {
-        } else {
-            // 组合URL
-            url = XHttpRequestUtils.appendQuery(url, XHttpRequestEncoder.parseUrlEncodedParameters(mParams, mParamEncoding));
-        }
+        // 组合URL
+        String url = XHttpRequestUtils.appendQuery(mBaseUrl, XHttpRequestUtils.parseUrlEncodedParameters(mParams, mParamEncoding));
 
         // create a request
-        int version = 8;//AndroidUtils.getAndroidSDKVersion();
-//        if (version <= Build.VERSION_CODES.GINGERBREAD) {
-//            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
-//        } else {
-//            return null;
-//        }
-        return new XHttpRequestAfterG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
-
+        int version = AndroidUtils.getAndroidSDKVersion();
+        if (version <= Build.VERSION_CODES.GINGERBREAD) {
+            return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
+        } else {
+            return new XHttpRequestAfterG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
+        }
     }
 
     @Override

@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.request.XHttpRequestEncoder;
 import androidrubick.xframework.net.http.request.XHttpRequestUtils;
 
 /**
@@ -45,9 +44,9 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
     protected byte[] generateBody() throws Exception {
         byte[] body = NONE_BYTE;
         // 直接写入参数
-        String query = XHttpRequestEncoder.parseUrlEncodedParameters(mParams, mParamEncoding);
+        String query = XHttpRequestUtils.parseUrlEncodedParameters(mParams, mParamEncoding);
         if (!Objects.isEmpty(query)) {
-            body = XHttpRequestEncoder.getBytes(query, mParamEncoding);
+            body = XHttpRequestUtils.getBytes(query, mParamEncoding);
         }
         return body;
     }

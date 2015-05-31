@@ -1,13 +1,9 @@
 package androidrubick.xframework.net.http.request;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 
 import java.io.IOException;
@@ -18,10 +14,16 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
+import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.net.http.response.XHttpResponseHolder;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * somthing
@@ -40,7 +42,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
     }
 
     @Override
-    public HttpResponse performRequest() throws IOException {
+    public XHttpResponseHolder performRequest() throws IOException {
         URL url = new URL(getUrl());
         HttpURLConnection connection = openConnection(url);
         addHeaders(connection);
@@ -64,20 +66,20 @@ public class XHttpRequestAfterG extends XHttpRequest {
      */
     private HttpURLConnection openConnection(URL url) throws IOException {
         HttpURLConnection connection = createConnection(url);
-//        // use caller-provided custom SslSocketFactory, if any, for HTTPS
-//        if ("https".equals(url.getProtocol()) && mSslSocketFactory != null) {
-//            ((HttpsURLConnection)connection).setSSLSocketFactory(mSslSocketFactory);
-//        }
+        // use caller-provided custom SslSocketFactory, if any, for HTTPS
+        if (XHttpRequestUtils.isHttps(url)) {
+            ((HttpsURLConnection)connection).setSSLSocketFactory(XHttpRequestUtils.createSSLSocketFactory());
+        }
         return connection;
     }
 
     protected void addHeaders(HttpURLConnection httpRequest) {
         final Map<String, String> headers = getHeaders();
-        if (null == headers || headers.isEmpty()) {
+        if (CollectionsCompat.isEmpty(headers)) {
             return;
         }
         for (String key : headers.keySet()) {
-            httpRequest.addRequestProperty(key, headers.get(key));
+            httpRequest.setRequestProperty(key, headers.get(key));
         }
     }
 
@@ -104,7 +106,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
 
     protected void setEntityIfNonEmptyBody(HttpURLConnection connection) throws IOException {
         XHttpBody body = getBody();
-        if (null == body) {
+        if (Objects.isNull(body)) {
             return ;
         }
         // Prepare output. There is no need to set Content-Length explicitly,
@@ -117,7 +119,8 @@ public class XHttpRequestAfterG extends XHttpRequest {
         IOUtils.close(os);
     }
 
-    protected HttpResponse prepareResponse(HttpURLConnection connection) throws IOException {
+    @Configurable
+    protected XHttpResponseHolder prepareResponse(final HttpURLConnection connection) throws IOException {
         // Initialize HttpResponse with data from the HttpURLConnection.
         ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
         int responseCode = connection.getResponseCode();
@@ -128,12 +131,19 @@ public class XHttpRequestAfterG extends XHttpRequest {
         }
         StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                 connection.getResponseCode(), connection.getResponseMessage());
-        BasicHttpResponse response = new BasicHttpResponse(responseStatus);
+        XHttpResponseHolder response = new XHttpResponseHolder(responseStatus) {
+            @Override
+            public void closeConnection() {
+                consumeContent();
+                try {
+                    connection.disconnect();
+                } catch (Throwable t) { }
+            }
+        };
         response.setEntity(entityFromConnection(connection));
         for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-            if (header.getKey() != null) {
-                Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
-                response.addHeader(h);
+            if (!Objects.isNull(header.getKey())) {
+                response.addHeader(header.getKey(), header.getValue().get(0));
             }
         }
         return response;

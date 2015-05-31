@@ -1,15 +1,35 @@
 package androidrubick.xframework.net.http.request;
 
+import android.net.SSLCertificateSocketFactory;
+import android.net.http.AndroidHttpClient;
+import android.util.AndroidRuntimeException;
+
+import com.google.gson.Gson;
+
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Map;
 
+import javax.net.ssl.SSLSocketFactory;
+
+import androidrubick.collect.CollectionsCompat;
+import androidrubick.text.MapJoiner;
+import androidrubick.text.Strings;
+import androidrubick.utils.Function;
 import androidrubick.utils.Objects;
+import androidrubick.utils.StandardSystemProperty;
+import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * 帮助类
@@ -23,6 +43,50 @@ import androidrubick.xframework.net.http.request.body.XHttpBody;
 public class XHttpRequestUtils {
 
     private XHttpRequestUtils() {}
+
+    @Configurable
+    private static final Gson sGson = new Gson();
+
+    @Configurable
+    private static SSLSocketFactory sSSLSocketFactory;
+
+    @Configurable
+    public static HttpClient createNewHttpClient() {
+        return AndroidHttpClient.newInstance(getUserAgent());
+    }
+
+    @Configurable
+    public static SSLSocketFactory createSSLSocketFactory() {
+        // 第二个参数需要跟HttpClient对应
+        if (null == sSSLSocketFactory) {
+            sSSLSocketFactory = SSLCertificateSocketFactory.getDefault(XHttp.SSL_HANDSHAKE_TIMEOUT, null);
+        }
+        return sSSLSocketFactory;
+    }
+
+    @Configurable
+    public static boolean isHttps(URL url) {
+        return "https".equals(url.getProtocol());
+    }
+
+    /**
+     * 获取<code>User-Agent</code>
+     */
+    @Configurable
+    public static String getUserAgent() {
+        String agent = StandardSystemProperty.HTTP_AGENT.value();
+        if (Objects.isEmpty(agent)) {
+            String osType = "Android";
+            String sdkVersion = android.os.Build.VERSION.RELEASE;
+            String device = android.os.Build.MODEL;
+            String id = android.os.Build.ID;
+            agent = String.format("Mozilla/5.0 (Linux; U; %s %s; %s Build/%s)",
+                    osType, sdkVersion, device, id);
+            // Mozilla/5.0 (Linux; U; Android 4.3; en-us; HTC One - 4.3 - API 18 -
+            // 1080x1920 Build/JLS36G)
+        }
+        return agent;
+    }
 
     /**
      * 向目标URL后追加参数
@@ -40,6 +104,66 @@ public class XHttpRequestUtils {
         }
         url += query;
         return url;
+    }
+
+    public static String toJson(Map<String, ?> parameters) {
+        if (CollectionsCompat.isEmpty(parameters)) {
+            return Strings.EMPTY;
+        }
+        return sGson.toJson(parameters);
+    }
+
+    @Configurable
+    public static String parseUrlEncodedParameters(Map<String, ?> params, final String encoding) {
+        return MapJoiner.by("&", "=")
+                .withToStringFuncOfKey(new Function<String, CharSequence>() {
+                    @Override
+                    public CharSequence apply(String input) {
+                        try {
+                            return encodeParamKey(input, encoding);
+                        } catch (UnsupportedEncodingException e) {
+                            throw new AndroidRuntimeException(e);
+                        }
+                    }
+                })
+                .withToStringFuncOfValue(new Function<Object, CharSequence>() {
+                    @Override
+                    public CharSequence apply(Object input) {
+                        try {
+                            return encodeParamValue(String.valueOf(input), encoding);
+                        } catch (UnsupportedEncodingException e) {
+                            throw new AndroidRuntimeException(e);
+                        }
+                    }
+                })
+                .join(params);
+    }
+
+    public static byte[] getBytes(Object value, String encoding) throws UnsupportedEncodingException {
+        return String.valueOf(value).getBytes(encoding);
+    }
+
+    /**
+     * 加密处理参数键
+     */
+    @Configurable
+    public static String encodeParamKey(String key, String encoding) throws UnsupportedEncodingException {
+        return encodeByDefault(key, encoding);
+    }
+
+    /**
+     * 加密处理参数值
+     */
+    @Configurable
+    public static String encodeParamValue(Object value, String encoding) throws UnsupportedEncodingException {
+        return encodeByDefault(String.valueOf(value), encoding);
+    }
+
+    private static String encodeByDefault(String origin, String encoding) throws UnsupportedEncodingException {
+        if (Objects.isEmpty(origin)) {
+            return origin;
+        }
+        return URLEncoder.encode(origin, encoding);
     }
 
     public static HttpEntity createByteArrayEntity(byte[] data, String contentType, String encoding) {

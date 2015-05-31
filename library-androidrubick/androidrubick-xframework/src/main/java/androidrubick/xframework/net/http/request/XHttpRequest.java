@@ -1,13 +1,11 @@
 package androidrubick.xframework.net.http.request;
 
-import org.apache.http.HttpResponse;
-
 import java.io.IOException;
 import java.util.Map;
 
 import androidrubick.net.HttpMethod;
-import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.net.http.response.XHttpResponseHolder;
 
 /**
  * 封装网络请求
@@ -64,6 +62,6 @@ public abstract class XHttpRequest {
      *
      * @throws IOException
      */
-    public abstract HttpResponse performRequest() throws IOException;
+    public abstract XHttpResponseHolder performRequest() throws IOException;
 
 }

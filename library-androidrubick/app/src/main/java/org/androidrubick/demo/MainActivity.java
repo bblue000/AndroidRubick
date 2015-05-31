@@ -1,5 +1,6 @@
 package org.androidrubick.demo;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidrubick.xframework.events.internal.XEventAnnotationProcessor;
+import androidrubicktest.AndroidBuildTest;
+import androidrubicktest.XHttpRequestTest;
 
 /**
  * somthing
@@ -43,6 +46,19 @@ public class MainActivity extends BaseActivity {
         list.add("");
         eventBus.post(list);
         XEventAnnotationProcessor.inject(this);
+
+
+        new AsyncTask<Object, Object, Object>() {
+
+            @Override
+            protected Object doInBackground(Object... params) {
+                XHttpRequestTest.testGet();
+                XHttpRequestTest.testPost();
+                return null;
+            }
+        }.execute();
+
+        AndroidBuildTest.testGet();
     }
 
     @Override

@@ -6,6 +6,8 @@ import java.util.Map;
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.text.Charsets;
 import androidrubick.text.MapJoiner;
+import androidrubick.text.SimpleTokenizer;
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
@@ -326,5 +328,42 @@ public class MediaType {
         } else {
             return false;
         }
+    }
+
+    private static final char TYPE_END_TOKENS = '/';
+    private static final String SUBTYPE_END_TOKENS = "()<>@,;:\\\"/[]?= ";
+    private static final String PARAM_KEY_END_TOKENS = SUBTYPE_END_TOKENS;
+    private static final String PARAM_VALUE_END_TOKENS = PARAM_KEY_END_TOKENS;
+    public static MediaType parse(String origin) {
+        Preconditions.checkNotNull(origin);
+        SimpleTokenizer tokenizer = new SimpleTokenizer(origin);
+        String type = tokenizer.consumeNonChar(TYPE_END_TOKENS);
+        Preconditions.checkArgument(!Objects.isEmpty(type), "no type found");
+        tokenizer.consumeChar(TYPE_END_TOKENS);
+        Preconditions.checkArgument(tokenizer.hasMore(), "no subtype found");
+        String subtype = tokenizer.consumeNonTokens(SUBTYPE_END_TOKENS);
+        Preconditions.checkArgument(!Objects.isEmpty(subtype), "no subtype found");
+        tokenizer.consumeTokens(SUBTYPE_END_TOKENS);
+
+        if (!tokenizer.hasMore()) {
+            return MediaType.of(type, subtype);
+        }
+
+        MapBuilder mapBuilder = MapBuilder.newHashMap(4);
+        while (tokenizer.hasMore()) {
+            String key = tokenizer.consumeNonTokens(PARAM_KEY_END_TOKENS);
+            Preconditions.checkArgument(!Objects.isEmpty(key), "err key");
+            if (tokenizer.hasMore()) {
+                tokenizer.consumeTokens(PARAM_KEY_END_TOKENS);
+            }
+            Preconditions.checkArgument(tokenizer.hasMore(), "no value found of key %s", key);
+            String value = tokenizer.consumeNonTokens(PARAM_VALUE_END_TOKENS);
+            Preconditions.checkArgument(!Objects.isEmpty(value), "no value found of key %s", key);
+            if (tokenizer.hasMore()) {
+                tokenizer.consumeTokens(PARAM_VALUE_END_TOKENS);
+            }
+            mapBuilder.put(key, value);
+        }
+        return MediaType.of(type, subtype, mapBuilder.build());
     }
 }

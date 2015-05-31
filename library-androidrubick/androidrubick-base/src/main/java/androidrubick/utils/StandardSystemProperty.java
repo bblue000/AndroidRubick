@@ -165,7 +165,12 @@ public enum StandardSystemProperty {
     /**
      * User's current working directory.
      */
-    USER_DIR("user.dir");
+    USER_DIR("user.dir"),
+
+    /**
+     * http agent.
+     */
+    HTTP_AGENT("http.agent");
 
     private final String key;
 

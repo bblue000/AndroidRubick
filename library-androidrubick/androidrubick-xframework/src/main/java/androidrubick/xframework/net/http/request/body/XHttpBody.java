@@ -101,7 +101,8 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 设置参数的字符编码
      */
     public R paramEncoding(String charset) {
-        mParamEncoding = Preconditions.checkNotNull(charset);
+        Preconditions.checkArgument(!Objects.isEmpty(charset), "charset is null or empty");
+        mParamEncoding = charset;
         return self();
     }
 
@@ -117,7 +118,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 硬性指定ContentType
      */
     public R contentType(String contentType) {
-        Preconditions.checkNotNull(contentType);
+        Preconditions.checkArgument(!Objects.isEmpty(contentType), "charset is null or empty");
         mUserSetContentType = true;
         mContentType = contentType;
         return self();
