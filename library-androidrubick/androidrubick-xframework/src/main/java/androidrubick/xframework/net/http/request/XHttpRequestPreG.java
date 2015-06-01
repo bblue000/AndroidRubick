@@ -22,7 +22,7 @@ import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpResponseHolder;
+import androidrubick.xframework.net.http.response.XHttpResultHolder;
 
 /**
  *
@@ -41,13 +41,13 @@ public class XHttpRequestPreG extends XHttpRequest {
     }
 
     @Override
-    public XHttpResponseHolder performRequest() throws IOException {
+    public XHttpResultHolder performRequest() throws IOException {
         final HttpUriRequest httpRequest = createHttpRequest();
         addHeaders(httpRequest);
         addParams(httpRequest);
 
         final HttpClient httpClient = prepareHttpClient();
-        return new XHttpResponseHolder(httpClient.execute(httpRequest)) {
+        return new XHttpResultHolder(httpClient.execute(httpRequest)) {
             @Override
             public void closeConnection() {
                 consumeContent();

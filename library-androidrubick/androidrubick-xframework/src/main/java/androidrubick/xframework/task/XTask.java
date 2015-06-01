@@ -3,8 +3,7 @@ package androidrubick.xframework.task;
 import android.os.AsyncTask;
 
 /**
- *
- *
+ * 具有优先级的{@link AsyncTask AsyncTask}
  *
  * <p/>
  * <p/>
@@ -12,8 +11,7 @@ import android.os.AsyncTask;
  *
  * @since 1.0
  */
-public abstract class XTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result>
-{
+public abstract class XTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
     /**
      * {@inheritDoc}

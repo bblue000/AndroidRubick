@@ -6,6 +6,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.utils.Reflects;
 import androidrubick.xframework.events.annotation.XEvent;
+import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
  * somthing
@@ -18,6 +19,8 @@ import androidrubick.xframework.events.annotation.XEvent;
  */
 public class XEventAnnotationProcessor {
 
+    // TODO 此处可以设置更多的过滤项
+    @Configurable
     static final String PATH_PREFIX_JAVA = "java.";
     static final String PATH_PREFIX_JAVAX = "javax.";
     static final String PATH_PREFIX_ANDROID = "android.";

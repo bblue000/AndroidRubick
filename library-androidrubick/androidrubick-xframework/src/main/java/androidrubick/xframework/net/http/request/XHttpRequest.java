@@ -5,7 +5,7 @@ import java.util.Map;
 
 import androidrubick.net.HttpMethod;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpResponseHolder;
+import androidrubick.xframework.net.http.response.XHttpResultHolder;
 
 /**
  * 封装网络请求
@@ -62,6 +62,6 @@ public abstract class XHttpRequest {
      *
      * @throws IOException
      */
-    public abstract XHttpResponseHolder performRequest() throws IOException;
+    public abstract XHttpResultHolder performRequest() throws IOException;
 
 }

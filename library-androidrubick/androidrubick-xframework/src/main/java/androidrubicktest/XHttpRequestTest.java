@@ -1,8 +1,5 @@
 package androidrubicktest;
 
-import org.apache.http.HttpResponse;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -11,7 +8,7 @@ import androidrubick.net.HttpMethod;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpResponseHolder;
+import androidrubick.xframework.net.http.response.XHttpResultHolder;
 
 /**
  * something
@@ -30,7 +27,7 @@ public class XHttpRequestTest {
     public static void testGet() {
         System.out.println("============testGet");
         try {
-            XHttpResponseHolder response = XHttpRequestBuilder.newInstance()
+            XHttpResultHolder response = XHttpRequestBuilder.newInstance()
                     .url("http://www.baidu.com/")
                     .build()
                     .performRequest();
@@ -50,7 +47,7 @@ public class XHttpRequestTest {
     public static void testPost() {
         System.out.println("============testPost");
         try {
-            XHttpResponseHolder response = XHttpRequestBuilder.newInstance()
+            XHttpResultHolder response = XHttpRequestBuilder.newInstance()
                     .url("http://www.baidu.com/")
                     .method(HttpMethod.POST)
                     .param("q", "我是中国人")
