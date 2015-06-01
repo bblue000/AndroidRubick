@@ -19,11 +19,11 @@ public class XAPI {
      */
     public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
 
-    public static void get() {
+    public static void get(String url, Object param, Object result, XAPICallback callback) {
 
     }
 
-    public static void post() {
+    public static void post(String url, Object param, Object result, XAPICallback callback) {
 
     }
 

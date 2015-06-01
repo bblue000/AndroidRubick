@@ -6,6 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicHttpResponse;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
@@ -22,7 +23,7 @@ import androidrubick.utils.Objects;
  *
  * @since 1.0
  */
-public abstract class XHttpResponseHolder extends BasicHttpResponse {
+public abstract class XHttpResponseHolder extends BasicHttpResponse implements Closeable {
 
     protected String mContentType;
     protected String mCharset;
@@ -113,5 +114,10 @@ public abstract class XHttpResponseHolder extends BasicHttpResponse {
         try {
             httpEntity.consumeContent();
         } catch (Throwable t) { }
+    }
+
+    @Override
+    public void close() throws IOException {
+        closeConnection();
     }
 }
