@@ -1,6 +1,12 @@
 package androidrubick.xframework.api;
 
+import android.os.AsyncTask;
+
+import androidrubick.xframework.api.param.XParamable;
+import androidrubick.xframework.api.result.XResultable;
+
 /**
+ * API
  *
  * <p/>
  *
@@ -19,11 +25,11 @@ public class XAPI {
      */
     public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
 
-    public static void get(String url, Object param, Object result, XAPICallback callback) {
-
+    public static void get(String url, XParamable param, XResultable result, XAPICallback callback) {
+        AsyncTask.execute();
     }
 
-    public static void post(String url, Object param, Object result, XAPICallback callback) {
+    public static void post(String url, XParamable param, XResultable result, XAPICallback callback) {
 
     }
 

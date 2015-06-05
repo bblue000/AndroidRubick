@@ -1,7 +1,7 @@
 package androidrubick.xframework.app.manager;
 
 /**
- * 数据请求的基类
+ * 中的数据请求的基类
  *
  * <p/>
  *

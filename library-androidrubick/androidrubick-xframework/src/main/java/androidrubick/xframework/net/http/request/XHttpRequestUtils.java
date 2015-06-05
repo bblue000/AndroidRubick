@@ -4,8 +4,6 @@ import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
 import android.util.AndroidRuntimeException;
 
-import com.google.gson.Gson;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.AbstractHttpEntity;
@@ -29,6 +27,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.xbase.JsonParser;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
@@ -43,10 +42,6 @@ import androidrubick.xframework.xbase.annotation.Configurable;
 public class XHttpRequestUtils {
 
     private XHttpRequestUtils() {}
-
-    @Configurable
-    private static final Gson sGson = new Gson();
-
     @Configurable
     private static SSLSocketFactory sSSLSocketFactory;
 
@@ -57,7 +52,7 @@ public class XHttpRequestUtils {
 
     @Configurable
     public static SSLSocketFactory createSSLSocketFactory() {
-        // 第二个参数需要跟HttpClient对应
+        // TODO 第二个参数需要跟HttpClient对应
         if (null == sSSLSocketFactory) {
             sSSLSocketFactory = SSLCertificateSocketFactory.getDefault(XHttp.SSL_HANDSHAKE_TIMEOUT, null);
         }
@@ -110,7 +105,7 @@ public class XHttpRequestUtils {
         if (CollectionsCompat.isEmpty(parameters)) {
             return Strings.EMPTY;
         }
-        return sGson.toJson(parameters);
+        return JsonParser.toJsonString(parameters);
     }
 
     @Configurable
