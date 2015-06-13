@@ -9,7 +9,6 @@ package androidrubick.xframework.net.http.response;
  * @since 1.0
  */
 public class XHttpResponseUtils {
-    private XHttpResponseUtils() {
-    }
+    private XHttpResponseUtils() { }
 
 }

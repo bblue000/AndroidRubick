@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        ***************************************
+                    按钮相关的颜色配置
+        ***************************************
+    -->
+
+    <!-- 主按钮背景色 -->
+    <color name="btn_primary_normal">@color/app_main</color>
+    <color name="btn_primary_hover">@color/app_main</color>
+    <color name="btn_primary_disabled">@color/app_inactive</color>
+
+    <!-- 主按钮文字颜色 -->
+    <color name="btn_primary_textcolor_normal">@color/app_main_light</color>
+    <color name="btn_primary_textcolor_pressed">@color/app_main_light</color>
+    <color name="btn_primary_textcolor_disabled">@color/app_inactive</color>
+
+
+    <!-- 辅按钮色调，与主按钮行程对比，一般比主按钮色值浅 -->
+    <color name="btn_secondary_normal">@color/app_main_light</color>
+    <color name="btn_secondary_pressed">@color/app_main_light</color>
+    <color name="btn_secondary_disabled">@color/app_inactive</color>
+</resources>

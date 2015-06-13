@@ -38,25 +38,25 @@ public class XEventAPI {
         XEventAnnotationProcessor.inject(target);
     }
 
-//    /**
-//     * 注册事件观察
-//     *
-//     * @param observer 事件观察者
-//     * @param actions 事件标识
-//     */
-//    public static void register(Object observer, Object...actions) {
-//
-//    }
-//
-//    /**
-//     * 注销<code>observer</code>对应的所有事件观察
-//     *
-//     * @param observer 事件观察者
-//     * @param actions 事件观察者
-//     */
-//    public static void unregister(Object observer, Object...actions) {
-//
-//    }
+    /**
+     * 注册事件观察
+     *
+     * @param observer 事件观察者
+     * @param actions 事件标识
+     */
+    public static void register(Object observer, Object...actions) {
+
+    }
+
+    /**
+     * 注销<code>observer</code>对应的所有事件观察
+     *
+     * @param observer 事件观察者
+     * @param actions 事件观察者
+     */
+    public static void unregister(Object observer, Object...actions) {
+
+    }
 
     public static void post(Object action) {
         post(action, null);

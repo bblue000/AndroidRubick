@@ -14,7 +14,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  * <br/>
  * 可以通过{@link androidrubick.xframework.net.http.request.body.XHttpBody request body builder}
  * 创建{@link androidrubick.net.MediaType#FORM_DATA application/x-www-form-urlencoded}或者
- * {@link androidrubick.net.MediaType#FORM_DATA_MULTIPART multipart/form-data}类型的请求体。
+ * {@link androidrubick.net.MediaType#FORM_DATA_MULTIPART multipart/form-data}等多种类型的请求体。
  *
  * <p/>
  *

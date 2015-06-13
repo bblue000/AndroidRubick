@@ -26,24 +26,32 @@ public class XEventAnnotationProcessor {
     static final String PATH_PREFIX_ANDROID = "android.";
     static final String PATH_PREFIX_ANDROIDRUBICK = "androidrubick.";
 
+    /**
+     *
+     * @param target
+     */
     public static void inject(Object target) {
         Preconditions.checkNotNull(target, "target object is null");
         Class<?> targetClass = target.getClass();
         injectTargetClassMethods(target, targetClass);
     }
 
-    public static void post(String action) {
-        post(action, null);
-    }
-
+    /**
+     * 广播事件
+     *
+     * @param action 事件标识
+     * @param data 事件携带的数据
+     */
     public static void post(String action, Object data) {
         XEventBus.getInstance().post(action, data);
     }
 
-    public static void postToMain(String action) {
-        postToMain(action);
-    }
-
+    /**
+     * 广播事件，
+     *
+     * @param action 事件标识
+     * @param data 事件携带的数据
+     */
     public static void postToMain(String action, Object data) {
         XEventBus.getInstance().postToMain(action, data);
     }

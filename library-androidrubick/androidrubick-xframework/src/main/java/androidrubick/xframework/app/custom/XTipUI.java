@@ -4,8 +4,9 @@ import android.content.Context;
 
 import org.androidrubick.utils.ToastUtils;
 
+import androidrubick.xframework.xbase.annotation.Configurable;
+
 /**
- *
  *
  * <p/>
  *
@@ -41,6 +42,7 @@ public class XTipUI {
     /**
      * 显示提示
      */
+    @Configurable
     public void show() {
         ToastUtils.showToast(mMessage);
     }

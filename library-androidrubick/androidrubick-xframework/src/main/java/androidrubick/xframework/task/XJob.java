@@ -11,7 +11,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  *
  * <br/>
  *
- *
+ * 使用{@link XJob#execute(Object[])}执行任务。
  *
  * <p/>
  *
@@ -44,21 +44,21 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
         mCreateTime = peekTime();
     }
 
-    /*package*/ void setAddToQueueTime(long timeInMillis) {
+    protected void setAddToQueueTime(long timeInMillis) {
         mExpireTime = MathPreconditions.checkNonNegative("add to queue time", timeInMillis);
     }
 
     /**
      * 获取任务加入时间（单位：毫秒），如果尚未加入队列或已移除，则返回0
      */
-    public long getAddToQueueTime() {
+    protected long getAddToQueueTime() {
         return mAddToQueueTime;
     }
 
     /**
      * 设置过期时间（单位：毫秒）
      */
-    public void setExpireTime(long timeInMillis) {
+    protected void setExpireTime(long timeInMillis) {
         mExpireTime = MathPreconditions.checkNonNegative("exipre time", timeInMillis);
     }
 
@@ -67,7 +67,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      *
      * @return 如果没有设置，返回0；
      */
-    public long getExpireTime() {
+    protected long getExpireTime() {
         return mExpireTime;
     }
 
@@ -77,7 +77,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      *
      * @return 任务的创建时间
      */
-    public long getCreateTime() {
+    protected long getCreateTime() {
         return mCreateTime;
     }
 
