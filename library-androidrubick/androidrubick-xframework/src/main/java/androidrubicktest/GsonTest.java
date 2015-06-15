@@ -13,7 +13,7 @@ import androidrubick.xframework.xbase.JsonParser;
 public class GsonTest {
 
     public static void main(String args[]) {
-        System.out.println(JsonParser.toJsonString());
+//        System.out.println(JsonParser.toJsonString());
     }
 
 }

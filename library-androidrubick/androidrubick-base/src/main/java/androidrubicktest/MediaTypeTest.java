@@ -56,8 +56,8 @@ public class MediaTypeTest {
 //        System.out.println(MediaType.parse("a"));
         // no subtype
 //        System.out.println(MediaType.parse("a/"));
-        // 多了个空格
-//        System.out.println(MediaType.parse("a/ b;"));
+        // no subtype found
+        System.out.println(MediaType.parse("a/ b;"));
         System.out.println(MediaType.parse("a/b;"));
         // no value of key q found
 //        System.out.println(MediaType.parse("a/b; q"));
