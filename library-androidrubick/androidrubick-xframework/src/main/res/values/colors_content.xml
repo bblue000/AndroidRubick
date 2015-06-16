@@ -7,10 +7,20 @@
         ***************************************
     -->
 
-    <!-- 主按钮背景 -->
-    <color name="btn_primary_normal">@color/app_main</color>
-    <color name="btn_primary_pressed">@color/app_main</color>
-    <color name="btn_primary_disabled">@color/app_inactive</color>
+    <!-- 主内容背景 -->
+    <color name="content_primary_bg_normal">#ffffff</color>
+    <color name="content_primary_bg_pressed">@color/content_primary_bg_normal</color>
+    <color name="content_primary_bg_disabled">@color/content_primary_bg_normal</color>
+
+    <!-- 主内容文本颜色 -->
+    <color name="content_primary_textcolor_normal">#ffffff</color>
+    <color name="content_primary_textcolor_pressed">@color/content_primary_bg_normal</color>
+    <color name="content_primary_textcolor_disabled">@color/content_primary_bg_normal</color>
+
+    <!-- 放在主内容背景下用于区分的二级背景，如分隔开的区块背景 -->
+    <color name="content_secondary_bg_normal">@color/content_primary_bg_normal</color>
+    <color name="content_secondary_bg_pressed">@color/content_secondary_bg_normal</color>
+    <color name="content_secondary_bg_disabled">@color/content_secondary_bg_normal</color>
 
     <color name="btn_primary_textcolor_normal">@color/app_main</color>
     <color name="btn_primary_textcolor_pressed">@color/app_main</color>

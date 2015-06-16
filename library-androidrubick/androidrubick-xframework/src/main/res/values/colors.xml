@@ -14,23 +14,14 @@
 
     <!-- 应用的主色对应的文本颜色 -->
     <color name="app_main_textcolor_normal">#FFFFFF</color>
-    <!-- 在press等状态的文本颜色 -->
-    <color name="app_main_textcolor_hover">@color/app_main_textcolor_normal</color>
-
     <color name="app_main_dark_textcolor_normal">@color/app_main_textcolor_normal</color>
-    <color name="app_main_dark_textcolor_hover">@color/app_main_textcolor_hover</color>
-
     <color name="app_main_light_textcolor_normal">@color/app_main_textcolor_normal</color>
-    <color name="app_main_light_textcolor_hover">@color/app_main_textcolor_hover</color>
-
     <color name="app_inactive_textcolor">@color/app_main_textcolor_normal</color>
 
 
 
-    <!-- 应用的强调色，置于主色调中也能一眼看到强调部分 -->
+    <!-- 应用的强调色，置于主色调中也能一眼看到强调部分，一般用于 -->
     <color name="app_highlight">#448AFF</color>
-    <color name="app_highlight_textcolor_normal">@color/app_main_textcolor</color>
-    <color name="app_highlight_textcolor_normal">@color/app_main_textcolor</color>
-    <color name="app_highlight_textcolor_normal">@color/app_main_textcolor</color>
+    <color name="app_highlight_textcolor_normal">@color/app_main_textcolor_normal</color>
 
 </resources>
