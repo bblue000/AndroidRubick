@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- 应用的主色，主色调，例如：按钮主色调，title bar背景或者文本色调 -->
+    <!-- 应用的主色，主色调，前景文字色，特定区域背景色（不一定是），例如：按钮主色调，title bar背景或者文本色调 -->
     <color name="app_main">#3F51B5</color>
-    <!-- 主色调深色值， -->
+    <!-- 主色调深色值 -->
     <color name="app_main_dark">#303F9F</color>
-    <!-- 部分地方深色主调 -->
+    <!-- 部分地方浅色主调 -->
     <color name="app_main_light">#C5CAE9</color>
-    <!-- 应用的辅色，按钮辅色调 -->
+    <!-- 应用的主要的不可用/不可点击状态 -->
     <color name="app_inactive">#B6B6B6</color>
 
 
 
     <!-- 应用的主色对应的文本颜色 -->
-    <color name="app_main_textcolor_normal">#FFFFFF</color>
-    <color name="app_main_dark_textcolor_normal">@color/app_main_textcolor_normal</color>
-    <color name="app_main_light_textcolor_normal">@color/app_main_textcolor_normal</color>
-    <color name="app_inactive_textcolor">@color/app_main_textcolor_normal</color>
+    <color name="app_main_textcolor">#FFFFFF</color>
+    <!-- 应用的主色深色值对应的文本颜色 -->
+    <color name="app_main_dark_textcolor">@color/app_main_textcolor</color>
+    <!-- 浅色主调对应的文本颜色 -->
+    <color name="app_main_light_textcolor">@color/app_main_textcolor</color>
+    <!-- 应用的主要的不可用/不可点击状态对应的文本颜色 -->
+    <color name="app_inactive_textcolor">@color/app_main_textcolor</color>
 
 
 
     <!-- 应用的强调色，置于主色调中也能一眼看到强调部分，一般用于 -->
-    <color name="app_highlight">#448AFF</color>
-    <color name="app_highlight_textcolor_normal">@color/app_main_textcolor_normal</color>
+    <color name="app_main_highlight">#448AFF</color>
+    <color name="app_main_highlight_textcolor">@color/app_main_textcolor</color>
+    <color name="app_main_light_highlight">@color/app_main_highlight</color>
+    <color name="app_main_light_highlight_textcolor">@color/app_main_highlight_textcolor</color>
 
 </resources>

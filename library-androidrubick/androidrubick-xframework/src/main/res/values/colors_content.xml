@@ -8,27 +8,31 @@
     -->
 
     <!-- 主内容背景 -->
-    <color name="content_primary_bg_normal">#ffffff</color>
-    <color name="content_primary_bg_pressed">@color/content_primary_bg_normal</color>
-    <color name="content_primary_bg_disabled">@color/content_primary_bg_normal</color>
+    <color name="content_primary_bg_normal">#f1f2f3</color>
+    <!-- 激活状态颜色 -->
+    <color name="content_primary_bg_hover">@color/content_primary_bg_normal</color>
+    <!-- 不可用/不可点击状态颜色 -->
+    <color name="content_primary_bg_inactive">@color/content_primary_bg_normal</color>
 
+    <color name="content_textcolor_inactive">@color/app_inactive</color>
     <!-- 主内容文本颜色 -->
-    <color name="content_primary_textcolor_normal">#ffffff</color>
-    <color name="content_primary_textcolor_pressed">@color/content_primary_bg_normal</color>
-    <color name="content_primary_textcolor_disabled">@color/content_primary_bg_normal</color>
+    <color name="content_primary_textcolor_normal">#212121</color>
+    <color name="content_primary_textcolor_hover">@color/app_main</color>
+    <color name="content_primary_textcolor_inactive">@color/content_textcolor_inactive</color>
+
+
 
     <!-- 放在主内容背景下用于区分的二级背景，如分隔开的区块背景 -->
-    <color name="content_secondary_bg_normal">@color/content_primary_bg_normal</color>
-    <color name="content_secondary_bg_pressed">@color/content_secondary_bg_normal</color>
-    <color name="content_secondary_bg_disabled">@color/content_secondary_bg_normal</color>
+    <color name="content_secondary_bg_normal">#ffffff</color>
+    <color name="content_secondary_bg_hover">@color/content_secondary_bg_normal</color>
+    <color name="content_secondary_bg_inactive">@color/content_secondary_bg_normal</color>
 
-    <color name="btn_primary_textcolor_normal">@color/app_main</color>
-    <color name="btn_primary_textcolor_pressed">@color/app_main</color>
-    <color name="btn_primary_textcolor_disabled">@color/app_inactive</color>
+    <color name="content_secondary_textcolor_normal">#727272</color>
+    <color name="content_secondary_textcolor_hover">@color/content_primary_textcolor_hover</color>
+    <color name="content_secondary_textcolor_inactive">@color/content_textcolor_inactive</color>
 
 
-    <!-- 辅按钮色调，与主按钮行程对比，一般比主按钮色值浅 -->
-    <color name="btn_secondary_normal">@color/app_main_light</color>
-    <color name="btn_secondary_pressed">@color/app_main_light</color>
-    <color name="btn_secondary_disabled">@color/app_inactive</color>
+    <!-- 分割区域颜色 -->
+    <color name="divider">@color/app_inactive</color>
+
 </resources>

@@ -8,18 +8,22 @@
     -->
 
     <!-- 主按钮背景色 -->
-    <color name="btn_primary_normal">@color/app_main</color>
-    <color name="btn_primary_hover">@color/app_main</color>
-    <color name="btn_primary_disabled">@color/app_inactive</color>
+    <color name="primary_btn_bg_normal">@color/app_main</color>
+    <color name="primary_btn_bg_hover">@color/app_main_highlight</color>
+    <color name="primary_btn_bg_inactive">@color/app_inactive</color>
 
     <!-- 主按钮文字颜色 -->
-    <color name="btn_primary_textcolor_normal">@color/app_main_light</color>
-    <color name="btn_primary_textcolor_pressed">@color/app_main_light</color>
-    <color name="btn_primary_textcolor_disabled">@color/app_inactive</color>
+    <color name="btn_primary_textcolor_normal">@color/app_main_textcolor</color>
+    <color name="btn_primary_textcolor_hover">@color/app_main_highlight_textcolor</color>
+    <color name="btn_primary_textcolor_inactive">@color/app_inactive_textcolor</color>
 
 
     <!-- 辅按钮色调，与主按钮行程对比，一般比主按钮色值浅 -->
-    <color name="btn_secondary_normal">@color/app_main_light</color>
-    <color name="btn_secondary_pressed">@color/app_main_light</color>
-    <color name="btn_secondary_disabled">@color/app_inactive</color>
+    <color name="btn_secondary_bg_normal">@color/app_main_light</color>
+    <color name="btn_secondary_bg_hover">@color/app_main_light_highlight</color>
+    <color name="btn_secondary_bg_inactive">@color/app_inactive</color>
+
+    <color name="btn_secondary_textcolor_normal">@color/app_main_light_textcolor</color>
+    <color name="btn_secondary_textcolor_hover">@color/app_main_light_highlight_textcolor</color>
+    <color name="btn_secondary_textcolor_inactive">@color/app_inactive_textcolor</color>
 </resources>
