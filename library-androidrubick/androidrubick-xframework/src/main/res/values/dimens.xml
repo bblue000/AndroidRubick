@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--
+        ***************************************
+                    spacing
+        ***************************************
+    -->
     <dimen name="content_spacing">10dp</dimen>
     <dimen name="padding">@dimen/content_spacing</dimen>
     <dimen name="margin">@dimen/content_spacing</dimen>
@@ -9,6 +14,29 @@
     <dimen name="padding_larger">@dimen/content_spacing_larger</dimen>
     <dimen name="margin_larger">@dimen/content_spacing_larger</dimen>
 
+
+
+    <!--
+        ***************************************
+                    text size
+        ***************************************
+    -->
+    <dimen name="content_title_textsize">18sp</dimen>
+    <!-- 正文字体大小 -->
+    <dimen name="content_primary_textsize">16sp</dimen>
+    <!-- 正文二级字体大小 -->
+    <dimen name="content_secondary_textsize">14sp</dimen>
+    <!-- 小字体 -->
+    <dimen name="mini_textsize">12sp</dimen>
+    <!-- 超小字体 -->
+    <dimen name="submini_textsize">10sp</dimen>
+
+
+    <!--
+        ***************************************
+                    other dimen
+        ***************************************
+    -->
     <dimen name="divider">1dp</dimen>
 
     <dimen name="border">1dp</dimen>
