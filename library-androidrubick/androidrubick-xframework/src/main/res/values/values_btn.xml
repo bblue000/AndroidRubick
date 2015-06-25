@@ -51,5 +51,12 @@
                     样式
         ***************************************
     -->
+    <style name="XAF.BTN" parent="android:Widget.Button">
+        <item name="android:background">@drawable/btn_primary_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/primary_btn_textcolor</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
 
 </resources>

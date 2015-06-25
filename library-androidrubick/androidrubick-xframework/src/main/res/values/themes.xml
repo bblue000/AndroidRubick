@@ -2,7 +2,12 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="XAFTheme" parent="android:Theme">
+        <!-- cache color hint, like AbsListView's item -->
+        <item name="android:colorBackgroundCacheHint">@android:color/transparent</item>
+
         <item name="android:buttonStyle">@style/XAF.BTN</item>
+
+        <item name="android:scrollbars"></item>
     </style>
     
 
