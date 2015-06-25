@@ -10,26 +10,31 @@
     <!-- 主内容背景 -->
     <color name="content_primary_bg">#f1f2f3</color>
 
-    <color name="content_textcolor_inactive">@color/app_inactive</color>
-
-    <!-- 主内容文本颜色 -->
-    <color name="content_primary_textcolor_normal">#212121</color>
-    <color name="content_primary_textcolor_hover">@color/app_main</color>
-    <color name="content_primary_textcolor_inactive">@color/content_textcolor_inactive</color>
-
-
-
     <!-- 放在主内容背景下用于区分的二级背景，如分隔开的区块背景 -->
     <color name="content_secondary_bg_normal">#ffffff</color>
 
-    <color name="content_secondary_textcolor_normal">#727272</color>
-    <color name="content_secondary_textcolor_hover">@color/content_primary_textcolor_hover</color>
-    <color name="content_secondary_textcolor_inactive">@color/content_textcolor_inactive</color>
+
+    <!-- disable状态下的字体颜色 -->
+    <color name="content_textcolor_inactive">@color/app_inactive</color>
+
+    <!-- use for highlight text color -->
+    <color name="content_highlight_textcolor">@color/app_main</color>
+    <!-- use for text color hint -->
+    <color name="content_hint_textcolor">@color/app_inactive</color>
+    <!-- use for link text color -->
+    <color name="content_link_textcolor">#5c5cff</color>
+
+    <!-- 主内容文本颜色 -->
+    <color name="content_primary_textcolor">#212121</color>
+    <color name="content_secondary_textcolor">#727272</color>
+
+
 
 
     <!-- 分割区域颜色 -->
     <color name="divider">@color/app_inactive</color>
 
-    <color name="scrollbar"></color>
+    <!-- scrollbar的颜色 -->
+    <color name="scrollbar">@color/app_main</color>
 
 </resources>

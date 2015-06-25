@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 基础Style -->
+    <style name="XAF" parent="android:Widget"/>
+
+    <!-- text view styles -->
+    <style name="XAF.TextAppearance" parent="android:TextAppearance">
+        <item name="android:textColor">@color/</item>
+        <item name="android:textColorHint">@color/content_hint_textcolor</item>
+        <item name="android:textColorLink">@color/content_link_textcolor</item>
+        <item name="android:textSize">@dimen/content_primary_textsize</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="XAF.TextView" parent="android:Widget.TextView">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">@dimen/content_title_textsize</item>
+    </style>
+    <style name="XAF.TextView.Title" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/content_title_textsize</item>
+    </style>
+
+    <!-- button styles -->
+    <style name="XAF.BTN" parent="android:Widget.Button">
+        <item name="android:background">@drawable/primary_btn_bg</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/primary_btn_textcolor</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+
+    <style name="XAF.BTN.Primary">
+    </style>
+
+    <style name="XAF.BTN.Secondary">
+        <item name="android:background">@drawable/secondary_btn_bg</item>
+        <item name="android:textColor">@color/secondary_btn_textcolor</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+
+    <style name="XAF.ListView" parent="android:Widget.ListView">
+        <item name="android:listSelector">@drawable/list_selector_background</item>
+        <item name="cacheColorHint">?attr/colorBackgroundCacheHint</item>
+        <item name="divider">@drawable/divider_horizontal_dark_opaque</item>
+    </style>
+
+</resources>
