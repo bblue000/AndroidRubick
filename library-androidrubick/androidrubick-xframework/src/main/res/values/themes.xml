@@ -18,6 +18,10 @@
         <item name="android:gridViewStyle">@style/XAF.GridView</item>
 
         <item name="android:editTextBackground">@drawable/edittext_background</item>
+
+        <!-- translucent system bars -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
     
 
