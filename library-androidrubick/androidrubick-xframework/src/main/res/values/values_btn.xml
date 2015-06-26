@@ -37,8 +37,8 @@
                     尺寸
         ***************************************
     -->
-    <dimen name="content_main_btn_height">40dp</dimen>
-    <dimen name="content_main_btn_textsize">@dimen/content_primary_textsize</dimen>
+    <dimen name="content_primary_btn_height">40dp</dimen>
+    <dimen name="content_primary_btn_textsize">@dimen/content_primary_textsize</dimen>
 
     <dimen name="content_btn_radius">@dimen/radius</dimen>
 

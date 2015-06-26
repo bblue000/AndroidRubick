@@ -4,21 +4,37 @@
     <!-- 基础Style -->
     <style name="XAF" parent="android:Widget"/>
 
+
+
     <!-- text view styles -->
-    <style name="XAF.TextAppearance" parent="android:TextAppearance">
-        <item name="android:textColor">@color/</item>
+    <style name="XAF.TextView" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/content_primary_textsize</item>
+        <item name="android:textColor">@color/content_primary_textcolor</item>
         <item name="android:textColorHint">@color/content_hint_textcolor</item>
         <item name="android:textColorLink">@color/content_link_textcolor</item>
-        <item name="android:textSize">@dimen/content_primary_textsize</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
-    <style name="XAF.TextView" parent="android:Widget.TextView">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    <style name="XAF.TextView.Title">
+        <item name="android:textColor">@color/content_title_textcolor</item>
         <item name="android:textSize">@dimen/content_title_textsize</item>
     </style>
-    <style name="XAF.TextView.Title" parent="android:Widget.TextView">
-        <item name="android:textSize">@dimen/content_title_textsize</item>
+    <style name="XAF.TextView.Primary">
     </style>
+    <style name="XAF.TextView.Secondary">
+        <item name="android:textSize">@dimen/content_secondary_textsize</item>
+        <item name="android:textColor">@color/content_secondary_textcolor</item>
+    </style>
+
+    <style name="XAF.EditText" parent="XAF.TextView">
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+
+
 
     <!-- button styles -->
     <style name="XAF.BTN" parent="android:Widget.Button">
@@ -38,10 +54,73 @@
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
 
-    <style name="XAF.ListView" parent="android:Widget.ListView">
-        <item name="android:listSelector">@drawable/list_selector_background</item>
-        <item name="cacheColorHint">?attr/colorBackgroundCacheHint</item>
-        <item name="divider">@drawable/divider_horizontal_dark_opaque</item>
+
+
+    <!-- 可滚动的样式 -->
+    <style name="XAF.NonScroll">
+        <item name="android:scrollbars">none</item>
+    </style>
+    <style name="XAF.Scrollable">
+        <!-- Scrollbar attributes -->
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:fadeScrollbars">true</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:scrollbarFadeDuration">?android:attr/scrollbarFadeDuration</item>
+        <item name="android:scrollbarDefaultDelayBeforeFade">?android:attr/scrollbarDefaultDelayBeforeFade</item>
+
+        <item name="android:scrollbarSize">@dimen/scrollbar_size</item>
+        <item name="android:scrollbarThumbHorizontal">@drawable/scrollbar_thumb_horizontal</item>
+        <item name="android:scrollbarThumbVertical">@drawable/scrollbar_thumb_vertical</item>
+        <item name="android:scrollbarTrackHorizontal">@null</item>
+        <item name="android:scrollbarTrackVertical">@null</item>
+    </style>
+
+    <style name="XAF.Scrollable.Horizontal">
+        <item name="android:scrollbars">horizontal</item>
+        <item name="android:fadingEdge">horizontal</item>
+    </style>
+
+    <style name="XAF.Scrollable.Vertical">
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fadingEdge">vertical</item>
+    </style>
+
+    <style name="XAF.ScrollView" parent="XAF.Scrollable.Vertical">
+
+    </style>
+
+    <style name="XAF.HorizontalScrollView" parent="XAF.Scrollable.Horizontal">
+
+    </style>
+
+
+    <!-- ListView -->
+    <style name="XAF.AbsListView" parent="XAF.Scrollable.Vertical">
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fadingEdge">none</item>
+
+        <item name="android:listSelector">@drawable/content_secondary_listitem_bg</item>
+        <item name="android:cacheColorHint">?android:attr/colorBackgroundCacheHint</item>
+    </style>
+    <style name="XAF.ListView" parent="XAF.AbsListView">
+        <item name="android:divider">@color/divider</item>
+        <item name="android:dividerHeight">@dimen/divider</item>
+    </style>
+    <style name="XAF.GridView" parent="XAF.AbsListView">
+    </style>
+
+    <style name="XAF.CompoundButton" parent="android:Widget.CompoundButton">
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/content_primary_textcolor</item>
+        <item name="android:textSize">@dimen/content_primary_textsize</item>
+        <item name="android:gravity">center_vertical|start</item>
+    </style>
+    <style name="XAF.CompoundButton.Checkbox">
+        <item name="android:button">?android:attr/listChoiceIndicatorMultiple</item>
+    </style>
+    <style name="XAF.CompoundButton.RadioButton">
+        <item name="android:button">?android:attr/listChoiceIndicatorSingle</item>
     </style>
 
 </resources>

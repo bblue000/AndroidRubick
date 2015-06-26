@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 根布局 -->
+    <style name="XAF.RootLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:background">@color/content_primary_bg</item>
+    </style>
+
+
+    <!-- 根布局，透明背景 -->
+    <style name="XAF.RootLayout.Transparent">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+    <!-- 二级布局 -->
+    <style name="XAF.SecondaryLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/content_secondary_bg</item>
+    </style>
 
 </resources>

@@ -11,7 +11,14 @@
     <color name="content_primary_bg">#f1f2f3</color>
 
     <!-- 放在主内容背景下用于区分的二级背景，如分隔开的区块背景 -->
-    <color name="content_secondary_bg_normal">#ffffff</color>
+    <color name="content_secondary_bg">#ffffff</color>
+
+
+    <!-- 主内容背景在状态下的颜色， -->
+    <color name="content_primary_bg_active">@color/app_main_highlight</color>
+
+    <!-- 放在主内容背景下用于区分的二级背景，多用于列表item背景 -->
+    <color name="content_secondary_bg_active">@color/app_main_light_highlight</color>
 
 
     <!-- disable状态下的字体颜色 -->
@@ -24,9 +31,19 @@
     <!-- use for link text color -->
     <color name="content_link_textcolor">#5c5cff</color>
 
+    <!-- 标题颜色 -->
+    <color name="content_title_textcolor_normal">@color/content_primary_textcolor_normal</color>
+    <color name="content_title_textcolor_hover">@color/content_primary_textcolor_hover</color>
+    <color name="content_title_textcolor_inactive">@color/content_primary_textcolor_inactive</color>
+
     <!-- 主内容文本颜色 -->
-    <color name="content_primary_textcolor">#212121</color>
-    <color name="content_secondary_textcolor">#727272</color>
+    <color name="content_primary_textcolor_normal">#212121</color>
+    <color name="content_primary_textcolor_hover">@color/app_main_highlight_textcolor</color>
+    <color name="content_primary_textcolor_inactive">@color/content_textcolor_inactive</color>
+
+    <color name="content_secondary_textcolor_normal">#727272</color>
+    <color name="content_secondary_textcolor_hover">@color/app_main_light_highlight_textcolor</color>
+    <color name="content_secondary_textcolor_inactive">@color/content_textcolor_inactive</color>
 
 
 

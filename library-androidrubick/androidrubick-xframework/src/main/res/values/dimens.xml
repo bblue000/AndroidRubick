@@ -44,6 +44,11 @@
 
     <dimen name="radius">5dp</dimen>
 
+    <dimen name="scrollbar_size">3dp</dimen>
+    <dimen name="scrollbar_stroke_v8">3dp</dimen>
+
+    <dimen name="scrollbar_radius">1.5dp</dimen>
+
 
 
 </resources>

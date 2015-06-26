@@ -26,7 +26,7 @@ public class XAPI {
     public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
 
     public static void get(String url, XParamable param, XResultable result, XAPICallback callback) {
-        AsyncTask.execute();
+//        AsyncTask.execute();
     }
 
     public static void post(String url, XParamable param, XResultable result, XAPICallback callback) {
