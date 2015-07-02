@@ -57,5 +57,6 @@ import androidrubick.xframework.xbase.annotation.Configurable;
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
         clearExpiredJobs();
+        executor.execute(r);
     }
 }

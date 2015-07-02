@@ -10,10 +10,12 @@ package androidrubick.xframework.api;
  *
  * @since 1.0
  */
-public interface XAPICallback {
+public interface XAPICallback<Result> {
 
-    void onSuccess();
+    void onSuccess(Result result);
 
-    void onFailed();
+    void onFailed(XAPIStatus status);
+
+    void onCanceled();
 
 }

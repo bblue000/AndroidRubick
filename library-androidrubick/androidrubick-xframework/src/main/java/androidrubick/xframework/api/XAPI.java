@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import androidrubick.xframework.api.param.XParamable;
 import androidrubick.xframework.api.result.XResultable;
+import androidrubick.xframework.task.XJob;
 
 /**
  * API
@@ -25,12 +26,24 @@ public class XAPI {
      */
     public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
 
-    public static void get(String url, XParamable param, XResultable result, XAPICallback callback) {
+    /**
+     *
+     * @param url
+     * @param param
+     * @param result
+     * @param callback
+     * @return 返回对象
+     */
+    public static XAPIHolder get(String url, XParamable param, XResultable result, XAPICallback callback) {
 //        AsyncTask.execute();
+
+        XJob job = null;
+        return new XAPIHolder(job);
     }
 
-    public static void post(String url, XParamable param, XResultable result, XAPICallback callback) {
-
+    public static XAPIHolder post(String url, XParamable param, XResultable result, XAPICallback callback) {
+        XJob job = null;
+        return new XAPIHolder(job);
     }
 
 }

@@ -45,7 +45,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
     }
 
     protected void setAddToQueueTime(long timeInMillis) {
-        mExpireTime = MathPreconditions.checkNonNegative("add to queue time", timeInMillis);
+        mAddToQueueTime = MathPreconditions.checkNonNegative("add to queue time", timeInMillis);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      * 设置过期时间（单位：毫秒）
      */
     protected void setExpireTime(long timeInMillis) {
-        mExpireTime = MathPreconditions.checkNonNegative("exipre time", timeInMillis);
+        mExpireTime = MathPreconditions.checkNonNegative("expire time", timeInMillis);
     }
 
     /**
