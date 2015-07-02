@@ -2,6 +2,8 @@ package androidrubick.xframework.xbase;
 
 import com.google.gson.Gson;
 
+import androidrubick.text.Strings;
+import androidrubick.utils.Objects;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
@@ -20,6 +22,12 @@ public class JsonParser {
     private static final Gson sGson = new Gson();
 
     public static String toJsonString(Object object) {
+        if (Objects.isNull(object)) {
+            return Strings.EMPTY;
+        }
+        if (object.getClass() == Object.class) {
+            return "{}";
+        }
         return sGson.toJson(object);
     }
 

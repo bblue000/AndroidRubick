@@ -1,5 +1,7 @@
 package androidrubick.xframework.events.internal;
 
+import androidrubick.utils.ToStringHelper;
+
 /**
  *
  * <p/>
@@ -21,12 +23,9 @@ package androidrubick.xframework.events.internal;
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(128);
-        builder.append("EventObserver{");
-        builder.append(eventSubscriber);
-        builder.append(" action=");
-        builder.append(action);
-        builder.append("}");
-        return builder.toString();
+        return new ToStringHelper(getClass().getSimpleName())
+                .add("eventSubscriber", eventSubscriber)
+                .add("action", action)
+                .toString();
     }
 }

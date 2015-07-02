@@ -1,7 +1,5 @@
 package androidrubick.collect;
 
-import com.google.gson.internal.LinkedTreeMap;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,10 +32,6 @@ public class MapBuilder {
 
     public static MapBuilder newLinkedHashMap(int capacity) {
         return new MapBuilder(new LinkedHashMap(capacity));
-    }
-
-    public static MapBuilder newLinkedTreeMap() {
-        return new MapBuilder(new LinkedTreeMap());
     }
 
     public static MapBuilder newTreeMap() {

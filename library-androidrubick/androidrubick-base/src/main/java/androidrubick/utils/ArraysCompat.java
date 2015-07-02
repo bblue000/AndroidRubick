@@ -23,6 +23,19 @@ public class ArraysCompat {
     private ArraysCompat() { /* no instance needed */ }
 
     /**
+     * 判断数组是否是空数组
+     */
+    public boolean isEmpty(Object target) {
+        if (null == target) {
+            return true;
+        }
+        if (target.getClass().isArray()) {
+            return Array.getLength(target) == 0;
+        }
+        return false;
+    }
+
+    /**
      * 借用可变参数的便利性，生成一个由参数元素组成的数组
      *
      * @param elements 数组元素

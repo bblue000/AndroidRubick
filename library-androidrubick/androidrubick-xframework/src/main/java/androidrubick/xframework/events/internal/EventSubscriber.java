@@ -63,11 +63,12 @@ final class EventSubscriber extends WeakReference<Object> {
                 Class<?> wappedParameterClz = Primitives.wrap(parameterClasses[i]);
                 if (Objects.equals(clzOfData, wappedParameterClz)) {
                     parameterVals[i] = data;
+                    // TODO 暂时只支持单个数据传递
                     break;
                 }
             }
         }
-        Reflects.invoke(subscriber, subscriberMethod, parameterVals);
+        Reflects.invokeThrow(subscriber, subscriberMethod, parameterVals);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package androidrubick.utils;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
 /**
@@ -84,7 +82,7 @@ public class Reflects {
      *
      * @since 1.0
      */
-    public static <Result>Result invokeThrow(Object target, Method method, Object...params) throws Exception {
+    public static <Result>Result invokeThrow(Object target, Method method, Object...params) throws RuntimeException {
         boolean isAccessible = method.isAccessible();
         if (!isAccessible) {
             method.setAccessible(true);
@@ -93,7 +91,7 @@ public class Reflects {
         try {
             result = (Result) method.invoke(target, params);
         } catch (Exception e) {
-            throw e;
+            throw Exceptions.runtimeException(e);
         }
         if (!isAccessible) {
             method.setAccessible(isAccessible);

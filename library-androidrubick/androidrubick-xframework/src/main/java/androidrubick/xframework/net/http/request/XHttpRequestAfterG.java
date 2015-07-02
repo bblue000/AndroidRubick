@@ -141,8 +141,10 @@ public class XHttpRequestAfterG extends XHttpRequest {
             }
         };
         for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-            if (!Objects.isNull(header.getKey())) {
-                response.addHeader(header.getKey(), header.getValue().get(0));
+            if (!Objects.isNull(header.getKey()) && !CollectionsCompat.isEmpty(header.getValue())) {
+                for (String val : header.getValue()) {
+                    response.addHeader(header.getKey(), val);
+                }
             }
         }
         return response;

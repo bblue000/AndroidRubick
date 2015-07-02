@@ -1,5 +1,10 @@
 package androidrubick.xframework.events.internal;
 
+import android.os.Handler;
+import android.os.Message;
+
+import org.androidrubick.utils.AndroidUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +13,11 @@ import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.events.IEventAPI;
 
-/* package */ class XEventBus implements IEventAPI<Object, Object, EventSubscriber>, SubscriptionMonitor {
+/* package */ class XEventBus implements IEventAPI<Object, Object, EventSubscriber>, SubscriptionMonitor,
+Runnable {
 
     private static final String TAG = XEventBus.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final int DEFAULT_SIZE = 3;
     static final int MSG_EXEC_PENDING_BROADCASTS = 1;
@@ -33,8 +39,31 @@ import androidrubick.xframework.events.IEventAPI;
             = new HashMap<Object, List<EventObserverRecord>>();
     private final ArrayList<EventPosterRecord> mPendingBroadcasts
             = new ArrayList<EventPosterRecord>();
+
+    private final Handler mHandler;
     private XEventBus() {
         EventSubscriber.setSubscriptionMonitor(this);
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case MSG_EXEC_PENDING_BROADCASTS:
+                        run();
+                        break;
+                    default:
+                        super.handleMessage(msg);
+                }
+            }
+        };
+    }
+    private void printState() {
+        if (!DEBUG) {
+            return;
+        }
+        FrameworkLog.d(TAG, "-----XEvent state start----");
+        FrameworkLog.d(TAG, "action's number : " + mActions.size());
+        FrameworkLog.d(TAG, "receiver's number : " + mReceivers.size());
+        FrameworkLog.d(TAG, "-----XEvent state end------");
     }
 
     /**
@@ -58,13 +87,14 @@ import androidrubick.xframework.events.IEventAPI;
             for (Object action : actions) {
                 cachedActions.add(action);
                 List<EventObserverRecord> entries = mActions.get(action);
-                if (entries == null) {
+                if (Objects.isNull(entries)) {
                     entries = new ArrayList<EventObserverRecord>(DEFAULT_SIZE);
                     mActions.put(action, entries);
                 }
                 entries.add(new EventObserverRecord(action, eventSubscriber));
             }
         }
+        printState();
     }
 
     /**
@@ -100,6 +130,7 @@ import androidrubick.xframework.events.IEventAPI;
                 }
             }
         }
+        printState();
     }
 
     private void unregisterAction(EventSubscriber eventSubscriber, Object action) {
@@ -132,22 +163,33 @@ import androidrubick.xframework.events.IEventAPI;
 
     @Override
     public void post(Object action, Object data) {
+        checkAndPost(action, data, false);
+    }
+
+    @Override
+    public void postToMain(Object action) {
+        postToMain(action, null);
+    }
+
+    @Override
+    public void postToMain(Object action, Object data) {
+        checkAndPost(action, data, true);
+    }
+
+    private boolean checkAndPost(Object action, Object data, boolean mainThread) {
         synchronized (mReceivers) {
             List<EventObserverRecord> entries = mActions.get(action);
             if (Objects.isEmpty(entries)) {
-                return ;
+                if (DEBUG) FrameworkLog.d(TAG, "Action no listener: " + action);
+                return false;
             }
-            if (DEBUG) FrameworkLog.d(TAG, "Action list: " + entries);
+            if (DEBUG) FrameworkLog.d(TAG, "Action list size: " + entries.size());
 
             List<EventObserverRecord> receivers = null;
             for (int i = 0; i < entries.size(); i++) {
                 EventObserverRecord receiver = entries.get(i);
-                if (DEBUG) FrameworkLog.d(TAG, "Matching against filter action " + receiver.action);
-
                 if (receiver.broadcasting) {
-                    if (DEBUG) {
-                        FrameworkLog.d(TAG, "  Filter's target already added");
-                    }
+                    if (DEBUG) FrameworkLog.d(TAG, "Filter's target already added");
                     continue;
                 }
 
@@ -156,6 +198,7 @@ import androidrubick.xframework.events.IEventAPI;
                         receivers = new ArrayList<EventObserverRecord>(DEFAULT_SIZE);
                     }
                     receivers.add(receiver);
+                    receiver.broadcasting = true;
                 }
             }
 
@@ -165,29 +208,32 @@ import androidrubick.xframework.events.IEventAPI;
                     receivers.get(i).broadcasting = false;
                 }
                 mPendingBroadcasts.add(new EventPosterRecord(action, receivers, data));
+                if (mainThread && !AndroidUtils.isMainThread()) {
+                    if (!mHandler.hasMessages(MSG_EXEC_PENDING_BROADCASTS)) {
+                        mHandler.sendEmptyMessage(MSG_EXEC_PENDING_BROADCASTS);
+                    }
+                } else {
+                    run();
+                }
+                return true;
             }
         }
-        executePendingBroadcasts(mPendingBroadcasts);
+        return false;
     }
 
     @Override
-    public void postToMain(Object action) {
-
-    }
-
-    @Override
-    public void postToMain(Object action, Object data) {
-
-    }
-
-    private void executePendingBroadcasts(List<EventPosterRecord> pendingBroadcasts) {
+    public void run() {
         while (true) {
             EventPosterRecord[] brs = null;
-            final int N = pendingBroadcasts.size();
-            if (N <= 0) {
-                return;
+            synchronized (mReceivers) {
+                final int N = mPendingBroadcasts.size();
+                if (N <= 0) {
+                    return;
+                }
+                brs = new EventPosterRecord[N];
+                mPendingBroadcasts.toArray(brs);
+                mPendingBroadcasts.clear();
             }
-            brs = new EventPosterRecord[N];
             for (int i = 0; i < brs.length; i++) {
                 EventPosterRecord br = brs[i];
                 for (int j = 0; j < br.observers.size(); j++) {

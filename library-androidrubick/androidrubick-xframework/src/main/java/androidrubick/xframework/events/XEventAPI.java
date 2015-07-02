@@ -15,7 +15,7 @@ import androidrubick.xframework.events.internal.XEventAnnotationProcessor;
  *
  * 方法，当Annotation——{@link androidrubick.xframework.events.annotation.XEvent#value()}指定的
  *
- * 事件触发时，将会调用目标方法。
+ * 事件（未指定，以方法作为事件标识）触发时，将会调用目标方法。
  *
  * <br/>
  *
@@ -38,26 +38,30 @@ public class XEventAPI {
         XEventAnnotationProcessor.inject(target);
     }
 
+//    /**
+//     * 注册事件观察
+//     *
+//     * @param observer 事件观察者
+//     * @param actions 事件标识
+//     */
+//    public static void register(Object observer, Object...actions) {
+//
+//    }
+
+//    /**
+//     * 注销<code>observer</code>对应的所有事件观察
+//     *
+//     * @param observer 事件观察者
+//     * @param actions 事件观察者
+//     */
+//    public static void unregister(Object observer, Object...actions) {
+//
+//    }
+
     /**
-     * 注册事件观察
-     *
-     * @param observer 事件观察者
-     * @param actions 事件标识
+     * 派发事件，未携带任何数据
+     * @param action
      */
-    public static void register(Object observer, Object...actions) {
-
-    }
-
-    /**
-     * 注销<code>observer</code>对应的所有事件观察
-     *
-     * @param observer 事件观察者
-     * @param actions 事件观察者
-     */
-    public static void unregister(Object observer, Object...actions) {
-
-    }
-
     public static void post(Object action) {
         post(action, null);
     }
@@ -67,7 +71,7 @@ public class XEventAPI {
     }
 
     public static void postToMain(Object action) {
-        postToMain(action);
+        postToMain(action, null);
     }
 
     public static void postToMain(Object action, Object data) {
