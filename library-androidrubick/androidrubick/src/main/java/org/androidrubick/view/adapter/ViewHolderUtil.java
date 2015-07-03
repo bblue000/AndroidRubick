@@ -9,7 +9,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 
 /**
- * somthing
+ * 工具类，用于直接获取内部View，内部封装了ViewHolder的逻辑
  *
  * <p/>
  *

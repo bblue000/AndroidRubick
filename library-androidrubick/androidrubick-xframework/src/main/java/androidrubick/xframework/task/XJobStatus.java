@@ -3,7 +3,7 @@ package androidrubick.xframework.task;
 /**
  * Identifies the current status of a job if it is in the queue
  */
-public enum XJobStatus {
+/*package*/ enum XJobStatus {
     /**
      * Job is in the queue but cannot run yet. cause not added into the queue
      */

@@ -56,7 +56,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
     }
 
     /**
-     * 设置过期时间（单位：毫秒）
+     * 设置过期时间，这里指的是时长，而不是目标时间点（单位：毫秒）
      */
     protected void setExpireTime(long timeInMillis) {
         mExpireTime = MathPreconditions.checkNonNegative("expire time", timeInMillis);
