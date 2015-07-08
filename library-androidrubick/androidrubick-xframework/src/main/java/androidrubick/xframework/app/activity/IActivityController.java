@@ -20,7 +20,7 @@ public interface IActivityController {
 
     public void finishActivity(Intent intent);
 
-    public Collection<? extends IControlledActivityInfo> getActivityStack();
+    public Collection<? extends ControlledActivityInfo> getActivityStack();
 
     public Activity getTopActivity();
 }

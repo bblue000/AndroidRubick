@@ -18,6 +18,7 @@ import org.androidrubick.utils.ToastUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidrubick.xframework.app.XApplication;
 import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
 import androidrubicktest.AndroidBuildTest;
@@ -71,6 +72,8 @@ public class MainActivity extends BaseActivity {
         }.execute();
 
         AndroidBuildTest.testGet();
+
+        XApplication.is();
     }
 
     @Subscribe

@@ -202,13 +202,20 @@ public abstract class AsyncTask<Params, Progress, Result> {
         }
     }
 
-    public static void setDefaultExecutor(Executor exec) {
+    protected static void setDefaultExecutor(Executor exec) {
         sDefaultExecutor = exec;
     }
 
-    public static Executor getDefaultExecutor() {
+    protected static Executor getDefaultExecutor() {
         Preconditions.checkNotNull(sDefaultExecutor, "should set default executor");
         return sDefaultExecutor;
+    }
+
+    public static <T extends AsyncTask>T asAsyncTask(Runnable run) {
+        if (run instanceof LocalFutureTask) {
+            return (T) ((LocalFutureTask) run).owner;
+        }
+        return null;
     }
 
     /**
@@ -225,7 +232,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
             }
         };
 
-        mFuture = new FutureTask<Result>(mWorker) {
+        mFuture = new LocalFutureTask<Result>(mWorker, this) {
             @Override
             protected void done() {
                 try {
@@ -593,6 +600,14 @@ public abstract class AsyncTask<Params, Progress, Result> {
 
     private static abstract class WorkerRunnable<Params, Result> implements Callable<Result> {
         Params[] mParams;
+    }
+
+    protected static abstract class LocalFutureTask<R> extends FutureTask<R> {
+        AsyncTask owner;
+        public LocalFutureTask(Callable<R> callable, AsyncTask owner) {
+            super(callable);
+            this.owner = owner;
+        }
     }
 
     @SuppressWarnings({"RawUseOfParameterizedType"})

@@ -2,11 +2,11 @@
           package="org.androidrubick.demo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
     <application android:allowBackup="true"
                  android:label="@string/app_name"
                  android:icon="@drawable/ic_launcher"
-                 android:theme="@style/XAFTheme"
-        android:name="org.androidrubick.app.BaseApplication">
+                 android:theme="@style/XAFTheme">
 
         <activity android:name=".MainActivity">
             <intent-filter>

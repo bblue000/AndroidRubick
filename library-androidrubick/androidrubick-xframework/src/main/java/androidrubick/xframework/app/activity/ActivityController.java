@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import org.androidrubick.app.BaseApplication;
 import org.androidrubick.utils.AndroidUtils;
 
 import androidrubick.utils.Objects;
@@ -20,25 +21,37 @@ public class ActivityController {
 
     private ActivityController() { /* no instance needed */ }
 
-    public static void startActivity(Context context, Intent intent) {
+    /**
+     * Launch a new activity
+     */
+    public static void startActivity(Intent intent) {
         Preconditions.checkNotNull(intent, "intent should not be null");
-        if (!AndroidUtils.isActivityContext(context)) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
+        Context context = BaseApplication.getAppContext();
+        // TODO 实际上是不是new task不单单是靠这个Flag决定的
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
+    /**
+     * Launch an activity for which you would like a result when it finished.
+     */
     public static void startActivityForResult(Context context, Intent intent, int requestCode) {
         Preconditions.checkOperation(AndroidUtils.isActivityContext(context), "only activity context can start new activity for result");
         Preconditions.checkNotNull(intent, "intent should not be null");
         Objects.getAs(context, Activity.class).startActivityForResult(intent, requestCode);
     }
-
-    public static void startActivity(Context context, Class<? extends Activity> clz) {
+    /**
+     * Launch a new activity of target {@code clz}
+     */
+    public static void startActivity(Class<? extends Activity> clz) {
         Preconditions.checkNotNull(clz, "clz should not be null");
-        startActivity(context, new Intent(context, clz));
+        Context context = BaseApplication.getAppContext();
+        startActivity(new Intent(context, clz));
     }
 
+    /**
+     * Launch an activity(of target {@code clz}) for which you would like a result when it finished.
+     */
     public static void startActivityForResult(Context context, Class<? extends Activity> clz, int requestCode) {
         Preconditions.checkOperation(AndroidUtils.isActivityContext(context), "only activity context can start new activity for result");
         Preconditions.checkNotNull(clz, "clz should not be null");

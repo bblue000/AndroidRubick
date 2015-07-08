@@ -2,8 +2,11 @@ package androidrubick.xframework.task;
 
 import android.os.SystemClock;
 
+import java.util.concurrent.Executor;
+
 import androidrubick.utils.MathPreconditions;
 import androidrubick.xframework.task.internal.AsyncTask;
+import androidrubick.xframework.task.internal.AsyncTaskStatus;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**
@@ -21,10 +24,31 @@ import androidrubick.xframework.xbase.annotation.Configurable;
 public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
     /**
+     * 用于{@link #getJobType()}的返回值；
+     *
+     * 用于UI操作的任务优先级会高一点。
+     */
+    protected static final int UI_JOB = 5;
+    /**
+     * 用于{@link #getJobType()}的返回值；默认值。
+     *
+     * 用于其他临时操作的任务优先级会低一点。
+     */
+    protected static final int TEMP_JOB = 0;
+
+    /**
      * {可配置}
      */
     static {
         XJob.setDefaultExecutor(new XJobExecutor());
+    }
+
+    public static void setDefaultExecutor(Executor exec) {
+        AsyncTask.setDefaultExecutor(exec);
+    }
+
+    public static Executor getDefaultExecutor() {
+        return AsyncTask.getDefaultExecutor();
     }
 
     /**
@@ -39,7 +63,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
 
     private long mCreateTime;
     private long mAddToQueueTime;
-    private long mExpireTime;
+    private long mExpireTime = 60 * 1000; // 默认一分钟
     protected XJob() {
         mCreateTime = peekTime();
     }
@@ -58,7 +82,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
     /**
      * 设置过期时间，这里指的是时长，而不是目标时间点（单位：毫秒）
      */
-    protected void setExpireTime(long timeInMillis) {
+    public void setExpireTime(long timeInMillis) {
         mExpireTime = MathPreconditions.checkNonNegative("expire time", timeInMillis);
     }
 
@@ -67,7 +91,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      *
      * @return 如果没有设置，返回0；
      */
-    protected long getExpireTime() {
+    public long getExpireTime() {
         return mExpireTime;
     }
 
@@ -81,4 +105,30 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
         return mCreateTime;
     }
 
+    /**
+     * 是否已经过期
+     */
+    public boolean isExpired() {
+        return peekTime() - getCreateTime() - getExpireTime() > 0;
+    }
+
+    /**
+     * 判断任务是否已经结束（取消或者执行结束）
+     */
+    public boolean isFinished() {
+        return getStatus() == AsyncTaskStatus.FINISHED;
+    }
+
+    /**
+     * 获取任务类型。
+     *
+     * 默认为{@link #TEMP_JOB}
+     *
+     * @see #UI_JOB
+     * @see #TEMP_JOB
+     *
+     */
+    protected int getJobType() {
+        return TEMP_JOB;
+    }
 }

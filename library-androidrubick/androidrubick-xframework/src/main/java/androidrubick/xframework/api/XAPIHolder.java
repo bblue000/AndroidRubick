@@ -28,8 +28,4 @@ public class XAPIHolder {
         return job.isCancelled();
     }
 
-    public boolean isF() {
-        return job.getStatus()
-    }
-
 }

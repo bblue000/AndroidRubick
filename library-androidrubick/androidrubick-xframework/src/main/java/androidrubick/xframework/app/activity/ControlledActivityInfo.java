@@ -9,8 +9,12 @@ import android.app.Activity;
  *
  * Created by Yin Yong on 2015/3/28 0028.
  */
-public interface IControlledActivityInfo {
+public interface ControlledActivityInfo {
 
+    /**
+     *
+     * @return
+     */
     public Activity getActivityInstance();
 
     public boolean isActivityStarted() ;
