@@ -22,7 +22,10 @@ public abstract class BaseActivity extends FragmentActivity implements IUIFlow {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        doOnCreate(savedInstanceState);
+    }
 
+    protected void doOnCreate(Bundle savedInstanceState) {
         int resId = provideLayoutResId();
         View contentView;
         if (resId > 0) {
@@ -50,7 +53,7 @@ public abstract class BaseActivity extends FragmentActivity implements IUIFlow {
     }
 
     @Override
-    public final View getRootView() {
+    public View getRootView() {
         return mRootView;
     }
 

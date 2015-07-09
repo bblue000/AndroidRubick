@@ -3,7 +3,7 @@ package org.androidrubick.view.adapter;
 import android.util.SparseArray;
 import android.view.View;
 
-import org.androidrubick.R;
+import androidrubick.base.android.R;
 
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;

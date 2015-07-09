@@ -2,6 +2,8 @@ package androidrubick.xframework.app.activity;
 
 import android.app.Activity;
 
+import java.lang.ref.WeakReference;
+
 /**
  * somthing
  *
@@ -9,13 +11,25 @@ import android.app.Activity;
  *
  * Created by Yin Yong on 2015/3/28 0028.
  */
-public interface ControlledActivityInfo {
+public class ControlledActivityInfo {
 
+    protected WeakReference<Activity> mActRef;
+    public ControlledActivityInfo() {
+
+    }
     /**
      *
      * @return
      */
-    public Activity getActivityInstance();
+    public Activity getActivityInstance() {
+        return null == mActRef ? null : mActRef.get();
+    }
 
-    public boolean isActivityStarted() ;
+    /*package*/ void setActivityInstance(Activity activity) {
+        this.mActRef = new WeakReference<Activity>(activity);
+    }
+
+
+
+//    public boolean isActivityStarted() ;
 }

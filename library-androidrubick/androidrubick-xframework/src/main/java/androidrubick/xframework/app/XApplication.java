@@ -2,7 +2,6 @@ package androidrubick.xframework.app;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -63,7 +62,7 @@ public class XApplication extends BaseApplication {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return isTopAppBeforeAPI21();
     }
 
     private static boolean isTopAppBeforeAPI21() {
@@ -74,7 +73,6 @@ public class XApplication extends BaseApplication {
                 ActivityManager.RunningTaskInfo taskInfo = tasks.get(0);
                 return isMyActivity(taskInfo.topActivity) || isMyActivity(taskInfo.baseActivity);
             }
-            UsageStatsManager
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
         AndroidBuildTest.testGet();
 
-        XApplication.is();
+//        XApplication.is();
     }
 
     @Subscribe

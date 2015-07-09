@@ -137,7 +137,7 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
     }
 
     @Override
-    public final View getRootView() {
+    public View getRootView() {
         ensureRootViewCreated();
         return mRootView;
     }

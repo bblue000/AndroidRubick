@@ -17,9 +17,9 @@ import androidrubick.utils.Preconditions;
  *
  * Created by Yin Yong on 2015/4/10 0010.
  */
-public class ActivityController {
+public class XActivityController {
 
-    private ActivityController() { /* no instance needed */ }
+    private XActivityController() { /* no instance needed */ }
 
     /**
      * Launch a new activity
@@ -40,6 +40,7 @@ public class ActivityController {
         Preconditions.checkNotNull(intent, "intent should not be null");
         Objects.getAs(context, Activity.class).startActivityForResult(intent, requestCode);
     }
+
     /**
      * Launch a new activity of target {@code clz}
      */
@@ -56,6 +57,23 @@ public class ActivityController {
         Preconditions.checkOperation(AndroidUtils.isActivityContext(context), "only activity context can start new activity for result");
         Preconditions.checkNotNull(clz, "clz should not be null");
         Objects.getAs(context, Activity.class).startActivityForResult(new Intent(context, clz), requestCode);
+    }
+
+    /**
+     *
+     * @param activity
+     */
+    public static void finishActivity(Activity activity) {
+        activity.finish();
+    }
+
+    /**
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T extends Activity>T getTopActivity() {
+        return null;
     }
 
 }

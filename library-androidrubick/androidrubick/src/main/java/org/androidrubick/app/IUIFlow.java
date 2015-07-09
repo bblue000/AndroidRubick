@@ -1,6 +1,7 @@
 package org.androidrubick.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -89,7 +90,7 @@ interface IUIFlow {
 
     /**
      *
-     * 启动指定的Activity
+     * 启动指定的Activity（如果需要设定参数，使用{@link Activity#startActivityForResult(Intent, int)}）
      *
      * @param clz an Activity Class
      */

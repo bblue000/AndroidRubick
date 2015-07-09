@@ -1,6 +1,7 @@
 package androidrubick.xframework.events.internal;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 import org.androidrubick.utils.AndroidUtils;
@@ -43,7 +44,7 @@ Runnable {
     private final Handler mHandler;
     private XEventBus() {
         EventSubscriber.setSubscriptionMonitor(this);
-        mHandler = new Handler() {
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
