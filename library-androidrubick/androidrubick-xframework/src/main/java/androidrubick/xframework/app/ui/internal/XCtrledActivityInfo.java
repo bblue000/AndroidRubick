@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.activity;
+package androidrubick.xframework.app.ui.internal;
 
 import android.app.Activity;
 
@@ -11,10 +11,11 @@ import java.lang.ref.WeakReference;
  *
  * Created by Yin Yong on 2015/3/28 0028.
  */
-public class ControlledActivityInfo {
+public class XCtrledActivityInfo {
 
+//    LinkedList<XCtrledActivityInfo> sCtrledActivityInfoStack
     protected WeakReference<Activity> mActRef;
-    public ControlledActivityInfo() {
+    public XCtrledActivityInfo() {
 
     }
     /**

@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.view;
+package androidrubick.xframework.app.widget;
 
 import android.app.Activity;
 import android.view.View;
@@ -11,7 +11,7 @@ import android.widget.EditText;
  *
  * Created by Yin Yong on 15/5/14.
  */
-public class XEditTextController extends XViewController<XEditTextController> {
+public class XEditTextController extends XWidgetController<XEditTextController> {
 
     /**
      * 创建指定View的控制器

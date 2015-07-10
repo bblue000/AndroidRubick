@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.activity.internal;
+package androidrubick.xframework.app.ui.internal;
 
 /**
  * something

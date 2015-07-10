@@ -1,9 +1,11 @@
-package androidrubick.xframework.app.activity;
+package androidrubick.xframework.app.ui;
 
 import android.app.Activity;
 import android.content.Intent;
 
 import java.util.Collection;
+
+import androidrubick.xframework.app.ui.internal.XCtrledActivityInfo;
 
 /**
  * activity的控制器和管理器
@@ -12,7 +14,7 @@ import java.util.Collection;
  *
  * Created by Yin Yong on 2015/3/28 0028.
  */
-public interface IActivityController {
+/*package*/ interface IActivityController {
 
     public void startActivity(Intent intent);
 
@@ -20,7 +22,7 @@ public interface IActivityController {
 
     public void finishActivity(Intent intent);
 
-    public Collection<? extends ControlledActivityInfo> getActivityStack();
+    public Collection<? extends XCtrledActivityInfo> getActivityStack();
 
     public Activity getTopActivity();
 }

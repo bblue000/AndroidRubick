@@ -1,10 +1,11 @@
-package androidrubick.xframework.app.activity.internal;
+package androidrubick.xframework.app.ui.internal;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 /**
- *
+ * 要处理的生命周期相关的回调
  *
  *
  * <p/>
@@ -15,7 +16,10 @@ import android.os.Bundle;
  */
 /*package*/ interface IActivityCon {
     void onActivityCreated(Activity activity, Bundle savedInstanceState);
+    void onActivityNewIntent(Activity activity, Intent intent);
+    void onActivityRestarted(Activity activity);
     void onActivityStarted(Activity activity);
+    void onActivityRestoreInstanceState(Activity activity, Bundle savedInstanceState);
     void onActivityResumed(Activity activity);
     void onActivityPaused(Activity activity);
     void onActivityStopped(Activity activity);

@@ -1,5 +1,5 @@
 /**
- * 该包想要包括支持用户对View一些操作。
+ * 该包想要包括支持用户对视图控件的一些操作。
  *
  * <p/>
  *
@@ -9,4 +9,4 @@
  *
  * xframework的宗旨是：<b>简化开发</b>
  */
-package androidrubick.xframework.app.view;
+package androidrubick.xframework.app.widget;

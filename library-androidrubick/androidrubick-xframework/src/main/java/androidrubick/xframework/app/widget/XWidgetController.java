@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.view;
+package androidrubick.xframework.app.widget;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -16,27 +16,27 @@ import android.view.ViewGroup;
  *
  * Created by Yin Yong on 15/5/14.
  */
-public class XViewController<Self extends XViewController> {
+public class XWidgetController<Self extends XWidgetController> {
 
     /**
      * 创建指定View的控制器
      */
-    public static XViewController of(View view) {
-        return new XViewController(view);
+    public static XWidgetController of(View view) {
+        return new XWidgetController(view);
     }
 
     /**
      * 创建指定View中子项的控制器
      */
-    public static XViewController of(View parent, int id) {
-        return new XViewController((View) findViewById(parent, id));
+    public static XWidgetController of(View parent, int id) {
+        return new XWidgetController((View) findViewById(parent, id));
     }
 
     /**
      * 创建指定Activity中子项的控制器
      */
-    public static XViewController of(Activity activity, int id) {
-        return new XViewController((View) findViewById(activity, id));
+    public static XWidgetController of(Activity activity, int id) {
+        return new XWidgetController((View) findViewById(activity, id));
     }
 
     /**
@@ -54,7 +54,7 @@ public class XViewController<Self extends XViewController> {
     }
 
     protected final View mTarget;
-    protected XViewController(View view) {
+    protected XWidgetController(View view) {
         mTarget = view;
     }
 

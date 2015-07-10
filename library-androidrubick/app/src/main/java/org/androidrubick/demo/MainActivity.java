@@ -11,14 +11,13 @@ import com.google.common.eventbus.Subscribe;
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
 
-import org.androidrubick.app.BaseActivity;
 import org.androidrubick.utils.AndroidUtils;
 import org.androidrubick.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.ui.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
 import androidrubicktest.AndroidBuildTest;
@@ -31,7 +30,7 @@ import androidrubicktest.XHttpRequestTest;
  *
  * Created by Yin Yong on 2015/4/8 0008.
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends XBaseActivity {
 
     @Override
     public int provideLayoutResId() {

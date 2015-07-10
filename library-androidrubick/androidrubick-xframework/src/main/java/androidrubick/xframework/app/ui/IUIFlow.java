@@ -1,4 +1,4 @@
-package org.androidrubick.app;
+package androidrubick.xframework.app.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,8 +38,8 @@ interface IUIFlow {
     View provideLayoutView();
 
     /**
-     * 在{@link android.app.Activity#onCreate(android.os.Bundle)}中调用，
-     * 在{@link #initListener(android.view.View, android.os.Bundle)}之前调用
+     * 在{@link Activity#onCreate(Bundle)}中调用，
+     * 在{@link #initListener(View, Bundle)}之前调用
      *
      * <p/>
      *
@@ -49,16 +49,16 @@ interface IUIFlow {
     void initView(View view, Bundle savedInstanceState);
 
     /**
-     * 在{@link android.app.Activity#onCreate(android.os.Bundle)}中调用，
-     * 在{@link #initView(View, android.os.Bundle)}之后被调用
+     * 在{@link Activity#onCreate(Bundle)}中调用，
+     * 在{@link #initView(View, Bundle)}之后被调用
      *
      * @param view root view of the activity/fragment
      */
     void initListener(View view, Bundle savedInstanceState);
 
     /**
-     * 在{@link android.app.Activity#onCreate(android.os.Bundle)}中调用，
-     * 在{@link #initView(View, android.os.Bundle)}和{@link #initListener(android.view.View, android.os.Bundle)}之后调用
+     * 在{@link Activity#onCreate(Bundle)}中调用，
+     * 在{@link #initView(View, Bundle)}和{@link #initListener(View, Bundle)}之后调用
      *
      * <p/>
      *

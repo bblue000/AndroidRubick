@@ -1,4 +1,4 @@
-package org.androidrubick.app;
+package androidrubick.xframework.app.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.androidrubick.app.BaseApplication;
 
 import androidrubick.utils.FrameworkLog;
 import butterknife.ButterKnife;
@@ -30,14 +32,14 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
 
     /**
      * Called to do initial creation of a fragment.  This is called after
-     * {@link #onAttach(android.app.Activity)} and before
-     * {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}.
+     * {@link #onAttach(Activity)} and before
+     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      *
      * <p>Note that this can be called while the fragment's activity is
      * still in the process of being created.  As such, you can not rely
      * on things like the activity's content view hierarchy being initialized
      * at this point.  If you want to do work once the activity itself is
-     * created, see {@link #onActivityCreated(android.os.Bundle)}.
+     * created, see {@link #onActivityCreated(Bundle)}.
      *
      * @param savedInstanceState If the fragment is being re-created from
      * a previous saved state, this is the state.
@@ -50,8 +52,8 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
     /**
      * 不推荐再重写此方法.所以加上了final<br/><br/>
      * Not recommend that you override this method.<br/><br/>
-     * use {@link #onViewCreated(android.view.View, android.os.Bundle)} to do some thing
-     * @see {@link #onViewCreated(android.view.View, android.os.Bundle)}
+     * use {@link #onViewCreated(View, Bundle)} to do some thing
+     * @see {@link #onViewCreated(View, Bundle)}
      */
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,12 +76,12 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
     }
 
     /**
-     * Called immediately after {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}
+     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
      * has returned, but before any saved state has been restored in to the view.
      * This gives subclasses a chance to initialize themselves once
      * they know their view hierarchy has been completely created.  The fragment's
      * view hierarchy is not however attached to its parent at this point.
-     * @param view The View returned by {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}.
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
@@ -95,7 +97,7 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
      * {@link #setRetainInstance(boolean)} to retain their instance,
      * as this callback tells the fragment when it is fully associated with
      * the new activity instance.  This is called after {@link #onCreateView}
-     * and before {@link #onViewStateRestored(android.os.Bundle)}.
+     * and before {@link #onViewStateRestored(Bundle)}.
      *
      * @param savedInstanceState If the fragment is being re-created from
      * a previous saved state, this is the state.

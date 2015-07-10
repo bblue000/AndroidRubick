@@ -1,8 +1,10 @@
-package org.androidrubick.app;
+package androidrubick.xframework.app.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import org.androidrubick.app.BaseApplication;
 
 import androidrubick.utils.Objects;
 

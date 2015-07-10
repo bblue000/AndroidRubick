@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 
 import org.androidrubick.app.BaseApplication;
@@ -13,9 +15,10 @@ import org.androidrubick.app.BaseApplication;
 import java.util.List;
 
 import androidrubick.utils.Objects;
+import androidrubick.xframework.app.ui.XActivityController;
 
 /**
- *
+ * 封装了一些有用的工具方法，截获一些有用的生命周期
  *
  *
  * <p/>
@@ -29,6 +32,12 @@ public class XApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        XActivityController.dispatchStartActivityForResult(intent, 0);
+        super.startActivity(intent);
     }
 
     /**
@@ -56,11 +65,24 @@ public class XApplication extends BaseApplication {
         return false;
     }
 
-    @SuppressLint("NewApi")
-    private static boolean isTopAppAfterAPI21() {
+    /**
+     * 验证组件是否是本应用的Service
+     */
+    public static boolean isMyService(ComponentName componentName) {
         try {
+            PackageManager pm = getAppContext().getPackageManager();
+            ServiceInfo serviceInfo = pm.getServiceInfo(componentName, 0);
+            return Objects.equals(serviceInfo.packageName, getAppContext().getPackageName());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return false;
+    }
+
+    @SuppressLint("NewApi")
+    private static boolean isTopAppAfterAPI21() {
+        if (true) {
+            return true;
         }
         return isTopAppBeforeAPI21();
     }
