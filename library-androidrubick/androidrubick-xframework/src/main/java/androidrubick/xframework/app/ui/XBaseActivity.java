@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,6 +128,35 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     public void finish() {
         XActivityController.dispatchFinishActivity(this);
         super.finish();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+                && !event.isCanceled()) {
+            doBackPressFinish();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void doBackPressFinish() {
+        if (validateBackPressFinish()) {
+            onBackPressed();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p/>
+     *
+     * 默认返回true
+     */
+    @Override
+    public boolean validateBackPressFinish() {
+        return true;
     }
 }
 

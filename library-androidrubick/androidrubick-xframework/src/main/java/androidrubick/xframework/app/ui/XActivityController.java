@@ -11,7 +11,7 @@ import androidrubick.utils.Preconditions;
 import androidrubick.xframework.app.ui.internal.XActivityCtrl;
 
 /**
- * 工具类：提供{@link IActivityController}相关的静态调用方法
+ * 工具类：提供启动Activity的相关的静态调用方法
  *
  * <p/>
  *
@@ -39,15 +39,6 @@ public class XActivityController {
         Preconditions.checkNotNull(clz, "clz should not be null");
         Context context = BaseApplication.getAppContext();
         startActivity(new Intent(context, clz));
-    }
-
-    /**
-     * Launch an activity(of target {@code clz}) for which you would like a result when it finished.
-     */
-    public static void startActivityForResult(Activity context, Class<? extends Activity> clz, int requestCode) {
-        Preconditions.checkNotNull(context, "context should not be null");
-        Preconditions.checkNotNull(clz, "clz should not be null");
-        context.startActivityForResult(new Intent(context, clz), requestCode);
     }
 
     /**

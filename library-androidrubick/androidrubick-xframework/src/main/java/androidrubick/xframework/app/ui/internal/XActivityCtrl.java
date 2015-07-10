@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidrubick.utils.FrameworkLog;
+import androidrubick.xframework.app.ui.IActivityCallback;
+
 /**
  *
  * Activity生命周期相关回调处理的基类
@@ -15,7 +18,9 @@ import android.os.Bundle;
  *
  * @since 1.0
  */
-public abstract class XActivityCtrl implements IActivityCon {
+public abstract class XActivityCtrl implements IActivityCallback {
+
+    private static final String TAG = XActivityCtrl.class.getSimpleName();
 
     private static final XActivityCtrl sInstance;
     static {
@@ -51,7 +56,7 @@ public abstract class XActivityCtrl implements IActivityCon {
     }
 
     public void dispatchFinishActivity(Activity activity) {
-        mHasPendingIntent = true;
+        mHasPendingIntent = (mActivityCount > 1);
     }
 
     public void dispatchOnActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -119,15 +124,21 @@ public abstract class XActivityCtrl implements IActivityCon {
     public void onActivityResumed(Activity activity) {
         mMyAppInSight = true;
         mShowingCount++;
+        if (mHasPendingIntent) {
+            FrameworkLog.d(TAG, "还在应用里面");
+        } else {
+            FrameworkLog.d(TAG, "貌似回到应用了");
+        }
+        mHasPendingIntent = false;
     }
 
     public void onActivityPaused(Activity activity) {
         mMyAppInSight = false;
         mShowingCount--;
         if (mHasPendingIntent) {
-
+            FrameworkLog.d(TAG, "还在应用里面");
         } else {
-
+            FrameworkLog.d(TAG, "貌似跳出应用了");
         }
     }
 
@@ -137,10 +148,12 @@ public abstract class XActivityCtrl implements IActivityCon {
 
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         mActivityCount--;
+        FrameworkLog.d(TAG, "onActivitySaveInstanceState mActivityCount = " + mActivityCount);
     }
 
     public void onActivityDestroyed(Activity activity) {
         mActivityCount--;
+        FrameworkLog.d(TAG, "onActivitySaveInstanceState onActivityDestroyed = " + mActivityCount);
     }
 
 }

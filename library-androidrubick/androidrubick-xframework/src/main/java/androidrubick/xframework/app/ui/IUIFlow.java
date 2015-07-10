@@ -96,4 +96,20 @@ interface IUIFlow {
      */
     void startActivityForResult(Class<? extends Activity> clz, int requestCode);
 
+    /**
+     * 检查是否符合回退条件（根据{@link #validateBackPressFinish()}判断），
+     * 如果符合则调用默认的回退操作。
+     *
+     * @see #validateBackPressFinish()
+     */
+    void doBackPressFinish();
+
+    /**
+     * 当用户想要关闭当前界面时，判断是否满足关闭界面的条件，若满足则返回true，否则返回false。
+     *
+     * 该方法在{@link #doBackPressFinish()}中被调用，用于判断是否需要直接执行默认的回退操作。
+     *
+     * @see #doBackPressFinish()
+     */
+    boolean validateBackPressFinish();
 }
