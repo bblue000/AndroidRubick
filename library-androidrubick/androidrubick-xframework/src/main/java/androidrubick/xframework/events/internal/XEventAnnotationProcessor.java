@@ -36,6 +36,11 @@ public class XEventAnnotationProcessor {
         injectTargetClassMethods(target, targetClass);
     }
 
+    public static void unregister(Object target) {
+        Preconditions.checkNotNull(target, "target object is null");
+        XEventBus.getInstance().unregisterSubscriber(target);
+    }
+
     /**
      * 广播事件
      *

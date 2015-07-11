@@ -25,8 +25,8 @@ public class ArraysCompat {
     /**
      * 判断数组是否是空数组
      */
-    public boolean isEmpty(Object target) {
-        if (null == target) {
+    public static boolean isEmpty(Object target) {
+        if (isNull(target)) {
             return true;
         }
         if (target.getClass().isArray()) {

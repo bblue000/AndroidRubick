@@ -16,7 +16,7 @@ import androidrubick.xframework.events.XEventAPI;
 public abstract class XUIController<T extends XManager> {
 
     protected XUIController() {
-        XEventAPI.inject(this);
+        XEventAPI.register(this);
     }
 
     /**

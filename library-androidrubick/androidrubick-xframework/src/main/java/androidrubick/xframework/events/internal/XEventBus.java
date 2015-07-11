@@ -8,8 +8,12 @@ import org.androidrubick.utils.AndroidUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.events.IEventAPI;
@@ -20,13 +24,12 @@ Runnable {
     private static final String TAG = XEventBus.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private static final int DEFAULT_SIZE = 3;
+    private static final int DEFAULT_SIZE = 5;
     static final int MSG_EXEC_PENDING_BROADCASTS = 1;
 
-    private static final Object mLock = new Object();
     private static XEventBus mInstance;
     public static XEventBus getInstance() {
-        synchronized (mLock) {
+        synchronized (XEventBus.class) {
             if (mInstance == null) {
                 mInstance = new XEventBus();
             }
@@ -38,8 +41,8 @@ Runnable {
             = new HashMap<EventSubscriber, List<Object>>();
     private final HashMap<Object, List<EventObserverRecord>> mActions
             = new HashMap<Object, List<EventObserverRecord>>();
-    private final ArrayList<EventPosterRecord> mPendingBroadcasts
-            = new ArrayList<EventPosterRecord>();
+    private final List<EventPosterRecord> mPendingBroadcasts
+            = newList();
 
     private final Handler mHandler;
     private XEventBus() {
@@ -67,6 +70,10 @@ Runnable {
         FrameworkLog.d(TAG, "-----XEvent state end------");
     }
 
+    private List newList() {
+        return new ArrayList(DEFAULT_SIZE);
+    }
+
     /**
      * 注册事件，当<code>actions</code>中的任意事件触发时，subscription将会调用目标方法
      *
@@ -76,23 +83,63 @@ Runnable {
     @Override
     public void register(EventSubscriber eventSubscriber, Object...actions) {
         EventSubscriber.checkRelease();
-        if (Objects.isNull(eventSubscriber) || Objects.isEmpty(actions)) {
+
+        if (Objects.isNull(eventSubscriber) || ArraysCompat.isEmpty(actions)) {
             return;
         }
+
         synchronized (mReceivers) {
             List<Object> cachedActions = mReceivers.get(eventSubscriber);
             if (Objects.isNull(cachedActions)) {
-                cachedActions = new ArrayList<Object>(DEFAULT_SIZE);
+                cachedActions = newList();
                 mReceivers.put(eventSubscriber, cachedActions);
             }
             for (Object action : actions) {
                 cachedActions.add(action);
                 List<EventObserverRecord> entries = mActions.get(action);
                 if (Objects.isNull(entries)) {
-                    entries = new ArrayList<EventObserverRecord>(DEFAULT_SIZE);
+                    entries = newList();
                     mActions.put(action, entries);
                 }
                 entries.add(new EventObserverRecord(action, eventSubscriber));
+            }
+        }
+        printState();
+    }
+
+    /**
+     * 为了兼容起见
+     *
+     * @param subscriber
+     */
+    /*package*/ void unregisterSubscriber(Object subscriber) {
+        EventSubscriber.checkRelease();
+
+        if (Objects.isNull(subscriber)) {
+            return;
+        }
+
+        synchronized (mReceivers) {
+            if (CollectionsCompat.isEmpty(mReceivers)) {
+                return;
+            }
+            Iterator<Map.Entry<EventSubscriber, List<Object>>> iterator = mReceivers.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<EventSubscriber, List<Object>> entry = iterator.next();
+                EventSubscriber eventSubscriber = entry.getKey();
+                if (eventSubscriber.isMySubscriber(subscriber)) {
+                    List<Object> unregisterActions = entry.getValue();
+                    if (CollectionsCompat.isEmpty(unregisterActions)) {
+                        if (DEBUG) FrameworkLog.d(TAG, "no action found for subscriber");
+                    } else {
+                        if (DEBUG) FrameworkLog.d(TAG, unregisterActions.size() + " actions found for subscriber");
+                        for (int i = 0; i < unregisterActions.size(); i++) {
+                            Object action = unregisterActions.get(i);
+                            unregisterAction(eventSubscriber, action);
+                        }
+                    }
+                    iterator.remove();
+                }
             }
         }
         printState();
@@ -108,24 +155,39 @@ Runnable {
     @Override
     public void unregister(EventSubscriber eventSubscriber, Object...actions) {
         EventSubscriber.checkRelease();
+
+        if (Objects.isNull(eventSubscriber)) {
+            return;
+        }
+
         synchronized (mReceivers) {
             List<Object> unregisterActions;
-            if (Objects.isEmpty(actions)) {
+            if (ArraysCompat.isEmpty(actions)) {
+                if (DEBUG) FrameworkLog.d(TAG, "unregister all actions of eventSubscriber");
+
                 unregisterActions = mReceivers.remove(eventSubscriber);
-                if (Objects.isNull(unregisterActions)) {
+
+                if (CollectionsCompat.isEmpty(unregisterActions)) {
+                    if (DEBUG) FrameworkLog.d(TAG, "no action found for eventSubscriber");
                     return ;
                 }
+
+                if (DEBUG) FrameworkLog.d(TAG, unregisterActions.size() + " actions found for eventSubscriber");
+
                 for (int i = 0; i < unregisterActions.size(); i++) {
                     Object action = unregisterActions.get(i);
                     unregisterAction(eventSubscriber, action);
                 }
             } else {
+                if (DEBUG) FrameworkLog.d(TAG, "unregister sublist actions of eventSubscriber");
+
                 List<Object> cachedActions = mReceivers.get(eventSubscriber);
-                if (Objects.isNull(cachedActions)) {
+                if (CollectionsCompat.isEmpty(cachedActions)) {
                     return ;
                 }
                 for (Object action : actions) {
                     if (cachedActions.remove(action)) {
+                        if (DEBUG) FrameworkLog.d(TAG, "start unregister action {" + action + "}");
                         unregisterAction(eventSubscriber, action);
                     }
                 }
@@ -180,7 +242,7 @@ Runnable {
     private boolean checkAndPost(Object action, Object data, boolean mainThread) {
         synchronized (mReceivers) {
             List<EventObserverRecord> entries = mActions.get(action);
-            if (Objects.isEmpty(entries)) {
+            if (CollectionsCompat.isEmpty(entries)) {
                 if (DEBUG) FrameworkLog.d(TAG, "Action no listener: " + action);
                 return false;
             }
@@ -196,7 +258,7 @@ Runnable {
 
                 if (Objects.equals(action, receiver.action)) {
                     if (Objects.isNull(receivers)) {
-                        receivers = new ArrayList<EventObserverRecord>(DEFAULT_SIZE);
+                        receivers = newList();
                     }
                     receivers.add(receiver);
                     receiver.broadcasting = true;
@@ -246,7 +308,7 @@ Runnable {
     }
 
     /**
-     * 自动清理
+     * 自动清理（一种机制，防止使用者忘记注销事件，导致内存泄露）
      *
      * @param eventSubscriber
      */

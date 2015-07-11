@@ -2,6 +2,8 @@ package androidrubick.xframework.task.internal.executor;
 
 import java.util.concurrent.Executor;
 
+import androidrubick.utils.Preconditions;
+
 /**
  *
  * 包装另一个{@link java.util.concurrent.Executor}
@@ -16,7 +18,7 @@ public abstract class AbsExecutorWrapper implements Executor {
 
     private Executor mBase;
     protected AbsExecutorWrapper(Executor base) {
-        this.mBase = base;
+        this.mBase = Preconditions.checkNotNull(base, "base Executor can not be null");
     }
 
     public Executor getExecutor() {

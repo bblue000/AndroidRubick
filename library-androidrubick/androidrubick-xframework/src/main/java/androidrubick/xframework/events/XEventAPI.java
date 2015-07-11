@@ -34,7 +34,7 @@ public class XEventAPI {
     /**
      * 解析对象所属类方法中的Annotation——{@link androidrubick.xframework.events.annotation.XEvent}
      */
-    public static void inject(Object target) {
+    public static void register(Object target) {
         XEventAnnotationProcessor.inject(target);
     }
 
@@ -55,8 +55,15 @@ public class XEventAPI {
 //     * @param actions 事件观察者
 //     */
 //    public static void unregister(Object observer, Object...actions) {
-//
 //    }
+    /**
+     * 注销<code>observer</code>对应的所有事件观察
+     *
+     * @param observer 事件观察者
+     */
+    public static void unregister(Object observer) {
+        XEventAnnotationProcessor.unregister(observer);
+    }
 
     /**
      * 派发事件，未携带任何数据

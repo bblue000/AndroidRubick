@@ -41,7 +41,8 @@ final class EventSubscriber extends WeakReference<Object> {
         super(subscriber, sQueue);
         this.subscriberMethod = subscriberMethod;
         this.subscriberMethodParameters = subscriberMethod.getParameterTypes();
-        this.hash = Objects.hash(subscriber, this.subscriberMethod, this.subscriberMethod);
+//        this.hash = Objects.hash(subscriber, this.subscriberMethod, this.subscriberMethod);
+        this.hash = subscriber.hashCode();
     }
 
     /**
@@ -80,8 +81,17 @@ final class EventSubscriber extends WeakReference<Object> {
                         && */Objects.equals(subscriberMethod, otherEventSubscriber.subscriberMethod)
                         && Objects.deepEquals(subscriberMethodParameters, otherEventSubscriber.subscriberMethodParameters));
         } else {
+//            return Objects.equals(get(), other);
             return false;
         }
     }
 
+//    @Override
+//    public int hashCode() {
+//        return this.hash;
+//    }
+
+    public boolean isMySubscriber(Object subscriber) {
+        return Objects.equals(get(), subscriber);
+    }
 }
