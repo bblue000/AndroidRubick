@@ -41,24 +41,28 @@ public class XActivityController {
         startActivity(new Intent(context, clz));
     }
 
+
     /**
+     * 注册{@link IActivityCallback}，外部处理额外的事
      *
-     * @param activity
+     * <p/>
+     *
+     * 不要忘记使用注销方法。
+     *
+     * @see #unregisterActivityCallback(IActivityCallback)
      */
-    public static void finishActivity(Activity activity) {
-        activity.finish();
+    public static void registerActivityCallback(IActivityCallback callback) {
+        XActivityCtrl.getInstance().registerActivityCallback(callback);
     }
 
     /**
+     * 注销{@link IActivityCallback}
      *
-     * @param <T>
-     * @return
+     * @see #registerActivityCallback(IActivityCallback)
      */
-    public static <T extends Activity>T getTopActivity() {
-        return null;
+    public static void unregisterActivityCallback(IActivityCallback callback) {
+        XActivityCtrl.getInstance().unregisterActivityCallback(callback);
     }
-
-
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>
     // dispatch activity-lifecycle-related callbacks

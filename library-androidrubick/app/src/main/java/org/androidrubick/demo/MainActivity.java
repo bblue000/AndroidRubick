@@ -50,7 +50,7 @@ public class MainActivity extends XBaseActivity {
         List list = new ArrayList<String>();
         list.add("");
         eventBus.post(list);
-        XEventAPI.inject(this);
+        XEventAPI.register(this);
         new Thread() {
             @Override
             public void run() {
@@ -73,6 +73,10 @@ public class MainActivity extends XBaseActivity {
         AndroidBuildTest.testGet();
 
 //        XApplication.is();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.root, new Fa(), "")
+                .commit();
     }
 
     @Subscribe
@@ -80,7 +84,7 @@ public class MainActivity extends XBaseActivity {
         Context context = (Context) list.get(0);
     }
 
-    @XEvent("1")
+    @XEvent({"1", "2", "3"})
     void dd(String msg) {
         Log.d("Event", "" + AndroidUtils.isMainThread());
         ToastUtils.showToast(msg);
@@ -97,5 +101,11 @@ public class MainActivity extends XBaseActivity {
     @Override
     public void updateDataToUI() {
         
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        XEventAPI.unregister(this);
     }
 }

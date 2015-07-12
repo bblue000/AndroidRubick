@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 /**
  * Created by yong01.yin on 2014/11/11.
  */
-public abstract class BaseFragment extends Fragment implements IUIFlow {
+public abstract class XBaseFragment extends Fragment implements IUIFlow {
 
     // root view是否已经创建，如果没有创建，而想使用应该创建后才能使用的方法时，将抛出异常
     private boolean mIsRootViewCreated = false;
@@ -152,15 +152,39 @@ public abstract class BaseFragment extends Fragment implements IUIFlow {
         return (T) getRootView().findViewById(id);
     }
 
+    /**
+     * 推荐使用。
+     *
+     * 增加了检测是否已经加入
+     *
+     * @param intent
+     */
+    public void startActivityChecked(Intent intent) {
+        if (isAddToActivity()) {
+            return;
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
     @Override
     public void startActivity(Class<? extends Activity> clz) {
         final Activity activity = getFragmentActivity();
-        activity.startActivity(new Intent(activity, clz));
+        startActivity(new Intent(activity, clz));
     }
 
     @Override
     public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
         final Activity activity = getFragmentActivity();
-        activity.startActivityForResult(new Intent(activity, clz), requestCode);
+        startActivityForResult(new Intent(activity, clz), requestCode);
     }
 }

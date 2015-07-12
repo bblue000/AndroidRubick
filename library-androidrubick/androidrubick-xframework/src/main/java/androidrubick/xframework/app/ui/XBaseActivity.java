@@ -3,12 +3,13 @@ package androidrubick.xframework.app.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidrubick.xframework.events.XEventAPI;
 import butterknife.ButterKnife;
 
 /**
@@ -28,16 +29,7 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     }
 
     protected void doOnCreate(Bundle savedInstanceState) {
-        int resId = provideLayoutResId();
-        View contentView;
-        if (resId > 0) {
-            contentView = LayoutInflater.from(this).inflate(resId, (ViewGroup) getWindow().getDecorView(), false);
-            mRootView = contentView;
-        }
-        contentView = provideLayoutView();
-        if (null != contentView)  {
-            mRootView = contentView;
-        }
+        mRootView = provideLayoutView();
 
         if (null != mRootView) {
             setContentView(mRootView);
@@ -45,6 +37,7 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
 
         // TODO use ButterKnife
         ButterKnife.inject(this, mRootView);
+        XEventAPI.register(this);
         initView(mRootView, savedInstanceState);
         initListener(mRootView, savedInstanceState);
         initData(mRootView, savedInstanceState);
@@ -52,6 +45,10 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
 
     @Override
     public View provideLayoutView() {
+        int resId = provideLayoutResId();
+        if (resId > 0) {
+            return getLayoutInflater().inflate(resId, (ViewGroup) getWindow().getDecorView(), false);
+        }
         return null;
     }
 
@@ -103,14 +100,25 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        XActivityController.dispatchOnActivitySaveInstanceState(this, outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
         XActivityController.dispatchOnActivityDestroyed(this);
         super.onDestroy();
+        doOnDestroy();
+    }
+
+    protected void doOnDestroy() {
+        XEventAPI.unregister(this);
     }
 
     @Override
     public void startActivity(Class<? extends Activity> clz) {
-        startActivity(new Intent(this, clz));
+        XActivityController.startActivity(clz);
     }
 
     @Override
@@ -119,9 +127,20 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     }
 
     @Override
+    public void startActivity(Intent intent) {
+        XActivityController.startActivity(intent);
+    }
+
+    @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         XActivityController.dispatchStartActivityForResult(intent, requestCode);
         super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void startActivityFromFragment(Fragment fragment, Intent intent, int requestCode) {
+        XActivityController.dispatchStartActivityForResult(intent, requestCode);
+        super.startActivityFromFragment(fragment, intent, requestCode);
     }
 
     @Override

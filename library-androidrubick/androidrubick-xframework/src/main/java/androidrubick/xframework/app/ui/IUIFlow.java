@@ -26,11 +26,8 @@ interface IUIFlow {
     int provideLayoutResId();
 
     /**
-     * 提供activity的content View
-     *
-     * <p/>
-     *
-     * 先通过{@link #provideLayoutResId()}获取，再通过{@link #provideLayoutView()}。
+     * 提供activity的content View，默认实现是根据{@link #provideLayoutResId()}
+     * 加载布局，没有提供则返回null
      *
      * <p/>
      * define the content view of the activity/fragment

@@ -12,6 +12,8 @@ import android.os.Bundle;
  * Created by Yin Yong on 15/7/9.
  *
  * @since 1.0
+ *
+ * @see androidrubick.xframework.app.ui.internal.SimpleActivityCallback
  */
 public interface IActivityCallback {
     void onActivityCreated(Activity activity, Bundle savedInstanceState);
@@ -24,4 +26,14 @@ public interface IActivityCallback {
     void onActivityStopped(Activity activity);
     void onActivitySaveInstanceState(Activity activity, Bundle outState);
     void onActivityDestroyed(Activity activity);
+
+    /**
+     * 进入后台运行（锁屏暂也属于进入后台，有待改进）
+     */
+    void onEnterBackground();
+
+    /**
+     * 回到前台运行（锁屏暂也属于进入后台，有待改进）
+     */
+    void onEnterForeground();
 }
