@@ -1,6 +1,7 @@
 package androidrubick.xframework.app.ui.internal;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import java.util.LinkedList;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.FrameworkLog;
+import androidrubick.utils.Objects;
 import androidrubick.xframework.app.ui.IActivityCallback;
 
 /**
@@ -42,12 +44,48 @@ public abstract class XActivityCtrl implements IActivityCallback {
     }
 
     // 打开/关闭Activity都会
-    protected boolean mHasPendingIntent;
+    public PendingIntentInfo mPendingIntentInfo = new PendingIntentInfo();
     // 发现onSaveInstanceState不是在系统即将清理内存时调用，所以该值不准确
     // 那么，暂时，只要走onCreate的Activity就增加，走onDestroy就减少
     protected int mActivityCount;
     protected int mShowingCount;
+    protected boolean mIsForeground;
     protected boolean mMyAppInSight;
+
+    private class PendingIntentInfo {
+        boolean hasPendingIntent;
+
+        ComponentName pendingComponent;
+
+        private boolean isPendingFinish;
+        public void markPendingIntent(Intent intent) {
+            reset();
+            hasPendingIntent = true;
+            pendingComponent = intent.getComponent();
+        }
+
+        public void markPendingFinish() {
+            reset();
+            hasPendingIntent = true;
+            isPendingFinish = true;
+        }
+
+        public boolean matches(Activity result) {
+            return isPendingFinish ? true : Objects.equals(result.getComponentName(), pendingComponent);
+        }
+
+        public void resetIfMatch(Activity result) {
+            if (matches(result)) {
+                reset();
+            }
+        }
+
+        public void reset() {
+            hasPendingIntent = false;
+            isPendingFinish = false;
+            pendingComponent = null;
+        }
+    }
 
     private LinkedList<IActivityCallback> mActivityLifecycleCallbacks =
             new LinkedList<IActivityCallback>();
@@ -67,18 +105,18 @@ public abstract class XActivityCtrl implements IActivityCallback {
     /**
      * 用户是否可见
      */
-    public boolean isMyAppVisible() {
-        return mMyAppInSight;
+    public boolean isForeground() {
+        return mIsForeground;
     }
 
     public void dispatchStartActivityForResult(Intent intent, int requestCode) {
         FrameworkLog.d(TAG, "准备打开activity = " + intent);
         // 记录状态，该状态下为当前APP打开其他应用
-        mHasPendingIntent = true;
+        mPendingIntentInfo.markPendingIntent(intent);
     }
 
     public void dispatchFinishActivity(Activity activity) {
-        mHasPendingIntent = (mActivityCount > 1);
+        mPendingIntentInfo.markPendingFinish();
     }
 
     public void dispatchOnActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -126,7 +164,9 @@ public abstract class XActivityCtrl implements IActivityCallback {
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         FrameworkLog.d(TAG, "新activity打开了 = " + activity);
         if (mActivityCount < 1) {
+            // TODO 应用刚开启时，模拟由Launcher发出的startActivity
             onEnterForeground();
+            mPendingIntentInfo.markPendingIntent(activity.getIntent());
         }
         mActivityCount++;
 
@@ -141,6 +181,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
     public void onActivityNewIntent(Activity activity, Intent intent) {
         FrameworkLog.d(TAG, "activity重新打开了 = " + activity);
+
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
                 for (IActivityCallback callback : mActivityLifecycleCallbacks) {
@@ -188,16 +229,11 @@ public abstract class XActivityCtrl implements IActivityCallback {
         FrameworkLog.d(TAG, "onActivityResumed = " + activity);
         mMyAppInSight = true;
         mShowingCount++;
-        if (mHasPendingIntent) {
-            FrameworkLog.d(TAG, "还在应用里面");
-        } else {
-            FrameworkLog.d(TAG, "貌似回到应用了");
+        if (!mPendingIntentInfo.hasPendingIntent) {
             // 只有一个Activity时，则认为第一次进入
-            if (mActivityCount <= 1) {
-                onEnterForeground();
-            }
+            onEnterForeground();
         }
-        mHasPendingIntent = false;
+        mPendingIntentInfo.resetIfMatch(activity);
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
@@ -212,10 +248,8 @@ public abstract class XActivityCtrl implements IActivityCallback {
         FrameworkLog.d(TAG, "onActivityPaused = " + activity);
         mMyAppInSight = false;
         mShowingCount--;
-        if (mHasPendingIntent) {
-            FrameworkLog.d(TAG, "还在应用里面");
-        } else {
-            FrameworkLog.d(TAG, "貌似跳出应用了");
+        // 当在程序运行的过程中（存在不止一个Activity），
+        if (!mPendingIntentInfo.hasPendingIntent) {
             onEnterBackground();
         }
 
@@ -260,6 +294,10 @@ public abstract class XActivityCtrl implements IActivityCallback {
         mActivityCount--;
         FrameworkLog.d(TAG, "onActivityDestroyed mActivityCount = " + mActivityCount);
 
+        if (mActivityCount < 1) {
+            onEnterBackground();
+        }
+
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
                 for (IActivityCallback callback : mActivityLifecycleCallbacks) {
@@ -272,6 +310,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
     @Override
     public void onEnterBackground() {
         FrameworkLog.d(TAG, "貌似跳出应用了");
+        mIsForeground = false;
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
@@ -285,6 +324,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
     @Override
     public void onEnterForeground() {
         FrameworkLog.d(TAG, "貌似回到应用了");
+        mIsForeground = true;
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
