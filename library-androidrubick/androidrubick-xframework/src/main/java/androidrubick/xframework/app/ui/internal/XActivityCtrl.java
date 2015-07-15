@@ -44,7 +44,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
     }
 
     // 打开/关闭Activity都会
-    public PendingIntentInfo mPendingIntentInfo = new PendingIntentInfo();
+    protected PendingIntentInfo mPendingIntentInfo = new PendingIntentInfo();
     // 发现onSaveInstanceState不是在系统即将清理内存时调用，所以该值不准确
     // 那么，暂时，只要走onCreate的Activity就增加，走onDestroy就减少
     protected int mActivityCount;

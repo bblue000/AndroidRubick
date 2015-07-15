@@ -11,4 +11,7 @@ package androidrubick.xframework.api.param;
  * @since 1.0
  */
 public interface XParamable {
+
+
+
 }

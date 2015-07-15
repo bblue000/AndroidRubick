@@ -11,30 +11,30 @@ import android.widget.EditText;
  *
  * Created by Yin Yong on 15/5/14.
  */
-public class XEditTextController extends XWidgetController<XEditTextController> {
+public class XEditTextCtrller extends XTextViewCtrller {
 
     /**
      * 创建指定View的控制器
      */
-    public static XEditTextController of(EditText view) {
-        return new XEditTextController(view);
+    public static XEditTextCtrller of(EditText view) {
+        return new XEditTextCtrller(view);
     }
 
     /**
      * 创建指定View中子项的控制器
      */
-    public static XEditTextController of(View parent, int id) {
-        return new XEditTextController((EditText) findViewById(parent, id));
+    public static XEditTextCtrller of(View parent, int id) {
+        return new XEditTextCtrller((EditText) findViewById(parent, id));
     }
 
     /**
      * 创建指定Activity中子项的控制器
      */
-    public static XEditTextController of(Activity activity, int id) {
-        return new XEditTextController((EditText) findViewById(activity, id));
+    public static XEditTextCtrller of(Activity activity, int id) {
+        return new XEditTextCtrller((EditText) findViewById(activity, id));
     }
 
-    protected XEditTextController(EditText view) {
+    protected XEditTextCtrller(EditText view) {
         super(view);
     }
 
@@ -43,10 +43,16 @@ public class XEditTextController extends XWidgetController<XEditTextController> 
         return (EditText) super.getView();
     }
 
+    @Override
+    protected XEditTextCtrller self() {
+        return (XEditTextCtrller) super.self();
+    }
+
     /**
      * 设置文本
      */
-    public XEditTextController text(int resId) {
+    @Override
+    public XEditTextCtrller text(int resId) {
         getView().setText(resId);
         getView().setSelection(getView().getText().length());
         return self();
@@ -55,7 +61,8 @@ public class XEditTextController extends XWidgetController<XEditTextController> 
     /**
      * 设置文本
      */
-    public XEditTextController text(CharSequence text) {
+    @Override
+    public XEditTextCtrller text(CharSequence text) {
         getView().setText(text);
         getView().setSelection(getView().getText().length());
         return self();

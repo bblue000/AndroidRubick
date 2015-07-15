@@ -41,6 +41,9 @@ public class XActivityController {
         startActivity(new Intent(context, clz));
     }
 
+    public static boolean isForeground() {
+        return XActivityCtrl.getInstance().isForeground();
+    }
 
     /**
      * 注册{@link IActivityCallback}，外部处理额外的事
@@ -50,6 +53,8 @@ public class XActivityController {
      * 不要忘记使用注销方法。
      *
      * @see #unregisterActivityCallback(IActivityCallback)
+     *
+     * @see androidrubick.xframework.app.ui.internal.SimpleActivityCallback
      */
     public static void registerActivityCallback(IActivityCallback callback) {
         XActivityCtrl.getInstance().registerActivityCallback(callback);
@@ -59,6 +64,8 @@ public class XActivityController {
      * 注销{@link IActivityCallback}
      *
      * @see #registerActivityCallback(IActivityCallback)
+     *
+     * @see androidrubick.xframework.app.ui.internal.SimpleActivityCallback
      */
     public static void unregisterActivityCallback(IActivityCallback callback) {
         XActivityCtrl.getInstance().unregisterActivityCallback(callback);

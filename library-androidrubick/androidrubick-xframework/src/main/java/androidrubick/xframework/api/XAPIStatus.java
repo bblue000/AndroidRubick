@@ -1,5 +1,7 @@
 package androidrubick.xframework.api;
 
+import androidrubick.utils.Objects;
+
 /**
  *
  * API的执行结果
@@ -14,9 +16,22 @@ public class XAPIStatus {
 
     private int mCode;
     private String mMessage;
-    protected XAPIStatus() {
-
+    public XAPIStatus(int code, String msg) {
+        this.mCode = code;
+        this.mMessage = msg;
     }
+
+    public XAPIStatus code(int code) {
+        this.mCode = code;
+        return this;
+    }
+
+
+    public XAPIStatus message(String msg) {
+        this.mMessage = msg;
+        return this;
+    }
+
 
     /**
      * 获取可读的结果信息
@@ -27,9 +42,20 @@ public class XAPIStatus {
 
     /**
      * 获取状态code
+     *
+     * （如果是错误码，则可参见XAPI#ERR_*；如果是成功代码，可能是HTTP状态，或者是API返回状态）
+     *
      */
     public int getCode() {
         return mCode;
     }
 
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("code", getCode())
+                .add("msg", getMessage())
+                .toString();
+    }
 }

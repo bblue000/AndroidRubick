@@ -1,6 +1,5 @@
 package androidrubick.xframework.app;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -79,9 +78,8 @@ public class XApplication extends BaseApplication {
         return false;
     }
 
-    @SuppressLint("NewApi")
     private static boolean isTopAppAfterAPI21() {
-        if (true) {
+        if (XActivityController.isForeground()) {
             return true;
         }
         return isTopAppBeforeAPI21();

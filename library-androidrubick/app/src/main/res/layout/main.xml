@@ -23,6 +23,7 @@
 
             <Button
                 style="@style/XAF.BTN.Secondary"
+                android:id="@+id/btn"
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:text="111111"/>

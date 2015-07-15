@@ -22,6 +22,8 @@ import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
 import androidrubicktest.AndroidBuildTest;
 import androidrubicktest.XHttpRequestTest;
+import androidrubicktest.api.XAPITest;
+import butterknife.OnClick;
 
 /**
  * somthing
@@ -73,10 +75,6 @@ public class MainActivity extends XBaseActivity {
         AndroidBuildTest.testGet();
 
 //        XApplication.is();
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.root, new Fa(), "")
-                .commit();
     }
 
     @Subscribe
@@ -96,6 +94,10 @@ public class MainActivity extends XBaseActivity {
 
     @Override
     public void initData(View view, Bundle savedInstanceState) {
+
+        XAPITest.test();
+        XAPITest.testHolder();
+
     }
 
     @Override
@@ -107,5 +109,12 @@ public class MainActivity extends XBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         XEventAPI.unregister(this);
+    }
+
+    @OnClick(R.id.btn)
+    void open() {
+        getSupportFragmentManager().beginTransaction()
+        .add(R.id.root, new Fa(), "")
+        .commit();
     }
 }

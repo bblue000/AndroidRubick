@@ -23,6 +23,8 @@ import androidrubick.xframework.xbase.annotation.Configurable;
 @Configurable
 public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
+    public static final String TAG = XJob.class.getSimpleName();
+
     /**
      * 用于{@link #getJobType()}的返回值；
      *

@@ -16,45 +16,45 @@ import android.view.ViewGroup;
  *
  * Created by Yin Yong on 15/5/14.
  */
-public class XWidgetController<Self extends XWidgetController> {
+public class XWidgetCtrller<Self extends XWidgetCtrller> {
 
     /**
      * 创建指定View的控制器
      */
-    public static XWidgetController of(View view) {
-        return new XWidgetController(view);
+    public static XWidgetCtrller of(View view) {
+        return new XWidgetCtrller(view);
     }
 
     /**
      * 创建指定View中子项的控制器
      */
-    public static XWidgetController of(View parent, int id) {
-        return new XWidgetController((View) findViewById(parent, id));
+    public static XWidgetCtrller of(View parent, int id) {
+        return new XWidgetCtrller((View) findViewById(parent, id));
     }
 
     /**
      * 创建指定Activity中子项的控制器
      */
-    public static XWidgetController of(Activity activity, int id) {
-        return new XWidgetController((View) findViewById(activity, id));
+    public static XWidgetCtrller of(Activity activity, int id) {
+        return new XWidgetCtrller((View) findViewById(activity, id));
     }
 
     /**
      * 从父容器中查找View，直接转为指定的声明类型
      */
-    public static <T>T findViewById(View parent, int id) {
+    public static <T extends View>T findViewById(View parent, int id) {
         return (T) parent.findViewById(id);
     }
 
     /**
      * 从Activity中查找View，直接转为指定的声明类型
      */
-    public static <T>T findViewById(Activity activity, int id) {
+    public static <T extends View>T findViewById(Activity activity, int id) {
         return (T) activity.findViewById(id);
     }
 
     protected final View mTarget;
-    protected XWidgetController(View view) {
+    protected XWidgetCtrller(View view) {
         mTarget = view;
     }
 
@@ -199,4 +199,10 @@ public class XWidgetController<Self extends XWidgetController> {
         return (Self) width(width).height(height).refresh();
     }
 
+    /**
+     * 根据id查找子控件
+     */
+    public <T extends View>T viewById(int id) {
+        return (T) findViewById(mTarget, id);
+    }
 }

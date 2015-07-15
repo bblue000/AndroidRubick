@@ -25,8 +25,7 @@ public class IOUtils {
 	private final static String TAG = IOUtils.class.getSimpleName();
 	
 	private IOUtils() { }
-	
-	
+
 	// >>>>>>>>>>>>>>>>>>>>>>
 	// writeTo 系列
 	/**
@@ -41,6 +40,12 @@ public class IOUtils {
 	 */
 	public static boolean writeTo(InputStream in, OutputStream out,
 			boolean close) throws IOException {
+		return writeTo(in, out, new byte[IOConstants.DEF_BUFFER_SIZE], close);
+	}
+
+	public static boolean writeTo(InputStream in, OutputStream out,
+								  byte[] useBuf,
+								  boolean close) throws IOException {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
@@ -48,9 +53,9 @@ public class IOUtils {
 			throw new NullPointerException("out is null!");
 		}
 		try {
-			byte[] buf = new byte[IOConstants.DEF_BUFFER_SIZE];
+			byte[] buf = useBuf;
 			int len = -1;
-			while (-1 != (len = in.read(buf))) {
+			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 			}
 			return true;
@@ -75,6 +80,13 @@ public class IOUtils {
 	 */
 	public static boolean writeTo(Reader in, Writer out,
 			boolean close) throws IOException {
+		return writeTo(in, out, new char[IOConstants.DEF_BUFFER_SIZE], close);
+	}
+
+	public static boolean writeTo(Reader in, Writer out,
+								  char[] useBuf,
+								  boolean close) throws IOException
+	{
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
@@ -82,7 +94,7 @@ public class IOUtils {
 			throw new NullPointerException("out is null!");
 		}
 		try {
-			char[] buffer = new char[IOConstants.DEF_BUFFER_SIZE];
+			char[] buffer = useBuf;
 			int n = 0;
 			while (-1 != (n = in.read(buffer))) {
 				out.write(buffer, 0, n);
@@ -118,6 +130,17 @@ public class IOUtils {
 		return writeTo(reader, out, close);
 	}
 
+	public static boolean writeTo(InputStream in, Writer out,
+								  String encoding,
+								  char[] useBuf,
+								  boolean close) throws IOException {
+		InputStreamReader reader;
+		if (encoding == null) {
+			encoding = IOConstants.DEF_CHARSET;
+		}
+		reader = new InputStreamReader(in, encoding);
+		return writeTo(reader, out, useBuf, close);
+	}
 
 	// >>>>>>>>>>>>>>>>>>>>>>
 	// toString 系列
@@ -159,8 +182,7 @@ public class IOUtils {
 			throw e;
 		}
 	}
-	
-	
+
 	// >>>>>>>>>>>>>>>>>>>>>>
 	// close
 	/**

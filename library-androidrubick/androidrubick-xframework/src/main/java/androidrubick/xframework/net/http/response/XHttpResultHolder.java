@@ -110,13 +110,12 @@ public abstract class XHttpResultHolder extends BasicHttpResponse implements Clo
      * 包含GZIP的逻辑处理
      */
     public InputStream getContent() throws IOException {
-        if (!Objects.isNull(mWrapped)) {
-            boolean isGzip = "gzip".equalsIgnoreCase(getContentEncoding());
-            if (isGzip) {
-                return new GZIPInputStream(getEntity().getContent());
-            }
+        boolean isGzip = "gzip".equalsIgnoreCase(getContentEncoding());
+        InputStream ins = getEntity().getContent();
+        if (isGzip && !(ins instanceof GZIPInputStream)) {
+            ins = new GZIPInputStream(ins);
         }
-        return getEntity().getContent();
+        return ins;
     }
 
     /**

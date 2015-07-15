@@ -6,6 +6,7 @@ import org.androidrubick.utils.AndroidUtils;
 
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
@@ -147,7 +148,7 @@ public class XHttpRequestBuilder {
      * @see androidrubick.net.HttpHeaders
      */
     public XHttpRequestBuilder headers(Map<String, String> headers) {
-        if (!Objects.isEmpty(headers)) {
+        if (!CollectionsCompat.isEmpty(headers)) {
             prepareHeaders();
             mHeaders.putAll(headers);
         }
@@ -203,7 +204,7 @@ public class XHttpRequestBuilder {
      *
      */
     public XHttpRequestBuilder params(Map<String, String> params) {
-        if (!Objects.isEmpty(params)) {
+        if (!CollectionsCompat.isEmpty(params)) {
             prepareParams();
             mParams.putAll(params);
         }

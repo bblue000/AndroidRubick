@@ -31,8 +31,6 @@ import androidrubick.xframework.xbase.annotation.Configurable;
 @Configurable
 /*package*/ class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
-    private static final String TAG = XJobExecutor.class.getSimpleName();
-
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
@@ -53,8 +51,14 @@ import androidrubick.xframework.xbase.annotation.Configurable;
     @Override
     public void execute(Runnable command) {
         final int size = getQueue().size();
+        FrameworkLog.d(XJob.TAG, "execute, old size is " + size);
+        FrameworkLog.d(XJob.TAG, "execute, total task count is " + getTaskCount());
+        FrameworkLog.d(XJob.TAG, "execute, completed task count is " + getCompletedTaskCount());
+        FrameworkLog.d(XJob.TAG, "execute, cur thread pool size is " + getPoolSize());
+        FrameworkLog.d(XJob.TAG, "execute, largest thread pool size is " + getLargestPoolSize());
+        FrameworkLog.d(XJob.TAG, "execute, active thread count is " + getActiveCount());
         if (size > MAX_QUEUE_SIZE) {
-            FrameworkLog.d(TAG, "exceed, size is " + size);
+            FrameworkLog.d(XJob.TAG, "exceed, size is " + size);
             rejectedExecution(command, this);
         } else {
             super.execute(command);
@@ -62,6 +66,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
     }
 
     protected void clearExpiredJobs() {
+        FrameworkLog.d(XJob.TAG, "clearExpiredJobs");
         synchronized (XJobExecutor.class) {
             PriorityBlockingQueue blockingQueue = Objects.getAs(getQueue());
             Iterator<Runnable> iterator = blockingQueue.iterator();

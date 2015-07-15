@@ -31,7 +31,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Preconditions;
+import androidrubick.xframework.task.XJob;
 
 /**
  * <p>AsyncTask enables proper and easy use of the UI thread. This class allows to
@@ -224,6 +226,9 @@ public abstract class AsyncTask<Params, Progress, Result> {
     public AsyncTask() {
         mWorker = new WorkerRunnable<Params, Result>() {
             public Result call() throws Exception {
+
+                FrameworkLog.d(XJob.TAG, "task start execute [task " + AsyncTask.this);
+
                 mTaskInvoked.set(true);
 
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
@@ -243,8 +248,15 @@ public abstract class AsyncTask<Params, Progress, Result> {
                     throw new RuntimeException("An error occured while executing doInBackground()",
                             e.getCause());
                 } catch (CancellationException e) {
+                    FrameworkLog.d(XJob.TAG, "done canceled [task " + owner);
                     postResultIfNotInvoked(null);
                 }
+            }
+
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                FrameworkLog.d(XJob.TAG, "do cancel [task " + owner);
+                return super.cancel(mayInterruptIfRunning);
             }
         };
     }

@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import java.io.OutputStream;
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
@@ -84,7 +85,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      *
      */
     public R params(Map<String, ?> params) {
-        if (!Objects.isEmpty(params)) {
+        if (!CollectionsCompat.isEmpty(params)) {
             prepareParams();
             mParams.putAll(params);
         }

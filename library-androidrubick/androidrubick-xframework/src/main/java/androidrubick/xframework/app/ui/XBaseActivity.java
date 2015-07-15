@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,7 +30,7 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     }
 
     protected void doOnCreate(Bundle savedInstanceState) {
-        mRootView = provideLayoutView();
+        mRootView = provideLayoutView(getLayoutInflater(), (ViewGroup) getWindow().getDecorView(), savedInstanceState);
 
         if (null != mRootView) {
             setContentView(mRootView);
@@ -44,10 +45,11 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     }
 
     @Override
-    public View provideLayoutView() {
+    public View provideLayoutView(LayoutInflater inflater, ViewGroup container,
+                                  Bundle savedInstanceState) {
         int resId = provideLayoutResId();
         if (resId > 0) {
-            return getLayoutInflater().inflate(resId, (ViewGroup) getWindow().getDecorView(), false);
+            return inflater.inflate(resId, container, false);
         }
         return null;
     }

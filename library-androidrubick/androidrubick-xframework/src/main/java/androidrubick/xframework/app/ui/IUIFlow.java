@@ -3,7 +3,9 @@ package androidrubick.xframework.app.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * UI初始化流程，及相关API
@@ -32,7 +34,8 @@ interface IUIFlow {
      * <p/>
      * define the content view of the activity/fragment
      */
-    View provideLayoutView();
+    View provideLayoutView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState);
 
     /**
      * 在{@link Activity#onCreate(Bundle)}中调用，

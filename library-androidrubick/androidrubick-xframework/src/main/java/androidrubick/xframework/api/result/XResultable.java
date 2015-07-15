@@ -9,5 +9,12 @@ package androidrubick.xframework.api.result;
  *
  * @since 1.0
  */
-public interface XResultable {
+public class XResultable<T> {
+
+    public int code;
+
+    public String msg;
+
+    public T data;
+
 }

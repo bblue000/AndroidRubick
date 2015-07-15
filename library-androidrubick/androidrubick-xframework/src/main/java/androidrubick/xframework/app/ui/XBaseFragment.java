@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.androidrubick.app.BaseApplication;
-
 import androidrubick.utils.FrameworkLog;
+import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.events.XEventAPI;
 import butterknife.ButterKnife;
 
 /**
@@ -22,6 +22,7 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
 
     // root view是否已经创建，如果没有创建，而想使用应该创建后才能使用的方法时，将抛出异常
     private boolean mIsRootViewCreated = false;
+    private boolean mFirstTimeBuilt = true;
     // 根View，外部提供的View——Activity的根View其实是内置的FrameLayout
     private View mRootView;
 
@@ -59,19 +60,12 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                                    Bundle savedInstanceState) {
         FrameworkLog.i("BaseFragment", "execute onCreateView!!! ");
-        // 为了实现findViewById
-        int resId = provideLayoutResId();
-        View contentView;
-        if (resId > 0) {
-            contentView = inflater.inflate(provideLayoutResId(), container, false);
-            mRootView = contentView;
+        if (needBuild()) {
+            mRootView = provideLayoutView(inflater, container, savedInstanceState);
+
+            // 保证RootView加载完成
+            mIsRootViewCreated = (null != mRootView);
         }
-        contentView = provideLayoutView();
-        if (null != contentView)  {
-            mRootView = contentView;
-        }
-        // 保证RootView加载完成
-        mIsRootViewCreated = (null != mRootView);
         return mRootView;
     }
 
@@ -105,14 +99,28 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        doOnActivityCreated(savedInstanceState);
+    }
+
+    protected void doOnActivityCreated(Bundle savedInstanceState) {
         // 给一些变量赋值
         mFragmentActivity = getActivity();
 
-        ButterKnife.inject(this, mRootView);
-        // 细分生命周期
-        initView(mRootView, savedInstanceState);
-        initListener(mRootView, savedInstanceState);
-        initData(mRootView, savedInstanceState);
+        XEventAPI.register(this);
+        if (needBuild()) {
+            ButterKnife.inject(this, mRootView);
+            // 细分生命周期
+            initView(mRootView, savedInstanceState);
+            initListener(mRootView, savedInstanceState);
+            initData(mRootView, savedInstanceState);
+        }
+        mFirstTimeBuilt = false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        XEventAPI.unregister(this);
     }
 
     public FragmentActivity getFragmentActivity() {
@@ -124,7 +132,7 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
     }
 
     public Context getApplicationContext() {
-        return BaseApplication.getAppContext();
+        return XApplication.getAppContext();
     }
 
     protected final void ensureRootViewCreated() {
@@ -133,8 +141,25 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
         }
     }
 
+    private boolean needBuild() {
+        return mFirstTimeBuilt || rebuildOnMultiAttach();
+    }
+
+    /**
+     * 当从Activity中attach/detach，是否需要重新加载View，执行initXXX系列方法。
+     */
+    protected boolean rebuildOnMultiAttach() {
+        return false;
+    }
+
     @Override
-    public View provideLayoutView() {
+    public View provideLayoutView(LayoutInflater inflater, ViewGroup container,
+                                  Bundle savedInstanceState) {
+        // 为了实现findViewById
+        int resId = provideLayoutResId();
+        if (resId > 0) {
+            return inflater.inflate(provideLayoutResId(), container, false);
+        }
         return null;
     }
 
@@ -152,23 +177,60 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
         return (T) getRootView().findViewById(id);
     }
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // start Activity methods
     /**
      * 推荐使用。
      *
-     * 增加了检测是否已经加入
+     * 增加了检测是否已经加入Activity
      *
-     * @param intent
      */
     public void startActivityChecked(Intent intent) {
-        if (isAddToActivity()) {
-            return;
-        }
+        if (!isAddToActivity()) return;
         startActivity(intent);
+    }
+
+    /**
+     * 推荐使用。
+     *
+     * 增加了检测是否已经加入Activity
+     *
+     */
+    public void startActivityChecked(Class<? extends Activity> clz) {
+        if (!isAddToActivity()) return;
+        startActivity(clz);
+    }
+
+    /**
+     * 推荐使用。
+     *
+     * 增加了检测是否已经加入Activity
+     *
+     */
+    public void startActivityForResultChecked(Intent intent, int requestCode) {
+        if (!isAddToActivity()) return;
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 推荐使用。
+     *
+     * 增加了检测是否已经加入Activity
+     *
+     */
+    public void startActivityForResultChecked(Class<? extends Activity> clz, int requestCode) {
+        if (!isAddToActivity()) return;
+        startActivityForResult(clz, requestCode);
     }
 
     @Override
     public void startActivity(Intent intent) {
-        super.startActivity(intent);
+        XActivityController.startActivity(intent);
+    }
+
+    @Override
+    public void startActivity(Class<? extends Activity> clz) {
+        XActivityController.startActivity(clz);
     }
 
     @Override
@@ -177,14 +239,15 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
     }
 
     @Override
-    public void startActivity(Class<? extends Activity> clz) {
-        final Activity activity = getFragmentActivity();
-        startActivity(new Intent(activity, clz));
+    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
+        startActivityForResult(new Intent(getApplicationContext(), clz), requestCode);
     }
 
-    @Override
-    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
-        final Activity activity = getFragmentActivity();
-        startActivityForResult(new Intent(activity, clz), requestCode);
+    protected void superStartActivity(Intent intent) {
+        super.startActivity(intent);
+    }
+
+    protected void superStartActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
     }
 }

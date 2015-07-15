@@ -6,6 +6,10 @@ import java.security.MessageDigest;
 public class MD5 {
 	static final String algorithm = "MD5";
 
+	public static String makeMd5Sum( byte[] srcContent ) {
+		return digest2Str(digest2Bytes(srcContent));
+	}
+
 	public static byte[] digest2Bytes(byte[] bytes) {
 		MessageDigest md = null;
 		try {

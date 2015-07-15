@@ -11,30 +11,30 @@ import android.widget.TextView;
  *
  * Created by Yin Yong on 15/5/14.
  */
-public class XTextViewController extends XWidgetController<XTextViewController> {
+public class XTextViewCtrller extends XWidgetCtrller<XTextViewCtrller> {
 
     /**
      * 创建指定View的控制器
      */
-    public static XTextViewController of(TextView view) {
-        return new XTextViewController(view);
+    public static XTextViewCtrller of(TextView view) {
+        return new XTextViewCtrller(view);
     }
 
     /**
      * 创建指定View中子项的控制器
      */
-    public static XTextViewController of(View parent, int id) {
-        return new XTextViewController((TextView) findViewById(parent, id));
+    public static XTextViewCtrller of(View parent, int id) {
+        return new XTextViewCtrller((TextView) findViewById(parent, id));
     }
 
     /**
      * 创建指定Activity中子项的控制器
      */
-    public static XTextViewController of(Activity activity, int id) {
-        return new XTextViewController((TextView) findViewById(activity, id));
+    public static XTextViewCtrller of(Activity activity, int id) {
+        return new XTextViewCtrller((TextView) findViewById(activity, id));
     }
 
-    protected XTextViewController(TextView view) {
+    protected XTextViewCtrller(TextView view) {
         super(view);
     }
 
@@ -46,7 +46,7 @@ public class XTextViewController extends XWidgetController<XTextViewController> 
     /**
      * 设置文本
      */
-    public XTextViewController text(int resId) {
+    public XTextViewCtrller text(int resId) {
         getView().setText(resId);
         return self();
     }
@@ -54,7 +54,7 @@ public class XTextViewController extends XWidgetController<XTextViewController> 
     /**
      * 设置文本
      */
-    public XTextViewController text(CharSequence text) {
+    public XTextViewCtrller text(CharSequence text) {
         getView().setText(text);
         return self();
     }
@@ -62,7 +62,7 @@ public class XTextViewController extends XWidgetController<XTextViewController> 
     /**
      * 设置字体大小
      */
-    public XTextViewController textSize(float size) {
+    public XTextViewCtrller textSize(float size) {
         getView().setTextSize(size);
         return self();
     }
@@ -70,7 +70,7 @@ public class XTextViewController extends XWidgetController<XTextViewController> 
     /**
      * 设置字体大小
      */
-    public XTextViewController textSize(int unit, float size) {
+    public XTextViewCtrller textSize(int unit, float size) {
         getView().setTextSize(unit, size);
         return self();
     }
@@ -78,7 +78,7 @@ public class XTextViewController extends XWidgetController<XTextViewController> 
     /**
      * 设置字体颜色
      */
-    public XTextViewController textColor(int color) {
+    public XTextViewCtrller textColor(int color) {
         getView().setTextColor(color);
         return self();
     }
@@ -86,7 +86,7 @@ public class XTextViewController extends XWidgetController<XTextViewController> 
     /**
      * 设置字体颜色
      */
-    public XTextViewController textColorRes(int resId) {
+    public XTextViewCtrller textColorRes(int resId) {
         getView().setTextColor(getView().getResources().getColorStateList(resId));
         return self();
     }
