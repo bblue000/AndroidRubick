@@ -1,7 +1,6 @@
 package org.androidrubick.demo;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +20,6 @@ import androidrubick.xframework.app.ui.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
 import androidrubicktest.AndroidBuildTest;
-import androidrubicktest.XHttpRequestTest;
 import androidrubicktest.api.XAPITest;
 import butterknife.OnClick;
 
@@ -53,7 +51,7 @@ public class MainActivity extends XBaseActivity {
         list.add("");
         eventBus.post(list);
         XEventAPI.register(this);
-        new Thread() {
+        new Thread("yytest") {
             @Override
             public void run() {
 
@@ -61,16 +59,6 @@ public class MainActivity extends XBaseActivity {
                 XEventAPI.postToMain("1", "2");
             }
         }.start();
-
-        new AsyncTask<Object, Object, Object>() {
-
-            @Override
-            protected Object doInBackground(Object... params) {
-                XHttpRequestTest.testGet();
-                XHttpRequestTest.testPost();
-                return null;
-            }
-        }.execute();
 
         AndroidBuildTest.testGet();
 

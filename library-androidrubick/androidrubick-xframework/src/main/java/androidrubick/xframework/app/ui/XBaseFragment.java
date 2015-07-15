@@ -243,6 +243,14 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
         startActivityForResult(new Intent(getApplicationContext(), clz), requestCode);
     }
 
+    /**
+     * 关闭所属Activity
+     */
+    public void finishActivity() {
+        if (!isAddToActivity()) return;
+        getActivity().finish();
+    }
+
     protected void superStartActivity(Intent intent) {
         super.startActivity(intent);
     }

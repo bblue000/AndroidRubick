@@ -24,6 +24,7 @@ public class XAPITest {
             @Override
             public void onSuccess(Object result, XAPIStatus status) {
                 Log.d("yytest", "onSuccess result = " + result);
+                System.gc();
             }
 
             @Override
