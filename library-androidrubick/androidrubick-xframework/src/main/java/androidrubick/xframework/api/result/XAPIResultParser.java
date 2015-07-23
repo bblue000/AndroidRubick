@@ -6,11 +6,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import androidrubick.io.IOUtils;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.api.param.XParamable;
 import androidrubick.xframework.net.http.response.XHttpResultHolder;
 import androidrubick.xframework.xbase.ByteArrayPool;
 import androidrubick.xframework.xbase.JsonParser;
@@ -51,7 +49,7 @@ public class XAPIResultParser {
                 return (T) new String(data, charset);
             }
             // 2、JSONObject
-            if (Objects.equals(clz, JSONObject.class) || Objects.equals(clz, JSONObject.class)) {
+            if (Objects.equals(clz, JSONObject.class) || Objects.equals(clz, JSONArray.class)) {
                 String str = new String(data, charset);
                 try {
                     return (T) new JSONTokener(str).nextValue();

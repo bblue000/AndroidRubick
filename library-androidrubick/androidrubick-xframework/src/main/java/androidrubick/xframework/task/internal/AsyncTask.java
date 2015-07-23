@@ -213,6 +213,14 @@ public abstract class AsyncTask<Params, Progress, Result> {
         return sDefaultExecutor;
     }
 
+    /**
+     * 因为{@link AsyncTask}对外不是一个{@link Runnable}，
+     *
+     * 如果在{@link ThreadPoolExecutor}中需要对任务进行优先级排序，
+     *
+     * 将其通过这种方式转换出来。
+     *
+     */
     public static <T extends AsyncTask>T asAsyncTask(Runnable run) {
         if (run instanceof LocalFutureTask) {
             return (T) ((LocalFutureTask) run).owner;

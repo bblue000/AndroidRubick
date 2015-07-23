@@ -1,5 +1,7 @@
 package androidrubick.xframework.api.result;
 
+import androidrubick.xframework.xbase.annotation.Configurable;
+
 /**
  * 标识对象是否可以转为结果，它并没有包含任何方法。
  *
@@ -9,6 +11,7 @@ package androidrubick.xframework.api.result;
  *
  * @since 1.0
  */
+@Configurable
 public class XResultable<T> {
 
     public int code;

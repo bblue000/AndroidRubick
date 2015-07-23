@@ -229,18 +229,10 @@ public class FileUtils {
         FileOutputStream out = null;
         try {
             out = openFileOutput(file, true, append);
-            byte[] buf = new byte[IOConstants.DEF_BUFFER_SIZE];
-            int len = -1;
-            while (-1 != (len = ins.read(buf))) {
-                out.write(buf, 0, len);
-            }
-            out.flush();
+            IOUtils.writeTo(ins, out, closeIns);
             return true;
         } finally {
             close(out);
-            if (closeIns) {
-                close(ins);
-            }
         }
     }
 
@@ -274,10 +266,20 @@ public class FileUtils {
      * @since 1.0
      */
     public static boolean copyToFile(File srcFile, File destFile) {
+        return copyToFile(srcFile, destFile, (IOProgressCallback) null);
+    }
+
+    /**
+     * copy a file from srcFile to destFile, return true if succeed, return
+     * false on failure
+     *
+     * @since 1.0
+     */
+    public static boolean copyToFile(File srcFile, File destFile, IOProgressCallback callback) {
         try {
             InputStream in = new FileInputStream(srcFile);
             try {
-                return copyToFile(in, destFile);
+                return copyToFile(in, destFile, callback);
             } finally {
                 close(in);
             }
@@ -294,25 +296,26 @@ public class FileUtils {
      * @since 1.0
      */
     public static boolean copyToFile(InputStream inputStream, File destFile) {
+        return copyToFile(inputStream, destFile, null);
+    }
+
+    /**
+     * Copy data from a source stream to destFile.
+     * Return true if succeed, return false if failed.
+     *
+     * @since 1.0
+     */
+    public static boolean copyToFile(InputStream inputStream, File destFile, IOProgressCallback callback) {
         try {
             if (destFile.exists()) {
                 destFile.delete();
             }
             FileOutputStream out = new FileOutputStream(destFile);
             try {
-                byte[] buffer = new byte[IOConstants.DEF_BUFFER_SIZE];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) >= 0) {
-                    out.write(buffer, 0, bytesRead);
-                }
-                out.flush();
+                return IOUtils.writeTo(inputStream, out, false/*因为inputstream未必是需要关闭的*/, callback);
             } finally {
-                try {
-                    out.getFD().sync();
-                } catch (IOException e) { }
                 close(out);
             }
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -327,6 +330,16 @@ public class FileUtils {
      */
     public static boolean cutToFile(File srcFile, File destFile) {
         return copyToFile(srcFile, destFile) && deleteFile(srcFile, true);
+    }
+
+    /**
+     * Copy data from a source stream to destFile, and then delete the source file.
+     * Return true if succeed, return false if failed.
+     *
+     * @since 1.0
+     */
+    public static boolean cutToFile(File srcFile, File destFile, IOProgressCallback callback) {
+        return copyToFile(srcFile, destFile, callback) && deleteFile(srcFile, true);
     }
 
     /**
@@ -394,15 +407,28 @@ public class FileUtils {
 
     /**
      * Writes string to file. Basically same as "echo -n $string > $filename"
-     * @param file
-     * @param string
+     * @param file target file
+     * @param string char sequence
      * @return return true if succeed, return false if fail
      *
      * @since 1.0
      */
     public static boolean stringToFile(File file, String string) {
+        return stringToFile(file, string, false);
+    }
+
+    /**
+     * Writes string to file. Basically same as "echo -n $string > $filename"
+     * @param file target file
+     * @param string char sequence
+     * @param append whether to append to file
+     * @return return true if succeed, return false if fail
+     *
+     * @since 1.0
+     */
+    public static boolean stringToFile(File file, String string, boolean append) {
         try {
-            FileWriter out = new FileWriter(file);
+            FileWriter out = new FileWriter(file, append);
             try {
                 out.write(string);
             } finally {
@@ -415,5 +441,5 @@ public class FileUtils {
             return false;
         }
     }
-	
+
 }

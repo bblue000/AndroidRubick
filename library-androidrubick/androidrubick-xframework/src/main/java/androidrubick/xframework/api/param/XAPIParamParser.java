@@ -1,6 +1,5 @@
 package androidrubick.xframework.api.param;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import androidrubick.net.HttpMethod;

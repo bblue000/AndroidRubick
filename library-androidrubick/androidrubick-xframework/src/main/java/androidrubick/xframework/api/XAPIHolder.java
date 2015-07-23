@@ -31,7 +31,7 @@ public class XAPIHolder {
      *         <tt>true</tt> otherwise
      */
     public boolean cancel(boolean mayInterruptIfRunning) {
-        return this.job.cancel(true);
+        return this.job.cancel(mayInterruptIfRunning);
     }
 
     public boolean isCancelled() {
