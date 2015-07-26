@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import androidrubick.utils.NumberUtils;
-import androidrubick.utils.FrameworkLog;
 import static androidrubick.io.IOUtils.*;
 
 /**
@@ -70,8 +69,6 @@ public class FileUtils {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                FrameworkLog.d(TAG, "createFile invoke createNewFile error = "
-                        + e.getMessage());
                 throw e;
             }
             return exists(file);
@@ -421,7 +418,7 @@ public class FileUtils {
                 close(input);
             }
         } catch (Exception e) {
-            FrameworkLog.e(TAG, "readTextFile Exception: " + e.getMessage());
+//            FrameworkLog.e(TAG, "readTextFile Exception: " + e.getMessage());
             e.printStackTrace();
             return "";
         }
@@ -458,7 +455,7 @@ public class FileUtils {
             }
             return true;
         } catch (Exception e) {
-            FrameworkLog.e(TAG, "stringToFile Exception: " + e.getMessage());
+//            FrameworkLog.e(TAG, "stringToFile Exception: " + e.getMessage());
             e.printStackTrace();
             return false;
         }

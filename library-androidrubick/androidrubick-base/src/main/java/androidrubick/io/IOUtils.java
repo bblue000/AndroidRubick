@@ -1,6 +1,5 @@
 package androidrubick.io;
 
-import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
 
 import java.io.Closeable;
@@ -134,7 +133,6 @@ public class IOUtils {
 			}
 			return true;
 		} catch (IOException e) {
-			FrameworkLog.e(TAG, "writeTo Exception : " + e.getMessage());
 			throw e;
 		} finally {
 			if (closeOut) {
@@ -253,7 +251,6 @@ public class IOUtils {
 			}
 			return true;
 		} catch (IOException e) {
-			FrameworkLog.e(TAG, "writeTo Exception : " + e.getMessage());
 			throw e;
 		} finally {
 			if (closeOut) {
@@ -490,7 +487,6 @@ public class IOUtils {
 			writeTo(in, writer, encoding, false, false);
 			return writer.toString();
 		} catch (IOException e) {
-			FrameworkLog.e(TAG, "inputStreamToString Exception : " + e.getMessage());
 			throw e;
 		} finally {
 			close(writer);
