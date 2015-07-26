@@ -13,6 +13,14 @@ import androidrubick.utils.NumberUtils;
 import androidrubick.utils.FrameworkLog;
 import static androidrubick.io.IOUtils.*;
 
+/**
+ * 工具类，封装简单的文件相关的操作
+ *
+ * @author Yin Yong
+ *
+ * @since 1.0
+ *
+ */
 public class FileUtils {
 
     private static final String TAG = FileUtils.class.getSimpleName();
@@ -50,7 +58,8 @@ public class FileUtils {
     public static boolean createFile(File file) throws IOException {
         if (exists(file)) {
             if (file.isDirectory()) {
-                throw new IOException("target path already exists, but is a dir!");
+                throw new IOException("target path = { "
+                        + file.getAbsolutePath() + " } is a directory, not a file!");
             }
             return file.isFile();
         } else {
@@ -95,6 +104,7 @@ public class FileUtils {
      *
      * @param file 指定的文件对象
      * @param deleteRoot 如果该文件是文件夹，是否删除该文件夹
+     *
      * @return 如果最终指定的文件不再存在，则返回TRUE
      *
      * @since 1.0
@@ -191,7 +201,7 @@ public class FileUtils {
     }
 
     /**
-     * 相当于save(String path, InputStream ins, false)，
+     * 相当于save(File file, InputStream ins, false)，
      * 即非叠加模式写入，不关闭参数 <code>InputStream ins</code> （无论成功与否）
      *
      * @since 1.0
@@ -201,7 +211,7 @@ public class FileUtils {
     }
 
     /**
-     * 相当于save(String path, InputStream ins, boolean append, false)，
+     * 相当于save(File file, InputStream ins, boolean append, false)，
      * 即不关闭参数 <code>InputStream ins</code> （无论成功与否）
      *
      * @since 1.0
@@ -226,6 +236,18 @@ public class FileUtils {
      */
     public static boolean save(File file, InputStream ins, boolean append,
                                boolean closeIns) throws IOException {
+        FileOutputStream out = null;
+        try {
+            out = openFileOutput(file, true, append);
+            IOUtils.writeTo(ins, out, closeIns);
+            return true;
+        } finally {
+            close(out);
+        }
+    }
+
+    public static boolean save(File file, InputStream ins, boolean append,
+                               boolean closeIns, IOProgressCallback callback) throws IOException {
         FileOutputStream out = null;
         try {
             out = openFileOutput(file, true, append);

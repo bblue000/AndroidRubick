@@ -17,6 +17,13 @@ android {
     }
 
     // 资源文件设置
+//    sourceSets {
+//        main {
+//            java {
+//                exclude ''
+//            }
+//        }
+//    }
     /*
     sourceSets {
         main {

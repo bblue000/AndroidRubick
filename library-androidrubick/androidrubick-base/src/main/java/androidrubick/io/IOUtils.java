@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -30,70 +31,87 @@ public class IOUtils {
 	private IOUtils() { }
 
 	// >>>>>>>>>>>>>>>>>>>>>>
-	// writeTo 系列
+	// TODO writeTo 系列
 	/**
 	 * 将输入流写入到输出流
+	 *
 	 * @param in 输入源
 	 * @param out 输出流
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
      *
      * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, OutputStream out,
-			boolean close) throws IOException {
-		return writeTo(in, out, close, null);
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, closeIns, closeOut, null);
 	}
 
 	/**
 	 * 将输入流写入到输出流
+	 *
 	 * @param in 输入源
 	 * @param out 输出流
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param callback IO进度的回调
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
      *
      * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, OutputStream out,
-			boolean close, IOProgressCallback callback) throws IOException {
-		return writeTo(in, out, new byte[IOConstants.DEF_BUFFER_SIZE], close, callback);
+								  boolean closeIns, boolean closeOut,
+								  IOProgressCallback callback) throws IOException {
+		return writeTo(in, out, new byte[IOConstants.DEF_BUFFER_SIZE], closeIns, closeOut, callback);
 	}
 
 	/**
 	 * 将输入流写入到输出流
+	 *
 	 * @param in 输入源
 	 * @param out 输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, OutputStream out,
 								  byte[] useBuf,
-								  boolean close) throws IOException {
-		return writeTo(in, out, useBuf, close, null);
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, useBuf, closeIns, closeOut, null);
 	}
 
 	/**
 	 * 将输入流写入到输出流
+	 *
 	 * @param in 输入源
 	 * @param out 输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param callback IO进度的回调
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, OutputStream out,
 								  byte[] useBuf,
-								  boolean close,
+								  boolean closeIns, boolean closeOut,
 								  IOProgressCallback callback) throws IOException {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
@@ -104,7 +122,7 @@ public class IOUtils {
 		long readTotal = 0;
 		try {
 			byte[] buf = useBuf;
-			int len = -1;
+			int len;
 			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 				if (null != callback) {
@@ -119,69 +137,99 @@ public class IOUtils {
 			FrameworkLog.e(TAG, "writeTo Exception : " + e.getMessage());
 			throw e;
 		} finally {
-			if (close) {
+			if (closeOut) {
 				close(out);
+			}
+			if (closeIns) {
 				close(in);
 			}
 		}
 	}
 
+
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// TODO write char
 	/**
 	 * 将字符读取器写入到字符输出流
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param in 输入源
+	 * @param out 输出对象
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
      *
      * @since 1.0
 	 */
 	public static boolean writeTo(Reader in, Writer out,
-			boolean close) throws IOException {
-		return writeTo(in, out, close, null);
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, closeIns, closeOut, null);
 	}
 
 	/**
 	 * 将字符读取器写入到字符输出流
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param in 输入源
+	 * @param out 输出对象
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param callback IO进度的回调
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
      *
      * @since 1.0
 	 */
 	public static boolean writeTo(Reader in, Writer out,
-			boolean close, IOProgressCallback callback) throws IOException {
-		return writeTo(in, out, new char[IOConstants.DEF_BUFFER_SIZE], close, callback);
+								  boolean closeIns, boolean closeOut,
+								  IOProgressCallback callback) throws IOException {
+		return writeTo(in, out, new char[IOConstants.DEF_BUFFER_SIZE], closeIns, closeOut, callback);
 	}
 
 	/**
 	 * 将字符读取器写入到字符输出流
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param in 输入源
+	 * @param out 输出对象
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
 	 */
 	public static boolean writeTo(Reader in, Writer out,
 								  char[] useBuf,
-								  boolean close) throws IOException
+								  boolean closeIns, boolean closeOut) throws IOException
 	{
-		return writeTo(in, out, useBuf, close, null);
+		return writeTo(in, out, useBuf, closeIns, closeOut, null);
 	}
 
 	/**
 	 * 将字符读取器写入到字符输出流
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param in 输入源
+	 * @param out 输出对象
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param callback IO进度的回调
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
 	 */
 	public static boolean writeTo(Reader in, Writer out,
 								  char[] useBuf,
-								  boolean close,
+								  boolean closeIns, boolean closeOut,
 								  IOProgressCallback callback) throws IOException
 	{
 		if (null == in) {
@@ -193,7 +241,7 @@ public class IOUtils {
 		long readTotal = 0;
 		try {
 			char[] buffer = useBuf;
-			int n = 0;
+			int n;
 			while (-1 != (n = in.read(buffer))) {
 				out.write(buffer, 0, n);
 				if (null != callback) {
@@ -208,54 +256,75 @@ public class IOUtils {
 			FrameworkLog.e(TAG, "writeTo Exception : " + e.getMessage());
 			throw e;
 		} finally {
-			if (close) {
+			if (closeOut) {
 				close(out);
+			}
+			if (closeIns) {
 				close(in);
 			}
 		}
 	}
 
+
+
+
+
+
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// TODO InputStream write to Writer
 	/**
 	 * 将字节流写入到字符输出流
-	 * @param encoding 字符编码方式
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
      *
      * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, Writer out,
-			String encoding, boolean close) throws IOException {
-		return writeTo(in, out, encoding, close, null);
+								  String encoding,
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, encoding, closeIns, closeOut, null);
 	}
 
 	/**
 	 * 将字节流写入到字符输出流
-	 * @param encoding 字符编码方式
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param callback IO进度的回调
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
 	 */
 	public static boolean writeTo(InputStream in, Writer out,
-								  String encoding, boolean close,
+								  String encoding,
+								  boolean closeIns, boolean closeOut,
 								  IOProgressCallback callback) throws IOException {
-		InputStreamReader reader;
-		if (encoding == null) {
-			encoding = IOConstants.DEF_CHARSET;
-		}
-		reader = new InputStreamReader(in, encoding);
-		return writeTo(reader, out, close, callback);
+		return writeTo(in, out, encoding, new char[IOConstants.DEF_BUFFER_SIZE], closeIns, closeOut, callback);
 	}
 
 	/**
 	 * 将字节流写入到字符输出流
-	 * @param encoding 字符编码方式
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
@@ -263,16 +332,21 @@ public class IOUtils {
 	public static boolean writeTo(InputStream in, Writer out,
 								  String encoding,
 								  char[] useBuf,
-								  boolean close) throws IOException {
-		return writeTo(in, out, encoding, useBuf, close, null);
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, encoding, useBuf, closeIns, closeOut, null);
 	}
 
 	/**
 	 * 将字节流写入到字符输出流
-	 * @param encoding 字符编码方式
-	 * @param close 写入完成或者出错后是否需要关闭所有流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 *
 	 * @return true代表写入成功
+	 *
 	 * @throws java.io.IOException IO异常
 	 *
 	 * @since 1.0
@@ -280,61 +354,159 @@ public class IOUtils {
 	public static boolean writeTo(InputStream in, Writer out,
 								  String encoding,
 								  char[] useBuf,
-								  boolean close,
+								  boolean closeIns, boolean closeOut,
 								  IOProgressCallback callback) throws IOException {
 		InputStreamReader reader;
 		if (encoding == null) {
 			encoding = IOConstants.DEF_CHARSET;
 		}
 		reader = new InputStreamReader(in, encoding);
-		return writeTo(reader, out, useBuf, close, callback);
+		return writeTo(reader, out, useBuf, closeIns, closeOut, callback);
 	}
 
-	// >>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// TODO Reader write to OutputStream
+	/**
+	 * 将字节流写入到字符输出流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 *
+	 * @return true代表写入成功
+	 *
+	 * @throws java.io.IOException IO异常
+	 *
+	 * @since 1.0
+	 */
+	public static boolean writeTo(Reader in, OutputStream out,
+								  String encoding,
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, encoding, closeIns, closeOut, null);
+	}
+
+	/**
+	 * 将字节流写入到字符输出流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param callback IO进度的回调
+	 *
+	 * @return true代表写入成功
+	 *
+	 * @throws java.io.IOException IO异常
+	 *
+	 * @since 1.0
+	 */
+	public static boolean writeTo(Reader in, OutputStream out,
+								  String encoding,
+								  boolean closeIns, boolean closeOut,
+								  IOProgressCallback callback) throws IOException {
+		return writeTo(in, out, encoding, new char[IOConstants.DEF_BUFFER_SIZE], closeIns, closeOut, callback);
+	}
+
+	/**
+	 * 将字节流写入到字符输出流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 *
+	 * @return true代表写入成功
+	 *
+	 * @throws java.io.IOException IO异常
+	 *
+	 * @since 1.0
+	 */
+	public static boolean writeTo(Reader in, OutputStream out,
+								  String encoding,
+								  char[] useBuf,
+								  boolean closeIns, boolean closeOut) throws IOException {
+		return writeTo(in, out, encoding, useBuf, closeIns, closeOut, null);
+	}
+
+	/**
+	 * 将字节流写入到字符输出流
+	 *
+	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 *
+	 * @return true代表写入成功
+	 *
+	 * @throws java.io.IOException IO异常
+	 *
+	 * @since 1.0
+	 */
+	public static boolean writeTo(Reader in, OutputStream out,
+								  String encoding,
+								  char[] useBuf,
+								  boolean closeIns, boolean closeOut,
+								  IOProgressCallback callback) throws IOException {
+		OutputStreamWriter writer;
+		if (encoding == null) {
+			encoding = IOConstants.DEF_CHARSET;
+		}
+		writer = new OutputStreamWriter(out, encoding);
+		return writeTo(in, writer, useBuf, closeIns, closeOut, callback);
+	}
+
+
+
+
 
 	// >>>>>>>>>>>>>>>>>>>>>>
-	// toString 系列
+	// TODO toString 系列
 	/**
 	 * 读取字节流，并输出为String
+	 *
 	 * @param in 字节流
+	 * @param encoding 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 *
 	 * @throws java.io.IOException IO异常
      *
      * @since 1.0
 	 */
-	public static String inputStreamToString(InputStream in)
-			throws IOException {
-		return inputStreamToString(in, IOConstants.DEF_CHARSET);
-	}
-
-	/**
-	 * 读取字节流，并输出为String
-	 * @param in 字节流
-	 * @param encoding 编码方式
-	 * @throws java.io.IOException IO异常
-     *
-     * @since 1.0
-	 */
-	public static String inputStreamToString(InputStream in, String encoding)
+	public static String inputStreamToString(InputStream in, String encoding, boolean closeIns)
 			throws IOException {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
-		if (null == encoding) {
-			encoding = IOConstants.DEF_CHARSET;
-		}
 		StringWriter writer = null;
 		try {
 			writer = new StringWriter();
-			writeTo(in, writer, encoding, true);
+			writeTo(in, writer, encoding, false, false);
 			return writer.toString();
 		} catch (IOException e) {
 			FrameworkLog.e(TAG, "inputStreamToString Exception : " + e.getMessage());
 			throw e;
+		} finally {
+			close(writer);
+			if (closeIns) {
+				close(in);
+			}
 		}
 	}
 
+
+
+
+
+
 	// >>>>>>>>>>>>>>>>>>>>>>
-	// close
+	// TODO close
 	/**
 	 * 关闭指定的可关闭的I/O
 	 * @param close 一个实现了Closeable的I/O对象

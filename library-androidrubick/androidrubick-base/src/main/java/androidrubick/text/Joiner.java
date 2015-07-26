@@ -1,7 +1,5 @@
 package androidrubick.text;
 
-import android.util.AndroidRuntimeException;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -272,7 +270,7 @@ public class Joiner {
         try {
             appendable.append(result);
         } catch (IOException e) {
-            throw new AndroidRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 

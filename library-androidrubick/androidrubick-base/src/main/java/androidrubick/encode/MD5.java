@@ -2,7 +2,6 @@ package androidrubick.encode;
 
 import java.security.MessageDigest;
 
-
 public class MD5 {
 	static final String algorithm = "MD5";
 
@@ -13,7 +12,7 @@ public class MD5 {
 	public static byte[] digest2Bytes(byte[] bytes) {
 		MessageDigest md = null;
 		try {
-			md = MessageDigest.getInstance("MD5");
+			md = MessageDigest.getInstance(algorithm);
 		} catch (Exception localNoSuchAlgorithmException) {
 		}
 		return md.digest(bytes);
