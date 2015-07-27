@@ -198,22 +198,22 @@ public class FileUtils {
     }
 
     /**
-     * 相当于save(File file, InputStream ins, false)，
+     * 相当于{@link #saveToFile(File, InputStream, boolean) save(File file, InputStream ins, false)}，
      * 即非叠加模式写入，不关闭参数 <code>InputStream ins</code> （无论成功与否）
      *
      * @since 1.0
      */
-    public static boolean save(File file, InputStream ins) throws IOException {
-        return save(file, ins, false);
+    public static boolean saveToFile(File file, InputStream ins) throws IOException {
+        return saveToFile(file, ins, false);
     }
 
     /**
-     * 相当于save(File file, InputStream ins, boolean append, false)，
+     * 相当于{@link #save(File, InputStream, boolean, boolean) save(File file, InputStream ins, false)}，save(File file, InputStream ins, boolean append, false)，
      * 即不关闭参数 <code>InputStream ins</code> （无论成功与否）
      *
      * @since 1.0
      */
-    public static boolean save(File file, InputStream ins, boolean append)
+    public static boolean saveToFile(File file, InputStream ins, boolean append)
             throws IOException {
         return save(file, ins, append, false);
     }

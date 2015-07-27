@@ -25,8 +25,6 @@ import java.io.Writer;
  */
 public class IOUtils {
 
-	private final static String TAG = IOUtils.class.getSimpleName();
-
 	private IOUtils() { }
 
 	// >>>>>>>>>>>>>>>>>>>>>>
@@ -124,23 +122,15 @@ public class IOUtils {
 			int len;
 			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
-				if (null != callback) {
+				if (null != callback)
 					callback.onProgress(len, readTotal += len);
-				}
 			}
-			if (null != callback) {
+			if (null != callback)
 				callback.onComplete(readTotal);
-			}
 			return true;
-		} catch (IOException e) {
-			throw e;
 		} finally {
-			if (closeOut) {
-				close(out);
-			}
-			if (closeIns) {
-				close(in);
-			}
+			if (closeOut) close(out);
+			if (closeIns) close(in);
 		}
 	}
 
@@ -242,23 +232,15 @@ public class IOUtils {
 			int n;
 			while (-1 != (n = in.read(buffer))) {
 				out.write(buffer, 0, n);
-				if (null != callback) {
+				if (null != callback)
 					callback.onProgress(n, readTotal += n);
-				}
 			}
-			if (null != callback) {
+			if (null != callback)
 				callback.onComplete(readTotal);
-			}
 			return true;
-		} catch (IOException e) {
-			throw e;
 		} finally {
-			if (closeOut) {
-				close(out);
-			}
-			if (closeIns) {
-				close(in);
-			}
+			if (closeOut) close(out);
+			if (closeIns) close(in);
 		}
 	}
 
@@ -354,7 +336,7 @@ public class IOUtils {
 								  boolean closeIns, boolean closeOut,
 								  IOProgressCallback callback) throws IOException {
 		InputStreamReader reader;
-		if (encoding == null) {
+		if (null == encoding) {
 			encoding = IOConstants.DEF_CHARSET;
 		}
 		reader = new InputStreamReader(in, encoding);
@@ -453,7 +435,7 @@ public class IOUtils {
 								  boolean closeIns, boolean closeOut,
 								  IOProgressCallback callback) throws IOException {
 		OutputStreamWriter writer;
-		if (encoding == null) {
+		if (null == encoding) {
 			encoding = IOConstants.DEF_CHARSET;
 		}
 		writer = new OutputStreamWriter(out, encoding);
@@ -486,13 +468,9 @@ public class IOUtils {
 			writer = new StringWriter();
 			writeTo(in, writer, encoding, false, false);
 			return writer.toString();
-		} catch (IOException e) {
-			throw e;
 		} finally {
 			close(writer);
-			if (closeIns) {
-				close(in);
-			}
+			if (closeIns) close(in);
 		}
 	}
 
