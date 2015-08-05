@@ -38,8 +38,17 @@ public final class HttpHeaderValues {
      * @see androidrubick.net.HttpHeaders#CONNECTION
      */
     public static final String KEEP_ALIVE = "Keep-Alive";
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // optional parameter keys
     /**
      * 参数 boundary
      */
     public static final String P_BOUNDARY = "boundary";
+
+    /**
+     * 参数 charset
+     */
+    public static final String P_CHARSET = "charset";
 }

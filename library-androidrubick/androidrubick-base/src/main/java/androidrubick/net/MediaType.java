@@ -21,8 +21,6 @@ import androidrubick.collect.MapBuilder;
  */
 public class MediaType {
 
-    private static final String CHARSET_ATTRIBUTE = "charset";
-
     // TODO(gak): make these public?
     public static final String APPLICATION_TYPE = "application";
     public static final String TEXT_TYPE = "text";
@@ -38,7 +36,8 @@ public class MediaType {
      * 单纯含有{ charset : UTF-8 }的Map
      */
     public static final Map<String, String> UTF_8_CONSTANT_PARAMETERS =
-            Collections.unmodifiableMap(MapBuilder.newHashMap(1).put(CHARSET_ATTRIBUTE, Charsets.UTF_8.name()).build());
+            Collections.unmodifiableMap(MapBuilder.newHashMap(1)
+                    .put(HttpHeaderValues.P_CHARSET, Charsets.UTF_8.name()).build());
 
     private static final Map<MediaType, MediaType> KNOWN_TYPES = MapBuilder.newHashMap(16).build();
 
@@ -197,7 +196,7 @@ public class MediaType {
     }
 
     public static MediaType of(String type, String subtype, String charset) {
-        return of(type, subtype, MapBuilder.newHashMap().put(CHARSET_ATTRIBUTE, charset).build());
+        return of(type, subtype, MapBuilder.newHashMap().put(HttpHeaderValues.P_CHARSET, charset).build());
     }
 
     public static MediaType of(String type, String subtype, Map<String, String> parameters) {
@@ -261,10 +260,10 @@ public class MediaType {
     }
 
     /**
-     * 向当前对象添加/覆盖{@link #CHARSET_ATTRIBUTE charset}参数
+     * 向当前对象添加/覆盖{@link HttpHeaderValues#P_CHARSET charset}参数
      */
     public MediaType withCharset(String charset) {
-        return withParameter(CHARSET_ATTRIBUTE, Preconditions.checkNotNull(charset));
+        return withParameter(HttpHeaderValues.P_CHARSET, Preconditions.checkNotNull(charset));
     }
 
     public String type() {
@@ -281,7 +280,8 @@ public class MediaType {
     }
 
     public String charset() {
-        return CollectionsCompat.isEmpty(this.parameters) ? null : this.parameters.get(CHARSET_ATTRIBUTE);
+        return CollectionsCompat.isEmpty(this.parameters) ? null :
+                this.parameters.get(HttpHeaderValues.P_CHARSET);
     }
 
     protected String generateName() {

@@ -36,7 +36,8 @@ public enum HttpMethod {
     };
 
     private String name;
-    private HttpMethod(String name) {
+
+    HttpMethod(String name) {
         this.name = name;
     }
 
@@ -49,6 +50,11 @@ public enum HttpMethod {
         return this.name;
     }
 
+    /**
+     * 是否能包含请求体
+     *
+     * @since 1.0
+     */
     public boolean canContainBody() {
         return false;
     }

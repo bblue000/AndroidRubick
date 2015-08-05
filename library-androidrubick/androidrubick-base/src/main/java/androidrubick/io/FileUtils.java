@@ -66,11 +66,7 @@ public class FileUtils {
             if (null != parentFile) {
                 createDir(parentFile);
             }
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw e;
-            }
+            file.createNewFile();
             return exists(file);
         }
     }
@@ -115,7 +111,7 @@ public class FileUtils {
             File[] childFile = file.listFiles();
             if (null != childFile && childFile.length > 0) {
                 for (File cFile : childFile) {
-                    flag &= deleteFile(cFile, deleteRoot);
+                    flag &= deleteFile(cFile, true);
                 }
             }
             if (deleteRoot) {
@@ -130,6 +126,9 @@ public class FileUtils {
 
     // I/O 操作
     /**
+     *
+     * 读取文件
+     *
      * @param file 指定文件
      * @return file指定的FileInputStream
      *
@@ -153,21 +152,6 @@ public class FileUtils {
     }
 
     /**
-     * {@link #openFileOutput(File, boolean, boolean) openFileOutput(File, boolean, false)}
-     *
-     * @param file 指定文件
-     * @param createIfUnExists 如果文件不存在，是否创建
-     *
-     * @return file指定的FileOutputStream
-     *
-     * @since 1.0
-     */
-    public static FileOutputStream openFileOutput(File file, boolean createIfUnExists)
-            throws IOException {
-        return openFileOutput(file, createIfUnExists, false);
-    }
-
-    /**
      * @param file 指定文件
      * @param createIfUnExists 如果文件不存在，是否创建
      * @param append If append is true and the file already exists,
@@ -181,41 +165,25 @@ public class FileUtils {
      * @since 1.0
      */
     public static FileOutputStream openFileOutput(File file,
-                                                  boolean createIfUnExists, boolean append) throws IOException {
-        boolean fileExists = false;
+                                                  boolean createIfUnExists,
+                                                  boolean append) throws IOException {
         if (exists(file)) {
-            fileExists = file.isFile();
-        } else {
-            if (createIfUnExists) {
-                fileExists = createFile(file);
+            if (file.isFile()) {
+                return new FileOutputStream(file, append);
             }
+            throw new IOException("path = { "
+                    + file.getAbsolutePath() + " } is not a regular file!");
         }
-        if (fileExists) {
+        if (!createIfUnExists) {
+            throw new FileNotFoundException("path = { " + file.getAbsolutePath()
+                    + " } is not found!");
+        }
+
+        if (createFile(file)) {
             return new FileOutputStream(file, append);
         }
         throw new IOException("path = { " + file.getAbsolutePath() + " } "
-                + " is inexistent or unsupport!");
-    }
-
-    /**
-     * 相当于{@link #saveToFile(File, InputStream, boolean) save(File file, InputStream ins, false)}，
-     * 即非叠加模式写入，不关闭参数 <code>InputStream ins</code> （无论成功与否）
-     *
-     * @since 1.0
-     */
-    public static boolean saveToFile(File file, InputStream ins) throws IOException {
-        return saveToFile(file, ins, false);
-    }
-
-    /**
-     * 相当于{@link #save(File, InputStream, boolean, boolean) save(File file, InputStream ins, false)}，save(File file, InputStream ins, boolean append, false)，
-     * 即不关闭参数 <code>InputStream ins</code> （无论成功与否）
-     *
-     * @since 1.0
-     */
-    public static boolean saveToFile(File file, InputStream ins, boolean append)
-            throws IOException {
-        return save(file, ins, append, false);
+                + "cannot be created!");
     }
 
     /**
@@ -226,33 +194,34 @@ public class FileUtils {
      * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
      * @return 如果成功写入，返回TRUE，否则返回false
      *
-     * @see {@link #openFileOutput(File, boolean)}
      * @see {@link #openFileOutput(File, boolean, boolean)}
      *
      * @since 1.0
      */
-    public static boolean save(File file, InputStream ins, boolean append,
-                               boolean closeIns) throws IOException {
-        FileOutputStream out = null;
-        try {
-            out = openFileOutput(file, true, append);
-            IOUtils.writeTo(ins, out, closeIns);
-            return true;
-        } finally {
-            close(out);
-        }
+    public static boolean saveToFile(File file, InputStream ins,
+                                     boolean append,
+                                     boolean closeIns) throws IOException {
+        return saveToFile(file, ins, append, closeIns, null);
     }
 
-    public static boolean save(File file, InputStream ins, boolean append,
-                               boolean closeIns, IOProgressCallback callback) throws IOException {
-        FileOutputStream out = null;
-        try {
-            out = openFileOutput(file, true, append);
-            IOUtils.writeTo(ins, out, closeIns);
-            return true;
-        } finally {
-            close(out);
-        }
+    /**
+     *
+     * @param file 目标文件
+     * @param ins 读入流
+     * @param append 内容写入时是否使用叠加模式
+     * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
+     * @return 如果成功写入，返回TRUE，否则返回false
+     *
+     * @see {@link #openFileOutput(File, boolean, boolean)}
+     *
+     * @since 1.0
+     */
+    public static boolean saveToFile(File file, InputStream ins,
+                                     boolean append,
+                                     boolean closeIns,
+                                     IOProgressCallback callback) throws IOException {
+        FileOutputStream out = openFileOutput(file, true, append);
+        return IOUtils.writeTo(ins, out, closeIns, true, callback);
     }
 
     /**

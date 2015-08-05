@@ -182,9 +182,9 @@ public class IOUtils {
 	 *
 	 * @param in 输入源
 	 * @param out 输出对象
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 *
 	 * @return true代表写入成功
 	 *
@@ -204,9 +204,9 @@ public class IOUtils {
 	 *
 	 * @param in 输入源
 	 * @param out 输出对象
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param callback IO进度的回调
 	 *
 	 * @return true代表写入成功
@@ -298,9 +298,9 @@ public class IOUtils {
 	 *
 	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
 	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 *
 	 * @return true代表写入成功
 	 *
@@ -320,9 +320,10 @@ public class IOUtils {
 	 *
 	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
 	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 * @param callback IO进度的回调
 	 *
 	 * @return true代表写入成功
 	 *
@@ -397,9 +398,9 @@ public class IOUtils {
 	 *
 	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
 	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 *
 	 * @return true代表写入成功
 	 *
@@ -419,9 +420,10 @@ public class IOUtils {
 	 *
 	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
 	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 * @param callback IO进度的回调
 	 *
 	 * @return true代表写入成功
 	 *
@@ -463,15 +465,9 @@ public class IOUtils {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
-		StringWriter writer = null;
-		try {
-			writer = new StringWriter();
-			writeTo(in, writer, encoding, false, false);
-			return writer.toString();
-		} finally {
-			close(writer);
-			if (closeIns) close(in);
-		}
+		StringWriter writer = new StringWriter();
+		writeTo(in, writer, encoding, closeIns, true);
+		return writer.toString();
 	}
 
 
