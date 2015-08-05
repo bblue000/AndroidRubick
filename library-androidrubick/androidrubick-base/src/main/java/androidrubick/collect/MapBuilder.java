@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static androidrubick.collect.CollectionsCompat.*;
+
 /**
  * 简单的{@link java.util.Map}的创建器
  *
@@ -15,8 +17,6 @@ import java.util.TreeMap;
  * @since 1.0
  */
 public class MapBuilder {
-
-    public static final int DEFAULT_CAPACITY = 1 << 3;
 
     public static MapBuilder newHashMap() {
         return newHashMap(DEFAULT_CAPACITY);
