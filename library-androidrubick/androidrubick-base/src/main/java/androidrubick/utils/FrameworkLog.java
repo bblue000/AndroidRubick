@@ -1,7 +1,5 @@
 package androidrubick.utils;
 
-import android.util.Log;
-
 /**
  * 供本framework统一使用的内部LOG
  * 
@@ -28,7 +26,7 @@ public class FrameworkLog {
 	
 	public static void i(String tag, String msg, Object...args) {
 		if (out_print_info) {
-			Log.i(tag, String.format(msg, args));
+			System.out.println(tag + " | " + String.format(msg, args));
 		}
 	}
 
@@ -38,7 +36,7 @@ public class FrameworkLog {
 
 	public static void d(String tag, String msg, Object...args) {
 		if (out_print_debug) {
-			Log.d(tag, String.format(msg, args));
+			System.out.println(tag + " | " + String.format(msg, args));
 		}
 	}
 
@@ -48,7 +46,7 @@ public class FrameworkLog {
 
 	public static void w(String tag, String msg, Object...args) {
 		if (out_print_warn) {
-			Log.w(tag, String.format(msg, args));
+			System.err.println(tag + " | " + String.format(msg, args));
 		}
 	}
 
@@ -58,11 +56,12 @@ public class FrameworkLog {
 
 	public static void e(String tag, String msg, Object...args) {
 		if (out_print_error) {
-			Log.e(tag, String.format(msg, args));
+			System.err.println(tag + " | " + String.format(msg, args));
 		}
 	}
 
 	public static void e(Class<?> c, String msg, Object...args) {
 		e(c.getSimpleName(), String.format(msg, args));
 	}
+
 }

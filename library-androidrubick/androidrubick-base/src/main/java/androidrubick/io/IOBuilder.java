@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 
 /**
  * somthing
@@ -20,7 +21,7 @@ public abstract class IOBuilder {
 
     }
 
-    public static IOBuilder from(Reader ins, boolean closeIns) {
+    public static IOBuilder from(Reader ins, String charset, boolean closeIns) {
 
     }
 
@@ -28,11 +29,17 @@ public abstract class IOBuilder {
 
     }
 
-    public IOBuilder to(OutputStream out) {
+    private
+
+    public IOBuilder to(OutputStream out, boolean closeOut) {
 
     }
 
-    public IOBuilder to(OutputStream out) {
+    public IOBuilder to(Writer out, String charset, boolean closeOut) {
+
+    }
+
+    public IOBuilder to(File file) {
 
     }
 
