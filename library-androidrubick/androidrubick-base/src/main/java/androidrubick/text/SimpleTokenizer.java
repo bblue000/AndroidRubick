@@ -8,7 +8,7 @@ import androidrubick.utils.Objects;
 import static androidrubick.utils.Preconditions.*;
 
 /**
- * 根据指定的字符或者字符串，遍历/局部遍历目标字符串对象
+ * 根据指定的字符或者字符串，遍历/局部遍历目标字符串
  *
  * <p/>
  *
@@ -20,6 +20,12 @@ public class SimpleTokenizer {
 
     private String mInput;
     private int position = 0;
+
+    /**
+     * 根据目标字符串创建实例
+     *
+     * @param input 目标字符串
+     */
     public SimpleTokenizer(String input) {
         mInput = checkNotNull(input);
     }
@@ -142,10 +148,16 @@ public class SimpleTokenizer {
         return mInput.charAt(position);
     }
 
+    /**
+     * 判断是否有更多的字符
+     */
     public boolean hasMore() {
         return (position >= 0) && (position < mInput.length());
     }
 
+    /**
+     * 重置当前位置
+     */
     public void reset() {
         this.position = 0;
     }

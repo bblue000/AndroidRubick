@@ -1,5 +1,7 @@
 package androidrubick.utils;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * <p/>
  * <p/>
@@ -9,14 +11,14 @@ package androidrubick.utils;
  */
 public class IfSetter<T> {
 
-    private boolean ifSet;
+    private AtomicBoolean ifSet = new AtomicBoolean(false);
     private T value;
 
     /**
      * 设值
      */
     public void set(T value) {
-        this.ifSet = true;
+        ifSet.set(true);
         this.value = value;
     }
 
@@ -24,7 +26,7 @@ public class IfSetter<T> {
      * 清除设值状态
      */
     public void clear() {
-        this.ifSet = false;
+        ifSet.set(false);
         this.value = null;
     }
 
@@ -39,7 +41,7 @@ public class IfSetter<T> {
      * 是否已经设值
      */
     public boolean isSet() {
-        return this.ifSet;
+        return this.ifSet.get();
     }
 
 }

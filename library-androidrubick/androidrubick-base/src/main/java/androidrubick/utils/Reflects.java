@@ -28,7 +28,7 @@ public class Reflects {
         }
         Object[] values = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
-            values[i] = Primitives.defValueOf(parameters[i]);
+            values[i] = Objects.defValue(parameters[i]);
         }
         return values;
     }
@@ -91,7 +91,7 @@ public class Reflects {
         try {
             result = (Result) method.invoke(target, params);
         } catch (Exception e) {
-            throw Exceptions.runtimeException(e);
+            throw Exceptions.toRuntime(e);
         }
         if (!isAccessible) {
             method.setAccessible(isAccessible);

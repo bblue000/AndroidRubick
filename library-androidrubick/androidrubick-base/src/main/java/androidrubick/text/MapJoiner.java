@@ -53,7 +53,10 @@ public class MapJoiner {
 
     protected final Joiner mJoiner;
     protected final CharSequence mKeyValueSep;
+    protected CharSequence mEntryPrefix;
+    protected CharSequence mEntrySuffix;
     protected boolean mSkipNullKeys;
+    protected boolean mSkipNullValues;
     protected CharSequence mNullKeyText = Strings.NULL;
     protected CharSequence mNullValueText = Strings.NULL;
     protected Function mToStringFuncOfKey = Functions.TO_STRING;
@@ -70,6 +73,7 @@ public class MapJoiner {
                     while (it.hasNext()) {
                         Map.Entry<?, ?> item = Objects.getAs(it.next());
                         if (Objects.isNull(item.getKey()) && mSkipNullKeys) continue;
+                        if (Objects.isNull(item.getValue()) && mSkipNullValues) continue;
                         // 添加第一项
                         toStringOfEntry(appendable, item);
                         break;
@@ -77,6 +81,7 @@ public class MapJoiner {
                     while (it.hasNext()) {
                         Map.Entry<?, ?> item = Objects.getAs(it.next());
                         if (Objects.isNull(item.getKey()) && mSkipNullKeys) continue;
+                        if (Objects.isNull(item.getValue()) && mSkipNullValues) continue;
                         appendResult(appendable, mSep);
                         toStringOfEntry(appendable, item);
                     }
@@ -86,9 +91,11 @@ public class MapJoiner {
             }
 
             private <K, V>void toStringOfEntry(Appendable appendable, Map.Entry<K, V> item) {
+                appendPreOrSuffixIfNeeded(appendable, mPrefix);
                 appendResult(appendable, toStringOf(mToStringFuncOfKey, item.getKey(), mNullKeyText));
                 appendResult(appendable, mKeyValueSep);
                 appendResult(appendable, toStringOf(mToStringFuncOfValue, item.getValue(), mNullValueText));
+                appendPreOrSuffixIfNeeded(appendable, mSuffix);
             }
         };
         mKeyValueSep = checkNotNull(keyValueSeparator, "keyValueSeparator is null");
@@ -108,6 +115,17 @@ public class MapJoiner {
     }
 
     /**
+     * 设置每一项的前缀、后缀
+     * @param prefix 前缀
+     * @param suffix 后缀
+     */
+    public MapJoiner withEntryPreAndSuffix(CharSequence prefix, CharSequence suffix) {
+        mEntryPrefix = prefix;
+        mEntrySuffix = suffix;
+        return this;
+    }
+
+    /**
      * 跳过键值为null的对象。（默认没有设置此项）
      *
      * <p/>
@@ -119,6 +137,21 @@ public class MapJoiner {
     public MapJoiner skipNullKeys() {
         mSkipNullKeys = true;
         mNullKeyText = Strings.NULL;
+        return this;
+    }
+
+    /**
+     * 跳过值为null的对象。（默认没有设置此项）
+     *
+     * <p/>
+     *
+     * 如果{@link #useForNullValue(CharSequence)}在之前调用，则{@link #useForNullValue(CharSequence)}失效；
+     * <br/>
+     * 如果{@link #useForNullValue(CharSequence)}在之后调用，则该方法失效；
+     */
+    public MapJoiner skipNullValues() {
+        mSkipNullValues = true;
+        mNullValueText = Strings.NULL;
         return this;
     }
 
@@ -163,6 +196,7 @@ public class MapJoiner {
      * @throws java.lang.NullPointerException
      */
     public MapJoiner useForNullValue(CharSequence nullValueText) {
+        mSkipNullValues = false;
         mNullValueText = checkNotNull(nullValueText);
         return this;
     }

@@ -8,10 +8,9 @@ package androidrubick.utils;
  * @since 1.0
  */
 public class Exceptions {
-    private Exceptions() {
-    }
+    private Exceptions() { }
 
-    public static RuntimeException runtimeException(Throwable e) {
+    public static RuntimeException toRuntime(Throwable e) {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
         }
