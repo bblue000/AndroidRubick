@@ -61,6 +61,11 @@ public class SetBuilder {
         return this;
     }
 
+    public SetBuilder appendAll(Object...arr) {
+        CollectionsCompat.appendAll(mCollection, arr);
+        return this;
+    }
+
     public <T extends Set>T build() {
         return (T) mCollection;
     }

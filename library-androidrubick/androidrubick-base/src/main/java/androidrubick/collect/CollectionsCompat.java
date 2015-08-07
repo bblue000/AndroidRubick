@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 
 import static androidrubick.utils.Preconditions.*;
@@ -75,7 +76,27 @@ public class CollectionsCompat {
     }
 
     /**
-     * 将另外一个集合的元素全部添加到目标列表中
+     * 将一个数组的元素全部添加到目标集合中
+     *
+     * @param dest 目标数组
+     * @param src 数据来源集合
+     * @param <E>
+     * @param <R>
+     * @return 目标集合
+     */
+    public static <E, R extends Collection<? super E>>R appendAll(R dest, E...src) {
+        if (ArraysCompat.isEmpty(src)) {
+            return dest;
+        }
+        checkNotNull(dest);
+        for (E item: src) {
+            dest.add(item);
+        }
+        return dest;
+    }
+
+    /**
+     * 将另外一个集合的元素从<code>location</code>位置开始全部添加到目标列表中
      *
      * @param dest 目标列表
      * @param src 数据来源集合
@@ -89,6 +110,26 @@ public class CollectionsCompat {
         }
         checkNotNull(dest);
         dest.addAll(location, src);
+        return dest;
+    }
+
+    /**
+     * 将一个数组的元素从<code>location</code>位置开始添加到目标列表中
+     *
+     * @param dest 目标列表
+     * @param src 数据来源数组
+     * @param <E>
+     * @param <R>
+     * @return 目标列表
+     */
+    public static <E, R extends List<? super E>>R insertAll(R dest, int location, E...src) {
+        if (ArraysCompat.isEmpty(src)) {
+            return dest;
+        }
+        checkNotNull(dest);
+        for (E item: src) {
+            dest.add(location ++, item);
+        }
         return dest;
     }
 

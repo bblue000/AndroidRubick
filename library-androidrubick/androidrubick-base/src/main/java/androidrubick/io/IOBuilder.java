@@ -29,7 +29,15 @@ public abstract class IOBuilder {
 
     }
 
-    private
+    private IOBuilder() {
+
+    }
+
+    protected boolean isChar() {
+
+    }
+
+    protected abstract boolean enableCharTransfer(String charset);
 
     public IOBuilder to(OutputStream out, boolean closeOut) {
 

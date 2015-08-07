@@ -45,8 +45,18 @@ public class ListBuilder {
         return this;
     }
 
+    public ListBuilder appendAll(Object...arr) {
+        CollectionsCompat.appendAll(mList, arr);
+        return this;
+    }
+
     public ListBuilder addAll(int location, Collection otherCollection) {
         CollectionsCompat.addAll(mList, location, otherCollection);
+        return this;
+    }
+
+    public ListBuilder insertAll(int location, Object...arr) {
+        CollectionsCompat.insertAll(mList, location, arr);
         return this;
     }
 
