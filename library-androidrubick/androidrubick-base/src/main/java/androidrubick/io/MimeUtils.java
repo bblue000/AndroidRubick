@@ -345,7 +345,7 @@ public final class MimeUtils {
 		add("video/x-sgi-movie", "movie");
 		add("x-conference/x-cooltalk", "ice");
 		add("x-epoc/x-sisx-app", "sisx");
-		add("application","jar");
+//		add("application","jar");
 		add("application/json","json");
 		applyOverrides();
 	}

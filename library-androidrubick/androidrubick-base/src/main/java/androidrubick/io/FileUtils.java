@@ -198,10 +198,10 @@ public class FileUtils {
      *
      * @since 1.0
      */
-    public static boolean saveToFile(File file, InputStream ins,
+    public static boolean saveToFile(InputStream ins, File file,
                                      boolean append,
                                      boolean closeIns) throws IOException {
-        return saveToFile(file, ins, append, closeIns, null);
+        return saveToFile(ins, file, append, closeIns, null);
     }
 
     /**
@@ -216,7 +216,7 @@ public class FileUtils {
      *
      * @since 1.0
      */
-    public static boolean saveToFile(File file, InputStream ins,
+    public static boolean saveToFile(InputStream ins, File file,
                                      boolean append,
                                      boolean closeIns,
                                      IOProgressCallback callback) throws IOException {

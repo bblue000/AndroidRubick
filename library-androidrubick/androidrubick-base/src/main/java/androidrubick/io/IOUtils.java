@@ -465,7 +465,6 @@ public class IOUtils {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
-
 		StringWriter writer = new StringWriter();
 		writeTo(in, writer, encoding, closeIns, true);
 		return writer.toString();
