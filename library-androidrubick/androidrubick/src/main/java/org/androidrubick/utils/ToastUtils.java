@@ -11,6 +11,12 @@ import org.androidrubick.app.BaseApplication;
 
 /**
  * 一个可复用的toast工具类。
+ *
+ * <p/>
+ *
+ * 有些ROM中，能够对是否显示“通知”（包括Toast，Dialog，Notification等）进行统一控制，
+ * 该处，建议对设置了不显示通知的情况进行特殊处理。
+ *
  * 
  * @author YinYong
  * @version 1.0

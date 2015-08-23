@@ -14,7 +14,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
-
 /**
  * 工具类，封装简单的I/O转换操作
  * 
@@ -30,36 +29,18 @@ public class IOUtils {
 	// >>>>>>>>>>>>>>>>>>>>>>
 	// TODO writeTo 系列
 	/**
-	 * 将输入流写入到输出流
+	 * 将输入流写入到输出流（使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组）
 	 *
 	 * @param in 输入源
 	 * @param out 输出流
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param callback IO进度的回调，可为null
 	 *
 	 * @return true代表写入成功
 	 *
 	 * @throws java.io.IOException IO异常
-     *
-     * @since 1.0
-	 */
-	public static boolean writeTo(InputStream in, OutputStream out,
-								  boolean closeIns, boolean closeOut) throws IOException {
-		return writeTo(in, out, closeIns, closeOut, null);
-	}
-
-	/**
-	 * 将输入流写入到输出流
-	 *
-	 * @param in 输入源
-	 * @param out 输出流
-	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
-	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param callback IO进度的回调
-	 *
-	 * @return true代表写入成功
-	 *
-	 * @throws java.io.IOException IO异常
+	 * @throws java.lang.NullPointerException <code>in</code>或者<code>out</code>为null时抛出
      *
      * @since 1.0
 	 */
@@ -74,35 +55,16 @@ public class IOUtils {
 	 *
 	 * @param in 输入源
 	 * @param out 输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 * @param useBuf 使用提供的字节数组进行中间传输变量，
+	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param callback IO进度的回调，可为null
 	 *
 	 * @return true代表写入成功
 	 *
 	 * @throws java.io.IOException IO异常
-	 *
-	 * @since 1.0
-	 */
-	public static boolean writeTo(InputStream in, OutputStream out,
-								  byte[] useBuf,
-								  boolean closeIns, boolean closeOut) throws IOException {
-		return writeTo(in, out, useBuf, closeIns, closeOut, null);
-	}
-
-	/**
-	 * 将输入流写入到输出流
-	 *
-	 * @param in 输入源
-	 * @param out 输出流
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
-	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
-	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param callback IO进度的回调
-	 *
-	 * @return true代表写入成功
-	 *
-	 * @throws java.io.IOException IO异常
+	 * @throws java.lang.NullPointerException <code>in</code>或者<code>out</code>为null时抛出
 	 *
 	 * @since 1.0
 	 */
@@ -118,8 +80,7 @@ public class IOUtils {
 		}
 		long readTotal = 0;
 		try {
-			byte[] buf = useBuf;
-			int len;
+			byte[] buf = useBuf; int len;
 			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 				if (null != callback)
@@ -138,36 +99,18 @@ public class IOUtils {
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// TODO write char
 	/**
-	 * 将字符读取器写入到字符输出流
+	 * 将字符读取器写入到字符输出流（使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组）
 	 *
 	 * @param in 输入源
 	 * @param out 输出对象
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param callback IO进度的回调，可为null
 	 *
 	 * @return true代表写入成功
 	 *
 	 * @throws java.io.IOException IO异常
-     *
-     * @since 1.0
-	 */
-	public static boolean writeTo(Reader in, Writer out,
-								  boolean closeIns, boolean closeOut) throws IOException {
-		return writeTo(in, out, closeIns, closeOut, null);
-	}
-
-	/**
-	 * 将字符读取器写入到字符输出流
-	 *
-	 * @param in 输入源
-	 * @param out 输出对象
-	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
-	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param callback IO进度的回调
-	 *
-	 * @return true代表写入成功
-	 *
-	 * @throws java.io.IOException IO异常
+	 * @throws java.lang.NullPointerException <code>in</code>或者<code>out</code>为null时抛出
      *
      * @since 1.0
 	 */
@@ -182,36 +125,16 @@ public class IOUtils {
 	 *
 	 * @param in 输入源
 	 * @param out 输出对象
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
+	 * @param useBuf 使用提供的字节数组进行中间传输变量，
+	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param callback IO进度的回调，可为null
 	 *
 	 * @return true代表写入成功
 	 *
 	 * @throws java.io.IOException IO异常
-	 *
-	 * @since 1.0
-	 */
-	public static boolean writeTo(Reader in, Writer out,
-								  char[] useBuf,
-								  boolean closeIns, boolean closeOut) throws IOException
-	{
-		return writeTo(in, out, useBuf, closeIns, closeOut, null);
-	}
-
-	/**
-	 * 将字符读取器写入到字符输出流
-	 *
-	 * @param in 输入源
-	 * @param out 输出对象
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
-	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
-	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param callback IO进度的回调
-	 *
-	 * @return true代表写入成功
-	 *
-	 * @throws java.io.IOException IO异常
+	 * @throws java.lang.NullPointerException <code>in</code>或者<code>out</code>为null时抛出
 	 *
 	 * @since 1.0
 	 */
@@ -228,8 +151,7 @@ public class IOUtils {
 		}
 		long readTotal = 0;
 		try {
-			char[] buffer = useBuf;
-			int n;
+			char[] buffer = useBuf; int n;
 			while (-1 != (n = in.read(buffer))) {
 				out.write(buffer, 0, n);
 				if (null != callback)
@@ -258,27 +180,7 @@ public class IOUtils {
 	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 *
-	 * @return true代表写入成功
-	 *
-	 * @throws java.io.IOException IO异常
-     *
-     * @since 1.0
-	 */
-	public static boolean writeTo(InputStream in, Writer out,
-								  String encoding,
-								  boolean closeIns, boolean closeOut) throws IOException {
-		return writeTo(in, out, encoding, closeIns, closeOut, null);
-	}
-
-	/**
-	 * 将字节流写入到字符输出流
-	 *
-	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
-	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
-	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
-	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param callback IO进度的回调
+	 * @param callback IO进度的回调，可为null
 	 *
 	 * @return true代表写入成功
 	 *
@@ -301,29 +203,7 @@ public class IOUtils {
 	 * @param useBuf 使用提供的字节数组进行中间传输变量
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 *
-	 * @return true代表写入成功
-	 *
-	 * @throws java.io.IOException IO异常
-	 *
-	 * @since 1.0
-	 */
-	public static boolean writeTo(InputStream in, Writer out,
-								  String encoding,
-								  char[] useBuf,
-								  boolean closeIns, boolean closeOut) throws IOException {
-		return writeTo(in, out, encoding, useBuf, closeIns, closeOut, null);
-	}
-
-	/**
-	 * 将字节流写入到字符输出流
-	 *
-	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
-	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
-	 * @param useBuf 使用提供的字节数组进行中间传输变量
-	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
-	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
-	 * @param callback IO进度的回调
+	 * @param callback IO进度的回调，可为null
 	 *
 	 * @return true代表写入成功
 	 *
@@ -455,8 +335,10 @@ public class IOUtils {
 	 *
 	 * @param in 字节流
 	 * @param encoding 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 *
 	 * @throws java.io.IOException IO异常
+	 * @throws java.lang.NullPointerException <code>in</code>为null时抛出
      *
      * @since 1.0
 	 */
@@ -466,7 +348,28 @@ public class IOUtils {
 			throw new NullPointerException("in is null!");
 		}
 		StringWriter writer = new StringWriter();
-		writeTo(in, writer, encoding, closeIns, true);
+		writeTo(in, writer, encoding, closeIns, true, null);
+		return writer.toString();
+	}
+
+	/**
+	 * 读取字节流，并输出为String
+	 *
+	 * @param in 字符流
+	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 *
+	 * @throws java.io.IOException IO异常
+	 * @throws java.lang.NullPointerException <code>in</code>为null时抛出
+     *
+     * @since 1.0
+	 */
+	public static String readerToString(Reader in, boolean closeIns)
+			throws IOException {
+		if (null == in) {
+			throw new NullPointerException("in is null!");
+		}
+		StringWriter writer = new StringWriter();
+		writeTo(in, writer, closeIns, true, null);
 		return writer.toString();
 	}
 
