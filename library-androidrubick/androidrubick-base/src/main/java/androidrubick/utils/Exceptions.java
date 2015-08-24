@@ -17,4 +17,8 @@ public class Exceptions {
         return new RuntimeException(e);
     }
 
+    public static RuntimeException toRuntime(String msg) {
+        return new RuntimeException(msg);
+    }
+
 }
