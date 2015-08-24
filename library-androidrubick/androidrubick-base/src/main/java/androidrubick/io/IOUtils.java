@@ -32,8 +32,8 @@ public class IOUtils {
 	 * 将输入流写入到输出流
 	 *
 	 * @param in 输入源
-	 * @param out 输出流
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param out 输出流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量，
 	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
@@ -46,10 +46,9 @@ public class IOUtils {
 	 *
 	 * @since 1.0
 	 */
-	public static boolean writeTo(InputStream in, OutputStream out,
-								  boolean closeIns, boolean closeOut,
-								  byte[] useBuf,
-								  IOProgressCallback callback) throws IOException {
+	public static boolean writeTo(InputStream in, boolean closeIns,
+								  OutputStream out, boolean closeOut,
+								  byte[] useBuf, IOProgressCallback callback) throws IOException {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
@@ -58,7 +57,8 @@ public class IOUtils {
 		}
 		long readTotal = 0;
 		try {
-			byte[] buf = useBuf; int len;
+			byte[] buf = null == useBuf ? new byte[IOConstants.DEF_BUFFER_SIZE] : useBuf;
+			int len;
 			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 				if (null != callback)
@@ -80,8 +80,8 @@ public class IOUtils {
 	 * 将字符读取器写入到字符输出流
 	 *
 	 * @param in 输入源
-	 * @param out 输出对象
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
+	 * @param out 输出对象
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param useBuf 使用提供的字节数组进行中间传输变量，
 	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
@@ -94,10 +94,9 @@ public class IOUtils {
 	 *
 	 * @since 1.0
 	 */
-	public static boolean writeTo(Reader in, Writer out,
-								  boolean closeIns, boolean closeOut,
-								  char[] useBuf,
-								  IOProgressCallback callback) throws IOException {
+	public static boolean writeTo(Reader in, boolean closeIns,
+								  Writer out, boolean closeOut,
+								  char[] useBuf, IOProgressCallback callback) throws IOException {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
@@ -106,7 +105,8 @@ public class IOUtils {
 		}
 		long readTotal = 0;
 		try {
-			char[] buffer = useBuf; int n;
+			char[] buffer = null == useBuf ? new char[IOConstants.DEF_BUFFER_SIZE] : useBuf;
+			int n;
 			while (-1 != (n = in.read(buffer))) {
 				out.write(buffer, 0, n);
 				if (null != callback)
@@ -131,10 +131,10 @@ public class IOUtils {
 	/**
 	 * 将字节流写入到字符输出流
 	 *
-	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
-	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param charsetName 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
 	 * @param useBuf 使用提供的字节数组进行中间传输变量，
 	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
 	 * @param callback IO进度的回调，可为null
@@ -146,17 +146,16 @@ public class IOUtils {
 	 *
 	 * @since 1.0
 	 */
-	public static boolean writeTo(InputStream in, Writer out,
-								  String encoding,
-								  boolean closeIns, boolean closeOut,
-								  char[] useBuf,
-								  IOProgressCallback callback) throws IOException {
+	public static boolean writeTo(InputStream in, boolean closeIns,
+								  Writer out, boolean closeOut,
+								  String charsetName,
+								  char[] useBuf, IOProgressCallback callback) throws IOException {
 		InputStreamReader reader;
-		if (null == encoding) {
-			encoding = IOConstants.DEF_CHARSET;
+		if (null == charsetName) {
+			charsetName = IOConstants.DEF_CHARSET;
 		}
-		reader = new InputStreamReader(in, encoding);
-		return writeTo(reader, out, closeIns, closeOut, useBuf, callback);
+		reader = new InputStreamReader(in, charsetName);
+		return writeTo(reader, closeIns, out, closeOut, useBuf, callback);
 	}
 
 
@@ -169,10 +168,10 @@ public class IOUtils {
 	/**
 	 * 将字节流写入到字符输出流
 	 *
-	 * @param encoding 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
-	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param charsetName 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
 	 * @param useBuf 使用提供的字节数组进行中间传输变量，
 	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
 	 * @param callback IO进度的回调，可为null
@@ -184,17 +183,16 @@ public class IOUtils {
 	 *
 	 * @since 1.0
 	 */
-	public static boolean writeTo(Reader in, OutputStream out,
-								  String encoding,
-								  boolean closeIns, boolean closeOut,
-								  char[] useBuf,
-								  IOProgressCallback callback) throws IOException {
+	public static boolean writeTo(Reader in, boolean closeIns,
+								  OutputStream out, boolean closeOut,
+								  String charsetName,
+								  char[] useBuf, IOProgressCallback callback) throws IOException {
 		OutputStreamWriter writer;
-		if (null == encoding) {
-			encoding = IOConstants.DEF_CHARSET;
+		if (null == charsetName) {
+			charsetName = IOConstants.DEF_CHARSET;
 		}
-		writer = new OutputStreamWriter(out, encoding);
-		return writeTo(in, writer, closeIns, closeOut, useBuf, callback);
+		writer = new OutputStreamWriter(out, charsetName);
+		return writeTo(in, closeIns, writer, closeOut, useBuf, callback);
 	}
 
 
@@ -207,7 +205,7 @@ public class IOUtils {
 	 * 读取字节流，并输出为String
 	 *
 	 * @param in 字节流
-	 * @param encoding 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 *
 	 * @throws java.io.IOException IO异常
@@ -215,13 +213,13 @@ public class IOUtils {
      *
      * @since 1.0
 	 */
-	public static String inputStreamToString(InputStream in, String encoding, boolean closeIns)
+	public static String inputStreamToString(InputStream in, String charsetName, boolean closeIns)
 			throws IOException {
 		if (null == in) {
 			throw new NullPointerException("in is null!");
 		}
 		StringWriter writer = new StringWriter();
-		writeTo(in, writer, encoding, closeIns, true, null, null);
+		writeTo(in, closeIns, writer, true, charsetName, null, null);
 		return writer.toString();
 	}
 
@@ -242,7 +240,7 @@ public class IOUtils {
 			throw new NullPointerException("in is null!");
 		}
 		StringWriter writer = new StringWriter();
-		writeTo(in, writer, closeIns, true, null, null);
+		writeTo(in, closeIns, writer, true, null, null);
 		return writer.toString();
 	}
 

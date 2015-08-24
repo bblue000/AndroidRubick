@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.NumberUtils;
@@ -71,7 +73,7 @@ public class FileUtils {
             }
             try {
                 file.createNewFile();
-            } catch (Exception e) { }
+            } catch (Exception e) { e.printStackTrace(); }
             return exists(file);
         }
     }
@@ -213,11 +215,14 @@ public class FileUtils {
 
     /**
      *
-     * @param file 目标文件
      * @param ins 读入流
-     * @param append 内容写入时是否使用叠加模式
      * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
-     * @return 如果成功写入，返回TRUE，否则返回false
+     * @param file 目标文件
+     * @param append 内容写入时是否使用叠加模式
+     * @param useBuf 使用提供的字节数组进行中间传输变量，
+     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
+     * @param callback IO进度的回调，可为null
+     * @return 如果成功写入，返回true，否则返回false
      *
      * @see {@link #openFileOutput(File, boolean, boolean)}
      *
@@ -227,7 +232,30 @@ public class FileUtils {
                                      File file, boolean append,
                                      byte[] useBuf, IOProgressCallback callback) throws IOException {
         FileOutputStream out = openFileOutput(file, true, append);
-        return IOUtils.writeTo(ins, out, closeIns, true, useBuf, callback);
+        return IOUtils.writeTo(ins, closeIns, out, true, useBuf, callback);
+    }
+
+    /**
+     *
+     * @param ins 字符流
+     * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
+     * @param file 目标文件
+     * @param append 内容写入时是否使用叠加模式
+     * @param useBuf 使用提供的字节数组进行中间传输变量，
+     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
+     * @param callback IO进度的回调，可为null
+     * @return 如果成功写入，返回true，否则返回false
+     *
+     * @see {@link #openFileOutput(File, boolean, boolean)}
+     *
+     * @since 1.0
+     */
+    public static boolean saveToFile(Reader ins, boolean closeIns,
+                                     File file, boolean append,
+                                     String charsetName,
+                                     char[] useBuf, IOProgressCallback callback) throws IOException {
+        FileOutputStream out = openFileOutput(file, true, append);
+        return IOUtils.writeTo(ins, closeIns, out, true, charsetName, useBuf, callback);
     }
 
     /**
@@ -258,16 +286,19 @@ public class FileUtils {
      * false on failure（该方法同步进行，如果文件越大，耗时会增加）
      *
      * @param srcFile 原文件
+     * @param deleteSrc 是否删除原文件
      * @param destFile 目标文件或者目录
      * @param coverIfExists 如果目标文件已经存在，是否需要替换掉
      * @param useBuf 使用提供的字节数组进行中间传输变量，
-     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
+     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
      * @param callback IO进度的回调，可为null
+     *
+     * @return 如果拷贝成功，返回true；否则，返回false（不管原文件有没有删除成功）
      *
      * @since 1.0
      */
-    public static boolean copyToFile(File srcFile, File destFile,
-                                     boolean coverIfExists,
+    public static boolean copyToFile(File srcFile, boolean deleteSrc,
+                                     File destFile, boolean coverIfExists,
                                      byte[] useBuf, IOProgressCallback callback) throws IOException {
         // 如果文件不存在，相当于成功咯
         if (!exists(srcFile)) {
@@ -282,7 +313,11 @@ public class FileUtils {
             return false;
         }
         InputStream in = openFileInput(srcFile);
-        return saveToFile(in, true, destFile, false, useBuf, callback);
+        boolean ret = saveToFile(in, true, destFile, false, useBuf, callback);
+        if (deleteSrc) {
+            deleteFile(srcFile, true, null);
+        }
+        return ret;
     }
 
     /**
@@ -290,60 +325,27 @@ public class FileUtils {
      * false on failure
      *
      * @param srcFile 原文件
+     * @param deleteSrc 是否删除原文件
      * @param destDir 目标目录
      * @param coverIfExists 如果目标文件已经存在，是否需要替换掉
      * @param useBuf 使用提供的字节数组进行中间传输变量，
-     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
+     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
      * @param callback IO进度的回调，可为null
+     *
+     * @return 如果拷贝成功，返回true；否则，返回false（不管原文件有没有删除成功）
      *
      * @since 1.0
      */
-    public static boolean copyToDir(File srcFile, File destDir,
-                                    boolean coverIfExists,
+    public static boolean copyToDir(File srcFile, boolean deleteSrc,
+                                    File destDir, boolean coverIfExists,
                                     byte[] useBuf, IOProgressCallback callback) throws IOException {
         // 如果文件夹创建不了，直接返回
         if (!createDir(destDir)) {
             return false;
         }
-        return copyToFile(srcFile, new File(destDir, srcFile.getName()), coverIfExists, useBuf, callback);
-    }
-
-    /**
-     * Copy data from a source stream to destFile, and then delete the source file.
-     * Return true if succeed, return false if failed.
-     *
-     * @param srcFile 原文件
-     * @param destFile 目标文件
-     * @param coverIfExists 如果目标文件已经存在，是否需要替换掉
-     * @param useBuf 使用提供的字节数组进行中间传输变量，
-     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
-     * @param callback IO进度的回调，可为null
-     *
-     * @since 1.0
-     */
-    public static boolean cutToFile(File srcFile, File destFile,
-                                    boolean coverIfExists,
-                                    byte[] useBuf, IOProgressCallback callback) throws IOException {
-        return copyToFile(srcFile, destFile, coverIfExists, useBuf, callback) && deleteFile(srcFile, true, null);
-    }
-
-    /**
-     * Copy data from a source stream to destFile, and then delete the source file.
-     * Return true if succeed, return false if failed.
-     *
-     * @param srcFile 原文件
-     * @param destDir 目标目录
-     * @param coverIfExists 如果目标文件已经存在，是否需要替换掉
-     * @param useBuf 使用提供的字节数组进行中间传输变量，
-     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
-     * @param callback IO进度的回调，可为null
-     *
-     * @since 1.0
-     */
-    public static boolean cutToDir(File srcFile, File destDir,
-                                   boolean coverIfExists,
-                                   byte[] useBuf, IOProgressCallback callback) throws IOException {
-        return copyToDir(srcFile, destDir, coverIfExists, useBuf, callback) && deleteFile(srcFile, true, null);
+        return copyToFile(srcFile, deleteSrc,
+                new File(destDir, srcFile.getName()), coverIfExists,
+                useBuf, callback);
     }
 
     /**
@@ -354,7 +356,7 @@ public class FileUtils {
      * @param willCut 是否是剪切
      * @param coverIfExists 如果拷贝过程中目标文件/文件夹已经存在，是否需要替换掉
      * @param useBuf 使用提供的字节数组进行中间传输变量，
-     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
+     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
      * @param callback IO进度的回调，可为null
      *
      * @since 1.0
@@ -395,39 +397,12 @@ public class FileUtils {
                 }
             }
             if (willCut) {
-                boolean delRootRet = file.delete();
+                boolean delRootRet = deleteFile(srcDir, true, null);
                 flag &= delRootRet;
                 if (null != callback)
                     callback.onProgress(srcDir, delRootRet);
             }
             ret = flag;
-            File[] files = srcDir.listFiles();
-            // 如果是空目录，则直接返回
-            if (!ArraysCompat.isEmpty(files)) {
-                if (willCut) {
-
-                }
-                return true;
-            }
-            if (willCut) {
-                // delete root dir
-                boolean delRootRet = deleteFile(srcDir, true, null);
-                r
-            }
-            for (File file : files) {
-                if (file.isDirectory()) {
-
-                } else {
-
-                }
-            }
-            if (!exists(destDir) || !destDir.isDirectory()) {
-                return false;
-            }
-            if (willCut) {
-                if (null != callback)
-                    callback.onProgress(srcFile, ret);
-            }
         } else {
             // 如果不是文件目录，就是拷贝文件咯
             File srcFile = srcDir;
@@ -514,8 +489,8 @@ public class FileUtils {
      *
      * @since 1.0
      */
-    public static boolean stringToFile(File file, String string) {
-        return stringToFile(file, string, false);
+    public static boolean stringToFile(File file, String string, String charsetName) {
+        return stringToFile(file, string, charsetName, false);
     }
 
     /**
@@ -527,15 +502,9 @@ public class FileUtils {
      *
      * @since 1.0
      */
-    public static boolean stringToFile(File file, String string, boolean append) {
+    public static boolean stringToFile(File file, String string, String charsetName, boolean append) {
         try {
-            FileWriter out = new FileWriter(file, append);
-            try {
-                out.write(string);
-            } finally {
-                close(out);
-            }
-            return true;
+            return saveToFile(new StringReader(string), true, file, append, charsetName, null, null);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
