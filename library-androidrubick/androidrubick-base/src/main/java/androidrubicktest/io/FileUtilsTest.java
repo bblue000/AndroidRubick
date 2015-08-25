@@ -25,7 +25,14 @@ public class FileUtilsTest {
 //        testCreateDir();
 //        testDelFile();
 //        testSaveToFile();
-        testCopyToFile();
+//        testCopyToFile();
+        copyDir();
+    }
+
+    private static void copyDir() throws IOException {
+        System.out.println(" copyDir ? "
+                + FileUtils.copyDir(new File("D:/yytest.data"), true,
+                new File("D:/yytest.data1"), true, null, null));
     }
 
     private static void testCopyToFile() throws IOException {
@@ -35,9 +42,6 @@ public class FileUtilsTest {
 //        System.out.println(" copyToFile ? "
 //                + FileUtils.copyToDir(new File("D:/yytest.data"),
 //                new File("D:/yytest.data1"), false, null, null));
-        System.out.println(" copyToFile ? "
-                + FileUtils.cutToFile(new File("D:/yytest.data"),
-                new File("D:/yytest.data1"), false, null, null));
     }
 
     private static void testSaveToFile() throws IOException {

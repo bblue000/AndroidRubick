@@ -7,8 +7,6 @@ import java.util.Map;
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 
-import static androidrubick.utils.Preconditions.*;
-
 /**
  *
  * 扩展{@link java.util.Collections}没有支持的方法
@@ -67,10 +65,9 @@ public class CollectionsCompat {
      * @return 目标集合
      */
     public static <E, R extends Collection<? super E>>R addAll(R dest, Collection<E> src) {
-        if (isEmpty(src)) {
+        if (Objects.isNull(dest) || isEmpty(src)) {
             return dest;
         }
-        checkNotNull(dest);
         dest.addAll(src);
         return dest;
     }
@@ -85,10 +82,9 @@ public class CollectionsCompat {
      * @return 目标集合
      */
     public static <E, R extends Collection<? super E>>R appendAll(R dest, E...src) {
-        if (ArraysCompat.isEmpty(src)) {
+        if (Objects.isNull(dest) || ArraysCompat.isEmpty(src)) {
             return dest;
         }
-        checkNotNull(dest);
         for (E item: src) {
             dest.add(item);
         }
@@ -105,10 +101,9 @@ public class CollectionsCompat {
      * @return 目标列表
      */
     public static <E, R extends List<? super E>>R addAll(R dest, int location, Collection<E> src) {
-        if (isEmpty(src)) {
+        if (Objects.isNull(dest) || isEmpty(src)) {
             return dest;
         }
-        checkNotNull(dest);
         dest.addAll(location, src);
         return dest;
     }
@@ -123,10 +118,9 @@ public class CollectionsCompat {
      * @return 目标列表
      */
     public static <E, R extends List<? super E>>R insertAll(R dest, int location, E...src) {
-        if (ArraysCompat.isEmpty(src)) {
+        if (Objects.isNull(dest) || ArraysCompat.isEmpty(src)) {
             return dest;
         }
-        checkNotNull(dest);
         for (E item: src) {
             dest.add(location ++, item);
         }
@@ -141,10 +135,9 @@ public class CollectionsCompat {
      * @return 目标Map
      */
     public static <K, V, R extends Map<? super K, ? super V>>R putAll(R dest, Map<K, V> src) {
-        if (isEmpty(src)) {
+        if (Objects.isNull(dest) || isEmpty(src)) {
             return dest;
         }
-        checkNotNull(dest);
         dest.putAll(src);
         return dest;
     }

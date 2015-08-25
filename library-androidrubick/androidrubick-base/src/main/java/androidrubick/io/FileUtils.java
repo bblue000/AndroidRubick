@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -57,7 +56,7 @@ public class FileUtils {
     /**
      * 创建指定文件（非文件夹，文件夹的创建）
      *
-     * @return 如果文件已存在或者被创建成功，返回TRUE，否则返回false。
+     * @return 如果文件已存在或者被创建成功，返回true，否则返回false。
      *
      * @throws NullPointerException <code>file</code>为空抛出异常
      *
@@ -81,7 +80,7 @@ public class FileUtils {
     /**
      * 创建指定路径所有的未创建的文件夹
      *
-     * @return 如果文件夹已存在或者被创建成功，返回TRUE，否则返回false。
+     * @return 如果文件夹已存在或者被创建成功，返回true，否则返回false。
      *
      * @throws NullPointerException <code>file</code>为空抛出异常
      *
@@ -102,7 +101,7 @@ public class FileUtils {
      * @param deleteRoot 如果该文件是文件夹，是否删除该文件夹
      * @param callback 文件操作的回调
      *
-     * @return <b><i>如果最终指定的文件不再存在</i></b>，则返回TRUE
+     * @return <b><i>如果最终指定的文件/文件夹不再存在</i></b>，则返回true
      *
      * @since 1.0
      */
@@ -241,6 +240,7 @@ public class FileUtils {
      * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
      * @param file 目标文件
      * @param append 内容写入时是否使用叠加模式
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
      * @param useBuf 使用提供的字节数组进行中间传输变量，
      *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
      * @param callback IO进度的回调，可为null
@@ -282,12 +282,12 @@ public class FileUtils {
     }
 
     /**
-     * copy a file from srcFile to destFile, return true if succeed, return
-     * false on failure（该方法同步进行，如果文件越大，耗时会增加）
+     * copy a file from <code>srcFile</code> to <code>destFile</code>,
+     * return true if succeed, return false on failure（该方法同步进行，如果文件越大，耗时会增加）;
      *
      * @param srcFile 原文件
      * @param deleteSrc 是否删除原文件
-     * @param destFile 目标文件或者目录
+     * @param destFile 目标文件
      * @param coverIfExists 如果目标文件已经存在，是否需要替换掉
      * @param useBuf 使用提供的字节数组进行中间传输变量，
      *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
@@ -302,14 +302,10 @@ public class FileUtils {
                                      byte[] useBuf, IOProgressCallback callback) throws IOException {
         // 如果文件不存在，相当于成功咯
         if (!exists(srcFile)) {
-            return true;
-        }
-        // 如果目标文件已经存在，但是不能覆盖，直接返回
-        if (exists(destFile) && !coverIfExists) {
             return false;
         }
-        // 如果目标文件已存在或者创建成功，才能进行下一步
-        if (!createFile(destFile)) {
+        // 如果目标文件创建不成功，下面的事根本就不能做了
+        if (!checkAndEnsureDestFile(destFile, coverIfExists)) {
             return false;
         }
         InputStream in = openFileInput(srcFile);
@@ -321,8 +317,8 @@ public class FileUtils {
     }
 
     /**
-     * copy a file from srcFile to destFile, return true if succeed, return
-     * false on failure
+     * copy a file from <code>srcFile</code> to <code>destFile</code>,
+     * return true if succeed, return false on failure
      *
      * @param srcFile 原文件
      * @param deleteSrc 是否删除原文件
@@ -339,8 +335,8 @@ public class FileUtils {
     public static boolean copyToDir(File srcFile, boolean deleteSrc,
                                     File destDir, boolean coverIfExists,
                                     byte[] useBuf, IOProgressCallback callback) throws IOException {
-        // 如果文件夹创建不了，直接返回
-        if (!createDir(destDir)) {
+        // 如果目标目录创建不成功，下面的事根本就不能做了
+        if (!checkAndEnsureDestDir(destDir, coverIfExists)) {
             return false;
         }
         return copyToFile(srcFile, deleteSrc,
@@ -349,38 +345,36 @@ public class FileUtils {
     }
 
     /**
-     * 拷贝文件夹（拷贝操作是同步进行的，所以耗时跟文件量有关，不推荐在主进程调用）
+     * 拷贝文件夹，将<code>srcDir</code>中的所有文件拷贝到<code>destFile</code>中
+     * （拷贝操作是同步进行的，所以耗时跟文件量有关，不推荐在主进程调用）
      *
      * @param srcDir 原文件目录
+     * @param deleteSrc 是否删除原文件
      * @param destDir 目标目录
-     * @param willCut 是否是剪切
      * @param coverIfExists 如果拷贝过程中目标文件/文件夹已经存在，是否需要替换掉
      * @param useBuf 使用提供的字节数组进行中间传输变量，
      *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
      * @param callback IO进度的回调，可为null
      *
+     * @return 如果拷贝成功，返回true；否则，返回false（不管原文件有没有删除成功）
      * @since 1.0
      */
-    public static boolean copyDir(File srcDir, boolean willCut,
+    public static boolean copyDir(File srcDir, boolean deleteSrc,
                                   File destDir, boolean coverIfExists,
                                   byte[] useBuf, FileProgressCallback callback) throws IOException {
         // 原文件夹为空，也算是拷贝成功
         if (!exists(srcDir)) {
-            if (null != callback) {
-                callback.onProgress(srcDir, true);
-                callback.onComplete();
-            }
-            return true;
+            return false;
         }
-        return copyDirInner(srcDir, willCut, destDir, coverIfExists, useBuf, callback, true);
+        return copyDirInner(srcDir, deleteSrc, destDir, coverIfExists, useBuf, callback, true);
     }
 
-    private static boolean copyDirInner(File srcDir, boolean willCut,
+    private static boolean copyDirInner(File srcDir, boolean deleteSrc,
                                         File destDir, boolean coverIfExists,
                                         byte[] useBuf, FileProgressCallback callback,
                                         boolean runComplete) throws IOException {
         // 如果目标目录创建不成功，下面的事根本就不能做了
-        if (!createDir(destDir)) {
+        if (!checkAndEnsureDestDir(destDir, coverIfExists)) {
             return false;
         }
         boolean ret;
@@ -389,34 +383,60 @@ public class FileUtils {
             File[] childFiles = srcDir.listFiles();
             if (!ArraysCompat.isEmpty(childFiles)) {
                 for (File cFile : childFiles) {
-                    File targetDir = destDir;
                     if (cFile.isDirectory()) {
-                        targetDir = new File(destDir, cFile.getName());
+                        flag &= copyDirInner(cFile, deleteSrc,
+                                new File(destDir, cFile.getName()), coverIfExists,
+                                useBuf, callback, false);
+                    } else {
+                        boolean copyToDirRet = copyToDir(cFile, deleteSrc,
+                                destDir, coverIfExists, useBuf, null);
+                        flag &= copyToDirRet;
+                        if (null != callback)
+                            callback.onProgress(cFile, copyToDirRet);
                     }
-                    flag &= copyDirInner(cFile, willCut, targetDir, coverIfExists, useBuf, callback, false);
                 }
             }
-            if (willCut) {
-                boolean delRootRet = deleteFile(srcDir, true, null);
-                flag &= delRootRet;
-                if (null != callback)
-                    callback.onProgress(srcDir, delRootRet);
+            if (deleteSrc) {
+                deleteFileInner(srcDir, true, callback, false);
             }
             ret = flag;
         } else {
             // 如果不是文件目录，就是拷贝文件咯
             File srcFile = srcDir;
-            ret = willCut ? cutToDir(srcFile, destDir, coverIfExists, useBuf, null) :
-                    copyToDir(srcFile, destDir, coverIfExists, useBuf, null);
+            ret = copyToDir(srcFile, deleteSrc, destDir, coverIfExists, useBuf, null);
             if (null != callback)
                 callback.onProgress(srcFile, ret);
         }
         if (runComplete) {
-            if (null != callback) {
+            if (null != callback)
                 callback.onComplete();
-            }
         }
         return ret;
+    }
+
+    /*package*/ static boolean checkAndEnsureDestFile(File destFile, boolean coverIfExists) {
+        // 如果是文件夹，又不能替换，什么事都不能做
+        if (destFile.isDirectory()) {
+            if (!coverIfExists) {
+                return false;
+            }
+            // 能替换就先删除
+            deleteFile(destFile, true, null);
+        }
+        return true;
+    }
+
+    /*package*/ static boolean checkAndEnsureDestDir(File destDir, boolean coverIfExists) {
+        // 如果是文件，又不能替换，什么事都不能做
+        if (destDir.isFile()) {
+            if (!coverIfExists) {
+                return false;
+            }
+            // 能替换就先删除
+            deleteFile(destDir, true, null);
+        }
+        // 如果目标目录创建不成功，下面的事根本就不能做了
+        return createDir(destDir);
     }
 
     /**
@@ -429,7 +449,8 @@ public class FileUtils {
      *
      * @since 1.0
      */
-    public static String readTextFile(File file, int max, String ellipsis) throws IOException {
+    public static String readTextFile(File file, int max, String ellipsis, String charsetName)
+            throws IOException {
         try {
             InputStream input = new FileInputStream(file);
             try {
@@ -441,7 +462,7 @@ public class FileUtils {
                     if (length <= 0) return "";
                     if (length <= max) return new String(data, 0, length);
                     if (ellipsis == null) return new String(data, 0, max);
-                    return new String(data, 0, max) + ellipsis;
+                    return new String(data, 0, max, charsetName) + ellipsis;
                 } else if (max < 0) {  // "tail" mode: keep the last N
                     int len;
                     boolean rolled = false;
@@ -461,7 +482,7 @@ public class FileUtils {
                         System.arraycopy(data, 0, last, last.length - len, len);
                     }
                     if (ellipsis == null || !rolled) return new String(last);
-                    return ellipsis + new String(last);
+                    return ellipsis + new String(last, charsetName);
                 } else {  // "cat" mode: size unknown, read it all in streaming fashion
                     ByteArrayOutputStream contents = new ByteArrayOutputStream();
                     int len;
@@ -470,7 +491,7 @@ public class FileUtils {
                         len = input.read(data);
                         if (len > 0) contents.write(data, 0, len);
                     } while (len == data.length);
-                    return contents.toString();
+                    return contents.toString(charsetName);
                 }
             } finally {
                 close(input);
