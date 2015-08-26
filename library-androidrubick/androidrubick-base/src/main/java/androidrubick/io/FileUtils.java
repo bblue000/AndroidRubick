@@ -444,6 +444,7 @@ public class FileUtils {
      * @param file to read (will not seek, so things like /proc files are OK)
      * @param max length (positive for head, negative of tail, 0 for no limit)
      * @param ellipsis to add of the file was truncated (can be null)
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
      * @return the contents of the file, possibly truncated
      * @throws IOException if something goes wrong reading the file
      *
@@ -506,6 +507,7 @@ public class FileUtils {
      * Writes string to file. Basically same as "echo -n $string > $filename"
      * @param file target file
      * @param string char sequence
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
      * @return return true if succeed, return false if fail
      *
      * @since 1.0
@@ -518,6 +520,7 @@ public class FileUtils {
      * Writes string to file. Basically same as "echo -n $string > $filename"
      * @param file target file
      * @param string char sequence
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
      * @param append whether to append to file
      * @return return true if succeed, return false if fail
      *
