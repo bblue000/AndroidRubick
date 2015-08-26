@@ -22,9 +22,6 @@ public class SimpleTextValidates {
     public static final String PATTERN_CHINESE = "^" + Patterns.LanguagePatterns.CHINESE_CHAR + "+$";
     public static final String PATTERN_NONE_CHINESE = "^" + Patterns.LanguagePatterns.NON_CHINESE_CHAR + "+$";
 
-    public static final String PATTERN_DOMAIN = "^(?i:(http\\://))[/\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
-    public static final String PATTERN_HTTP = "^(?i:(http\\://))[/\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
-
     /**
      * 判断字符串是否是手机号（简单版）：十一位数字，以1为开头的
      *
@@ -55,6 +52,9 @@ public class SimpleTextValidates {
         return true;
     }
 
+    /**
+     * 是否是纯字母
+     */
     public static boolean isPureLetter(CharSequence charSequence) {
         if (Strings.isEmpty(charSequence)) {
             return false;
@@ -67,6 +67,9 @@ public class SimpleTextValidates {
         return true;
     }
 
+    /**
+     * 是否是纯数字和字母
+     */
     public static boolean isLetterOrNumber(CharSequence charSequence) {
         if (Strings.isEmpty(charSequence)) {
             return false;
@@ -80,7 +83,7 @@ public class SimpleTextValidates {
     }
 
     /**
-     * 是否是数字（实数）
+     * 是否是数字（实数，整数，小数，负数等）
      *
      * @since 1.0
      */

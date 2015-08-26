@@ -6,6 +6,7 @@ import java.io.StringReader;
 
 import androidrubick.io.FileProgressCallback;
 import androidrubick.io.FileUtils;
+import androidrubick.io.ZipUtils;
 
 /**
  * somthing
@@ -26,13 +27,36 @@ public class FileUtilsTest {
 //        testDelFile();
 //        testSaveToFile();
 //        testCopyToFile();
-        copyDir();
+//        copyDir();
+        unzip();
+    }
+
+    private static void unzip() throws IOException {
+//        System.out.println(" unzip ? " +
+//            ZipUtils.unzip(new File("C:/yytest.zip"), false, new File("C:/yytest.data"), false, null)
+//                + "" );
+        System.out.println(" unzip ? " +
+            ZipUtils.unzip(new File("C:/yytest.zip"), false, new File("C:/yytest.data"), true, null)
+                + "" );
     }
 
     private static void copyDir() throws IOException {
-        System.out.println(" copyDir ? "
-                + FileUtils.copyDir(new File("D:/yytest.data"), true,
-                new File("D:/yytest.data1"), true, null, null));
+//        System.out.println(" copyDir ? "
+//                + FileUtils.copyDir(new File("C:/yytest.data"), true,
+//                new File("C:/yytest.data1"), true, null, null));
+
+//        System.out.println(" copyToFile ? "
+//                + FileUtils.copyToFile(new File("C:/yytest.data"), true,
+//                new File("C:/yytest.data1"), false, null, null));
+//        System.out.println(" copyToFile ? "
+//                + FileUtils.copyToDir(new File("C:/yytest.data"), true,
+//                new File("C:/yytest.data1"), false, null, null));
+
+
+
+        System.out.println(" copyToFile ? "
+                + FileUtils.copyToFile(new File("C:/yytest.data"), true,
+                new File("C:/yytest.data1"), true, null, null));
     }
 
     private static void testCopyToFile() throws IOException {
