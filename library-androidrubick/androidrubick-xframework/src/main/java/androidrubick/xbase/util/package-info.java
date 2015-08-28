@@ -3,13 +3,13 @@
  * <br/><br/>
  * 
  * 如：
- * 获取Android设备相关的信息可以调用{@link org.androidrubick.utils.AndroidUtils}中的方法；
+ * 获取Android设备相关的信息可以调用{@link androidrubick.xbase.util.AndroidUtils}中的方法；
  * <br/><br/>
  * 
- * 设置/获取 shared preference值可以使用{@link org.androidrubick.utils.PreferenceUtils};
+ * 设置/获取 shared preference值可以使用{@link androidrubick.xbase.util.PreferenceUtils};
  * <br/><br/>
  * 
- * 统一控制APP中的日志开关，可以使用{@link org.androidrubick.utils.RBKLog}。等等...
+ * 统一控制APP中的日志开关，可以使用{@link androidrubick.xbase.util.XLog}。等等...
  * 
  * @author Yin Yong
  */

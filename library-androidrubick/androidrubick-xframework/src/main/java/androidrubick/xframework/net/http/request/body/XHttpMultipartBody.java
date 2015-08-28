@@ -143,7 +143,6 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(LINE_END);
         dos.writeBytes(LINE_END);
         IOUtils.writeTo(is, true, dos, false, null, null);
-        IOUtils.close(is);
         dos.writeBytes(LINE_END);
     }
 

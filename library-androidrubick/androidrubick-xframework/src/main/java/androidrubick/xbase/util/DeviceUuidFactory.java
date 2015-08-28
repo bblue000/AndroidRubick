@@ -31,7 +31,7 @@ public class DeviceUuidFactory {
 	public DeviceUuidFactory(Context context) {
 		synchronized (DeviceUuidFactory.class) {
 			if (TextUtils.isEmpty(uuid)) {
-				uuid = PreferenceUtils.getValue(context, PREFS_FILE, PREFS_VALUE_DEVICE_ID, null);
+				uuid = PreferenceUtils.get(PREFS_FILE, PREFS_VALUE_DEVICE_ID, null);
 
 				if (TextUtils.isEmpty(uuid)) {
 					final String androidId = this.getAndroidId(context);
@@ -77,7 +77,7 @@ public class DeviceUuidFactory {
 						uuid = UUID.randomUUID().toString();
 					}
 
-					PreferenceUtils.saveValue(context, PREFS_FILE, PREFS_VALUE_DEVICE_ID, uuid);
+					PreferenceUtils.save(PREFS_FILE, PREFS_VALUE_DEVICE_ID, uuid);
 				}
 			}
 		}
@@ -180,10 +180,10 @@ public class DeviceUuidFactory {
 	private static String mid;
 	public static String getMid(Context context) {
 		if (TextUtils.isEmpty(mid)) {
-			mid = PreferenceUtils.getValue(context, PREFS_FILE, PREFS_VALUE_MID, null);
+			mid = PreferenceUtils.get(PREFS_FILE, PREFS_VALUE_MID, null);
 			if (TextUtils.isEmpty(mid)) {
 				mid = UUID.randomUUID().toString();
-				PreferenceUtils.saveValue(context, PREFS_FILE, PREFS_VALUE_MID, mid);
+				PreferenceUtils.save(PREFS_FILE, PREFS_VALUE_MID, mid);
 			}
 		}
 		return mid;

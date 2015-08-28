@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.webkit.URLUtil;
 
 import androidrubick.utils.FrameworkLog;
+import androidrubick.xframework.app.XApplication;
 
 /**
  * 定义调用Android系统相关应用的方法
@@ -29,6 +30,7 @@ public class AndroidUtils {
 	
 	static final String TAG = AndroidUtils.class.getSimpleName();
     private static float sDensity = 0.0f;
+    private static float sScaledDensity = 0.0f;
 	private static int sDisplayWidth = 0;
 	private static int sDisplayHeight = 0;
 	private static String sDeviceId;
@@ -44,13 +46,14 @@ public class AndroidUtils {
 	
 	private static void getDisplay() {
 		if (sDisplayWidth <= 0 || sDisplayHeight <= 0 || sDensity <= 0.0f) {
-			WindowManager wm = (WindowManager) BaseApplication.getAppContext()
+			WindowManager wm = (WindowManager) XApplication.getAppContext()
 					.getSystemService(Context.WINDOW_SERVICE);
 			DisplayMetrics dm = new DisplayMetrics();
 			wm.getDefaultDisplay().getMetrics(dm);
 			sDisplayWidth = dm.widthPixels;
 			sDisplayHeight = dm.heightPixels;
             sDensity = dm.density;
+            sScaledDensity = dm.scaledDensity;
 		}
 	}
 	// 获取屏幕宽度
@@ -71,6 +74,12 @@ public class AndroidUtils {
         return sDensity;
     }
 
+    // 获取屏幕密度
+    public static float getScaledDensity() {
+        getDisplay();
+        return sScaledDensity;
+    }
+
     public static int px2dp(int px) {
         return (int) (px / getDensity() + 0.5f);
     }
@@ -80,7 +89,7 @@ public class AndroidUtils {
     }
 
     public static int sp2px(float sp) {
-        final float fontScale = BaseApplication.getAppContext().getResources().getDisplayMetrics().scaledDensity;
+        final float fontScale = getScaledDensity();
         return (int) (sp * fontScale + 0.5f);
     }
 	
@@ -110,9 +119,9 @@ public class AndroidUtils {
 		int versionCode = 0;
 		try {
 			// ---get the package info---
-			PackageManager pm = BaseApplication.getAppContext().getPackageManager();
+			PackageManager pm = XApplication.getAppContext().getPackageManager();
 			// 这里的context.getPackageName()可以换成你要查看的程序的包名
-			PackageInfo pi = pm.getPackageInfo(BaseApplication.getAppContext().getPackageName(), 0);
+			PackageInfo pi = pm.getPackageInfo(XApplication.getAppContext().getPackageName(), 0);
 			versionCode = pi.versionCode;
 		} catch (Exception e) {
 			FrameworkLog.e(TAG, "getAppVersionCode Exception: " + e.getMessage());
@@ -127,9 +136,9 @@ public class AndroidUtils {
 		String versionName = defVersion;
 		try {
 			// ---get the package info---
-			PackageManager pm = BaseApplication.getAppContext().getPackageManager();
+			PackageManager pm = XApplication.getAppContext().getPackageManager();
 			// 这里的context.getPackageName()可以换成你要查看的程序的包名
-			PackageInfo pi = pm.getPackageInfo(BaseApplication.getAppContext().getPackageName(), 0);
+			PackageInfo pi = pm.getPackageInfo(XApplication.getAppContext().getPackageName(), 0);
 			versionName = pi.versionName;
 			if (null == versionName || versionName.length() <= 0) {
 				return defVersion;
@@ -143,7 +152,7 @@ public class AndroidUtils {
 	@SuppressWarnings("unchecked")
 	public static <T>T getMetaData(String key) {
 		try {
-			Context context = BaseApplication.getAppContext();
+			Context context = XApplication.getAppContext();
 			// ---get the package info---
 			PackageManager pm = context.getPackageManager();
 			// 这里的context.getPackageName()可以换成你要查看的程序的包名
@@ -170,7 +179,7 @@ public class AndroidUtils {
 	 */
 	public static String getIMEI() {
 		requestPermission(android.Manifest.permission.READ_PHONE_STATE);
-		TelephonyManager tm = (TelephonyManager) BaseApplication.getAppContext()
+		TelephonyManager tm = (TelephonyManager) XApplication.getAppContext()
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		if (tm == null) {
 			return null;
@@ -180,7 +189,7 @@ public class AndroidUtils {
 	
 	public static String getDeviceId() {
 		if (null == sDeviceId) {
-			DeviceUuidFactory factory = new DeviceUuidFactory(BaseApplication.getAppContext());
+			DeviceUuidFactory factory = new DeviceUuidFactory(XApplication.getAppContext());
 			sDeviceId = factory.getDeviceUuid();
 		}
 		return sDeviceId;
@@ -203,34 +212,22 @@ public class AndroidUtils {
 	/**
 	 * 需要CALL_PHONE权限
 	 */
-	public static void callPhone(Context context, String number) {
-		if (null == context) {
-			return ;
-		}
+	public static void callPhone(String number) {
 		// 系统打电话界面：
 		Intent intent = new Intent();
 		//系统默认的action，用来打开默认的电话界面
 		intent.setAction(Intent.ACTION_DIAL);
-		if (!isActivityContext(context)) {
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		}
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		//需要拨打的号码
 		intent.setData(Uri.parse("tel:" + number));
-		context.startActivity(intent);
+        XApplication.getAppContext().startActivity(intent);
 	}
 
 	/**
 	 * 启动定位应用
 	 * @added 1.0
 	 */
-	public static void locate(Context context, String chooserTilte,
-			String lat, String lng, String addr) {
-		if (null == context) {
-			return ;
-		}
-		if (isActivityContext(context)) {
-			context = context.getApplicationContext();
-		}
+	public static void locate(String chooserTitle, String lat, String lng, String addr) {
 		// 系统打电话界面：
 		Intent intent = new Intent();
 		//系统默认的action，用来打开默认的电话界面
@@ -244,9 +241,9 @@ public class AndroidUtils {
 		intent.setData(Uri.parse(uri));
 
 		try {
-			context.startActivity(Intent.createChooser(intent, chooserTilte)
-					.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-//			context.startActivity(intent);
+            XApplication.getAppContext().startActivity(
+                    Intent.createChooser(intent, chooserTitle)
+					    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		} catch (Exception e) {
 			ToastUtils.showToast("没有合适的应用打开位置信息");
 		}
@@ -255,7 +252,7 @@ public class AndroidUtils {
 	/**
 	 * 调用系统的HTTP下载
 	 */
-	public static void callHTTPDownload(Context context, String chooserTilte, String url) {
+	public static void callHTTPDownload(Context context, String chooserTitle, String url) {
 		if (null == context) {
 			return ;
 		}
@@ -271,7 +268,7 @@ public class AndroidUtils {
 //		intent.setDataAndType(Uri.parse(URLUtil.guessUrl(url)), "text/html");
 		
 		try {
-			context.startActivity(Intent.createChooser(intent, chooserTilte)
+			context.startActivity(Intent.createChooser(intent, chooserTitle)
 					.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		} catch (Exception e) {
 			ToastUtils.showToast("没有合适的应用打开链接");
@@ -306,7 +303,7 @@ public class AndroidUtils {
 	 * </p>
 	 */
 	public static void requestPermission(String permission) {
-		Context context = BaseApplication.getAppContext();
+		Context context = XApplication.getAppContext();
 		if (PackageManager.PERMISSION_GRANTED != 
 				context.getPackageManager().checkPermission(permission,
 						context.getPackageName())) {
