@@ -1,22 +1,31 @@
 package androidrubick.xframework.app;
 
 import android.app.ActivityManager;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
-import android.os.Build;
-
-import org.androidrubick.app.BaseApplication;
+import android.os.*;
+import android.os.Process;
 
 import java.util.List;
 
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 import androidrubick.xframework.app.ui.XActivityController;
 
 /**
+ * 应用的基类，封装一些应用全局调用的对象及API（to be continued），
+ *
+ * 包括提供全局的Handler对象和Application Context，
+ *
+ * 也提供了强杀进程等方法。
+ *
+ * <p/>
+ *
  * 封装了一些有用的工具方法，截获一些有用的生命周期
  *
  *
@@ -26,7 +35,7 @@ import androidrubick.xframework.app.ui.XActivityController;
  *
  * @since 1.0
  */
-public class XApplication extends BaseApplication {
+public class XApplication extends Application {
 
     @Override
     public void onCreate() {
@@ -97,5 +106,73 @@ public class XApplication extends BaseApplication {
             e.printStackTrace();
         }
         return false;
+    }
+
+
+    private static Handler sHandler;
+    private static Application sApplication;
+
+    /**
+     * @return 整个APP可以使用的Handler（为主线程）
+     */
+    public static Handler getHandler() {
+        checkHandler();
+        return sHandler;
+    }
+
+    /**
+     * @return 整个APP可以使用的Context
+     */
+    public static Application getAppContext() {
+        Preconditions.checkNotNull(sApplication, "check whether the app has a Application "
+                + "class extends BaseApplication ? or forget to "
+                + "invoke super class's constructor first!");
+        return sApplication;
+    }
+
+    private static void checkHandler() {
+        if (null == sHandler) {
+            sHandler = new Handler(Looper.getMainLooper());
+        }
+    }
+
+    public XApplication() {
+        sApplication = this;
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    /**
+     * 强杀本进程
+     */
+    public static void killProcess() {
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                android.os.Process.killProcess(Process.myPid());
+            }
+        }, 500L);
+    }
+
+    /**
+     * 强杀应用相关的进程
+     */
+    public static void killAllProcesses() {
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    killProcess();
+                    System.exit(0);
+
+                    ActivityManager am = (ActivityManager) getAppContext().getSystemService(Context.ACTIVITY_SERVICE);
+                    am.killBackgroundProcesses(getAppContext().getPackageName());
+
+                } catch (Exception e) { }
+            }
+        }, 500L);
     }
 }

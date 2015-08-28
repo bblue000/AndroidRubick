@@ -46,9 +46,9 @@ public abstract class XRetryableJob<Params, Progress, Result> extends XJob<Param
      * @param params 任务参数
      */
     protected void triggerRetry(Params... params) {
-        if () {
-
-        }
+//        if () {
+//
+//        }
         doInBackground(params);
     }
 
@@ -61,6 +61,6 @@ public abstract class XRetryableJob<Params, Progress, Result> extends XJob<Param
     }
 
     public int getRemainingRetryTimes() {
-        return
+        return 0;
     }
 }

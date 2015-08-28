@@ -32,18 +32,19 @@ public abstract class XNetProgressableJob<Param, Progress, Result> extends XNetJ
      */
     protected final Result doParse(XHttpResultHolder response) throws IOException {
         final long contentLength = response.getContentLength();
-        XNetJobUtils.getByteArrayPool().getBuf()
-        IOUtils.writeTo(response.getContent(), null, true, new IOProgressCallback() {
-            @Override
-            public void onProgress(long readThisTime, long readTotal) {
-                publishProgress();
-            }
-
-            @Override
-            public void onComplete(long readTotal) {
-                publishProgress();
-            }
-        });
+//        XNetJobUtils.getByteArrayPool().getBuf()
+//        IOUtils.writeTo(response.getContent(), null, true, new IOProgressCallback() {
+//            @Override
+//            public void onProgress(long readThisTime, long readTotal) {
+//                publishProgress();
+//            }
+//
+//            @Override
+//            public void onComplete(long readTotal) {
+//                publishProgress();
+//            }
+//        });
+        return null;
     }
 
     /**

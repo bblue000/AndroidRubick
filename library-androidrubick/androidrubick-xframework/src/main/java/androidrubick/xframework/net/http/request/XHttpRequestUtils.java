@@ -105,7 +105,8 @@ public class XHttpRequestUtils {
         if (CollectionsCompat.isEmpty(parameters)) {
             return Strings.EMPTY;
         }
-        return JsonParser.toJsonString(parameters);
+//        return JsonParser.toJsonString(parameters);
+        return "";
     }
 
     @Configurable

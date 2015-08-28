@@ -37,12 +37,12 @@ public class XAPIResultParser {
                 (int) response.getContentLength());
         try {
             final String charset = response.getContentCharset();
-            IOUtils.writeTo(response.getContent(), out, buf, false);
+            IOUtils.writeTo(response.getContent(), false, out, false, buf, null);
             IOUtils.close(response);
             final byte[] data = out.toByteArray();
 
             if (XResultable.class.isAssignableFrom(clz)) {
-                return JsonParser.toJsonObject(new String(out.toByteArray(), charset), clz);
+//                return JsonParser.toJsonObject(new String(out.toByteArray(), charset), clz);
             }
             // 1、String
             if (Objects.equals(clz, String.class)) {

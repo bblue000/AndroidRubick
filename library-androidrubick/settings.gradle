@@ -1,1 +1,22 @@
-include ':app', ':androidrubick', ':androidrubick-base', ':androidrubick-xframework'
+include ':app'
+
+
+
+
+// basic libraries
+include ':androidrubick-base', ':androidrubick-xframework'
+
+
+
+
+
+// ********************************************
+// separator line
+/**
+ * implements of services
+ */
+include ':json-default'
+
+def defaultImplForSpi = "./libraries/";
+project(':json-default').projectDir = new File(defaultImplForSpi + "json-default");
+

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="androidrubick.base.android">
-
-    <application android:name="org.androidrubick.app.BaseApplication">
-
-    </application>
-
-</manifest>
