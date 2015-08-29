@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
-import org.androidrubick.app.BaseApplication;
-
 import androidrubick.utils.Objects;
+import androidrubick.xframework.app.XApplication;
 
 /**
  * 本地广播的封装
@@ -22,7 +21,7 @@ public class LocalBroadcasts {
     private static LocalBroadcastManager sLocalBroadcastManager;
     private synchronized static void checkLocalBroadcastManagerInstance() {
         if (null == sLocalBroadcastManager) {
-            sLocalBroadcastManager = LocalBroadcastManager.getInstance(BaseApplication.getAppContext());
+            sLocalBroadcastManager = LocalBroadcastManager.getInstance(XApplication.getAppContext());
         }
     }
 
@@ -38,7 +37,7 @@ public class LocalBroadcasts {
             filter.addAction(actions[i]);
         }
         registerReceiver(receiver, filter);
-    };
+    }
 
     /**
      * 注册广播，参数<code> filters </code> 为注册的行为
@@ -49,7 +48,7 @@ public class LocalBroadcasts {
         }
         checkLocalBroadcastManagerInstance();
         sLocalBroadcastManager.registerReceiver(receiver, filter);
-    };
+    }
 
     /**
      * 注销指定广播
@@ -59,7 +58,7 @@ public class LocalBroadcasts {
         try {
             sLocalBroadcastManager.unregisterReceiver(receiver);
         } catch (Exception e) { }
-    };
+    }
 
     /**
      * 发送指定广播
@@ -77,6 +76,6 @@ public class LocalBroadcasts {
         }
         checkLocalBroadcastManagerInstance();
         sLocalBroadcastManager.sendBroadcast(intent);
-    };
+    }
 	
 }

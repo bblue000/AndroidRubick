@@ -19,7 +19,7 @@ public class AndroidBuildTest {
 
     public static void testGet() {
         System.out.println("============AndroidBuildTest");
-        // 系统版本号
+        // 机器版本号
         System.out.println("Build.ID = " + Build.ID);
         System.out.println("Build.DISPLAY = " + Build.DISPLAY);
 
@@ -31,7 +31,7 @@ public class AndroidBuildTest {
         System.out.println("Build.MANUFACTURER = " + Build.MANUFACTURER);
         // 品牌，如Xiaomi
         System.out.println("Build.BRAND = " + Build.BRAND);
-        // 型号
+        // 型号 MI 4W
         System.out.println("Build.MODEL = " + Build.MODEL);
         System.out.println("Build.BOOTLOADER = " + Build.BOOTLOADER);
 

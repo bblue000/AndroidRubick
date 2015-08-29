@@ -4,9 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import org.androidrubick.app.BaseApplication;
-
 import androidrubick.utils.Objects;
+import androidrubick.xframework.app.XApplication;
 
 /**
  * <p/>
@@ -29,7 +28,7 @@ public class Broadcasts {
             filter.addAction(actions[i]);
         }
         registerReceiver(receiver, filter);
-    };
+    }
 
     /**
      * 注册广播，参数<code> filters </code> 为注册的行为
@@ -38,24 +37,24 @@ public class Broadcasts {
         if (Objects.isNull(receiver) || Objects.isNull(filter)) {
             return ;
         }
-        BaseApplication.getAppContext().registerReceiver(receiver, filter);
-    };
+        XApplication.getAppContext().registerReceiver(receiver, filter);
+    }
 
     /**
      * 注销指定广播
      */
     public static void unregisterReceiver(BroadcastReceiver receiver) {
         try {
-            BaseApplication.getAppContext().unregisterReceiver(receiver);
+            XApplication.getAppContext().unregisterReceiver(receiver);
         } catch (Exception e) { }
-    };
+    }
 
     /**
      * 发送指定广播
      */
     public static void sendBroadcast(String action) {
         sendBroadcast(new Intent(action));
-    };
+    }
 
     /**
      * 发送指定广播
@@ -64,7 +63,7 @@ public class Broadcasts {
         if (Objects.isNull(intent)) {
             return ;
         }
-        BaseApplication.getAppContext().sendBroadcast(intent);
-    };
+        XApplication.getAppContext().sendBroadcast(intent);
+    }
 
 }

@@ -1,5 +1,7 @@
 package androidrubick.xbase.util.spi;
 
+import java.lang.reflect.Type;
+
 /**
  * <p/>
  *
@@ -25,6 +27,17 @@ public interface JsonParserProvider {
 
     /**
      * 将String转为指定类型的对象
+     *
+     * <p/>
+     *
+     * <ul>
+     *     <li>"null"     --> null</li>
+     *     <li>""     --> null</li>
+     *     <li>"{}"     --> empty object of <code>clz</code></li>
+     *     <li>"[item1, item2, item3...]"    --> array</li>
+     *     <li>"{key1:value1, key2:value2...}"      --> map</li>
+     *     <li>"{field1:value1, field2:value2...}"   --> object</li>
+     * </ul>
      */
     <T>T toObject(String json, Class<T> clz);
 

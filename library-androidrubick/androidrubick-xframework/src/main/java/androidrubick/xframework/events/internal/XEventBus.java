@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import org.androidrubick.utils.AndroidUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +14,7 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
+import androidrubick.xbase.util.AndroidUtils;
 import androidrubick.xframework.events.IEventAPI;
 
 /* package */ class XEventBus implements IEventAPI<Object, Object, EventSubscriber>, SubscriptionMonitor,

@@ -2,7 +2,7 @@ package androidrubick.xframework.app.custom;
 
 import android.content.Context;
 
-import org.androidrubick.utils.ToastUtils;
+import androidrubick.xbase.util.ToastUtils;
 
 /**
  *

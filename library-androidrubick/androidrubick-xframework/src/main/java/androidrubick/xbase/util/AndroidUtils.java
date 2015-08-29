@@ -1,211 +1,133 @@
 package androidrubick.xbase.util;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Looper;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import android.webkit.URLUtil;
+
+import java.util.Collections;
+import java.util.List;
 
 import androidrubick.utils.FrameworkLog;
 import androidrubick.xframework.app.XApplication;
 
 /**
  * 定义调用Android系统相关应用的方法
+ *
  * @author YinYong
- * @version 1.0
+ *
+ * @since 1.0
  */
 public class AndroidUtils {
 	private AndroidUtils() { }
 	
 	static final String TAG = AndroidUtils.class.getSimpleName();
-    private static float sDensity = 0.0f;
-    private static float sScaledDensity = 0.0f;
-	private static int sDisplayWidth = 0;
-	private static int sDisplayHeight = 0;
-	private static String sDeviceId;
-	
-	// >>>>>>>>>>>>>>>>>>>
-	// 获取系统、机器相关的信息
-	/**
-	 * 获取sdk版本
-	 */
-	public static int getAndroidSDKVersion() {
-		return Build.VERSION.SDK_INT;
-	}
-	
-	private static void getDisplay() {
-		if (sDisplayWidth <= 0 || sDisplayHeight <= 0 || sDensity <= 0.0f) {
-			WindowManager wm = (WindowManager) XApplication.getAppContext()
-					.getSystemService(Context.WINDOW_SERVICE);
-			DisplayMetrics dm = new DisplayMetrics();
-			wm.getDefaultDisplay().getMetrics(dm);
-			sDisplayWidth = dm.widthPixels;
-			sDisplayHeight = dm.heightPixels;
-            sDensity = dm.density;
-            sScaledDensity = dm.scaledDensity;
-		}
-	}
-	// 获取屏幕宽度
-	public static int getDisplayWidth() {
-		getDisplay();
-		return sDisplayWidth;
-	}
-
-	// 获取屏幕高度
-	public static int getDisplayHeight() {
-		getDisplay();
-		return sDisplayHeight;
-	}
-
-    // 获取屏幕密度
-    public static float getDensity() {
-        getDisplay();
-        return sDensity;
-    }
-
-    // 获取屏幕密度
-    public static float getScaledDensity() {
-        getDisplay();
-        return sScaledDensity;
-    }
 
     public static int px2dp(int px) {
-        return (int) (px / getDensity() + 0.5f);
+        return (int) (px / DeviceInfos.getDensity() + 0.5f);
     }
 
     public static int dp2px(float dp) {
-        return (int) (dp * getDensity() + 0.5f);
+        return (int) (dp * DeviceInfos.getDensity() + 0.5f);
     }
+
+	public static int px2sp(float px) {
+		return (int) (px / DeviceInfos.getScaledDensity() + 0.5f);
+	}
 
     public static int sp2px(float sp) {
-        final float fontScale = getScaledDensity();
-        return (int) (sp * fontScale + 0.5f);
+        return (int) (sp * DeviceInfos.getScaledDensity() + 0.5f);
     }
-	
-	/**
-	 * 获取客户端的分辨率
-	 */
-	public static String getDeviceResolution() {
-		return getDeviceResolution("x");
-	}
-	/**
-	 * 获取客户端的分辨率
-	 * @param linkMark 连接符，{@link #getDeviceResolution()} 使用的是“x”
-	 */
-	@SuppressLint("DefaultLocale")
-	public static String getDeviceResolution(String linkMark) {
-		int width = getDisplayWidth();
-		int height = getDisplayHeight();
-		return width + linkMark + height;
-	}
-	
-	// >>>>>>>>>>>>>>>>>>>
-	// 获取应用程序相关的信息
-	/**
-	 * 返回当前程序版本号
-	 */
-	public static int getAppVersionCode() {
-		int versionCode = 0;
-		try {
-			// ---get the package info---
-			PackageManager pm = XApplication.getAppContext().getPackageManager();
-			// 这里的context.getPackageName()可以换成你要查看的程序的包名
-			PackageInfo pi = pm.getPackageInfo(XApplication.getAppContext().getPackageName(), 0);
-			versionCode = pi.versionCode;
-		} catch (Exception e) {
-			FrameworkLog.e(TAG, "getAppVersionCode Exception: " + e.getMessage());
-		}
-		return versionCode;
-	}
-	
-	/**
-	 * 返回当前程序版本名
-	 */
-	public static String getAppVersionName(String defVersion) {
-		String versionName = defVersion;
-		try {
-			// ---get the package info---
-			PackageManager pm = XApplication.getAppContext().getPackageManager();
-			// 这里的context.getPackageName()可以换成你要查看的程序的包名
-			PackageInfo pi = pm.getPackageInfo(XApplication.getAppContext().getPackageName(), 0);
-			versionName = pi.versionName;
-			if (null == versionName || versionName.length() <= 0) {
-				return defVersion;
-			}
-		} catch (Exception e) {
-			FrameworkLog.e(TAG, "getAppVersionName Exception: " + e.getMessage());
-		}
-		return versionName;
-	}
 
-	@SuppressWarnings("unchecked")
-	public static <T>T getMetaData(String key) {
+
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// 获取组件
+	/**
+	 * 根据包名打开指定应用的启动Activity
+	 * @return 如果成功获取到应用的启动Intent，则返回true
+	 */
+	public static boolean launchApplication(String packageName) {
 		try {
 			Context context = XApplication.getAppContext();
 			// ---get the package info---
 			PackageManager pm = context.getPackageManager();
-			// 这里的context.getPackageName()可以换成你要查看的程序的包名
-			ApplicationInfo pi = pm.getApplicationInfo(context.getPackageName(), 
-					PackageManager.GET_META_DATA);
-			Bundle metaData = pi.metaData;
-			if (null == metaData) {
-				return null;
-			}
-			return (T) metaData.get(key);
+			Intent launch = pm.getLaunchIntentForPackage(packageName);
+			context.startActivity(launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+			return true;
 		} catch (Exception e) {
-			FrameworkLog.e(TAG, "getMetaData Exception: " + e.getMessage());
-			return null;
+			FrameworkLog.e(TAG, "launchApplication Exception: " + e.getMessage());
+			return false;
 		}
-	}
-	
-	/**
-	 * 获得设备识别认证码
-	 * <p/>
-	 * 需要权限：android.permission.READ_PHONE_STATE
-	 * @return the unique device ID, 
-	 * for example, the IMEI for GSM and the MEID or ESN for CDMA phones. 
-	 * Return null if device ID is not available. 
-	 */
-	public static String getIMEI() {
-		requestPermission(android.Manifest.permission.READ_PHONE_STATE);
-		TelephonyManager tm = (TelephonyManager) XApplication.getAppContext()
-				.getSystemService(Context.TELEPHONY_SERVICE);
-		if (tm == null) {
-			return null;
-		}
-		return tm.getDeviceId();
-	}
-	
-	public static String getDeviceId() {
-		if (null == sDeviceId) {
-			DeviceUuidFactory factory = new DeviceUuidFactory(XApplication.getAppContext());
-			sDeviceId = factory.getDeviceUuid();
-		}
-		return sDeviceId;
 	}
 
 	/**
-     * 获取本机机型
-     * @return model of the device, or 'unknown'
-     */
-    public static String getDeviceModel() {
-        String model = Build.MODEL;
-        if (TextUtils.isEmpty(model)) {
-            return "unknown";
-        }
-        return model;
-    }
+	 * 判断指定包名的应用是否存在
+	 */
+	public static boolean existsApplication(String packageName) {
+		try {
+			Context context = XApplication.getAppContext();
+			// ---get the package info---
+			PackageManager pm = context.getPackageManager();
+			PackageInfo pkg = pm.getPackageInfo(packageName, 0);
+			return null != pkg;
+		} catch (Exception e) {
+			FrameworkLog.e(TAG, "existsApplication Exception: " + e.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * 获取当前进程的进程名称
+	 */
+	public static String getProcessName() {
+		Context context = XApplication.getAppContext();
+		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = am.getRunningAppProcesses();
+		if (null == runningAppProcessInfos || runningAppProcessInfos.isEmpty()) {
+			return null;
+		}
+		final int myPid = android.os.Process.myPid();
+		String processName = null;
+		for (ActivityManager.RunningAppProcessInfo info : runningAppProcessInfos) {
+			if (info.pid == myPid) {
+				processName = info.processName;
+				break;
+			}
+		}
+		return processName;
+	}
+
+	/**
+	 * 查找可以处理<code>intent</code>的Activity
+	 *
+	 * @param intent The desired intent as per resolveActivity().
+	 * @param flags Additional option flags.  The most important is
+	 * {@link PackageManager#MATCH_DEFAULT_ONLY}, to limit the resolution to only
+	 * those activities that support the {@link android.content.Intent#CATEGORY_DEFAULT}.
+	 *
+	 * @return A List&lt;ResolveInfo&gt; containing one entry for each matching
+	 *         Activity. These are ordered from best to worst match -- that
+	 *         is, the first item in the list is what is returned by
+	 *         {@link PackageManager#resolveActivity}.
+	 *         If there are no matching activities, an empty list is returned.
+	 */
+	public static List<ResolveInfo> queryIntentActivities(Intent intent, int flags) {
+		try {
+			Context context = XApplication.getAppContext();
+			// ---get the package info---
+			PackageManager pm = context.getPackageManager();
+			return pm.queryIntentActivities(intent, flags);
+		} catch (Exception e) {
+			FrameworkLog.e(TAG, "queryIntentActivities Exception: " + e.getMessage());
+			return Collections.EMPTY_LIST;
+		}
+	}
 
 	// >>>>>>>>>>>>>>>>>>>
 	// 调用系统的组件
@@ -252,13 +174,7 @@ public class AndroidUtils {
 	/**
 	 * 调用系统的HTTP下载
 	 */
-	public static void callHTTPDownload(Context context, String chooserTitle, String url) {
-		if (null == context) {
-			return ;
-		}
-		if (isActivityContext(context)) {
-			context = context.getApplicationContext();
-		}
+	public static void callHTTPDownload(String chooserTitle, String url) {
 		// update v2
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		//系统默认的action，用来打开默认的电话界面
@@ -268,7 +184,7 @@ public class AndroidUtils {
 //		intent.setDataAndType(Uri.parse(URLUtil.guessUrl(url)), "text/html");
 		
 		try {
-			context.startActivity(Intent.createChooser(intent, chooserTitle)
+			XApplication.getAppContext().startActivity(Intent.createChooser(intent, chooserTitle)
 					.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		} catch (Exception e) {
 			ToastUtils.showToast("没有合适的应用打开链接");

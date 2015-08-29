@@ -14,7 +14,7 @@ import androidrubick.xframework.app.XApplication;
  */
 public class PreferenceUtils {
 
-private PreferenceUtils() { }
+	private PreferenceUtils() { }
 
 	/**
 	 * {@link android.content.SharedPreferences}打开的模式

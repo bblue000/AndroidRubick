@@ -2,8 +2,6 @@ package androidrubick.xframework.net.http.request;
 
 import android.os.Build;
 
-import org.androidrubick.utils.AndroidUtils;
-
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
@@ -14,6 +12,7 @@ import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
+import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.xbase.annotation.Configurable;
@@ -281,7 +280,7 @@ public class XHttpRequestBuilder {
         String url = XHttpRequestUtils.appendQuery(mBaseUrl, XHttpRequestUtils.parseUrlEncodedParameters(mParams, mParamEncoding));
 
         // create a request
-        int version = AndroidUtils.getAndroidSDKVersion();
+        int version = DeviceInfos.getAndroidSDKVersion();
         if (version <= Build.VERSION_CODES.GINGERBREAD) {
             return new XHttpRequestPreG(url, mMethod, mHeaders, mBody, mConnectionTimeout, mSocketTimeout);
         } else {
