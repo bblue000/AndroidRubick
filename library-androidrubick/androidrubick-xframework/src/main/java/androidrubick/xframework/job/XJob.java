@@ -7,7 +7,7 @@ import java.util.concurrent.Executor;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.app.XApplication;
-import androidrubick.xframework.job.internal.AsyncTask;
+import androidrubick.xframework.job.internal.AsyncTaskCompat;
 import androidrubick.xframework.job.internal.AsyncTaskStatus;
 import androidrubick.xframework.job.spi.XJobExecutorService;
 
@@ -22,7 +22,7 @@ import androidrubick.xframework.job.spi.XJobExecutorService;
  *
  * Created by Yin Yong on 2015/5/10 0010.
  */
-public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
+public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Params, Progress, Result> {
 
     public static final String TAG = XJob.class.getSimpleName();
 
@@ -40,11 +40,11 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
     protected static final int TEMP_JOB = 0x00000000;
 
     public static void setDefaultExecutor(Executor exec) {
-        AsyncTask.setDefaultExecutor(exec);
+        AsyncTaskCompat.setDefaultExecutor(exec);
     }
 
     public static Executor getDefaultExecutor() {
-        return AsyncTask.getDefaultExecutor();
+        return AsyncTaskCompat.getDefaultExecutor();
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      * @param params The parameters of the task.
      */
     @Override
-    public final AsyncTask<Params, Progress, Result> execute(Params... params) {
+    public final AsyncTaskCompat<Params, Progress, Result> execute(Params... params) {
         XServiceLoader.load(XJobExecutorService.class, XApplication.getAppClassLoader())
             .execute(this, params);
         return this;

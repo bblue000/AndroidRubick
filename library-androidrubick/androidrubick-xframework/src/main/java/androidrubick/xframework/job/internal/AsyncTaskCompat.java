@@ -178,7 +178,7 @@ import androidrubick.xframework.job.XJob;
  * {@link #executeOnExecutor(java.util.concurrent.Executor, Object[])} with
  * {@link java.util.concurrent.Executor}.</p>
  */
-public abstract class AsyncTask<Params, Progress, Result> {
+public abstract class AsyncTaskCompat<Params, Progress, Result> {
     private static final String LOG_TAG = "AsyncTask";
 
     private static final int MESSAGE_POST_RESULT = 0x1;
@@ -196,7 +196,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
     private final AtomicBoolean mTaskInvoked = new AtomicBoolean();
 
     private static Handler getHandler() {
-        synchronized (AsyncTask.class) {
+        synchronized (AsyncTaskCompat.class) {
             if (sHandler == null) {
                 sHandler = new InternalHandler();
             }
@@ -214,14 +214,14 @@ public abstract class AsyncTask<Params, Progress, Result> {
     }
 
     /**
-     * 因为{@link AsyncTask}对外不是一个{@link Runnable}，
+     * 因为{@link AsyncTaskCompat}对外不是一个{@link Runnable}，
      *
      * 如果在{@link ThreadPoolExecutor}中需要对任务进行优先级排序，
      *
      * 将其通过这种方式转换出来。
      *
      */
-    public static <T extends AsyncTask>T asAsyncTask(Runnable run) {
+    public static <T extends AsyncTaskCompat>T asAsyncTask(Runnable run) {
         if (run instanceof LocalFutureTask) {
             return (T) ((LocalFutureTask) run).owner;
         }
@@ -231,11 +231,11 @@ public abstract class AsyncTask<Params, Progress, Result> {
     /**
      * Creates a new asynchronous task. This constructor must be invoked on the UI thread.
      */
-    public AsyncTask() {
+    public AsyncTaskCompat() {
         mWorker = new WorkerRunnable<Params, Result>() {
             public Result call() throws Exception {
 
-                FrameworkLog.d(XJob.TAG, "task start execute [task " + AsyncTask.this);
+                FrameworkLog.d(XJob.TAG, "task start execute [task " + AsyncTaskCompat.this);
 
                 mTaskInvoked.set(true);
 
@@ -494,7 +494,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #executeOnExecutor(java.util.concurrent.Executor, Object[])
      * @see #execute(Runnable)
      */
-    public AsyncTask<Params, Progress, Result> execute(Params... params) {
+    public AsyncTaskCompat<Params, Progress, Result> execute(Params... params) {
         return executeOnExecutor(getDefaultExecutor(), params);
     }
 
@@ -531,7 +531,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      *
      * @see #execute(Object[])
      */
-    public final AsyncTask<Params, Progress, Result> executeOnExecutor(Executor exec,
+    public final AsyncTaskCompat<Params, Progress, Result> executeOnExecutor(Executor exec,
                                                                        Params... params) {
         if (mStatus != AsyncTaskStatus.PENDING) {
             switch (mStatus) {
@@ -623,8 +623,8 @@ public abstract class AsyncTask<Params, Progress, Result> {
     }
 
     protected static abstract class LocalFutureTask<R> extends FutureTask<R> {
-        AsyncTask owner;
-        public LocalFutureTask(Callable<R> callable, AsyncTask owner) {
+        AsyncTaskCompat owner;
+        public LocalFutureTask(Callable<R> callable, AsyncTaskCompat owner) {
             super(callable);
             this.owner = owner;
         }
@@ -632,10 +632,10 @@ public abstract class AsyncTask<Params, Progress, Result> {
 
     @SuppressWarnings({"RawUseOfParameterizedType"})
     private static class AsyncTaskResult<Data> {
-        final AsyncTask mTask;
+        final AsyncTaskCompat mTask;
         final Data[] mData;
 
-        AsyncTaskResult(AsyncTask task, Data... data) {
+        AsyncTaskResult(AsyncTaskCompat task, Data... data) {
             mTask = task;
             mData = data;
         }

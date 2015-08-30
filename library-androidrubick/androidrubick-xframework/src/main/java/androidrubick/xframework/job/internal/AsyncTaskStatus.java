@@ -21,7 +21,7 @@ public enum AsyncTaskStatus {
      */
     RUNNING,
     /**
-     * Indicates that {@link AsyncTask#onPostExecute} has finished.
+     * Indicates that {@link AsyncTaskCompat#onPostExecute} has finished.
      */
     FINISHED,
 
