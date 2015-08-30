@@ -1,4 +1,4 @@
-package androidrubick.xframework.task;
+package androidrubick.xframework.impl.job;
 
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.task.internal.executor.SimpleThreadFactory;
+import androidrubick.xframework.impl.job.executor.SimpleThreadFactory;
+import androidrubick.xframework.task.XJob;
 import androidrubick.xframework.xbase.TimeSlots;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
@@ -29,7 +30,7 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-/*package*/ class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
+public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;

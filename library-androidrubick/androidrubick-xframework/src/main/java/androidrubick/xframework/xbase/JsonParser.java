@@ -1,10 +1,7 @@
 package androidrubick.xframework.xbase;
 
-//import com.google.gson.Gson;
-
-import androidrubick.text.Strings;
-import androidrubick.utils.Objects;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.aspi.XServiceLoader;
+import androidrubick.xbase.util.spi.XJsonParserService;
 
 /**
  * Json 转对象和对象转Json的工具类
@@ -17,21 +14,11 @@ import androidrubick.xframework.xbase.annotation.Configurable;
 public class JsonParser {
     private JsonParser() { }
 
+    public static String toJsonString(Object object) {
+        return XServiceLoader.load(XJsonParserService.class).toJsonString(object);
+    }
 
-//    @Configurable
-//    private static final Gson sGson = new Gson();
-//
-//    public static String toJsonString(Object object) {
-//        if (Objects.isNull(object)) {
-//            return Strings.EMPTY;
-//        }
-//        if (object.getClass() == Object.class) {
-//            return "{}";
-//        }
-//        return sGson.toJson(object);
-//    }
-//
-//    public static <T>T toJsonObject(String json, Class<T> clz) {
-//        return sGson.fromJson(json, clz);
-//    }
+    public static <T>T toObject(String json, Class<T> clz) {
+        return XServiceLoader.load(XJsonParserService.class).toObject(json, clz);
+    }
 }

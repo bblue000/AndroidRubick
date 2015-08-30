@@ -67,9 +67,9 @@ public class AndroidUtils {
 	}
 
 	/**
-	 * 判断指定包名的应用是否存在
+	 * 判断指定包名的应用是否已安装
 	 */
-	public static boolean existsApplication(String packageName) {
+	public static boolean appInstalled(String packageName) {
 		try {
 			Context context = XApplication.getAppContext();
 			// ---get the package info---
@@ -77,7 +77,7 @@ public class AndroidUtils {
 			PackageInfo pkg = pm.getPackageInfo(packageName, 0);
 			return null != pkg;
 		} catch (Exception e) {
-			FrameworkLog.e(TAG, "existsApplication Exception: " + e.getMessage());
+			FrameworkLog.e(TAG, "appInstalled Exception: " + e.getMessage());
 			return false;
 		}
 	}

@@ -1,13 +1,13 @@
 package androidrubick.xbase.util.spi;
 
-import java.lang.reflect.Type;
+import androidrubick.xbase.aspi.XSpiService;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/8/28.
  */
-public interface JsonParserProvider {
+public interface XJsonParserService extends XSpiService {
 
     /**
      * 将对象转为Json。

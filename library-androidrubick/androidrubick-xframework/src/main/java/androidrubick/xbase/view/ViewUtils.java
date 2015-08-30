@@ -21,10 +21,11 @@ public class ViewUtils {
 
     private ViewUtils() { /*no instance*/ }
 
-    public static void setVisibility(View view, int visibility) {
+    public static <V extends View>V setVisibility(V view, int visibility) {
         if (!Objects.isNull(view)) {
             view.setVisibility(visibility);
         }
+        return view;
     }
 
     /**
@@ -32,9 +33,9 @@ public class ViewUtils {
      *
      * 如果<code>show</code>为false，将<code>view</code>设置为{@link View#GONE}；
      */
-    public static void setVisibility(View view, boolean show) {
+    public static <V extends View>V setVisibility(V view, boolean show) {
         int visibility = show ? View.VISIBLE : View.GONE;
-        setVisibility(view, visibility);
+        return setVisibility(view, visibility);
     }
 
     public static boolean isVisibilityEqual(View view, int visibility) {
@@ -56,16 +57,16 @@ public class ViewUtils {
         return isVisibilityEqual(view, View.GONE);
     }
 
-    public static void setVisible(View view) {
-        setVisibility(view, View.VISIBLE);
+    public static <V extends View>V setVisible(V view) {
+        return setVisibility(view, View.VISIBLE);
     }
 
-    public static void setInvisible(View view) {
-        setVisibility(view, View.INVISIBLE);
+    public static <V extends View>V setInvisible(V view) {
+        return setVisibility(view, View.INVISIBLE);
     }
 
-    public static void setGone(View view) {
-        setVisibility(view, View.GONE);
+    public static <V extends View>V setGone(V view) {
+        return setVisibility(view, View.GONE);
     }
 
 
@@ -142,7 +143,7 @@ public class ViewUtils {
      * @see View#MEASURED_STATE_MASK
      */
     public static int maxWidthOfView() {
-        return (0x1 << 30) - 1;
+        return (0x1 << 25) - 1;
     }
 
     /**
@@ -154,10 +155,10 @@ public class ViewUtils {
      * @see View#MEASURED_STATE_MASK
      */
     public static int maxHeightOfView() {
-        return (0x1 << 30) - 1;
+        return (0x1 << 25) - 1;
     }
 
-    public static void setText(TextView tv, CharSequence text) {
+    public static <TV extends TextView>TV setText(TV tv, CharSequence text) {
         if (!Objects.isNull(tv)) {
             if (tv instanceof EditText) {
                 setText((EditText) tv, text);
@@ -165,33 +166,37 @@ public class ViewUtils {
                 tv.setText(text);
             }
         }
+        return tv;
     }
 
-    public static void setText(TextView tv, int resId) {
+    public static <TV extends TextView>TV setText(TV tv, int resId) {
         if (!Objects.isNull(tv)) {
-            setText(tv, tv.getResources().getText(resId));
+            return setText(tv, tv.getResources().getText(resId));
         }
+        return tv;
     }
 
     /**
      * 给{@link EditText}设置文本，并将指针移到最后的位置
      */
-    public static void setText(EditText et, CharSequence text) {
+    public static <ET extends EditText>ET setText(ET et, CharSequence text) {
         if (!Objects.isNull(et)) {
             et.setText(text);
             if (!TextUtils.isEmpty(et.getText())) {
                 et.setSelection(et.getText().length());
             }
         }
+        return et;
     }
 
     /**
      * 给{@link EditText}设置文本，并将指针移到最后的位置
      */
-    public static void setText(EditText et, int resId) {
+    public static <ET extends EditText>ET setText(ET et, int resId) {
         if (!Objects.isNull(et)) {
-            setText(et, et.getResources().getText(resId));
+            return setText(et, et.getResources().getText(resId));
         }
+        return et;
     }
 
 }

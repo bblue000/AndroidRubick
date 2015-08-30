@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidrubick.xbase.view.ViewUtils;
+
 /**
  * 基础的View控制器；
  *
@@ -72,7 +74,7 @@ public class XWidgetCtrller<Self extends XWidgetCtrller> {
      * 设置View的可视属性
      */
     public Self visibility(int visibility) {
-        getView().setVisibility(visibility);
+        ViewUtils.setVisibility(getView(), visibility);
         return self();
     }
 
@@ -137,7 +139,7 @@ public class XWidgetCtrller<Self extends XWidgetCtrller> {
      * 刷新，重绘
      */
     public Self refresh() {
-        getView().requestLayout();;
+        getView().requestLayout();
         getView().invalidate();
         return self();
     }

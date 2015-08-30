@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
 
+import androidrubick.xbase.view.ViewUtils;
+
 /**
  *
  *
@@ -53,8 +55,7 @@ public class XEditTextCtrller extends XTextViewCtrller {
      */
     @Override
     public XEditTextCtrller text(int resId) {
-        getView().setText(resId);
-        getView().setSelection(getView().getText().length());
+        ViewUtils.setText(getView(), resId);
         return self();
     }
 
@@ -63,8 +64,7 @@ public class XEditTextCtrller extends XTextViewCtrller {
      */
     @Override
     public XEditTextCtrller text(CharSequence text) {
-        getView().setText(text);
-        getView().setSelection(getView().getText().length());
+        ViewUtils.setText(getView(), text);
         return self();
     }
 

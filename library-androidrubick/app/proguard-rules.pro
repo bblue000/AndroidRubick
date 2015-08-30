@@ -52,5 +52,6 @@
 
 
 # 框架中的保留类
--keep class * implements androidrubick.xbase.util.spi.JsonParserProvider
+-keep class * implements androidrubick.xbase.util.spi.XJsonParserService
+-keep class * implements androidrubick.xframework.task.spi.XJobExecutorService
 

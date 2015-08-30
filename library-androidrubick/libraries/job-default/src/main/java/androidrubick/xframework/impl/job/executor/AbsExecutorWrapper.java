@@ -1,4 +1,4 @@
-package androidrubick.xframework.task.internal.executor;
+package androidrubick.xframework.impl.job.executor;
 
 import java.util.concurrent.Executor;
 
@@ -6,7 +6,7 @@ import androidrubick.utils.Preconditions;
 
 /**
  *
- * 包装另一个{@link java.util.concurrent.Executor}
+ * 包装另一个{@link Executor}
  *
  * <p/>
  * <p/>

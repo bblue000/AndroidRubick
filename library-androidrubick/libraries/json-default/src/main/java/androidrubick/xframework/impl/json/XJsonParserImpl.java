@@ -8,17 +8,17 @@ import java.lang.reflect.Type;
 
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xbase.util.spi.JsonParserProvider;
+import androidrubick.xbase.util.spi.XJsonParserService;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/8/28.
  */
-public class JsonParserImpl implements JsonParserProvider {
+public class XJsonParserImpl implements XJsonParserService {
 
     private Gson mGson;
-    {
+    public XJsonParserImpl() {
         mGson = new Gson();
     }
 
@@ -51,7 +51,11 @@ public class JsonParserImpl implements JsonParserProvider {
         if (TextUtils.isEmpty(json)) {
             return null;
         }
-        return null;
+        return mGson.fromJson(json, clz);
     }
 
+    @Override
+    public void trimMemory() {
+        // nothing to trim
+    }
 }

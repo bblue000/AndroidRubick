@@ -37,9 +37,52 @@ import androidrubick.xframework.app.ui.XActivityController;
  */
 public class XApplication extends Application {
 
+    private static Handler sHandler;
+    private static Application sApplication;
+
+    /**
+     * @return 整个APP可以使用的Handler（为主线程）
+     */
+    public static Handler getHandler() {
+        checkHandler();
+        return sHandler;
+    }
+
+    /**
+     * @return 整个APP可以使用的Context
+     */
+    public static Application getAppContext() {
+        Preconditions.checkNotNull(sApplication, "check whether the app has a Application "
+                + "class extends BaseApplication ? or forget to "
+                + "invoke super class's constructor first!");
+        return sApplication;
+    }
+
+    /**
+     * 获取该包名下的类的加载器
+     */
+    public static ClassLoader getAppClassLoader() {
+        return getAppContext().getClassLoader();
+    }
+
+    private static void checkHandler() {
+        if (null == sHandler) {
+            sHandler = new Handler(Looper.getMainLooper());
+        }
+    }
+
+    public XApplication() {
+        sApplication = this;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
     }
 
     @Override
@@ -106,43 +149,6 @@ public class XApplication extends Application {
             e.printStackTrace();
         }
         return false;
-    }
-
-
-    private static Handler sHandler;
-    private static Application sApplication;
-
-    /**
-     * @return 整个APP可以使用的Handler（为主线程）
-     */
-    public static Handler getHandler() {
-        checkHandler();
-        return sHandler;
-    }
-
-    /**
-     * @return 整个APP可以使用的Context
-     */
-    public static Application getAppContext() {
-        Preconditions.checkNotNull(sApplication, "check whether the app has a Application "
-                + "class extends BaseApplication ? or forget to "
-                + "invoke super class's constructor first!");
-        return sApplication;
-    }
-
-    private static void checkHandler() {
-        if (null == sHandler) {
-            sHandler = new Handler(Looper.getMainLooper());
-        }
-    }
-
-    public XApplication() {
-        sApplication = this;
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
     }
 
     /**

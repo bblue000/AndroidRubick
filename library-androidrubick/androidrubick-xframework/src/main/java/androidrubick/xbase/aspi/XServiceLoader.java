@@ -3,17 +3,15 @@ package androidrubick.xbase.aspi;
 import android.text.TextUtils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.Map;
+import java.util.WeakHashMap;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
+import androidrubick.text.Charsets;
+import androidrubick.utils.Objects;
 
 /**
  * A service-provider loader.
@@ -47,11 +45,8 @@ import androidrubick.io.IOUtils;
  * </pre>
  * You might use {@code ServiceProvider} something like this:
  * <pre>
- *   for (MyService service : XServiceLoader<MyService>.load(MyService.class)) {
- *     if (service.supports(o)) {
- *       return service.handle(o);
- *     }
- *   }
+ *   MyService service = XServiceLoader<MyService>.load(MyService.class);
+ *   service.handle(o);
  * </pre>
  *
  * <p>Note that each iteration creates new instances of the various service implementations, so
@@ -65,37 +60,7 @@ import androidrubick.io.IOUtils;
  *
  * Created by Yin Yong on 2015/8/26.
  */
-public class XServiceLoader<S> implements Iterable<S> {
-
-    private final Set<URL> services;
-    private Class<S> service;
-    private ClassLoader classLoader;
-
-    /**
-     * 子类需要对无参构造放开权限！
-     */
-    protected XServiceLoader() {
-        this.services = new HashSet<URL>();
-    }
-
-    protected XServiceLoader<S> set(Class<S> service, ClassLoader classLoader) {
-        // It makes no sense for service to be null.
-        // classLoader is null if you want the system class loader.
-        if (service == null) {
-            throw new NullPointerException("service == null");
-        }
-        this.service = service;
-        this.classLoader = classLoader;
-        reload();
-        return this;
-    }
-
-    /**
-     * Invalidates the cache of known service provider class names.
-     */
-    public void reload() {
-        internalLoad();
-    }
+public class XServiceLoader<S> {
 
     /**
      * Constructs a service loader, using the current thread's context class loader.
@@ -103,9 +68,9 @@ public class XServiceLoader<S> implements Iterable<S> {
      * @param service the service class or interface
      * @return a new XServiceLoader
      */
-    public static <S>XServiceLoader<S> load(Class<S> service) {
+    public static <S>S load(Class<S> service) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return checkAndLoadFrom(classLoader).set(service, classLoader);
+        return findFromCacheOrCreate(service, classLoader).get();
     }
 
     /**
@@ -116,123 +81,130 @@ public class XServiceLoader<S> implements Iterable<S> {
      * @param classLoader the class loader
      * @return a new XServiceLoader
      */
-    public static <S>XServiceLoader<S> load(Class<S> service, ClassLoader classLoader) {
-        if (classLoader == null) {
-            classLoader = ClassLoader.getSystemClassLoader();
-        }
-        return checkAndLoadFrom(classLoader).set(service, classLoader);
+    public static <S>S load(Class<S> service, ClassLoader classLoader) {
+        classLoader = Objects.getOr(classLoader, ClassLoader.getSystemClassLoader());
+        return findFromCacheOrCreate(service, classLoader).get();
     }
 
-    private static XServiceLoader checkAndLoadFrom(ClassLoader classLoader) {
-//        try {
-//            return XServiceLoader.load(XServiceLoader.class, classLoader).iterator().next();
-//        } catch (Exception e) {
-//            throw new IllegalStateException("no XServiceLoader provided");
-//        }
-        return new XServiceLoader();
+    private static <S>XServiceLoader<S> findFromCacheOrCreate(Class<S> service, ClassLoader classLoader) {
+        synchronized (sCaches) {
+            if (!CollectionsCompat.isEmpty(sCaches)) {
+                for (Map.Entry<XServiceLoader, Object> entry : sCaches.entrySet()) {
+                    XServiceLoader key = entry.getKey();
+                    if (Objects.equals(key.mService, service)
+                            && Objects.equals(key.mClassLoader, classLoader)) {
+                        return key;
+                    }
+                }
+            }
+            XServiceLoader<S> xServiceLoader = new XServiceLoader<S>(service, classLoader);
+            // load instance
+            xServiceLoader.get();
+            return xServiceLoader;
+        }
+    }
+
+    private static WeakHashMap<XServiceLoader, Object> sCaches
+            = new WeakHashMap<XServiceLoader, Object>(8);
+
+    private String mClassName;
+    private final Class<S> mService;
+    private final ClassLoader mClassLoader;
+
+    /**
+     * 子类需要对无参构造放开权限！
+     */
+    protected XServiceLoader(Class<S> service, ClassLoader classLoader) {
+        // It makes no sense for service to be null.
+        // classLoader is null if you want the system class loader.
+        if (service == null) {
+            throw new NullPointerException("service == null");
+        }
+        this.mService = service;
+        this.mClassLoader = classLoader;
+        reload();
+    }
+
+    /**
+     * Invalidates the cache of known service provider class names.
+     */
+    public void reload() {
+        internalLoad();
     }
 
     /**
      * 这里的机制可以被重写
      */
     protected void internalLoad() {
-        services.clear();
-        try {
-            String name = "META-INF/services/" + service.getName();
-            services.addAll(Collections.list(classLoader.getResources(name)));
-        } catch (IOException e) {
-            return;
+        String name = "META-INF/services/" + mService.getName();
+        final URL url = this.mClassLoader.getResource(name);
+        if (Objects.isNull(url)) {
+            throw new Error("Couldn't read " + name);
+        }
+        this.mClassName = readClass(url, Charsets.UTF_8.name());
+        if (Objects.isNull(this.mClassName)) {
+            throw new Error("Couldn't read " + name);
         }
     }
 
     @Override
     public String toString() {
-        return "XServiceLoader for " + service.getName();
+        return "XServiceLoader for " + mService.getName();
     }
 
-    @Override
-    public Iterator<S> iterator() {
-        return new ServiceIterator(this);
+    public S get() {
+        S instance = (S) sCaches.get(this);
+        if (Objects.isNull(instance)) {
+            instance = newInstanceOfService();
+            sCaches.put(this, instance);
+        }
+        return instance;
     }
 
-    protected class ServiceIterator implements Iterator<S> {
-        private final ClassLoader classLoader;
-        private final Class<S> service;
-        private final Set<URL> services;
-
-        private boolean isRead = false;
-
-        private LinkedList<String> queue = new LinkedList<String>();
-
-        public ServiceIterator(XServiceLoader<S> sl) {
-            this.classLoader = sl.classLoader;
-            this.service = sl.service;
-            this.services = sl.services;
-        }
-
-        public boolean hasNext() {
-            if (!isRead) {
-                readClass();
-            }
-            return (queue != null && !queue.isEmpty());
-        }
-
-        @SuppressWarnings("unchecked")
-        public S next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            String className = queue.remove();
-            try {
-                return service.cast(classLoader.loadClass(className).newInstance());
-            } catch (Exception e) {
-                throw new Error("Couldn't instantiate class " + className, e);
-            }
-        }
-
-        private void readClass() {
-            for (URL url : services) {
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        // Strip comments and whitespace...
-                        int commentStart = line.indexOf('#');
-                        if (commentStart != -1) {
-                            line = line.substring(0, commentStart);
-                        }
-                        line = line.trim();
-                        // Ignore empty lines.
-                        if (TextUtils.isEmpty(line)) {
-                            continue;
-                        }
-                        String className = line;
-                        checkValidJavaClassName(className);
-                        if (!queue.contains(className)) {
-                            queue.add(className);
-                        }
-                    }
-                    isRead = true;
-                } catch (Exception e) {
-                    throw new Error("Couldn't read " + url, e);
-                } finally {
-                    IOUtils.close(reader);
+    private String readClass(URL url, String charsetName) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(url.openStream(), charsetName));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Strip comments and whitespace...
+                int commentStart = line.indexOf('#');
+                if (commentStart != -1) {
+                    line = line.substring(0, commentStart);
                 }
-            }
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        private void checkValidJavaClassName(String className) {
-            for (int i = 0; i < className.length(); ++i) {
-                char ch = className.charAt(i);
-                if (!Character.isJavaIdentifierPart(ch) && ch != '.') {
-                    throw new Error("Bad character '" + ch + "' in class name");
+                line = line.trim();
+                // Ignore empty lines.
+                if (TextUtils.isEmpty(line)) {
+                    continue;
                 }
+                String className = line;
+                checkValidJavaClassName(className);
+                return className;
+            }
+            return null;
+        } catch (Exception e) {
+            throw new Error("Couldn't read " + url, e);
+        } finally {
+            IOUtils.close(reader);
+        }
+    }
+
+    private void checkValidJavaClassName(String className) {
+        for (int i = 0; i < className.length(); ++i) {
+            char ch = className.charAt(i);
+            if (!Character.isJavaIdentifierPart(ch) && ch != '.') {
+                throw new Error("Bad character '" + ch + "' in class name");
             }
         }
     }
+
+    protected S newInstanceOfService() {
+        String className = XServiceLoader.this.mClassName;
+        try {
+            return mService.cast(mClassLoader.loadClass(className).newInstance());
+        } catch (Exception e) {
+            throw new Error("Couldn't instantiate class " + className, e);
+        }
+    }
+
 }

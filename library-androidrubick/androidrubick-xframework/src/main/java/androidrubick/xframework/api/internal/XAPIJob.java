@@ -119,7 +119,7 @@ public class XAPIJob extends XJob<XParamable, Object, XAPIStatusImpl> {
     }
 
     @Override
-    protected int getJobType() {
+    public int getJobType() {
         return UI_JOB;
     }
 }

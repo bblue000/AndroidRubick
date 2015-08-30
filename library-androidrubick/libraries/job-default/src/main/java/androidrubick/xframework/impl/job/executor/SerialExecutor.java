@@ -1,11 +1,11 @@
-package androidrubick.xframework.task.internal.executor;
+package androidrubick.xframework.impl.job.executor;
 
 import java.util.LinkedList;
 import java.util.concurrent.Executor;
 
 /**
  *
- * 有序地、线性地执行任务，真正执行的{@link java.util.concurrent.Executor}为
+ * 有序地、线性地执行任务，真正执行的{@link Executor}为
  *
  * 构造中传入的参数。
  *

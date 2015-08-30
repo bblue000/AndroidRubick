@@ -1,11 +1,11 @@
-package androidrubick.xframework.task.internal.executor;
+package androidrubick.xframework.impl.job.executor;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
- * 简单的{@link java.util.concurrent.ThreadFactory}
+ * 简单的{@link ThreadFactory}
  *
  * <p/>
  * <p/>

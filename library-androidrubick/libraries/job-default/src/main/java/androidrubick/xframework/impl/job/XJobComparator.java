@@ -1,9 +1,10 @@
-package androidrubick.xframework.task;
+package androidrubick.xframework.impl.job;
 
 import java.util.Comparator;
 
 import androidrubick.utils.NumberUtils;
 import androidrubick.utils.Objects;
+import androidrubick.xframework.task.XJob;
 import androidrubick.xframework.xbase.annotation.Configurable;
 
 /**

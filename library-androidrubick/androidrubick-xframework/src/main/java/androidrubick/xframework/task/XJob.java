@@ -5,9 +5,11 @@ import android.os.SystemClock;
 import java.util.concurrent.Executor;
 
 import androidrubick.utils.MathPreconditions;
+import androidrubick.xbase.aspi.XServiceLoader;
+import androidrubick.xframework.app.XApplication;
 import androidrubick.xframework.task.internal.AsyncTask;
 import androidrubick.xframework.task.internal.AsyncTaskStatus;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xframework.task.spi.XJobExecutorService;
 
 /**
  * 任务的基类。
@@ -20,7 +22,6 @@ import androidrubick.xframework.xbase.annotation.Configurable;
  *
  * Created by Yin Yong on 2015/5/10 0010.
  */
-@Configurable
 public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
     public static final String TAG = XJob.class.getSimpleName();
@@ -30,20 +31,13 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      *
      * 用于UI操作的任务优先级会高一点。
      */
-    protected static final int UI_JOB = 5;
+    protected static final int UI_JOB = 0x00ff0000;
     /**
      * 用于{@link #getJobType()}的返回值；默认值。
      *
      * 用于其他临时操作的任务优先级会低一点。
      */
-    protected static final int TEMP_JOB = 0;
-
-    /**
-     * {可配置}
-     */
-    static {
-        XJob.setDefaultExecutor(new XJobExecutor());
-    }
+    protected static final int TEMP_JOB = 0x00000000;
 
     public static void setDefaultExecutor(Executor exec) {
         AsyncTask.setDefaultExecutor(exec);
@@ -68,6 +62,18 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
     private long mExpireTime = 60 * 1000; // 默认一分钟
     protected XJob() {
         mCreateTime = peekTime();
+    }
+
+    /**
+     * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行
+     *
+     * @param params The parameters of the task.
+     */
+    @Override
+    public final AsyncTask<Params, Progress, Result> execute(Params... params) {
+        XServiceLoader.load(XJobExecutorService.class, XApplication.getAppClassLoader())
+            .execute(this, params);
+        return this;
     }
 
     protected void setAddToQueueTime(long timeInMillis) {
@@ -103,7 +109,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      *
      * @return 任务的创建时间
      */
-    protected long getCreateTime() {
+    public long getCreateTime() {
         return mCreateTime;
     }
 
@@ -130,7 +136,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTask<Params, P
      * @see #TEMP_JOB
      *
      */
-    protected int getJobType() {
+    public int getJobType() {
         return TEMP_JOB;
     }
 }

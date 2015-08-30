@@ -494,7 +494,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #executeOnExecutor(java.util.concurrent.Executor, Object[])
      * @see #execute(Runnable)
      */
-    public final AsyncTask<Params, Progress, Result> execute(Params... params) {
+    public AsyncTask<Params, Progress, Result> execute(Params... params) {
         return executeOnExecutor(getDefaultExecutor(), params);
     }
 
@@ -516,7 +516,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * of the data to be over-written by an older one, leading to obscure data
      * loss and stability issues.  Such changes are best
      * executed in serial; to guarantee such work is serialized regardless of
-     * platform version you can use this function with {@link androidrubick.xframework.task.internal.executor.SerialExecutor}.
+     * platform version you can use this function with a SerialExecutor.
      *
      * <p>This method must be invoked on the UI thread.
      *
