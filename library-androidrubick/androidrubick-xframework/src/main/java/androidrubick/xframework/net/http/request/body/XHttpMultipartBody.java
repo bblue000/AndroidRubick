@@ -19,7 +19,7 @@ import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xframework.net.http.request.XHttpRequestUtils;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * content type 为<code>multipart/form-data</code>的

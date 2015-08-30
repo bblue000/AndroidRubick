@@ -1,6 +1,6 @@
-package androidrubick.xframework.task;
+package androidrubick.xframework.job;
 
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * 任务的基类。

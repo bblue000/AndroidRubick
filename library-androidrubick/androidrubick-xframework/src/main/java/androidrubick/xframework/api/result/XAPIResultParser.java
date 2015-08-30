@@ -11,9 +11,8 @@ import androidrubick.io.IOUtils;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.response.XHttpResultHolder;
 import androidrubick.xframework.xbase.ByteArrayPool;
-import androidrubick.xframework.xbase.JsonParser;
 import androidrubick.xframework.xbase.PoolingByteArrayOutputStream;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * something

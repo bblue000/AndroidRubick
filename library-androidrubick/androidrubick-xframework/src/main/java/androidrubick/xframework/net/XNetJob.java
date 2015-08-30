@@ -5,7 +5,7 @@ import java.io.IOException;
 import androidrubick.io.IOUtils;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpResultHolder;
-import androidrubick.xframework.task.XJob;
+import androidrubick.xframework.job.XJob;
 
 /**
  *

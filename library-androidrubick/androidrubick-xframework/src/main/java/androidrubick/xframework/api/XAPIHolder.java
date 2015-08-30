@@ -1,6 +1,6 @@
 package androidrubick.xframework.api;
 
-import androidrubick.xframework.task.XJob;
+import androidrubick.xframework.job.XJob;
 
 /**
  *

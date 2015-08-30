@@ -1,4 +1,4 @@
-package androidrubick.xframework.task.internal;
+package androidrubick.xframework.job.internal;
 
 /**
  * Indicates the current status of the task. Each status will be set only once

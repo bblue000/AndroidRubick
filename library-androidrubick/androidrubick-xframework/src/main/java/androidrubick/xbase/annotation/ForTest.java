@@ -1,4 +1,4 @@
-package androidrubick.xframework.xbase.annotation;
+package androidrubick.xbase.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

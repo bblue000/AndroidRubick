@@ -1,4 +1,4 @@
-package androidrubick.xframework.task;
+package androidrubick.xframework.job;
 
 import android.os.SystemClock;
 
@@ -7,9 +7,9 @@ import java.util.concurrent.Executor;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.app.XApplication;
-import androidrubick.xframework.task.internal.AsyncTask;
-import androidrubick.xframework.task.internal.AsyncTaskStatus;
-import androidrubick.xframework.task.spi.XJobExecutorService;
+import androidrubick.xframework.job.internal.AsyncTask;
+import androidrubick.xframework.job.internal.AsyncTaskStatus;
+import androidrubick.xframework.job.spi.XJobExecutorService;
 
 /**
  * 任务的基类。

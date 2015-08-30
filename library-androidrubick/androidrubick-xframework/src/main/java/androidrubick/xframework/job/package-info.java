@@ -3,8 +3,8 @@
  *
  * <p/>
  *
- * {@link androidrubick.xframework.task.XJob} 模仿{@link android.os.AsyncTask}实现，
+ * {@link androidrubick.xframework.job.XJob} 模仿{@link android.os.AsyncTask}实现，
  * 并做了部分扩展。
  *
  */
-package androidrubick.xframework.task;
+package androidrubick.xframework.job;

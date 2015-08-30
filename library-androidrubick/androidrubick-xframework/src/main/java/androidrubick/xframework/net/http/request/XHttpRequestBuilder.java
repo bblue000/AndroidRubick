@@ -15,7 +15,7 @@ import androidrubick.collect.MapBuilder;
 import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * 创建一个HTTP/HTTPS请求：

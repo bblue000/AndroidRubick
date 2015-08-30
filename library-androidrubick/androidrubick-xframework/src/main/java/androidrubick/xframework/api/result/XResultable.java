@@ -1,6 +1,6 @@
 package androidrubick.xframework.api.result;
 
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * 标识对象是否可以转为结果，它并没有包含任何方法。

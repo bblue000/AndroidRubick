@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidrubick.xframework.task.internal;
+package androidrubick.xframework.job.internal;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.task.XJob;
+import androidrubick.xframework.job.XJob;
 
 /**
  * <p>AsyncTask enables proper and easy use of the UI thread. This class allows to

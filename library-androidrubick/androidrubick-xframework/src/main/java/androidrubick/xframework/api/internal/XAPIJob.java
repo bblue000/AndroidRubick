@@ -19,8 +19,8 @@ import androidrubick.xframework.api.result.XAPIResultParser;
 import androidrubick.xframework.api.result.XResultable;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpResultHolder;
-import androidrubick.xframework.task.XJob;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xframework.job.XJob;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * <p/>

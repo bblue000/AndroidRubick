@@ -1,7 +1,7 @@
-package androidrubick.xframework.task.spi;
+package androidrubick.xframework.job.spi;
 
 import androidrubick.xbase.aspi.XSpiService;
-import androidrubick.xframework.task.XJob;
+import androidrubick.xframework.job.XJob;
 
 /**
  * 执行任务的服务

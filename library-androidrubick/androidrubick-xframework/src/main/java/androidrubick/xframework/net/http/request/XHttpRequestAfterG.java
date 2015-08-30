@@ -23,7 +23,7 @@ import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpResultHolder;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * somthing

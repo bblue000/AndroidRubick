@@ -15,8 +15,8 @@ import androidrubick.collect.MapBuilder;
 import androidrubick.xframework.net.http.PredefinedBAOS;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.XHttpRequestUtils;
-import androidrubick.xframework.xbase.annotation.Configurable;
-import androidrubick.xframework.xbase.annotation.ForTest;
+import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.ForTest;
 
 /**
  * 封装POST等含有请求体的请求方法创建请求体的过程

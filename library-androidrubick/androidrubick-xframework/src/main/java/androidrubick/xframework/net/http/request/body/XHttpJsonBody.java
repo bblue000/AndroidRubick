@@ -9,7 +9,7 @@ import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.XHttpRequestUtils;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * content type 为<code>application/json</code>的

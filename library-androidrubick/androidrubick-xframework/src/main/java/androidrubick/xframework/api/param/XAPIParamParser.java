@@ -8,7 +8,7 @@ import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 import androidrubicktest.api.ParametersUtils;
 
 /**

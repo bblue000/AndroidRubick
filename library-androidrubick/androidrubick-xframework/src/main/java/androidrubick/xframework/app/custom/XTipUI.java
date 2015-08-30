@@ -3,7 +3,7 @@ package androidrubick.xframework.app.custom;
 import android.content.Context;
 
 import androidrubick.xbase.util.ToastUtils;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  *

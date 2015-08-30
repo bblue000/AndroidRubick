@@ -6,7 +6,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.utils.Reflects;
 import androidrubick.xframework.events.annotation.XEvent;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * somthing

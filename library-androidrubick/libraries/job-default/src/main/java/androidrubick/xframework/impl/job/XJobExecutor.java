@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.impl.job.executor.SimpleThreadFactory;
-import androidrubick.xframework.task.XJob;
+import androidrubick.xframework.job.XJob;
+import androidrubick.xframework.job.executor.SimpleThreadFactory;
 import androidrubick.xframework.xbase.TimeSlots;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  *

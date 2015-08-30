@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Executor;
 
-import androidrubick.xframework.task.XJob;
+import androidrubick.xframework.job.XJob;
 
 /**
  * something

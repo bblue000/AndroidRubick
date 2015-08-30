@@ -2,7 +2,7 @@ package androidrubick.xframework.net.http;
 
 import androidrubick.text.Charsets;
 import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
-import androidrubick.xframework.xbase.annotation.Configurable;
+import androidrubick.xbase.annotation.Configurable;
 
 /**
  * 提供HTTP请求相关的操作

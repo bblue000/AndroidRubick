@@ -1,7 +1,7 @@
 package androidrubick.xframework.impl.job;
 
-import androidrubick.xframework.task.XJob;
-import androidrubick.xframework.task.spi.XJobExecutorService;
+import androidrubick.xframework.job.XJob;
+import androidrubick.xframework.job.spi.XJobExecutorService;
 
 /**
  * <p/>
