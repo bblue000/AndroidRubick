@@ -1,4 +1,4 @@
-package androidrubick.xframework.xbase;
+package androidrubick.xbase.util;
 
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xbase.util.spi.XJsonParserService;

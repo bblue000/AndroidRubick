@@ -7,7 +7,7 @@ package androidrubick.xframework.cache;
  *
  * Created by Yin Yong on 2015/5/17 0017.
  */
-public abstract class AbstractCache<K, V> implements Cache<K, V> {
+public abstract class AbstractCache<K, V> extends Cache<K, V> {
 
     public AbstractCache() {
         super();

@@ -1,4 +1,4 @@
-package androidrubick.xframework.xbase;
+package androidrubick.xbase.util;
 
 /**
  * 定义

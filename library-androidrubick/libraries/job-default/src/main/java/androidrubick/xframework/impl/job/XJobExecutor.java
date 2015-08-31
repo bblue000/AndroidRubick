@@ -13,7 +13,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.concurrent.SimpleThreadFactory;
 import androidrubick.xframework.job.XJob;
 import androidrubick.xframework.job.spi.XJobExecutorService;
-import androidrubick.xframework.xbase.TimeSlots;
+import androidrubick.xbase.util.TimeSlots;
 import androidrubick.xbase.annotation.Configurable;
 
 /**

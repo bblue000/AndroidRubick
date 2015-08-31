@@ -1,7 +1,5 @@
 package androidrubicktest;
 
-import androidrubick.xframework.xbase.JsonParser;
-
 /**
  * something
  * <p/>
