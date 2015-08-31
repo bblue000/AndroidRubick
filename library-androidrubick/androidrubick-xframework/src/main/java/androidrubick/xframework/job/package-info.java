@@ -25,6 +25,48 @@
  *     job.execute(param);
  * </pre>
  *
+ * <p/>
+ *
+ * 一个可以：
+ * <pre>
+ *     public class SimpleJobRetryWrapper<Params, Progress, Result> extends XJob<Params, Progress, Result> {
+ *         private XJob<Params, Progress, Result> mAnother;
+ *         private RetryPolicy mRetryPolicy;
+ *
+ *         public SimpleJobRetryWrapper(XJob<Params, Progress, Result> another, RetryPolicy retryPolicy) {
+ *             mAnother = Preconditions.checkNotNull(another, "raw job is null");
+ *             mRetryPolicy = Preconditions.checkNotNull(retryPolicy, "retry policy is null");
+ *         }
+ *
+ *         public final XJob<Params, Progress, Result> getRawJob() {
+ *             return mAnother;
+ *         }
+ *
+ *         public final RetryPolicy getRetryPolicy() {
+ *             return mRetryPolicy;
+ *         }
+ *
+ *         \@Override
+ *         protected Result doInBackground(Params... params) {
+ *             Result result;
+ *             while (true) {
+ *                 try {
+ *                     result = mAnother.doInBackground(params);
+ *                 } catch (Throwable e) {
+ *                     try {
+ *                         mRetryPolicy.retry(e);
+ *                         continue;
+ *                     } catch (Throwable cannotRetryEx) {
+ *                         throw Exceptions.toRuntime(cannotRetryEx);
+ *                     }
+ *                 }
+ *                 break;
+ *             }
+ *             return result;
+ *         }
+ *     }
+ * </pre>
+ *
  *
  * <p/><p/>
  *

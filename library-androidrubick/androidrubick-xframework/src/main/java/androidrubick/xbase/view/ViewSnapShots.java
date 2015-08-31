@@ -10,7 +10,7 @@ import android.webkit.WebView;
 import java.lang.reflect.Method;
 
 /**
- * somthing
+ * 截屏/控件视图的工具类
  *
  * <p/>
  *

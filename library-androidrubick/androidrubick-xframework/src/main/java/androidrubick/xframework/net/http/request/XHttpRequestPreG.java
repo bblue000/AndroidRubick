@@ -19,6 +19,7 @@ import java.util.Map;
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
+import androidrubick.net.HttpPatch;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
@@ -92,7 +93,7 @@ public class XHttpRequestPreG extends XHttpRequest {
                 request = new HttpTrace(getUrl());
                 break;
             case PATCH: {
-                request = new XHttpPatch(getUrl());
+                request = new HttpPatch(getUrl());
                 setEntityIfNonEmptyBody(request);
                 break;
             }

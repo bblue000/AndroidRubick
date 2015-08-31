@@ -1,4 +1,4 @@
-package androidrubick.xframework.net.http.request;
+package androidrubick.net;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 
@@ -13,15 +13,15 @@ import java.net.URI;
  *
  * @since 1.0
  */
-public class XHttpPatch extends HttpEntityEnclosingRequestBase {
+public class HttpPatch extends HttpEntityEnclosingRequestBase {
 
     public final static String METHOD_NAME = "PATCH";
 
-    public XHttpPatch() {
+    public HttpPatch() {
         super();
     }
 
-    public XHttpPatch(final URI uri) {
+    public HttpPatch(final URI uri) {
         super();
         setURI(uri);
     }
@@ -29,7 +29,7 @@ public class XHttpPatch extends HttpEntityEnclosingRequestBase {
     /**
      * @throws IllegalArgumentException if the uri is invalid.
      */
-    public XHttpPatch(final String uri) {
+    public HttpPatch(final String uri) {
         super();
         setURI(URI.create(uri));
     }
