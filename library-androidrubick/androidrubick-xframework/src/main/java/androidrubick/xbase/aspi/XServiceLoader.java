@@ -60,7 +60,7 @@ import androidrubick.utils.Objects;
  *
  * Created by Yin Yong on 2015/8/26.
  */
-public class XServiceLoader<S> {
+public class XServiceLoader<S extends XSpiService> {
 
     /**
      * Constructs a service loader, using the current thread's context class loader.
@@ -68,7 +68,7 @@ public class XServiceLoader<S> {
      * @param service the service class or interface
      * @return a new XServiceLoader
      */
-    public static <S>S load(Class<S> service) {
+    public static <S extends XSpiService>S load(Class<S> service) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         return findFromCacheOrCreate(service, classLoader).get();
     }
@@ -81,15 +81,15 @@ public class XServiceLoader<S> {
      * @param classLoader the class loader
      * @return a new XServiceLoader
      */
-    public static <S>S load(Class<S> service, ClassLoader classLoader) {
+    public static <S extends XSpiService>S load(Class<S> service, ClassLoader classLoader) {
         classLoader = Objects.getOr(classLoader, ClassLoader.getSystemClassLoader());
         return findFromCacheOrCreate(service, classLoader).get();
     }
 
-    private static <S>XServiceLoader<S> findFromCacheOrCreate(Class<S> service, ClassLoader classLoader) {
+    private static <S extends XSpiService>XServiceLoader<S> findFromCacheOrCreate(Class<S> service, ClassLoader classLoader) {
         synchronized (sCaches) {
             if (!CollectionsCompat.isEmpty(sCaches)) {
-                for (Map.Entry<XServiceLoader, Object> entry : sCaches.entrySet()) {
+                for (Map.Entry<XServiceLoader, XSpiService> entry : sCaches.entrySet()) {
                     XServiceLoader key = entry.getKey();
                     if (Objects.equals(key.mService, service)
                             && Objects.equals(key.mClassLoader, classLoader)) {
@@ -104,8 +104,22 @@ public class XServiceLoader<S> {
         }
     }
 
-    private static WeakHashMap<XServiceLoader, Object> sCaches
-            = new WeakHashMap<XServiceLoader, Object>(8);
+    /**
+     * 当手机或者应用内存不足时，尝试调用，让缓存的服务清理各自的缓存
+     */
+    public static void trimMemory() {
+        synchronized (sCaches) {
+            if (!CollectionsCompat.isEmpty(sCaches)) {
+                for (Map.Entry<XServiceLoader, XSpiService> entry : sCaches.entrySet()) {
+                    XSpiService value = entry.getValue();
+                    value.trimMemory();
+                }
+            }
+        }
+    }
+
+    private static WeakHashMap<XServiceLoader, XSpiService> sCaches
+            = new WeakHashMap<XServiceLoader, XSpiService>(8);
 
     private String mClassName;
     private final Class<S> mService;

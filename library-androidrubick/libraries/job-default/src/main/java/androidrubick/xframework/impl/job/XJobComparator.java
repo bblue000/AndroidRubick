@@ -32,8 +32,8 @@ public class XJobComparator implements Comparator<Runnable> {
 
     @Override
     public int compare(Runnable lhsRun, Runnable rhsRun) {
-        XJob lhs = XJob.asAsyncTask(lhsRun);
-        XJob rhs = XJob.asAsyncTask(rhsRun);
+        XJob lhs = XJob.asXJob(lhsRun);
+        XJob rhs = XJob.asXJob(rhsRun);
         boolean islNull = Objects.isNull(lhs);
         boolean isrNull = Objects.isNull(rhs);
         if (islNull || isrNull) {

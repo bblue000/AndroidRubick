@@ -15,6 +15,7 @@ import java.util.List;
 
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
+import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.app.ui.XActivityController;
 
 /**
@@ -83,6 +84,7 @@ public class XApplication extends Application {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+        XServiceLoader.trimMemory();
     }
 
     @Override

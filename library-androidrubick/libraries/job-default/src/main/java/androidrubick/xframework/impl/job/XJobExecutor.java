@@ -10,8 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
+import androidrubick.utils.concurrent.SimpleThreadFactory;
 import androidrubick.xframework.job.XJob;
-import androidrubick.xframework.job.executor.SimpleThreadFactory;
+import androidrubick.xframework.job.spi.XJobExecutorService;
 import androidrubick.xframework.xbase.TimeSlots;
 import androidrubick.xbase.annotation.Configurable;
 
@@ -30,7 +31,8 @@ import androidrubick.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
+public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler,
+        XJobExecutorService{
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -42,7 +44,7 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
     @Configurable
     private static final int MAX_QUEUE_SIZE = 32;
 
-    /*package*/ XJobExecutor() {
+    public XJobExecutor() {
         // TODO blocking Queue最好自行实现，排序、清除无用项更快捷
         super(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, KEEP_ALIVE_TIMEUNIT,
                 createBlockingQueue(), createThreadFactory());
@@ -73,7 +75,7 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
             Iterator<Runnable> iterator = blockingQueue.iterator();
             while (iterator.hasNext()) {
                 Runnable rawRun = iterator.next();
-                XJob job = XJob.asAsyncTask(rawRun);
+                XJob job = XJob.asXJob(rawRun);
                 if (null != job && job.isExpired()) {
                     iterator.remove();
                 }
@@ -94,5 +96,15 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
         clearExpiredJobs();
         executor.execute(r);
+    }
+
+    @Override
+    public <Params, Progress, Result> void execute(XJob<Params, Progress, Result> job, Params... params) {
+        job.executeOnExecutor(this, params);
+    }
+
+    @Override
+    public void trimMemory() {
+        clearExpiredJobs();
     }
 }

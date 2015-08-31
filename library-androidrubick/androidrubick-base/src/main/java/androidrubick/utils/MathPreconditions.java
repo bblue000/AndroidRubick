@@ -84,5 +84,12 @@ public class MathPreconditions {
         }
     }
 
+    public static int checkNoLessThanMin(String role, int x, int min) {
+        if (x < min) {
+            throw new IllegalArgumentException(role + " (" + x + ") must be >= " + min);
+        }
+        return x;
+    }
+
     private MathPreconditions() {}
 }

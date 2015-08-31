@@ -7,8 +7,6 @@ import java.util.concurrent.Executor;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.app.XApplication;
-import androidrubick.xframework.job.internal.AsyncTaskCompat;
-import androidrubick.xframework.job.internal.AsyncTaskStatus;
 import androidrubick.xframework.job.spi.XJobExecutorService;
 
 /**
@@ -27,17 +25,41 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
     public static final String TAG = XJob.class.getSimpleName();
 
     /**
+     * 子类在定义任务类型时，控制在{@link #FIRST_JOB_TYPE} 和
+     * {@link #LAST_JOB_TYPE} 之间
+     */
+    public static final int FIRST_JOB_TYPE = 0x00000000;
+
+    /**
+     * 子类在定义任务类型时，控制在{@link #FIRST_JOB_TYPE} 和
+     * {@link #LAST_JOB_TYPE} 之间
+     */
+    public static final int LAST_JOB_TYPE = 0x00ffffff;
+
+    /**
      * 用于{@link #getJobType()}的返回值；
      *
      * 用于UI操作的任务优先级会高一点。
      */
-    protected static final int UI_JOB = 0x00ff0000;
+    public static final int UI_JOB = 0x00ff0000;
     /**
      * 用于{@link #getJobType()}的返回值；默认值。
      *
      * 用于其他临时操作的任务优先级会低一点。
      */
-    protected static final int TEMP_JOB = 0x00000000;
+    public static final int TEMP_JOB = FIRST_JOB_TYPE;
+
+    /**
+     * 因为{@link XJob}对外不是一个{@link Runnable}，
+     *
+     * 如果在{@link java.util.concurrent.ThreadPoolExecutor}中需要对任务进行优先级排序，
+     *
+     * 将其通过这种方式转换出来。
+     *
+     */
+    public static <T extends XJob>T asXJob(Runnable run) {
+        return AsyncTaskCompat.asAsyncTask(run);
+    }
 
     public static void setDefaultExecutor(Executor exec) {
         AsyncTaskCompat.setDefaultExecutor(exec);
@@ -57,12 +79,27 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
         return SystemClock.elapsedRealtime();
     }
 
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // 内部实现
     private long mCreateTime;
     private long mAddToQueueTime;
     private long mExpireTime = 60 * 1000; // 默认一分钟
     protected XJob() {
         mCreateTime = peekTime();
     }
+
+    @Override
+    protected abstract Result doInBackground(Params... params) ;
+
+    @Override
+    protected void onPreExecute() { }
+
+    @Override
+    protected void onProgressUpdate(Progress... values) { }
+
+    @Override
+    protected void onPostExecute(Result result) { }
 
     /**
      * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行
@@ -124,7 +161,7 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
      * 判断任务是否已经结束（取消或者执行结束）
      */
     public boolean isFinished() {
-        return getStatus() == AsyncTaskStatus.FINISHED;
+        return getStatus() == XJobStatus.FINISHED;
     }
 
     /**

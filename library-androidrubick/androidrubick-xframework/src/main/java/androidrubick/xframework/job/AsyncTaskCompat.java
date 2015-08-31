@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidrubick.xframework.job.internal;
+package androidrubick.xframework.job;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -32,8 +32,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidrubick.utils.FrameworkLog;
+import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.job.XJob;
 
 /**
  * <p>AsyncTask enables proper and easy use of the UI thread. This class allows to
@@ -178,7 +178,7 @@ import androidrubick.xframework.job.XJob;
  * {@link #executeOnExecutor(java.util.concurrent.Executor, Object[])} with
  * {@link java.util.concurrent.Executor}.</p>
  */
-public abstract class AsyncTaskCompat<Params, Progress, Result> {
+/*package*/ abstract class AsyncTaskCompat<Params, Progress, Result> {
     private static final String LOG_TAG = "AsyncTask";
 
     private static final int MESSAGE_POST_RESULT = 0x1;
@@ -190,7 +190,7 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
     private final WorkerRunnable<Params, Result> mWorker;
     private final FutureTask<Result> mFuture;
 
-    private volatile AsyncTaskStatus mStatus = AsyncTaskStatus.PENDING;
+    private volatile XJobStatus mStatus = XJobStatus.PENDING;
 
     private final AtomicBoolean mCancelled = new AtomicBoolean();
     private final AtomicBoolean mTaskInvoked = new AtomicBoolean();
@@ -221,9 +221,9 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
      * 将其通过这种方式转换出来。
      *
      */
-    public static <T extends AsyncTaskCompat>T asAsyncTask(Runnable run) {
+    protected static <T extends AsyncTaskCompat>T asAsyncTask(Runnable run) {
         if (run instanceof LocalFutureTask) {
-            return (T) ((LocalFutureTask) run).owner;
+            return (T) Objects.getAs(run, LocalFutureTask.class).owner;
         }
         return null;
     }
@@ -289,7 +289,7 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
      *
      * @return The current status.
      */
-    public final AsyncTaskStatus getStatus() {
+    public final XJobStatus getStatus() {
         return mStatus;
     }
 
@@ -489,7 +489,7 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
      * @return This instance of AsyncTask.
      *
      * @throws IllegalStateException If {@link #getStatus()} returns either
-     *         {@link AsyncTaskStatus#RUNNING} or {@link AsyncTaskStatus#FINISHED}.
+     *         {@link XJobStatus#RUNNING} or {@link XJobStatus#FINISHED}.
      *
      * @see #executeOnExecutor(java.util.concurrent.Executor, Object[])
      * @see #execute(Runnable)
@@ -527,13 +527,13 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
      * @return This instance of AsyncTask.
      *
      * @throws IllegalStateException If {@link #getStatus()} returns either
-     *         {@link AsyncTaskStatus#RUNNING} or {@link AsyncTaskStatus#FINISHED}.
+     *         {@link XJobStatus#RUNNING} or {@link XJobStatus#FINISHED}.
      *
      * @see #execute(Object[])
      */
     public final AsyncTaskCompat<Params, Progress, Result> executeOnExecutor(Executor exec,
                                                                        Params... params) {
-        if (mStatus != AsyncTaskStatus.PENDING) {
+        if (mStatus != XJobStatus.PENDING) {
             switch (mStatus) {
                 case RUNNING:
                     throw new IllegalStateException("Cannot execute task:"
@@ -545,7 +545,7 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
             }
         }
 
-        mStatus = AsyncTaskStatus.RUNNING;
+        mStatus = XJobStatus.RUNNING;
 
         onPreExecute();
 
@@ -594,7 +594,7 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
         } else {
             onPostExecute(result);
         }
-        mStatus = AsyncTaskStatus.FINISHED;
+        mStatus = XJobStatus.FINISHED;
     }
 
     private static class InternalHandler extends Handler {

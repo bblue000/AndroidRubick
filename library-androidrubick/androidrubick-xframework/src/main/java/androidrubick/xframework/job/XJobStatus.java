@@ -1,4 +1,4 @@
-package androidrubick.xframework.job.internal;
+package androidrubick.xframework.job;
 
 /**
  * Indicates the current status of the task. Each status will be set only once
@@ -10,7 +10,7 @@ package androidrubick.xframework.job.internal;
  *
  * @since 1.0
  */
-public enum AsyncTaskStatus {
+public enum XJobStatus {
 
     /**
      * Indicates that the task has not been executed yet.

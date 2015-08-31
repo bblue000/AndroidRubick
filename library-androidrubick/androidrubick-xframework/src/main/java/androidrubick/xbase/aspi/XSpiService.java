@@ -10,6 +10,9 @@ package androidrubick.xbase.aspi;
  */
 public interface XSpiService {
 
+    /**
+     * 当应用运行在低内存状态下时，将由框架调用，各个服务尝试减少自己的缓存，以便更好地运行。
+     */
     void trimMemory();
 
 }
