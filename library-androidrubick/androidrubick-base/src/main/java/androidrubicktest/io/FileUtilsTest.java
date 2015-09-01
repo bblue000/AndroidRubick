@@ -28,7 +28,17 @@ public class FileUtilsTest {
 //        testSaveToFile();
 //        testCopyToFile();
 //        copyDir();
-        unzip();
+//        unzip();
+        calFir();
+
+        System.out.println(String.format("%s", 100));
+    }
+
+    private static void calFir() {
+        int result[] = FileUtils.calculateFileAndDirCount(new File("D:\\GitHub\\myDocs"), true, false);
+        System.out.println(" calFir ? " + result[0]);
+        System.out.println(" calFir ? " + result[1]);
+        System.out.println(" calFir ? " + result[2]);
     }
 
     private static void unzip() throws IOException {

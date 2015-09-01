@@ -9,7 +9,7 @@ import androidrubick.utils.Preconditions;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
 
 /**
- * somthing
+ * 限制缓存文件总大小的文件缓存抽象类
  *
  * <p/>
  *
@@ -17,29 +17,24 @@ import androidrubick.xframework.cache.LimitedMeasurableCache;
  *
  * @since 1.0
  */
-/*package*/ class DiskBasedCacheSizeCache<K, V> extends DiskBasedCache<K, V> {
+public abstract class DiskBasedCacheSizeCache<K, V> extends DiskBasedCache<K, V> {
 
-    private File mRootPath;
     public DiskBasedCacheSizeCache(String rootPath, int maxMeasureSize) {
-        super(maxMeasureSize);
-        Preconditions.checkArgument(!Strings.isEmpty(rootPath));
-        mRootPath = new File(rootPath);
+        super(rootPath, maxMeasureSize);
     }
 
     public DiskBasedCacheSizeCache(File rootPath, int maxMeasureSize) {
-        super(maxMeasureSize);
-        mRootPath = Preconditions.checkNotNull(rootPath);
+        super(rootPath, maxMeasureSize);
     }
 
     @Override
     protected int sizeOf(K key, V value) {
-
-        return FileUtils.caculateFileSize(keyToFile(key, mRootPath));
+        return (int) FileUtils.caculateFileSize(keyToFile(key, getRootPath()));
     }
 
     @Override
     protected void trimToSize(int maxMeasureSize) {
-        long sizeOfPath = FileUtils.caculateFileSize(mRootPath);
+        long sizeOfPath = FileUtils.caculateFileSize(getRootPath());
         while (true) {
             K key;
             V value;
@@ -78,14 +73,4 @@ import androidrubick.xframework.cache.LimitedMeasurableCache;
         }
     }
 
-    /**
-     *
-     * @param key
-     * @return
-     */
-    protected abstract File keyToFile(K key, File rootPath) ;
-
-    protected abstract V fileToValue(File file);
-
-    protected abstract boolean valueToFile(V value, File file);
 }

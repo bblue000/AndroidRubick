@@ -19,13 +19,15 @@ package androidrubick.xframework.xbase;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import androidrubick.xframework.cache.mem.ByteArrayPool;
+
 /**
  * A variation of {@link java.io.ByteArrayOutputStream} that uses a pool of byte[] buffers instead
  * of always allocating them fresh, saving on heap churn.
  */
 public class PoolingByteArrayOutputStream extends ByteArrayOutputStream {
     /**
-     * If the {@link #PoolingByteArrayOutputStream(ByteArrayPool)} constructor is called, this is
+     * If the {@link #PoolingByteArrayOutputStream(androidrubick.xframework.cache.mem.ByteArrayPool)} constructor is called, this is
      * the default size to which the underlying byte array is initialized.
      */
     private static final int DEFAULT_SIZE = 256;

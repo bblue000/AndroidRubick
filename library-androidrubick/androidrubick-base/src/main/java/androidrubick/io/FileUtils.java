@@ -270,7 +270,7 @@ public class FileUtils {
         if (file.isDirectory()) {
             long size = 0L;
             File[] childFile = file.listFiles();
-            if (null != childFile && childFile.length > 0) {
+            if (!ArraysCompat.isEmpty(childFile)) {
                 for (File cFile : childFile) {
                     size += caculateFileSize(cFile);
                 }
@@ -278,6 +278,46 @@ public class FileUtils {
             return size;
         } else {
             return file.length();
+        }
+    }
+
+    /**
+     * 计算指定文件夹中的文件和文件夹的数量；
+     *
+     * <p/>
+     *
+     * 返回长度为3，数组第一项为文件数，第二项为文件夹数，第三项为总数目
+     *
+     * @param recursive 是否递归地计算子文件夹
+     * @param includeHidden 是否包括隐藏文件/文件夹
+     *
+     * @since 1.0
+     */
+    public static int[] calculateFileAndDirCount(File path, boolean recursive, boolean includeHidden) {
+        int[] target = new int[3];
+        calculateFileAndDirCount(path, target, recursive, includeHidden);
+        target[2] = target[0] + target[1];
+        return target;
+    }
+
+    private static void calculateFileAndDirCount(File path, int target[], boolean recursive, boolean includeHidden) {
+        if (path.isDirectory()) {
+            File[] childFile = path.listFiles();
+            if (ArraysCompat.isEmpty(childFile)) return;
+
+            for (File cFile : childFile) {
+                // 如果不需要计算隐藏文件，直接继续循环
+                if (cFile.isHidden() && !includeHidden) continue;
+
+                if (cFile.isDirectory()) {
+                    target[1] += 1;
+                    // 如果不需要递归调用，则直接继续循环
+                    if (!recursive) continue;
+                }
+                calculateFileAndDirCount(cFile, target, recursive, includeHidden);
+            }
+        } else if (path.isFile()) {
+            target[0] += 1;
         }
     }
 

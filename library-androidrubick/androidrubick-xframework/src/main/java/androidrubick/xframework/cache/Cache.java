@@ -1,7 +1,15 @@
 package androidrubick.xframework.cache;
 
+import java.util.Map;
+
 /**
- * base interface of cache module
+ * base interface of cache module.
+ *
+ * <p>
+ *     This class does not allow null to be used as a key or value.
+ *     A return value of null from {@link #get}, {@link #put} or {@link #remove} is unambiguous:
+ *     the key was not in the cache.
+ * </p>
  *
  * <p/>
  *
@@ -9,7 +17,13 @@ package androidrubick.xframework.cache;
  *
  * @since 1.0
  */
-public abstract interface Cache<K, V> {
+public abstract interface Cache<K, V> extends ICacheInterface {
+
+    /**
+     * {@code Cache.Entry} is a key/value mapping contained in a {@code Map}.
+     */
+    public static interface Entry<K, V> extends Map.Entry<K, V> {
+    }
 
     /**
      * Returns the value associated with {@code key} in this cache, or {@code null} if there is no

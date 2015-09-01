@@ -10,7 +10,7 @@ import java.io.IOException;
 import androidrubick.io.IOUtils;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.response.XHttpResultHolder;
-import androidrubick.xframework.xbase.ByteArrayPool;
+import androidrubick.xframework.cache.mem.ByteArrayPool;
 import androidrubick.xframework.xbase.PoolingByteArrayOutputStream;
 import androidrubick.xbase.annotation.Configurable;
 

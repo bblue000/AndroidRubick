@@ -1,4 +1,4 @@
-package androidrubick.utils;
+package androidrubick.xbase.util;
 
 /**
  * 供本framework统一使用的内部LOG

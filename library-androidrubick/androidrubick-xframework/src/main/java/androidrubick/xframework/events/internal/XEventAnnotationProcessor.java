@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.utils.Reflects;
+import androidrubick.reflect.Reflects;
 import androidrubick.xframework.events.annotation.XEvent;
 import androidrubick.xbase.annotation.Configurable;
 

@@ -5,11 +5,17 @@ import java.util.Map;
 
 import androidrubick.io.FileUtils;
 import androidrubick.text.Strings;
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Preconditions;
+import androidrubick.xframework.cache.AbstractCache;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
 
 /**
- * somthing
+ * 文件缓存抽象类。
+ *
+ * <p/>
+ *
+ * 文件的新增、删除或是加载操作都属于耗时操作，建议不要在UI线程中调用相关方法。
  *
  * <p/>
  *
@@ -17,15 +23,7 @@ import androidrubick.xframework.cache.LimitedMeasurableCache;
  *
  * @since 1.0
  */
-public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
-
-    public static <K, V>DiskBasedCache<K, V> byMaxFileCount(String rootPath, int maxFileCount) {
-
-    }
-
-    public static <K, V>DiskBasedCache<K, V> byMaxCacheSize(String rootPath, int maxMeasureSize) {
-        return new DiskBasedCacheSizeCache(rootPath, maxMeasureSize);
-    }
+public abstract class DiskBasedCache<K, V> extends AbstractCache<K, V> {
 
     private File mRootPath;
     protected DiskBasedCache(String rootPath, int maxMeasureSize) {
@@ -40,15 +38,23 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
     }
 
     /**
-     *
+     * 获取该文件缓存根目录
      */
     public final File getRootPath() {
         return mRootPath;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p/>
+     *
+     * here is to load data from file
+     *
+     */
     @Override
     public V get(K key) {
-        return fileToValue(keyToFile(key, mRootPath));
+        return fileToValue(keyToFile(key, getRootPath()));
     }
 
     /**
@@ -58,18 +64,22 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      */
     @Override
     public V remove(K key) {
-        FileUtils.deleteFile(keyToFile(key, mRootPath), true, null);
+        FileUtils.deleteFile(keyToFile(key, getRootPath()), true, null);
         return null;
     }
 
     /**
      * {@inheritDoc}
      *
+     * <p/>
+     *
+     * 覆盖文件
+     *
      * @return always return null
      */
     @Override
     public V put(K key, V value) {
-        File file = keyToFile(key, mRootPath);
+        File file = keyToFile(key, getRootPath());
         valueToFile(value, file);
         return null;
     }
@@ -83,7 +93,16 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      */
     @Override
     public void clear() {
-        FileUtils.deleteFile(mRootPath, false, null);
+        FileUtils.deleteFile(getRootPath(), false, null);
+    }
+
+    /**
+     * 缓存在的文件个数
+     */
+    @Override
+    public int size() {
+        int target[] = FileUtils.calculateFileAndDirCount(getRootPath(), true, true);
+        return target[0];
     }
 
     @Override
@@ -92,16 +111,18 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
     @Override
     protected void trimToSize(int maxMeasureSize) {
         long sizeOfPath = FileUtils.caculateFileSize(mRootPath);
+        final int measuredSize = measuredSize();
+        final int size = size();
         while (true) {
             K key;
             V value;
             synchronized (this) {
-                if (size < 0 || (map.isEmpty() && size != 0)) {
+                if (measuredSize < 0 || (size == 0 && measuredSize != 0)) {
                     throw new IllegalStateException(getClass().getName()
                             + ".sizeOf() is reporting inconsistent results!");
                 }
 
-                if (size <= maxMeasureSize) {
+                if (measuredSize <= maxMeasureSize) {
                     break;
                 }
 
