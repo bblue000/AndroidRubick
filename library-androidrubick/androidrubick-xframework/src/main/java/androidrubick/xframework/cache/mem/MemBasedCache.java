@@ -1,11 +1,11 @@
-package androidrubick.xframework.cache;
+package androidrubick.xframework.cache.mem;
 
 import java.util.Map;
 
 import androidrubick.io.FileUtils;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.cache.stats.CacheStats;
+import androidrubick.xframework.cache.LimitedMeasurableCache;
 
 /**
  * {@inheritDoc}
@@ -18,9 +18,8 @@ import androidrubick.xframework.cache.stats.CacheStats;
  *
  * Created by Yin Yong on 2015/5/17 0017.
  */
-public abstract class AbstractCache<K, V> implements Cache<K, V> {
+public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
-    private int mMaxMeasureSize;
     private int mMeasuredSize;
 
     // inner state information
@@ -34,29 +33,8 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      *     the maximum number of entries in the cache. For all other caches,
      *     this is the maximum sum of the sizes of the entries in this cache.
      */
-    protected AbstractCache(int maxMeasureSize) {
-        mMaxMeasureSize = MathPreconditions.checkPositive("maxMeasureSize", maxMeasureSize);
-    }
-
-    /**
-     * For caches that do not override {@link #sizeOf}, this returns the maximum
-     * number of entries in the cache. For all other caches, this returns the
-     * maximum sum of the sizes of the entries in this cache.
-     */
-    public synchronized final int maxMeasureSize() {
-        return mMaxMeasureSize;
-    }
-
-    /**
-     * Sets the maximum measure size of the cache.
-     *
-     * @param maxMeasureSize The new maximum measure size.
-     */
-    public void resize(int maxMeasureSize) {
-        synchronized (this) {
-            mMaxMeasureSize = MathPreconditions.checkPositive("maxMeasureSize", maxMeasureSize);
-        }
-        trimToSize(maxMeasureSize);
+    protected MemBasedCache(int maxMeasureSize) {
+        super(maxMeasureSize);
     }
 
     @Override
@@ -235,6 +213,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
     protected abstract V removeCacheInner(K key);
 
+    /**
+     * evict a cache entry
+     */
     protected abstract Map.Entry<K, V> evictCacheInner();
 
     /**
@@ -286,11 +267,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         stats.createCount = mCreateCount;
         stats.evictionCount = mEvictionCount;
         return true;
-    }
-
-    @Override
-    public Cache<K, V> asCache() {
-        return this;
     }
 
     @Override public synchronized String toString() {

@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache.stats;
+package androidrubick.xframework.cache.mem;
 
 /**
  *
@@ -28,7 +28,7 @@ public class CacheStats {
     public int putCount;
 
     /**
-     * Returns the number of times {@link androidrubick.xframework.cache.AbstractCache#createCache(Object)} returned a value.
+     * Returns the number of times {@link androidrubick.xframework.cache.mem.MemBasedCache#createCache(Object)} returned a value.
      */
     public int createCount;
 

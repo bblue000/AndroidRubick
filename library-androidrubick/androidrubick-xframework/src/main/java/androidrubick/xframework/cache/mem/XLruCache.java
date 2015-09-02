@@ -2,10 +2,14 @@ package androidrubick.xframework.cache.mem;
 
 import java.util.Map;
 
-import androidrubick.xframework.cache.AbstractCache;
-
 /**
- * somthing
+ * 基于“LRU”的缓存。
+ *
+ * <p/>
+ *
+ * 使用该类，继承时，需要注意的方法：
+ * <br/>
+ * {@link #sizeOf(Object, Object)} 为我们提供每个元素的大小；
  *
  * <p/>
  *
@@ -13,7 +17,7 @@ import androidrubick.xframework.cache.AbstractCache;
  *
  * @since 1.0
  */
-public abstract class XLruCache<K, V> extends AbstractCache<K, V> {
+public abstract class XLruCache<K, V> extends MemBasedCache<K, V> {
 
     /**
      * @param maxMeasureSize for caches that do not override {@link #sizeOf}, this is

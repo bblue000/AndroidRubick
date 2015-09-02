@@ -8,7 +8,7 @@ package androidrubick.xframework.cache;
  *
  * Created by Yin Yong on 2015/9/1.
  */
-public class NoCache implements Cache {
+public final class NoCache implements Cache {
     @Override
     public Object get(Object key) {
         return null;

@@ -5,9 +5,7 @@ import java.util.Map;
 
 import androidrubick.io.FileUtils;
 import androidrubick.text.Strings;
-import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.cache.AbstractCache;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
 
 /**
@@ -23,7 +21,7 @@ import androidrubick.xframework.cache.LimitedMeasurableCache;
  *
  * @since 1.0
  */
-public abstract class DiskBasedCache<K, V> extends AbstractCache<K, V> {
+public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
     private File mRootPath;
     protected DiskBasedCache(String rootPath, int maxMeasureSize) {
@@ -97,7 +95,7 @@ public abstract class DiskBasedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * 缓存在的文件个数
+     * 缓存的文件个数
      */
     @Override
     public int size() {
@@ -152,13 +150,18 @@ public abstract class DiskBasedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     *
-     * @param key
-     * @return
+     * 由key转为相应的文件对象
      */
     protected abstract File keyToFile(K key, File rootPath) ;
 
+    /**
+     * 由文件转为相应的值
+     */
     protected abstract V fileToValue(File file);
 
+    /**
+     * 将值存储到文件
+     */
     protected abstract boolean valueToFile(V value, File file);
+
 }
