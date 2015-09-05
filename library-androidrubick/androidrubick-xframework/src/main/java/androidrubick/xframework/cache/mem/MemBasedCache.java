@@ -2,7 +2,6 @@ package androidrubick.xframework.cache.mem;
 
 import java.util.Map;
 
-import androidrubick.io.FileUtils;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Preconditions;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
@@ -207,16 +206,16 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         return MathPreconditions.checkNonNegative("size of " + key, result);
     }
 
-    protected abstract V getCacheInner(K key);
+    /*package*/ abstract V getCacheInner(K key);
 
-    protected abstract V putCacheInner(K key, V value);
+    /*package*/ abstract V putCacheInner(K key, V value);
 
-    protected abstract V removeCacheInner(K key);
+    /*package*/ abstract V removeCacheInner(K key);
 
     /**
      * evict a cache entry
      */
-    protected abstract Map.Entry<K, V> evictCacheInner();
+    /*package*/ abstract Map.Entry<K, V> evictCacheInner();
 
     /**
      * Called after a cache miss to compute a value for the corresponding key.
@@ -267,9 +266,5 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         stats.createCount = mCreateCount;
         stats.evictionCount = mEvictionCount;
         return true;
-    }
-
-    @Override public synchronized String toString() {
-        return String.format("Cache[size=%d, measuredSize=%s]", size(), FileUtils.calFileSizeString(measuredSize()));
     }
 }

@@ -49,4 +49,9 @@ public abstract class LimitedMeasurableCache<K, V> extends MeasurableCache<K, V>
      *     to evict even 0-sized elements.
      */
     protected abstract void trimToSize(int maxMeasureSize) ;
+
+    @Override public synchronized String toString() {
+        return String.format("Cache[size=%d, measuredSize=%d, maxMeasuredSize=%d]",
+                size(), measuredSize(), maxMeasureSize());
+    }
 }

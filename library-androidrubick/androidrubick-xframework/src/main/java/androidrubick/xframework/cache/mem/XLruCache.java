@@ -28,23 +28,27 @@ public abstract class XLruCache<K, V> extends MemBasedCache<K, V> {
         super(maxMeasureSize);
     }
 
+    protected Map<K, V> newCacheMap() {
+
+    }
+
     @Override
-    protected V getCacheInner(K key) {
+    /*package*/ V getCacheInner(K key) {
         return null;
     }
 
     @Override
-    protected V putCacheInner(K key, V value) {
+    /*package*/ V putCacheInner(K key, V value) {
         return null;
     }
 
     @Override
-    protected V removeCacheInner(K key) {
+    /*package*/ V removeCacheInner(K key) {
         return null;
     }
 
     @Override
-    protected Map.Entry<K, V> evictCacheInner() {
+    /*package*/ Map.Entry<K, V> evictCacheInner() {
         return null;
     }
 
@@ -55,6 +59,6 @@ public abstract class XLruCache<K, V> extends MemBasedCache<K, V> {
 
     @Override
     public void trimMemory() {
-
+        clear();
     }
 }

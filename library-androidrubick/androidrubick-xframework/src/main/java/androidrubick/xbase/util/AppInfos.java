@@ -1,5 +1,6 @@
 package androidrubick.xbase.util;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -85,6 +86,12 @@ public class AppInfos {
             return (T) bundle.get(key);
         }
         return null;
+    }
+
+    public static int getMemoryClass() {
+        Context context = XApplication.getAppContext();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        return am.getMemoryClass();
     }
 
 }
