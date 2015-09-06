@@ -5,6 +5,8 @@ import android.os.SystemClock;
 import java.util.concurrent.Executor;
 
 import androidrubick.utils.MathPreconditions;
+import androidrubick.xbase.aspi.XServiceLoader;
+import androidrubick.xframework.job.spi.XJobExecutorService;
 
 /**
  * 任务的基类。
@@ -19,7 +21,7 @@ import androidrubick.utils.MathPreconditions;
  */
 public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Params, Progress, Result> {
 
-    /*package*/ static final String TAG = XJob.class.getSimpleName();
+    public static final String TAG = XJob.class.getSimpleName();
 
     /**
      * 子类在定义任务类型时，控制在{@link #FIRST_JOB_TYPE} 和
@@ -46,10 +48,6 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
      */
     public static final int TEMP_JOB = FIRST_JOB_TYPE;
 
-    static {
-        init();
-    }
-
     /**
      * 因为{@link XJob}对外不是一个{@link Runnable}，
      *
@@ -70,10 +68,6 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
         return AsyncTaskCompat.getDefaultExecutor();
     }
 
-    static void init() {
-        XJob.setDefaultExecutor(new XJobExecutor());
-    }
-
     /**
      * 获取当前时间。
      * <p/>
@@ -91,6 +85,17 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
     private long mExpireTime = 60 * 1000; // 默认一分钟
     protected XJob() {
         mCreateTime = peekTime();
+    }
+
+    /**
+     * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行
+     *
+     * @param params The parameters of the task.
+     */
+    @Override
+    public final XJob<Params, Progress, Result> execute(Params... params) {
+        XServiceLoader.load(XJobExecutorService.class).execute(this, params);
+        return this;
     }
 
     @Override

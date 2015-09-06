@@ -18,7 +18,13 @@ public class XJobExecutorServiceImpl implements XJobExecutorService {
 
     private synchronized void checkCreateExecutor() {
         if (null == mExecutor || mExecutor.isShutdown() || mExecutor.isTerminating() || mExecutor.isTerminated()) {
+            final XJobExecutor oldExecutor = mExecutor;
             mExecutor = new XJobExecutor();
+            // 如果存在旧的执行器，将没有超时的任务加入新的执行器中
+            if (!Objects.isNull(oldExecutor)) {
+                oldExecutor.clearExpiredJobs();
+                oldExecutor.getQueue().drainTo(mExecutor.getQueue());
+            }
         }
     }
 
@@ -35,4 +41,8 @@ public class XJobExecutorServiceImpl implements XJobExecutorService {
         }
     }
 
+    @Override
+    public boolean multiInstance() {
+        return false;
+    }
 }

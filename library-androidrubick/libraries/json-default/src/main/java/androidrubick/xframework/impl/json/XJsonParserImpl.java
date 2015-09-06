@@ -58,4 +58,9 @@ public class XJsonParserImpl implements XJsonParserService {
     public void trimMemory() {
         // nothing to trim
     }
+
+    @Override
+    public boolean multiInstance() {
+        return false;
+    }
 }

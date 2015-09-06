@@ -15,4 +15,13 @@ public interface XSpiService {
      */
     void trimMemory();
 
+    /**
+     * 该服务是否是创建多例的服务。
+     *
+     * <p/>
+     *
+     * 一般情况下，服务用来执行某种操作，或者提供某种功能，但也有一些情况下，要求每次调用都需要提供新的服务实例。
+     */
+    boolean multiInstance();
+
 }

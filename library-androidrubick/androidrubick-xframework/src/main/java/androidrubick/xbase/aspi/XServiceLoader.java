@@ -5,13 +5,14 @@ import android.text.TextUtils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
 import androidrubick.text.Charsets;
 import androidrubick.utils.Objects;
+import androidrubick.xframework.app.XApplication;
 
 /**
  * A service-provider loader.
@@ -64,14 +65,14 @@ public class XServiceLoader<S extends XSpiService> {
 
     /**
      * Constructs a service instance and cache it,
-     * using the current thread's context class loader.
+     * using the current app's context class loader.
      *
      * @param service the service class or interface
      * @return a XSpiService
      */
-    public static <S extends XSpiService>S singleton(Class<S> service) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return findFromCacheOrCreate(service, classLoader).singleton();
+    public static <S extends XSpiService>S load(Class<S> service) {
+        ClassLoader classLoader = XApplication.getAppClassLoader();
+        return findFromCacheOrCreate(service, classLoader);
     }
 
     /**
@@ -82,9 +83,9 @@ public class XServiceLoader<S extends XSpiService> {
      * @param classLoader the class loader
      * @return a XSpiService
      */
-    public static <S extends XSpiService>S singleton(Class<S> service, ClassLoader classLoader) {
+    public static <S extends XSpiService>S load(Class<S> service, ClassLoader classLoader) {
         classLoader = Objects.getOr(classLoader, ClassLoader.getSystemClassLoader());
-        return findFromCacheOrCreate(service, classLoader).singleton();
+        return findFromCacheOrCreate(service, classLoader);
     }
 
     /**
@@ -100,7 +101,7 @@ public class XServiceLoader<S extends XSpiService> {
      */
     public static <S extends XSpiService>S create(Class<S> service) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return findFromCacheOrCreate(service, classLoader).create();
+        return findFromCacheOrCreate(service, classLoader);
     }
 
     /**
@@ -113,24 +114,19 @@ public class XServiceLoader<S extends XSpiService> {
      */
     public static <S extends XSpiService>S create(Class<S> service, ClassLoader classLoader) {
         classLoader = Objects.getOr(classLoader, ClassLoader.getSystemClassLoader());
-        return findFromCacheOrCreate(service, classLoader).create();
+        return findFromCacheOrCreate(service, classLoader);
     }
 
-    private static <S extends XSpiService>XServiceLoader<S> findFromCacheOrCreate(Class<S> service, ClassLoader classLoader) {
+    private static <S extends XSpiService>S findFromCacheOrCreate(Class<S> service, ClassLoader classLoader) {
         synchronized (sCaches) {
+            XServiceLoader<S> serviceLoader;
             if (!CollectionsCompat.isEmpty(sCaches)) {
-                for (Map.Entry<XServiceLoader, XSpiService> entry : sCaches.entrySet()) {
-                    XServiceLoader key = entry.getKey();
-                    if (Objects.equals(key.mService, service)
-                            && Objects.equals(key.mClassLoader, classLoader)) {
-                        return key;
-                    }
-                }
+                serviceLoader = sCaches.get(service);
+                return serviceLoader.load();
             }
-            XServiceLoader<S> xServiceLoader = new XServiceLoader<S>(service, classLoader);
-            // load instance
-            xServiceLoader.singleton();
-            return xServiceLoader;
+            serviceLoader = new XServiceLoader(service, classLoader);
+            sCaches.put(service, serviceLoader);
+            return serviceLoader.load();
         }
     }
 
@@ -140,20 +136,21 @@ public class XServiceLoader<S extends XSpiService> {
     public static void trimMemory() {
         synchronized (sCaches) {
             if (!CollectionsCompat.isEmpty(sCaches)) {
-                for (Map.Entry<XServiceLoader, XSpiService> entry : sCaches.entrySet()) {
-                    XSpiService value = entry.getValue();
+                for (Map.Entry<Class<? extends XSpiService>, XServiceLoader> entry : sCaches.entrySet()) {
+                    XServiceLoader value = entry.getValue();
                     value.trimMemory();
                 }
             }
         }
     }
 
-    private static WeakHashMap<XServiceLoader, XSpiService> sCaches
-            = new WeakHashMap<XServiceLoader, XSpiService>(8);
+    private static HashMap<Class<? extends XSpiService>, XServiceLoader> sCaches
+            = new HashMap<Class<? extends XSpiService>, XServiceLoader>(8);
 
     private String mClassName;
     private final Class<S> mService;
     private final ClassLoader mClassLoader;
+    private S mCachedInstance;
 
     /**
      * 子类需要对无参构造放开权限！
@@ -196,15 +193,13 @@ public class XServiceLoader<S extends XSpiService> {
         return "XServiceLoader for " + mService.getName();
     }
 
-    public S create() {
-        return newInstanceOfService();
-    }
-
-    public S singleton() {
-        S instance = (S) sCaches.get(this);
+    public S load() {
+        S instance = mCachedInstance;
         if (Objects.isNull(instance)) {
             instance = newInstanceOfService();
-            sCaches.put(this, instance);
+            if (!instance.multiInstance()) {
+                mCachedInstance = instance;
+            }
         }
         return instance;
     }

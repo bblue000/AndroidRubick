@@ -16,9 +16,9 @@ include ':androidrubick-base', ':androidrubick-xframework'
  * implements of services
  */
 include ':json-default'
-//include ':job-default'
+include ':job-default'
 
 def defaultImplForSpi = "./libraries/";
 project(':json-default').projectDir = new File(defaultImplForSpi + "json-default");
-//project(':job-default').projectDir = new File(defaultImplForSpi + "job-default");
+project(':job-default').projectDir = new File(defaultImplForSpi + "job-default");
 
