@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidrubick.xframework.cache.mem;
+package androidrubick.cache.mem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidrubick.utils.Recycleable;
-import androidrubick.xframework.cache.Cache;
-import androidrubick.xframework.cache.ICacheInterface;
 
 /**
  * CharArrayPool is a source and repository of <code>char[]</code> objects. Its purpose is to
@@ -55,7 +53,7 @@ import androidrubick.xframework.cache.ICacheInterface;
  * certain byte limit. When a buffer is returned that would cause the pool to exceed the limit,
  * least-recently-used buffers are disposed.
  */
-public class CharArrayPool implements ICacheInterface, Recycleable {
+public class CharArrayPool implements Recycleable {
     /** The buffer pool, arranged both by last use and by buffer size */
     private List<char[]> mBuffersByLastUse = new LinkedList<char[]>();
     private List<char[]> mBuffersBySize = new ArrayList<char[]>(8);
@@ -143,44 +141,4 @@ public class CharArrayPool implements ICacheInterface, Recycleable {
         mCurrentSize = 0;
     }
 
-    @Override
-    public Cache<Integer, char[]> asCache() {
-        return new Cache<Integer, char[]>() {
-            @Override
-            public char[] get(Integer key) {
-                return CharArrayPool.this.getBuf(key);
-            }
-
-            @Override
-            public char[] remove(Integer key) {
-                return null;
-            }
-
-            @Override
-            public char[] put(Integer key, char[] value) {
-                returnBuf(value);
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return mCurrentSize;
-            }
-
-            @Override
-            public void clear() {
-                CharArrayPool.this.recycle();
-            }
-
-            @Override
-            public void trimMemory() {
-                CharArrayPool.this.recycle();
-            }
-
-            @Override
-            public Cache<Integer, char[]> asCache() {
-                return this;
-            }
-        };
-    }
 }

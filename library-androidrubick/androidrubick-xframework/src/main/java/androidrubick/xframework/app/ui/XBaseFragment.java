@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidrubick.utils.FrameworkLog;
+import androidrubick.xbase.util.FrameworkLog;
 import androidrubick.xframework.app.XApplication;
 import androidrubick.xframework.events.XEventAPI;
 import butterknife.ButterKnife;

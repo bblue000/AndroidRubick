@@ -14,7 +14,6 @@ import android.webkit.URLUtil;
 import java.util.Collections;
 import java.util.List;
 
-import androidrubick.utils.FrameworkLog;
 import androidrubick.xframework.app.XApplication;
 
 /**

@@ -25,15 +25,19 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
 
     private File mRootPath;
     protected DiskBasedCache(String rootPath, int maxMeasureSize) {
-        super(maxMeasureSize);
-        Preconditions.checkArgument(!Strings.isEmpty(rootPath));
-        mRootPath = new File(rootPath);
+        this(new File(rootPath), maxMeasureSize);
     }
 
     protected DiskBasedCache(File rootPath, int maxMeasureSize) {
         super(maxMeasureSize);
         mRootPath = Preconditions.checkNotNull(rootPath);
+        initialize();
     }
+
+    /**
+     * for sub classes
+     */
+    protected void initialize() {}
 
     /**
      * 获取该文件缓存根目录
@@ -62,7 +66,9 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      */
     @Override
     public V remove(K key) {
-        FileUtils.deleteFile(keyToFile(key, getRootPath()), true, null);
+        if (FileUtils.deleteFile(keyToFile(key, getRootPath()), true, null)) {
+            entryRemoved(false, key, null, null);
+        }
         return null;
     }
 
@@ -108,7 +114,6 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
 
     @Override
     protected void trimToSize(int maxMeasureSize) {
-        long sizeOfPath = FileUtils.caculateFileSize(mRootPath);
         final int measuredSize = measuredSize();
         final int size = size();
         while (true) {

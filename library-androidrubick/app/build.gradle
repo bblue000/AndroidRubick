@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile project(':json-default')
+    compile project(':job-default')
 }

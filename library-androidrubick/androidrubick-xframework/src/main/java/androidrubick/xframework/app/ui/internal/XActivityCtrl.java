@@ -9,8 +9,8 @@ import android.os.Bundle;
 import java.util.LinkedList;
 
 import androidrubick.collect.CollectionsCompat;
-import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
+import androidrubick.xbase.util.FrameworkLog;
 import androidrubick.xframework.app.ui.IActivityCallback;
 
 /**

@@ -402,7 +402,6 @@ public class FileUtils {
     public static boolean copyDir(File srcDir, boolean deleteSrc,
                                   File destDir, boolean coverIfExists,
                                   byte[] useBuf, FileProgressCallback callback) throws IOException {
-        // 原文件夹为空，也算是拷贝成功
         if (!exists(srcDir)) {
             return false;
         }

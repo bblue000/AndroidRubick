@@ -1,19 +1,17 @@
-package androidrubick.xframework.cache.mem;
+package androidrubick.cache.mem;
 
 import java.util.LinkedList;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Recycleable;
-import androidrubick.xframework.cache.Cache;
-import androidrubick.xframework.cache.ICacheInterface;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/9/1.
  */
-public abstract class InstancePool<E> implements Recycleable, ICacheInterface {
+public abstract class InstancePool<E> implements Recycleable {
 
     private int mPoolSize;
     private LinkedList<E> mPoolList;
@@ -82,46 +80,5 @@ public abstract class InstancePool<E> implements Recycleable, ICacheInterface {
         recycle();
         mPoolList = null;
         super.finalize();
-    }
-
-    @Override
-    public Cache<E, E> asCache() {
-        return new Cache<E, E>() {
-            @Override
-            public E get(E key) {
-                return InstancePool.this.obtain();
-            }
-
-            @Override
-            public E remove(E key) {
-                return null;
-            }
-
-            @Override
-            public E put(E key, E value) {
-                InstancePool.this.returnInstance(value);
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return InstancePool.this.poolSize();
-            }
-
-            @Override
-            public void clear() {
-                InstancePool.this.recycle();
-            }
-
-            @Override
-            public void trimMemory() {
-                InstancePool.this.recycle();
-            }
-
-            @Override
-            public Cache<E, E> asCache() {
-                return this;
-            }
-        };
     }
 }

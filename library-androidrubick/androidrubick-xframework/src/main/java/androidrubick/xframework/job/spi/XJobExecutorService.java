@@ -1,5 +1,7 @@
 package androidrubick.xframework.job.spi;
 
+import java.util.concurrent.Executor;
+
 import androidrubick.xbase.aspi.XSpiService;
 import androidrubick.xframework.job.XJob;
 

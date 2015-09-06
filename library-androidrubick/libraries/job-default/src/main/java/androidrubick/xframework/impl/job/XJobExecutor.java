@@ -8,11 +8,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import androidrubick.utils.FrameworkLog;
 import androidrubick.utils.Objects;
 import androidrubick.utils.concurrent.SimpleThreadFactory;
+import androidrubick.xbase.util.FrameworkLog;
 import androidrubick.xframework.job.XJob;
-import androidrubick.xframework.job.spi.XJobExecutorService;
 import androidrubick.xbase.util.TimeSlots;
 import androidrubick.xbase.annotation.Configurable;
 
@@ -31,8 +30,7 @@ import androidrubick.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler,
-        XJobExecutorService{
+public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -99,12 +97,19 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
     }
 
     @Override
-    public <Params, Progress, Result> void execute(XJob<Params, Progress, Result> job, Params... params) {
-        job.executeOnExecutor(this, params);
+    protected void beforeExecute(Thread t, Runnable r) {
+        // do sth.
+        super.beforeExecute(t, r);
     }
 
     @Override
-    public void trimMemory() {
-        clearExpiredJobs();
+    protected void afterExecute(Runnable r, Throwable t) {
+        super.afterExecute(r, t);
+        // do sth.
+    }
+
+    @Override
+    protected void terminated() {
+        super.terminated();
     }
 }

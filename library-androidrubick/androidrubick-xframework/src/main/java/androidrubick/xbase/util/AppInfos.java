@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidrubick.utils.FrameworkLog;
 import androidrubick.xframework.app.XApplication;
 
 /**

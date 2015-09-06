@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidrubick.xframework.cache.mem;
+package androidrubick.cache.mem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidrubick.utils.Recycleable;
-import androidrubick.xframework.cache.Cache;
-import androidrubick.xframework.cache.ICacheInterface;
 
 /**
  * ByteArrayPool is a source and repository of <code>byte[]</code> objects. Its purpose is to
@@ -55,7 +53,7 @@ import androidrubick.xframework.cache.ICacheInterface;
  * certain byte limit. When a buffer is returned that would cause the pool to exceed the limit,
  * least-recently-used buffers are disposed.
  */
-public class ByteArrayPool implements ICacheInterface, Recycleable {
+public class ByteArrayPool implements Recycleable {
     /** The buffer pool, arranged both by last use and by buffer size */
     private List<byte[]> mBuffersByLastUse = new LinkedList<byte[]>();
     private List<byte[]> mBuffersBySize = new ArrayList<byte[]>(64);
@@ -143,44 +141,4 @@ public class ByteArrayPool implements ICacheInterface, Recycleable {
         mCurrentSize = 0;
     }
 
-    @Override
-    public Cache<Integer, byte[]> asCache() {
-        return new Cache<Integer, byte[]>() {
-            @Override
-            public byte[] get(Integer key) {
-                return ByteArrayPool.this.getBuf(key);
-            }
-
-            @Override
-            public byte[] remove(Integer key) {
-                return null;
-            }
-
-            @Override
-            public byte[] put(Integer key, byte[] value) {
-                returnBuf(value);
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return mCurrentSize;
-            }
-
-            @Override
-            public void clear() {
-                ByteArrayPool.this.recycle();
-            }
-
-            @Override
-            public void trimMemory() {
-                ByteArrayPool.this.recycle();
-            }
-
-            @Override
-            public Cache<Integer, byte[]> asCache() {
-                return this;
-            }
-        };
-    }
 }

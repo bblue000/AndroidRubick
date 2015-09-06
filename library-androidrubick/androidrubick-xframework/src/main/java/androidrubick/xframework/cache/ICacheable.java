@@ -5,7 +5,7 @@ package androidrubick.xframework.cache;
  *
  * Created by Yin Yong on 2015/9/1.
  */
-public interface ICacheInterface {
+public interface ICacheable {
 
     <K, V>Cache<K, V> asCache();
 

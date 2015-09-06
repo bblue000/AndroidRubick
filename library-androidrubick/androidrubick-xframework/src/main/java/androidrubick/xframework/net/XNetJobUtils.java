@@ -1,6 +1,6 @@
 package androidrubick.xframework.net;
 
-import androidrubick.xframework.cache.mem.ByteArrayPool;
+import androidrubick.cache.mem.ByteArrayPool;
 
 /**
  *
