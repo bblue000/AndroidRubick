@@ -5,9 +5,6 @@ import android.os.SystemClock;
 import java.util.concurrent.Executor;
 
 import androidrubick.utils.MathPreconditions;
-import androidrubick.xbase.aspi.XServiceLoader;
-import androidrubick.xframework.app.XApplication;
-import androidrubick.xframework.job.spi.XJobExecutorService;
 
 /**
  * 任务的基类。
@@ -22,7 +19,7 @@ import androidrubick.xframework.job.spi.XJobExecutorService;
  */
 public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Params, Progress, Result> {
 
-    public static final String TAG = XJob.class.getSimpleName();
+    /*package*/ static final String TAG = XJob.class.getSimpleName();
 
     /**
      * 子类在定义任务类型时，控制在{@link #FIRST_JOB_TYPE} 和
@@ -49,6 +46,10 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
      */
     public static final int TEMP_JOB = FIRST_JOB_TYPE;
 
+    static {
+        init();
+    }
+
     /**
      * 因为{@link XJob}对外不是一个{@link Runnable}，
      *
@@ -61,12 +62,16 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
         return AsyncTaskCompat.asAsyncTask(run);
     }
 
-    public static void setDefaultExecutor(Executor exec) {
+    public static synchronized void setDefaultExecutor(Executor exec) {
         AsyncTaskCompat.setDefaultExecutor(exec);
     }
 
-    public static Executor getDefaultExecutor() {
+    public static synchronized Executor getDefaultExecutor() {
         return AsyncTaskCompat.getDefaultExecutor();
+    }
+
+    static void init() {
+        XJob.setDefaultExecutor(new XJobExecutor());
     }
 
     /**
@@ -83,7 +88,6 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // 内部实现
     private long mCreateTime;
-    private long mAddToQueueTime;
     private long mExpireTime = 60 * 1000; // 默认一分钟
     protected XJob() {
         mCreateTime = peekTime();
@@ -100,29 +104,6 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
 
     @Override
     protected void onPostExecute(Result result) { }
-
-    /**
-     * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行
-     *
-     * @param params The parameters of the task.
-     */
-    @Override
-    public final AsyncTaskCompat<Params, Progress, Result> execute(Params... params) {
-        XServiceLoader.load(XJobExecutorService.class, XApplication.getAppClassLoader())
-            .execute(this, params);
-        return this;
-    }
-
-    protected void setAddToQueueTime(long timeInMillis) {
-        mAddToQueueTime = MathPreconditions.checkNonNegative("add to queue time", timeInMillis);
-    }
-
-    /**
-     * 获取任务加入时间（单位：毫秒），如果尚未加入队列或已移除，则返回0
-     */
-    protected long getAddToQueueTime() {
-        return mAddToQueueTime;
-    }
 
     /**
      * 设置过期时间，这里指的是时长，而不是目标时间点（单位：毫秒）

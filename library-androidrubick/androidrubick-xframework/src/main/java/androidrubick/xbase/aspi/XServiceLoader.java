@@ -45,7 +45,7 @@ import androidrubick.utils.Objects;
  * </pre>
  * You might use {@code ServiceProvider} something like this:
  * <pre>
- *   MyService service = XServiceLoader<MyService>.load(MyService.class);
+ *   MyService service = XServiceLoader<MyService>.singleton(MyService.class);
  *   service.handle(o);
  * </pre>
  *
@@ -63,27 +63,57 @@ import androidrubick.utils.Objects;
 public class XServiceLoader<S extends XSpiService> {
 
     /**
-     * Constructs a service loader, using the current thread's context class loader.
+     * Constructs a service instance and cache it,
+     * using the current thread's context class loader.
      *
      * @param service the service class or interface
-     * @return a new XServiceLoader
+     * @return a XSpiService
      */
-    public static <S extends XSpiService>S load(Class<S> service) {
+    public static <S extends XSpiService>S singleton(Class<S> service) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return findFromCacheOrCreate(service, classLoader).get();
+        return findFromCacheOrCreate(service, classLoader).singleton();
     }
 
     /**
-     * Constructs a service loader. If {@code classLoader} is null, the system class loader
-     * is used.
+     * Constructs a service instance and cache it.
+     * If {@code classLoader} is null, the system class loader is used.
      *
      * @param service the service class or interface
      * @param classLoader the class loader
-     * @return a new XServiceLoader
+     * @return a XSpiService
      */
-    public static <S extends XSpiService>S load(Class<S> service, ClassLoader classLoader) {
+    public static <S extends XSpiService>S singleton(Class<S> service, ClassLoader classLoader) {
         classLoader = Objects.getOr(classLoader, ClassLoader.getSystemClassLoader());
-        return findFromCacheOrCreate(service, classLoader).get();
+        return findFromCacheOrCreate(service, classLoader).singleton();
+    }
+
+    /**
+     * Constructs a service instance and cache it,
+     * using the current thread's context class loader.
+     *
+     * <p/>
+     *
+     * you can create multi instances
+     *
+     * @param service the service class or interface
+     * @return a new XSpiService
+     */
+    public static <S extends XSpiService>S create(Class<S> service) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        return findFromCacheOrCreate(service, classLoader).create();
+    }
+
+    /**
+     * Constructs a service instance and cache itt as singleton.
+     * If {@code classLoader} is null, the system class loader is used.
+     *
+     * @param service the service class or interface
+     * @param classLoader the class loader
+     * @return a new XSpiService singleton
+     */
+    public static <S extends XSpiService>S create(Class<S> service, ClassLoader classLoader) {
+        classLoader = Objects.getOr(classLoader, ClassLoader.getSystemClassLoader());
+        return findFromCacheOrCreate(service, classLoader).create();
     }
 
     private static <S extends XSpiService>XServiceLoader<S> findFromCacheOrCreate(Class<S> service, ClassLoader classLoader) {
@@ -99,7 +129,7 @@ public class XServiceLoader<S extends XSpiService> {
             }
             XServiceLoader<S> xServiceLoader = new XServiceLoader<S>(service, classLoader);
             // load instance
-            xServiceLoader.get();
+            xServiceLoader.singleton();
             return xServiceLoader;
         }
     }
@@ -166,7 +196,11 @@ public class XServiceLoader<S extends XSpiService> {
         return "XServiceLoader for " + mService.getName();
     }
 
-    public S get() {
+    public S create() {
+        return newInstanceOfService();
+    }
+
+    public S singleton() {
         S instance = (S) sCaches.get(this);
         if (Objects.isNull(instance)) {
             instance = newInstanceOfService();

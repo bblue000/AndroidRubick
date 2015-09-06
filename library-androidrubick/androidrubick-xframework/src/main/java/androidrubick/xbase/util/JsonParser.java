@@ -15,10 +15,10 @@ public class JsonParser {
     private JsonParser() { }
 
     public static String toJsonString(Object object) {
-        return XServiceLoader.load(XJsonParserService.class).toJsonString(object);
+        return XServiceLoader.singleton(XJsonParserService.class).toJsonString(object);
     }
 
     public static <T>T toObject(String json, Class<T> clz) {
-        return XServiceLoader.load(XJsonParserService.class).toObject(json, clz);
+        return XServiceLoader.singleton(XJsonParserService.class).toObject(json, clz);
     }
 }

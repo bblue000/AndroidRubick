@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidrubick.xframework.app.XApplication;
 
@@ -54,7 +55,7 @@ public class AppInfos {
             // 这里的context.getPackageName()可以换成你要查看的程序的包名
             PackageInfo pi = pm.getPackageInfo(XApplication.getAppContext().getPackageName(), 0);
             versionName = pi.versionName;
-            if (null == versionName || versionName.length() <= 0) {
+            if (TextUtils.isEmpty(versionName)) {
                 return defVersion;
             }
         } catch (Exception e) {
@@ -87,10 +88,20 @@ public class AppInfos {
         return null;
     }
 
-    public static int getMemoryClass() {
-        Context context = XApplication.getAppContext();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        return am.getMemoryClass();
+    /**
+     * 获取应用能够分配的最大内存
+     */
+    public static long getMemoryClass() {
+        long ret = -1;
+        try {
+            Context context = XApplication.getAppContext();
+            ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            ret = am.getMemoryClass();
+        } catch (Exception e) { }
+        if (ret <= 0) {
+            ret = Runtime.getRuntime().totalMemory();
+        }
+        return ret;
     }
 
 }

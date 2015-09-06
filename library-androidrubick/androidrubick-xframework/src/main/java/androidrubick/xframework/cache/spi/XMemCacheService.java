@@ -13,6 +13,7 @@ import androidrubick.xbase.aspi.XSpiService;
  */
 public interface XMemCacheService extends XSpiService {
 
+    <K, V>V putCache(K key, V value);
 
 
 }
