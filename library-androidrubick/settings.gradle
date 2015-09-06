@@ -12,13 +12,14 @@ include ':androidrubick-base', ':androidrubick-xframework'
 
 // ********************************************
 // separator line
-/**
- * implements of services
- */
-include ':json-default'
-include ':job-default'
-
 def defaultImplForSpi = "./libraries/";
-project(':json-default').projectDir = new File(defaultImplForSpi + "json-default");
-project(':job-default').projectDir = new File(defaultImplForSpi + "job-default");
+def spiProjects = ['json-default',
+                   'job-default',
+                   'cache-default'
+                  ];
+spiProjects.each { String spiProjectDir ->
+    def spiProjectName = ':' + spiProjectDir;
+    include spiProjectName;
+    project(spiProjectName).projectDir = new File(defaultImplForSpi + spiProjectDir);
+}
 

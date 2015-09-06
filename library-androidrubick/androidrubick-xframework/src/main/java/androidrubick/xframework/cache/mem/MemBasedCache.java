@@ -4,7 +4,10 @@ import java.util.Map;
 
 import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Preconditions;
+import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
+import androidrubick.xframework.cache.spi.XMemCacheMap;
+import androidrubick.xframework.cache.spi.XMemCacheService;
 
 /**
  * {@inheritDoc}
@@ -27,6 +30,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
     private int mEvictionCount;
     private int mHitCount;
     private int mMissCount;
+    private XMemCacheMap<K, V> mMemCacheMap;
     /**
      * @param maxMeasureSize for caches that do not override {@link #sizeOf}, this is
      *     the maximum number of entries in the cache. For all other caches,
@@ -34,6 +38,17 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
      */
     protected MemBasedCache(int maxMeasureSize) {
         super(maxMeasureSize);
+        mMemCacheMap = createXMemCacheMap();
+        initialize();
+    }
+
+    /**
+     * for sub classes
+     */
+    protected void initialize() {}
+
+    protected XMemCacheMap<K, V> createXMemCacheMap() {
+        return XServiceLoader.load(XMemCacheService.class).newXMemCacheMap();
     }
 
     @Override
@@ -41,7 +56,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         Preconditions.checkNotNull(key, "key");
         V mapValue;
         synchronized (this) {
-            mapValue = getCacheInner(key);
+            mapValue = mMemCacheMap.get(key);
             if (mapValue != null) {
                 mHitCount++;
                 return mapValue;
@@ -62,11 +77,11 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
         synchronized (this) {
             mCreateCount++;
-            mapValue = putCacheInner(key, createdValue);
+            mapValue = mMemCacheMap.put(key, createdValue);
 
             if (mapValue != null) {
                 // There was a conflict so undo that last put
-                putCacheInner(key, mapValue);
+                mMemCacheMap.put(key, mapValue);
             } else {
                 mMeasuredSize += safeSizeOf(key, createdValue);
             }
@@ -89,7 +104,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         synchronized (this) {
             mPutCount++;
             mMeasuredSize += safeSizeOf(key, value);
-            previous = putCacheInner(key, value);
+            previous = mMemCacheMap.put(key, value);;
             if (previous != null) {
                 mMeasuredSize -= safeSizeOf(key, previous);
             }
@@ -109,7 +124,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
         V previous;
         synchronized (this) {
-            previous = removeCacheInner(key);
+            previous = mMemCacheMap.remove(key);
             if (previous != null) {
                 mMeasuredSize -= safeSizeOf(key, previous);
             }
@@ -151,7 +166,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
                 // get the last item in the linked list.
                 // This is not efficient, the goal here is to minimize the changes
                 // compared to the platform version.
-                Map.Entry<K, V> toEvict = evictCacheInner();
+                Map.Entry<K, V> toEvict = mMemCacheMap.evictCacheEntry();
                 // END LAYOUTLIB CHANGE
 
                 if (toEvict == null) {
@@ -160,7 +175,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
                 key = toEvict.getKey();
                 value = toEvict.getValue();
-                removeCacheInner(key);
+                mMemCacheMap.remove(key);
                 mMeasuredSize -= safeSizeOf(key, value);
                 mEvictionCount++;
             }
@@ -205,17 +220,6 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         int result = sizeOf(key, value);
         return MathPreconditions.checkNonNegative("size of " + key, result);
     }
-
-    /*package*/ abstract V getCacheInner(K key);
-
-    /*package*/ abstract V putCacheInner(K key, V value);
-
-    /*package*/ abstract V removeCacheInner(K key);
-
-    /**
-     * evict a cache entry
-     */
-    /*package*/ abstract Map.Entry<K, V> evictCacheInner();
 
     /**
      * Called after a cache miss to compute a value for the corresponding key.

@@ -66,6 +66,6 @@ public abstract class MeasurableCache<K, V> implements Cache<K, V> {
     }
 
     @Override public synchronized String toString() {
-        return String.format("Cache[size=%d, measuredSize=%s]", size(), measuredSize());
+        return String.format("Cache[size=%d, measuredSize=%d]", size(), measuredSize());
     }
 }

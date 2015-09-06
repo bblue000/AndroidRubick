@@ -13,7 +13,34 @@ import androidrubick.xbase.aspi.XSpiService;
  */
 public interface XMemCacheService extends XSpiService {
 
-    <K, V>V putCache(K key, V value);
+    /**
+     * Constructs a new empty {@code XMemCacheMap} instance.
+     */
+    <K, V> XMemCacheMap<K, V> newXMemCacheMap();
 
+    /**
+     * Constructs a new {@code XMemCacheMap} instance with the specified
+     * capacity.
+     *
+     * @param initialCapacity
+     *            the initial capacity of this map.
+     * @throws IllegalArgumentException
+     *                when the capacity is less than zero.
+     */
+    <K, V> XMemCacheMap<K, V> newXMemCacheMap(int initialCapacity);
+
+    /**
+     * Constructs a new {@code XMemCacheMap} instance with the specified
+     * capacity and load factor.
+     *
+     * @param initialCapacity
+     *            the initial capacity of this map.
+     * @param loadFactor
+     *            the initial load factor.
+     * @throws IllegalArgumentException
+     *             when the capacity is less than zero or the load factor is
+     *             less or equal to zero.
+     */
+    <K, V> XMemCacheMap<K, V> newXMemCacheMap(int initialCapacity, float loadFactor);
 
 }
