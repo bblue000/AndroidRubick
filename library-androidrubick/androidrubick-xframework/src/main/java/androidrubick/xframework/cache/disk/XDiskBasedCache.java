@@ -7,7 +7,7 @@ import androidrubick.io.FileUtils;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
-import androidrubick.xframework.cache.LimitedMeasurableCache;
+import androidrubick.xframework.cache.base.LimitedMeasurableCache;
 import androidrubick.xframework.cache.spi.XDiskCacheService;
 
 /**
@@ -60,7 +60,7 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
             return;
         }
         synchronized (this) {
-            mDiskCacheStats = XServiceLoader.load(XDiskCacheService.class).createFrom(getRootPath());
+            mDiskCacheStats = XServiceLoader.load(XDiskCacheService.class).newDiskCacheStats(getRootPath());
             mStatsInitFlag.set(true);
         }
     }
@@ -116,10 +116,11 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
         checkInitRetrieve();
         File file = keyToFile(key, getRootPath());
         boolean existsBefore = FileUtils.exists(file);
-        valueToFile(value, file);
-        mDiskCacheStats.update();
-        if (existsBefore) {
-            fileRemoved(false, file, key);
+        if (valueToFile(value, file)) {
+            mDiskCacheStats.update();
+            if (existsBefore) {
+                fileRemoved(false, file, key);
+            }
         }
         return null;
     }

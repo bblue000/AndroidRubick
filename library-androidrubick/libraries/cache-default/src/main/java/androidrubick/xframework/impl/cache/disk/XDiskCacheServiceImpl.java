@@ -13,7 +13,7 @@ import androidrubick.xframework.cache.spi.XDiskCacheService;
 public class XDiskCacheServiceImpl implements XDiskCacheService {
 
     @Override
-    public XDiskCacheStats createFrom(File cachePath) {
+    public XDiskCacheStats newDiskCacheStats(File cachePath) {
         return new SimpleDiskCacheStats(cachePath);
     }
 

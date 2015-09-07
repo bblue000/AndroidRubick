@@ -15,6 +15,6 @@ public interface XDiskCacheService extends XSpiService {
     /**
      * 根据缓存文件目录，创建一个缓存信息对象
      */
-    XDiskCacheStats createFrom(File cachePath);
+    XDiskCacheStats newDiskCacheStats(File cachePath);
 
 }

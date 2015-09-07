@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache;
+package androidrubick.xframework.cache.base;
 
 /**
  * 能够对cache中的元素指定大小——{@link #sizeOf}，

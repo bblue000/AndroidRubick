@@ -1,5 +1,7 @@
 package androidrubick.xframework.cache.mem;
 
+import androidrubick.xframework.cache.base.Cache;
+
 /**
  *
  * 获取当前缓存状态、一些统计数据的类
@@ -11,19 +13,19 @@ package androidrubick.xframework.cache.mem;
 public class XMemCacheStats {
 
     /**
-     * Returns the number of times {@link androidrubick.xframework.cache.Cache#get} returned a value that was
+     * Returns the number of times {@link Cache#get} returned a value that was
      * already present in the cache.
      */
     public int hitCount;
 
     /**
-     * Returns the number of times {@link androidrubick.xframework.cache.Cache#get} returned null or required a new
+     * Returns the number of times {@link Cache#get} returned null or required a new
      * value to be created.
      */
     public int missCount;
 
     /**
-     * Returns the number of times {@link androidrubick.xframework.cache.Cache#put} was called.
+     * Returns the number of times {@link Cache#put} was called.
      */
     public int putCount;
 

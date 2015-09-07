@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache;
+package androidrubick.xframework.cache.base;
 
 /**
  * base interface of cache module.
