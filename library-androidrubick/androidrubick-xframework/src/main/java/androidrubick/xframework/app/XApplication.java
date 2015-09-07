@@ -16,6 +16,7 @@ import java.util.List;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
+import androidrubick.xbase.util.AndroidUtils;
 import androidrubick.xframework.app.ui.XActivityController;
 
 /**
@@ -83,6 +84,16 @@ public class XApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (AndroidUtils.isProcess(getPackageName())) {
+            onCreateMainApp();
+        }
+    }
+
+    /**
+     * If you override this method, be sure to call super.onCreateMainApp().
+     */
+    protected void onCreateMainApp() {
+
     }
 
     @Override

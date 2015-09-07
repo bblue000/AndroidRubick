@@ -14,6 +14,7 @@ public class SimpleDiskCacheStats implements XDiskCacheStats {
 
     private final File mRootPath;
     private long mByteSize;
+    private int[] mCachedArr = new int[3];
     public SimpleDiskCacheStats(File rootPath) {
         mRootPath = rootPath;
     }

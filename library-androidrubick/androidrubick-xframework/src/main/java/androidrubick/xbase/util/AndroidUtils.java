@@ -14,6 +14,7 @@ import android.webkit.URLUtil;
 import java.util.Collections;
 import java.util.List;
 
+import androidrubick.utils.Objects;
 import androidrubick.xframework.app.XApplication;
 
 /**
@@ -101,6 +102,13 @@ public class AndroidUtils {
 		}
 		return processName;
 	}
+
+    /**
+     * 当前的进程名是否是<code>processName</code>
+     */
+    public static boolean isProcess(String processName) {
+        return Objects.equals(processName, getProcessName());
+    }
 
 	/**
 	 * 查找可以处理<code>intent</code>的Activity

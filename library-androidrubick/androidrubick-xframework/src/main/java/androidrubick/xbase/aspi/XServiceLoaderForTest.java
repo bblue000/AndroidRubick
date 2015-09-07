@@ -1,7 +1,9 @@
 package androidrubick.xbase.aspi;
 
+import androidrubick.xbase.util.spi.XJsonParserService;
 import androidrubick.xframework.cache.spi.XDiskCacheService;
 import androidrubick.xframework.cache.spi.XMemCacheService;
+import androidrubick.xframework.job.spi.XJobExecutorService;
 
 /**
  * <p/>
@@ -25,6 +27,10 @@ class XServiceLoaderForTest<S extends XSpiService> extends XServiceLoader<S> {
             mClassName = "androidrubick.xframework.impl.cache.mem.XMemCacheServiceImpl";
         } else if (XDiskCacheService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.cache.disk.XDiskCacheServiceImpl";
+        } else if (XJsonParserService.class.equals(this.mService)) {
+            mClassName = "androidrubick.xframework.impl.json.XJsonParserImpl";
+        } else if (XJobExecutorService.class.equals(this.mService)) {
+            mClassName = "androidrubick.xframework.impl.job.XJobExecutorServiceImpl";
         }
     }
 }

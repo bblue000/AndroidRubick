@@ -305,8 +305,7 @@ public class FileUtils {
      *
      * <p/>
      *
-     * 返回长度为3，数组第一项为文件数，第二项为文件夹数，第三项为总数目
-     *
+     * @param target 数组第一项为文件数，第二项为文件夹数
      * @param recursive 是否递归地计算子文件夹
      * @param includeHidden 是否包括隐藏文件/文件夹
      *
@@ -322,14 +321,16 @@ public class FileUtils {
                 if (cFile.isHidden() && !includeHidden) continue;
 
                 if (cFile.isDirectory()) {
-                    target[1] += 1;
+                    if (ArraysCompat.getLength(target) > 1)
+                        target[1] += 1;
                     // 如果不需要递归调用，则直接继续循环
                     if (!recursive) continue;
                 }
                 calculateFileAndDirCount(cFile, target, recursive, includeHidden);
             }
         } else if (path.isFile()) {
-            target[0] += 1;
+            if (ArraysCompat.getLength(target) > 0)
+                target[0] += 1;
         }
     }
 

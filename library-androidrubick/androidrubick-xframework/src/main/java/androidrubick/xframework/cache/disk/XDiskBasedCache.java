@@ -46,7 +46,7 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
     /**
      * 获取该文件缓存根目录
      */
-    public final File getRootPath() {
+    public File getRootPath() {
         return mRootPath;
     }
 
@@ -199,7 +199,9 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
 
     /**
      *
-     * 该方法不会执行
+     * 该方法不会执行。
+     *
+     * 使用{@link #fileRemoved(boolean, java.io.File, Object)}
      *
      * @param evicted true if the entry is being removed to make space, false
      *     if the removal was caused by a {@link #put} or {@link #remove}.

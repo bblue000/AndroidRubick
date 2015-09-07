@@ -2,6 +2,7 @@ package androidrubick.xbase.util;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -197,4 +198,12 @@ public class DeviceInfos {
         }
         return agent;
     }
+
+    /**
+     * 判断手机是否有外部存储
+     */
+    public static boolean hasExternalStorage() {
+        return Objects.equals(Environment.MEDIA_MOUNTED, Environment.getExternalStorageState());
+    }
+
 }

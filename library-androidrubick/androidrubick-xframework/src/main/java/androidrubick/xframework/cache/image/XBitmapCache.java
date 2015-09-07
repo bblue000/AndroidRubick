@@ -1,4 +1,4 @@
-package androidrubick.xframework.imageloader;
+package androidrubick.xframework.cache.image;
 
 import android.graphics.Bitmap;
 
