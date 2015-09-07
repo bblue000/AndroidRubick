@@ -1,6 +1,6 @@
-package androidrubick.xframework.impl.cache;
+package androidrubick.xframework.impl.cache.mem;
 
-import androidrubick.xframework.cache.spi.XMemCacheMap;
+import androidrubick.xframework.cache.mem.XMemCacheMap;
 import androidrubick.xframework.cache.spi.XMemCacheService;
 
 /**

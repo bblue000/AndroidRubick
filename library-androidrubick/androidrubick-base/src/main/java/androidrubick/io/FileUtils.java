@@ -300,7 +300,19 @@ public class FileUtils {
         return target;
     }
 
-    private static void calculateFileAndDirCount(File path, int target[], boolean recursive, boolean includeHidden) {
+    /**
+     * 计算指定文件夹中的文件和文件夹的数量；
+     *
+     * <p/>
+     *
+     * 返回长度为3，数组第一项为文件数，第二项为文件夹数，第三项为总数目
+     *
+     * @param recursive 是否递归地计算子文件夹
+     * @param includeHidden 是否包括隐藏文件/文件夹
+     *
+     * @since 1.0
+     */
+    public static void calculateFileAndDirCount(File path, int target[], boolean recursive, boolean includeHidden) {
         if (path.isDirectory()) {
             File[] childFile = path.listFiles();
             if (ArraysCompat.isEmpty(childFile)) return;

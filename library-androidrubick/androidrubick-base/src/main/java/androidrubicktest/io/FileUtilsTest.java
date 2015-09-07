@@ -29,8 +29,11 @@ public class FileUtilsTest {
 //        testCopyToFile();
 //        copyDir();
 //        unzip();
-        calFir();
+//        calFir();
 
+
+
+        System.out.println(FileUtils.calFileSizeString(Integer.MAX_VALUE));
         System.out.println(String.format("%s", 100));
     }
 

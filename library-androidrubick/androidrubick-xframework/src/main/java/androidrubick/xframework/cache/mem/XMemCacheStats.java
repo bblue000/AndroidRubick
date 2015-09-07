@@ -8,7 +8,7 @@ package androidrubick.xframework.cache.mem;
  *
  * Created by Yin Yong on 2015/9/1.
  */
-public class CacheStats {
+public class XMemCacheStats {
 
     /**
      * Returns the number of times {@link androidrubick.xframework.cache.Cache#get} returned a value that was
@@ -28,7 +28,7 @@ public class CacheStats {
     public int putCount;
 
     /**
-     * Returns the number of times {@link androidrubick.xframework.cache.mem.MemBasedCache#createCache(Object)} returned a value.
+     * Returns the number of times {@link XMemBasedCache#createCache(Object)} returned a value.
      */
     public int createCount;
 

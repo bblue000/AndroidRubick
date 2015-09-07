@@ -1,6 +1,7 @@
 package androidrubick.xframework.cache.spi;
 
 import androidrubick.xbase.aspi.XSpiService;
+import androidrubick.xframework.cache.mem.XMemCacheMap;
 
 /**
  * 提供创建几种缓存的服务

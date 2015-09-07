@@ -6,7 +6,6 @@ import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
-import androidrubick.xframework.cache.spi.XMemCacheMap;
 import androidrubick.xframework.cache.spi.XMemCacheService;
 
 /**
@@ -20,7 +19,7 @@ import androidrubick.xframework.cache.spi.XMemCacheService;
  *
  * Created by Yin Yong on 2015/5/17 0017.
  */
-public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
+public abstract class XMemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
     private int mMeasuredSize;
 
@@ -36,7 +35,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
      *     the maximum number of entries in the cache. For all other caches,
      *     this is the maximum sum of the sizes of the entries in this cache.
      */
-    protected MemBasedCache(int maxMeasureSize) {
+    protected XMemBasedCache(int maxMeasureSize) {
         super(maxMeasureSize);
         mMemCacheMap = createXMemCacheMap();
         initialize();
@@ -47,8 +46,15 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
      */
     protected void initialize() {}
 
+    /**
+     * create a XMemCacheMap
+     */
     protected XMemCacheMap<K, V> createXMemCacheMap() {
-        return XServiceLoader.load(XMemCacheService.class).newXMemCacheMap();
+        return XServiceLoader.load(XMemCacheService.class).newXMemCacheMap(8);
+    }
+
+    public XMemCacheMap<K, V> getMemCacheMap() {
+        return mMemCacheMap;
     }
 
     @Override
@@ -104,7 +110,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         synchronized (this) {
             mPutCount++;
             mMeasuredSize += safeSizeOf(key, value);
-            previous = mMemCacheMap.put(key, value);;
+            previous = mMemCacheMap.put(key, value);
             if (previous != null) {
                 mMeasuredSize -= safeSizeOf(key, previous);
             }
@@ -162,9 +168,9 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
      *     to evict even 0-sized elements.
      */
     protected void trimToSize(int maxMeasureSize) {
-        final int measureSize = measuredSize();
-        final int size = size();
         while (true) {
+            final int measureSize = measuredSize();
+            final int size = size();
             K key;
             V value;
             synchronized (this) {
@@ -269,7 +275,7 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
     /**
      * @return state information
      */
-    public boolean getCacheStats(CacheStats stats) {
+    public boolean getCacheStats(XMemCacheStats stats) {
         Preconditions.checkNotNull(stats);
         stats.hitCount = mHitCount;
         stats.missCount = mMissCount;

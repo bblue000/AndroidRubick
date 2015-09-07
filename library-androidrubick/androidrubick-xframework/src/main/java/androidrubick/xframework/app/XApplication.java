@@ -63,7 +63,11 @@ public class XApplication extends Application {
      * 获取该包名下的类的加载器
      */
     public static ClassLoader getAppClassLoader() {
-        return getAppContext().getClassLoader();
+        try {
+            return getAppContext().getClassLoader();
+        } catch (Throwable e) {
+            return Thread.currentThread().getContextClassLoader();
+        }
     }
 
     private static void checkHandler() {

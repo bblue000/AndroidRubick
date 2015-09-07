@@ -7,6 +7,9 @@ package androidrubick.xframework.cache;
  */
 public interface ICacheable {
 
+    /**
+     * 支持缓存功能的对象可以作为一个缓存对象使用
+     */
     <K, V>Cache<K, V> asCache();
 
 }

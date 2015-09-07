@@ -51,7 +51,8 @@ public abstract class LimitedMeasurableCache<K, V> extends MeasurableCache<K, V>
     protected abstract void trimToSize(int maxMeasureSize) ;
 
     @Override public synchronized String toString() {
-        return String.format("Cache[size=%d, measuredSize=%d, maxMeasuredSize=%d]",
+        return String.format("%s[size=%d, measuredSize=%d, maxMeasuredSize=%d]",
+                getClass().getSimpleName(),
                 size(), measuredSize(), maxMeasureSize());
     }
 }

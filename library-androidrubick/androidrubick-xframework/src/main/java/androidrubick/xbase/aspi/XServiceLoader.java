@@ -63,6 +63,8 @@ import androidrubick.xframework.app.XApplication;
  */
 public class XServiceLoader<S extends XSpiService> {
 
+    private static final boolean DEBUG = true;
+
     /**
      * Constructs a service instance and cache it,
      * using the current app's context class loader.
@@ -95,7 +97,11 @@ public class XServiceLoader<S extends XSpiService> {
                 serviceLoader = sCaches.get(service);
                 return serviceLoader.load();
             }
-            serviceLoader = new XServiceLoader(service, classLoader);
+            if (DEBUG) {
+                serviceLoader = new XServiceLoaderForTest(service, classLoader);
+            } else {
+                serviceLoader = new XServiceLoader(service, classLoader);
+            }
             sCaches.put(service, serviceLoader);
             return serviceLoader.load();
         }
@@ -118,10 +124,10 @@ public class XServiceLoader<S extends XSpiService> {
     private static HashMap<Class<? extends XSpiService>, XServiceLoader> sCaches
             = new HashMap<Class<? extends XSpiService>, XServiceLoader>(8);
 
-    private String mClassName;
-    private final Class<S> mService;
-    private final ClassLoader mClassLoader;
-    private S mCachedInstance;
+    String mClassName;
+    final Class<S> mService;
+    final ClassLoader mClassLoader;
+    S mCachedInstance;
 
     /**
      * 子类需要对无参构造放开权限！

@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache.spi;
+package androidrubick.xframework.cache.mem;
 
 import java.util.Map;
 

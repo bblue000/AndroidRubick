@@ -1,8 +1,8 @@
-package androidrubick.xframework.impl.cache;
+package androidrubick.xframework.impl.cache.mem;
 
 import java.util.LinkedHashMap;
 
-import androidrubick.xframework.cache.spi.XMemCacheMap;
+import androidrubick.xframework.cache.mem.XMemCacheMap;
 
 /**
  * <p/>
@@ -29,10 +29,7 @@ import androidrubick.xframework.cache.spi.XMemCacheMap;
 
     @Override
     public Entry<K, V> evictCacheEntry() {
-        Entry<K, V> endEntry = null;
-        for (Entry<K, V> entry : entrySet()) {
-            endEntry = entry;
-        }
+        Entry<K, V> endEntry = entrySet().iterator().next();
         return endEntry;
     }
 }
