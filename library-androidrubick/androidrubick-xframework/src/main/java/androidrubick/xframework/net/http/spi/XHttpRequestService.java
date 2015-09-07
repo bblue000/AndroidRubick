@@ -10,7 +10,7 @@ import androidrubick.xframework.net.http.response.XHttpResultHolder;
  *
  * Created by Yin Yong on 2015/8/28.
  */
-public interface HttpRequestExecutor {
+public interface XHttpRequestService {
 
     XHttpResultHolder performRequest(XHttpRequest request) throws IOException;
 
