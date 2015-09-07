@@ -1,9 +1,11 @@
 package androidrubick.xframework.impl.cache;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.xframework.cache.spi.XMemCacheMap;
 
 /**
@@ -11,9 +13,10 @@ import androidrubick.xframework.cache.spi.XMemCacheMap;
  *
  * Created by Yin Yong on 2015/9/6.
  */
-public class SortedArrayLruMap<K, V> implements XMemCacheMap<K, V> {
+public class SortedArrayLruMap<K, V> extends AbstractMap<K, V> implements XMemCacheMap<K, V> {
 
     private V[] mTable;
+    private int mSize;
     private float mLoadFactor = .75f;
     public SortedArrayLruMap() {
         this(0);
@@ -74,7 +77,7 @@ public class SortedArrayLruMap<K, V> implements XMemCacheMap<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
-
+        CollectionsCompat.putAll(this, map);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class SortedArrayLruMap<K, V> implements XMemCacheMap<K, V> {
 
     @Override
     public int size() {
-        return 0;
+        return mSize;
     }
 
     @Override
@@ -92,4 +95,8 @@ public class SortedArrayLruMap<K, V> implements XMemCacheMap<K, V> {
         return null;
     }
 
+
+    private abstract class ArrayIterator {
+
+    }
 }

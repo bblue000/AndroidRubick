@@ -13,7 +13,7 @@ import androidrubick.io.FileUtils;
  *
  * @since 1.0
  */
-public abstract class DiskBasedCacheSizeCache<K, V> extends DiskBasedCache<K, V> {
+public abstract class DiskBasedCacheSizeCache<V> extends DiskBasedCache<V> {
 
     public DiskBasedCacheSizeCache(String rootPath, int maxMeasureSize) {
         super(rootPath, maxMeasureSize);
@@ -24,12 +24,8 @@ public abstract class DiskBasedCacheSizeCache<K, V> extends DiskBasedCache<K, V>
     }
 
     @Override
-    protected int sizeOf(K key, V value) {
+    protected int sizeOf(String key, V value) {
         return (int) FileUtils.caculateFileSize(keyToFile(key, getRootPath()));
     }
 
-    @Override
-    public void trimMemory() {
-
-    }
 }

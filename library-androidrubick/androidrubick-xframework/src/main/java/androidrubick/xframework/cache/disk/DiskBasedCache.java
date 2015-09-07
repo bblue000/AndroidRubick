@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Map;
 
 import androidrubick.io.FileUtils;
-import androidrubick.text.Strings;
 import androidrubick.utils.Preconditions;
 import androidrubick.xframework.cache.LimitedMeasurableCache;
 
@@ -21,9 +20,11 @@ import androidrubick.xframework.cache.LimitedMeasurableCache;
  *
  * @since 1.0
  */
-public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
+public abstract class DiskBasedCache<V> extends LimitedMeasurableCache<String, V> {
 
     private File mRootPath;
+    private int mCacheSize;
+    private int mMeasuredSize;
     protected DiskBasedCache(String rootPath, int maxMeasureSize) {
         this(new File(rootPath), maxMeasureSize);
     }
@@ -31,6 +32,8 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
     protected DiskBasedCache(File rootPath, int maxMeasureSize) {
         super(maxMeasureSize);
         mRootPath = Preconditions.checkNotNull(rootPath);
+        int target[] = FileUtils.calculateFileAndDirCount(getRootPath(), true, true);
+        mCacheSize = target[0];
         initialize();
     }
 
@@ -55,7 +58,8 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      *
      */
     @Override
-    public V get(K key) {
+    public V get(String key) {
+        Preconditions.checkNotNull(key, "key");
         return fileToValue(keyToFile(key, getRootPath()));
     }
 
@@ -65,8 +69,9 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      * @return always return null
      */
     @Override
-    public V remove(K key) {
+    public V remove(String key) {
         if (FileUtils.deleteFile(keyToFile(key, getRootPath()), true, null)) {
+            mCacheSize --;
             entryRemoved(false, key, null, null);
         }
         return null;
@@ -82,10 +87,18 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      * @return always return null
      */
     @Override
-    public V put(K key, V value) {
+    public V put(String key, V value) {
         File file = keyToFile(key, getRootPath());
         valueToFile(value, file);
         return null;
+    }
+
+    /**
+     * 缓存的文件个数
+     */
+    @Override
+    public int size() {
+        return mCacheSize;
     }
 
     /**
@@ -100,24 +113,15 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
         FileUtils.deleteFile(getRootPath(), false, null);
     }
 
-    /**
-     * 缓存的文件个数
-     */
     @Override
-    public int size() {
-        int target[] = FileUtils.calculateFileAndDirCount(getRootPath(), true, true);
-        return target[0];
-    }
-
-    @Override
-    protected abstract int sizeOf(K key, V value) ;
+    protected abstract int sizeOf(String key, V value) ;
 
     @Override
     protected void trimToSize(int maxMeasureSize) {
         final int measuredSize = measuredSize();
         final int size = size();
         while (true) {
-            K key;
+            String key;
             V value;
             synchronized (this) {
                 if (measuredSize < 0 || (size == 0 && measuredSize != 0)) {
@@ -133,8 +137,8 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
                 // get the last item in the linked list.
                 // This is not efficient, the goal here is to minimize the changes
                 // compared to the platform version.
-                Map.Entry<K, V> toEvict = null;
-                for (Map.Entry<K, V> entry : map.entrySet()) {
+                Map.Entry<String, V> toEvict = null;
+                for (Map.Entry<String, V> entry : map.entrySet()) {
                     toEvict = entry;
                 }
                 // END LAYOUTLIB CHANGE
@@ -147,7 +151,6 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
                 value = toEvict.getValue();
                 map.remove(key);
                 size -= safeSizeOf(key, value);
-                evictionCount++;
             }
 
             entryRemoved(true, key, value, null);
@@ -157,7 +160,7 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
     /**
      * 由key转为相应的文件对象
      */
-    protected abstract File keyToFile(K key, File rootPath) ;
+    protected abstract File keyToFile(String key, File rootPath) ;
 
     /**
      * 由文件转为相应的值
@@ -169,4 +172,27 @@ public abstract class DiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      */
     protected abstract boolean valueToFile(V value, File file);
 
+    /**
+     *
+     * 该处<code>oldValue</code>和<code>newValue</code>都为null，主要是为了
+     * 通知该<code>key</code>对应的缓存已经删除。
+     *
+     * @param evicted true if the entry is being removed to make space, false
+     *     if the removal was caused by a {@link #put} or {@link #remove}.
+     * @param key
+     * @param oldValue
+     * @param newValue the new value for {@code key}, if it exists. If non-null,
+     *     this removal was caused by a {@link #put}. Otherwise it was caused by
+     *     an eviction or a {@link #remove}.
+     *
+     */
+    @Override
+    protected void entryRemoved(boolean evicted, String key, V oldValue, V newValue) {
+        super.entryRemoved(evicted, key, oldValue, newValue);
+    }
+
+    @Override
+    public void trimMemory() {
+
+    }
 }

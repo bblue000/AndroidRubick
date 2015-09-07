@@ -2,7 +2,7 @@ package androidrubick.xframework.cache.mem;
 
 /**
  *
- * 当前缓存状态的类
+ * 获取当前缓存状态、一些统计数据的类
  *
  * <p/>
  *

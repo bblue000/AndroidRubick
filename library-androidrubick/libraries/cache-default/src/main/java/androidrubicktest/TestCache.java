@@ -1,5 +1,7 @@
 package androidrubicktest;
 
+import androidrubick.xframework.cache.mem.MemBasedCache;
+
 /**
  * somthing
  *
@@ -14,6 +16,9 @@ public class TestCache {
     private TestCache() { /* no instance needed */ }
 
     public static void main(String[] args) {
+
+        MemBasedCache cache = new MemBasedCache(0) {
+        };
 
     }
 

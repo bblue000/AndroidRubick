@@ -16,17 +16,17 @@ public class XMemCacheServiceImpl implements XMemCacheService {
 
     @Override
     public <K, V> XMemCacheMap<K, V> newXMemCacheMap() {
-        return new LinkeHashCacheMap();
+        return new LinkedHashCacheMap();
     }
 
     @Override
     public <K, V> XMemCacheMap<K, V> newXMemCacheMap(int initialCapacity) {
-        return new LinkeHashCacheMap(initialCapacity);
+        return new LinkedHashCacheMap(initialCapacity);
     }
 
     @Override
     public <K, V> XMemCacheMap<K, V> newXMemCacheMap(int initialCapacity, float loadFactor) {
-        return new LinkeHashCacheMap(initialCapacity, loadFactor);
+        return new LinkedHashCacheMap(initialCapacity, loadFactor);
     }
 
     @Override

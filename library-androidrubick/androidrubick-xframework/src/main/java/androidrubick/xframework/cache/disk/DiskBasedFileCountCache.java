@@ -11,7 +11,7 @@ import java.io.File;
  *
  * @since 1.0
  */
-public abstract class DiskBasedFileCountCache<K, V> extends DiskBasedCache<K, V> {
+public abstract class DiskBasedFileCountCache<V> extends DiskBasedCache<V> {
 
     protected DiskBasedFileCountCache(String rootPath, int maxMeasureSize) {
         super(rootPath, maxMeasureSize);
@@ -22,7 +22,7 @@ public abstract class DiskBasedFileCountCache<K, V> extends DiskBasedCache<K, V>
     }
 
     @Override
-    protected int sizeOf(K key, V value) {
+    protected int sizeOf(String key, V value) {
         return 1;
     }
 

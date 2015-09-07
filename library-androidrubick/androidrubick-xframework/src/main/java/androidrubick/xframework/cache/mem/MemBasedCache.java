@@ -118,6 +118,16 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
         return previous;
     }
 
+    /**
+     * Returns the approximate number of entries in this cache.
+     *
+     * @since 1.0
+     */
+    @Override
+    public int size() {
+        return mMemCacheMap.size();
+    }
+
     @Override
     public V remove(K key) {
         Preconditions.checkNotNull(key, "key");
@@ -140,6 +150,11 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
     @Override
     public void clear() {
         trimToSize(-1);// -1 will evict 0-sized elements
+    }
+
+    @Override
+    public void trimMemory() {
+        clear();
     }
 
     /**
@@ -194,14 +209,6 @@ public abstract class MemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
     public int measuredSize() {
         return mMeasuredSize;
     }
-
-    /**
-     * Returns the approximate number of entries in this cache.
-     *
-     * @since 1.0
-     */
-    @Override
-    public abstract int size() ;
 
     /**
      * Returns the size of the entry for {@code key} and {@code value} in
