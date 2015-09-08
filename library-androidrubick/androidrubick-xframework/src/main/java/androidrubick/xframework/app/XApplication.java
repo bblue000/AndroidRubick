@@ -53,6 +53,11 @@ public class XApplication extends Application {
     }
 
     @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
+
+    @Override
     public void startActivity(Intent intent) {
         XActivityController.dispatchStartActivityForResult(intent, 0);
         super.startActivity(intent);
