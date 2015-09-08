@@ -6,7 +6,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * something
@@ -20,7 +20,7 @@ import androidrubick.xframework.app.XApplication;
 /*package*/ class XActivityCtrlImplAfter14 extends XActivityCtrl implements Application.ActivityLifecycleCallbacks {
 
     public XActivityCtrlImplAfter14() {
-        XApplication.getAppContext().registerActivityLifecycleCallbacks(this);
+        XGlobals.getAppContext().registerActivityLifecycleCallbacks(this);
     }
 
     public void dispatchOnActivityCreated(Activity activity, Bundle savedInstanceState) {

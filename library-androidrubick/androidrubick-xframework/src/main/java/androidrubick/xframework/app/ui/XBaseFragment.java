@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidrubick.xbase.util.FrameworkLog;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.events.XEventAPI;
 import butterknife.ButterKnife;
 
@@ -132,7 +132,7 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
     }
 
     public Context getApplicationContext() {
-        return XApplication.getAppContext();
+        return XGlobals.getAppContext();
     }
 
     protected final void ensureRootViewCreated() {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidrubick.xbase.util.AndroidUtils;
+import androidrubick.xbase.util.AppInfos;
 import androidrubick.xbase.util.ToastUtils;
 import androidrubick.xframework.app.ui.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
@@ -57,11 +58,13 @@ public class MainActivity extends XBaseActivity {
 
                 XEventAPI.post("1", "1");
                 XEventAPI.postToMain("1", "2");
+
             }
         }.start();
 
         AndroidBuildTest.testGet();
         TestFileSystem.test();
+        AppInfos.printMemeory();
 //        XApplication.is();
     }
 

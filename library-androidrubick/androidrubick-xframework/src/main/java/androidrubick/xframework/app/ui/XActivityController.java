@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.app.ui.internal.XActivityCtrl;
 
 /**
@@ -25,7 +25,7 @@ public class XActivityController {
      */
     public static void startActivity(Intent intent) {
         Preconditions.checkNotNull(intent, "intent should not be null");
-        Context context = XApplication.getAppContext();
+        Context context = XGlobals.getAppContext();
         // TODO 实际上是不是new task不单单是靠这个Flag决定的
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -36,7 +36,7 @@ public class XActivityController {
      */
     public static void startActivity(Class<? extends Activity> clz) {
         Preconditions.checkNotNull(clz, "clz should not be null");
-        Context context = XApplication.getAppContext();
+        Context context = XGlobals.getAppContext();
         startActivity(new Intent(context, clz));
     }
 

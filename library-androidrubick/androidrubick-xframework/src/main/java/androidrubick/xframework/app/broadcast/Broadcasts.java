@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import androidrubick.utils.Objects;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * <p/>
@@ -37,7 +37,7 @@ public class Broadcasts {
         if (Objects.isNull(receiver) || Objects.isNull(filter)) {
             return ;
         }
-        XApplication.getAppContext().registerReceiver(receiver, filter);
+        XGlobals.getAppContext().registerReceiver(receiver, filter);
     }
 
     /**
@@ -45,7 +45,7 @@ public class Broadcasts {
      */
     public static void unregisterReceiver(BroadcastReceiver receiver) {
         try {
-            XApplication.getAppContext().unregisterReceiver(receiver);
+            XGlobals.getAppContext().unregisterReceiver(receiver);
         } catch (Exception e) { }
     }
 
@@ -63,7 +63,7 @@ public class Broadcasts {
         if (Objects.isNull(intent)) {
             return ;
         }
-        XApplication.getAppContext().sendBroadcast(intent);
+        XGlobals.getAppContext().sendBroadcast(intent);
     }
 
 }

@@ -6,7 +6,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import androidrubick.utils.Objects;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * 本地广播的封装
@@ -21,7 +21,7 @@ public class LocalBroadcasts {
     private static LocalBroadcastManager sLocalBroadcastManager;
     private synchronized static void checkLocalBroadcastManagerInstance() {
         if (null == sLocalBroadcastManager) {
-            sLocalBroadcastManager = LocalBroadcastManager.getInstance(XApplication.getAppContext());
+            sLocalBroadcastManager = LocalBroadcastManager.getInstance(XGlobals.getAppContext());
         }
     }
 

@@ -1,7 +1,6 @@
 package androidrubick.xbase.util;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,8 +13,7 @@ import android.webkit.URLUtil;
 import java.util.Collections;
 import java.util.List;
 
-import androidrubick.utils.Objects;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * 定义调用Android系统相关应用的方法
@@ -54,7 +52,7 @@ public class AndroidUtils {
 	 */
 	public static boolean launchApplication(String packageName) {
 		try {
-			Context context = XApplication.getAppContext();
+			Context context = XGlobals.getAppContext();
 			// ---get the package info---
 			PackageManager pm = context.getPackageManager();
 			Intent launch = pm.getLaunchIntentForPackage(packageName);
@@ -71,7 +69,7 @@ public class AndroidUtils {
 	 */
 	public static boolean appInstalled(String packageName) {
 		try {
-			Context context = XApplication.getAppContext();
+			Context context = XGlobals.getAppContext();
 			// ---get the package info---
 			PackageManager pm = context.getPackageManager();
 			PackageInfo pkg = pm.getPackageInfo(packageName, 0);
@@ -81,34 +79,6 @@ public class AndroidUtils {
 			return false;
 		}
 	}
-
-	/**
-	 * 获取当前进程的进程名称
-	 */
-	public static String getProcessName() {
-		Context context = XApplication.getAppContext();
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = am.getRunningAppProcesses();
-		if (null == runningAppProcessInfos || runningAppProcessInfos.isEmpty()) {
-			return null;
-		}
-		final int myPid = android.os.Process.myPid();
-		String processName = null;
-		for (ActivityManager.RunningAppProcessInfo info : runningAppProcessInfos) {
-			if (info.pid == myPid) {
-				processName = info.processName;
-				break;
-			}
-		}
-		return processName;
-	}
-
-    /**
-     * 当前的进程名是否是<code>processName</code>
-     */
-    public static boolean isProcess(String processName) {
-        return Objects.equals(processName, getProcessName());
-    }
 
 	/**
 	 * 查找可以处理<code>intent</code>的Activity
@@ -126,7 +96,7 @@ public class AndroidUtils {
 	 */
 	public static List<ResolveInfo> queryIntentActivities(Intent intent, int flags) {
 		try {
-			Context context = XApplication.getAppContext();
+			Context context = XGlobals.getAppContext();
 			// ---get the package info---
 			PackageManager pm = context.getPackageManager();
 			return pm.queryIntentActivities(intent, flags);
@@ -149,7 +119,7 @@ public class AndroidUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		//需要拨打的号码
 		intent.setData(Uri.parse("tel:" + number));
-        XApplication.getAppContext().startActivity(intent);
+        XGlobals.getAppContext().startActivity(intent);
 	}
 
 	/**
@@ -170,7 +140,7 @@ public class AndroidUtils {
 		intent.setData(Uri.parse(uri));
 
 		try {
-            XApplication.getAppContext().startActivity(
+            XGlobals.getAppContext().startActivity(
                     Intent.createChooser(intent, chooserTitle)
 					    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		} catch (Exception e) {
@@ -191,7 +161,7 @@ public class AndroidUtils {
 //		intent.setDataAndType(Uri.parse(URLUtil.guessUrl(url)), "text/html");
 		
 		try {
-			XApplication.getAppContext().startActivity(Intent.createChooser(intent, chooserTitle)
+            XGlobals.getAppContext().startActivity(Intent.createChooser(intent, chooserTitle)
 					.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		} catch (Exception e) {
 			ToastUtils.showToast("没有合适的应用打开链接");
@@ -226,7 +196,7 @@ public class AndroidUtils {
 	 * </p>
 	 */
 	public static void requestPermission(String permission) {
-		Context context = XApplication.getAppContext();
+		Context context = XGlobals.getAppContext();
 		if (PackageManager.PERMISSION_GRANTED != 
 				context.getPackageManager().checkPermission(permission,
 						context.getPackageName())) {

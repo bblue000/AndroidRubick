@@ -3,7 +3,7 @@ package androidrubicktest;
 import android.os.Environment;
 import android.util.Log;
 
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * <p/>
@@ -32,9 +32,9 @@ public class TestFileSystem {
         Log.e("yytest", "getExternalStoragePublicDirectory = " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM));
 
         // /data/data/org.androidrubick.demo/cache
-        Log.e("yytest", "getCacheDir = " + XApplication.getAppContext().getCacheDir());
+        Log.e("yytest", "getCacheDir = " + XGlobals.getAppContext().getCacheDir());
         // /storage/emulated/0/Android/data/org.androidrubick.demo/cache
-        Log.e("yytest", "getExternalCacheDir = " + XApplication.getAppContext().getExternalCacheDir());
+        Log.e("yytest", "getExternalCacheDir = " + XGlobals.getAppContext().getExternalCacheDir());
     }
 
 

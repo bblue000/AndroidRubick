@@ -10,7 +10,7 @@ import android.view.WindowManager;
 
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * 获取设备信息的工具类
@@ -33,7 +33,7 @@ public class DeviceInfos {
     // >>>>>>>>>>>>>>>>>>>
     private static void getDisplay() {
         if (sDisplayWidth <= 0 || sDisplayHeight <= 0 || sDensity <= 0.0f) {
-            WindowManager wm = (WindowManager) XApplication.getAppContext()
+            WindowManager wm = (WindowManager) XGlobals.getAppContext()
                     .getSystemService(Context.WINDOW_SERVICE);
             DisplayMetrics dm = new DisplayMetrics();
             wm.getDefaultDisplay().getMetrics(dm);
@@ -157,7 +157,7 @@ public class DeviceInfos {
      */
     public static String getDeviceUuid() {
         if (null == sDeviceUuid) {
-            DeviceUuidFactory factory = new DeviceUuidFactory(XApplication.getAppContext());
+            DeviceUuidFactory factory = new DeviceUuidFactory(XGlobals.getAppContext());
             sDeviceUuid = factory.getDeviceUuid();
         }
         return sDeviceUuid;
@@ -173,7 +173,7 @@ public class DeviceInfos {
      */
     public static String getIMEI() {
         AndroidUtils.requestPermission(android.Manifest.permission.READ_PHONE_STATE);
-        TelephonyManager tm = (TelephonyManager) XApplication.getAppContext()
+        TelephonyManager tm = (TelephonyManager) XGlobals.getAppContext()
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (tm == null) {
             return null;

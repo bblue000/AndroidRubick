@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 
 /**
@@ -37,11 +37,11 @@ public class ToastUtils {
 	}
 	
 	private static Handler getHandler() {
-		return XApplication.getHandler();
+		return XGlobals.getHandler();
 	}
 	
 	private static Context getContext() {
-		return XApplication.getAppContext();
+		return XGlobals.getAppContext();
 	}
 	
 	public static void showToast(final CharSequence message){

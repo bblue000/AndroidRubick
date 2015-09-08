@@ -12,7 +12,7 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
 import androidrubick.text.Charsets;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.app.XApplication;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * A service-provider loader.
@@ -73,7 +73,7 @@ public class XServiceLoader<S extends XSpiService> {
      * @return a XSpiService
      */
     public static <S extends XSpiService>S load(Class<S> service) {
-        ClassLoader classLoader = XApplication.getAppClassLoader();
+        ClassLoader classLoader = XGlobals.getAppClassLoader();
         return findFromCacheOrCreate(service, classLoader);
     }
 
