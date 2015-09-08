@@ -2,17 +2,14 @@ package androidrubick.xframework.app;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.res.Configuration;
 
-import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xbase.util.AppInfos;
+import androidrubick.xframework.app.state.XAppStateMonitor;
 import androidrubick.xframework.app.ui.XActivityController;
 
 /**
- * 应用的基类，封装一些应用全局调用的对象及API（to be continued），
- *
- * 包括提供全局的Handler对象和Application Context，
- *
- * 也提供了强杀进程等方法。
+ * 应用的基类
  *
  * <p/>
  *
@@ -34,12 +31,17 @@ public class XApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (AppInfos.isProcess(getPackageName())) {
+        if (AppInfos.isMainProcess()) {
             onCreateMainApp();
         }
     }
 
     /**
+     *
+     * 一个应用可能有多个进程，该方法只有在主进程启动时才会调用
+     *
+     * <p/>
+     *
      * If you override this method, be sure to call super.onCreateMainApp().
      */
     protected void onCreateMainApp() {
@@ -49,12 +51,19 @@ public class XApplication extends Application {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        XServiceLoader.trimMemory();
+        XAppStateMonitor.onAppLowMemory();
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+        XAppStateMonitor.onAppTrimMemory(level);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        XAppStateMonitor.onAppConfigurationChanged(newConfig);
     }
 
     @Override

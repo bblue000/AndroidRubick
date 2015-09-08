@@ -13,6 +13,8 @@ import androidrubick.io.IOUtils;
 import androidrubick.text.Charsets;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.app.XGlobals;
+import androidrubick.xframework.app.state.XAppStateMonitor;
+import androidrubick.xframework.app.state.XSimpleAppStateCallback;
 
 /**
  * A service-provider loader.
@@ -64,6 +66,16 @@ import androidrubick.xframework.app.XGlobals;
 public class XServiceLoader<S extends XSpiService> {
 
     private static final boolean DEBUG = true;
+
+    static final XSimpleAppStateCallback sAppStateCallback = new XSimpleAppStateCallback() {
+        @Override
+        public void onLowMemory() {
+            trimMemory();
+        }
+    };
+    static {
+        XAppStateMonitor.registerAppStateCallback(sAppStateCallback);
+    }
 
     /**
      * Constructs a service instance and cache it,

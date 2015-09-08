@@ -165,6 +165,14 @@ public class AppInfos {
     public static boolean isProcess(String processName) {
         return Objects.equals(processName, getProcessName());
     }
+
+    /**
+     * 当前的进程名是否是主应用进程（一般地，主应用进程名同包名）
+     */
+    public static boolean isMainProcess() {
+        Context context = XGlobals.getAppContext();
+        return isProcess(context.getPackageName());
+    }
     // end
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
