@@ -24,4 +24,11 @@ public class TimeSlots {
         return 5 * 1000L;
     }
 
+    /**
+     * 无用户操作闲置时间
+     */
+    public static long getNonOpSlot() {
+        return 15 * 1000L;
+    }
+
 }

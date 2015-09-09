@@ -5,8 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.*;
 
-import androidrubick.utils.Preconditions;
-
 /**
  * 提供应用中常见的全局对象及相关工具方法，比如Application，Handler等等。
  *
@@ -28,9 +26,6 @@ public class XGlobals {
      * @return 整个APP可以使用的Context
      */
     public static Application getAppContext() {
-        Preconditions.checkNotNull(sApplication, "check whether the app has a Application "
-                + "class extends BaseApplication ? or forget to "
-                + "invoke super class's constructor first!");
         return sApplication;
     }
 
@@ -62,6 +57,10 @@ public class XGlobals {
      */
     public static boolean runOnUiThread(Runnable runnable, long delay) {
         return getHandler().postDelayed(runnable, delay);
+    }
+
+    public static void runInBackground(Runnable runnable) {
+
     }
 
     private static void checkHandler() {

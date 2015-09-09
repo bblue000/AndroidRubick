@@ -1,9 +1,17 @@
 package androidrubick.xbase.util;
 
-import android.annotation.SuppressLint;
-import android.os.*;
 import android.os.Process;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import androidrubick.utils.MathCompat;
+import androidrubick.utils.Objects;
+import androidrubick.utils.concurrent.SimpleThreadFactory;
 
 /**
  * Handy class for starting a new thread that has a looper. The looper can then be
@@ -13,139 +21,88 @@ import android.os.Process;
  *
  * Created by Yin Yong on 2015/9/6.
  */
-public class LazyHandler extends Thread {
+public class LazyHandler implements Executor {
 
-    private static long DEFAULT_ALIVE_TIME = TimeSlots.getUIAvgSlot();
+    private static long DEFAULT_ALIVE_TIME = TimeSlots.getNonOpSlot();
 
     int mPriority;
     int mTid = -1;
-    Looper mLooper;
     // 闲置时间
-    long mAliveTime = DEFAULT_ALIVE_TIME;
+    long mAliveTime;
+    ThreadPoolExecutor mExecutor;
+    public LazyHandler() {
+        this(DEFAULT_ALIVE_TIME);
+    }
 
-    public LazyHandler(String name) {
-        super("Lazy Handler");
-        mPriority = Process.THREAD_PRIORITY_DEFAULT;
+    public LazyHandler(long aliveTime) {
+        this(aliveTime, Process.THREAD_PRIORITY_BACKGROUND);
     }
 
     /**
      * Constructs a HandlerThread.
-     * @param name
      * @param priority The priority to run the thread at. The value supplied must be from
      * {@link android.os.Process} and not from java.lang.Thread.
      */
-    public LazyHandler(String name, int priority) {
-        super(name);
+    public LazyHandler(long aliveTime, int priority) {
         mPriority = priority;
+        mAliveTime = MathCompat.ifLessThan(aliveTime, 1L, DEFAULT_ALIVE_TIME);
     }
 
     /**
-     * Call back method that can be explicitly overridden if needed to execute some
-     * setup before Looper loops.
+     * Initiates an orderly shutdown in which previously submitted
+     * tasks are executed, but no new tasks will be accepted.
+     * Invocation has no additional effect if already shut down.
+     *
+     * <p>This method does not wait for previously submitted tasks to
+     * complete execution.
      */
-    protected void onLooperPrepared() {
+    public void shutdown() {
+        ThreadPoolExecutor executor = mExecutor;
+        if (Objects.isNull(executor)) {
+            return ;
+        }
+        executor.shutdown();
+        mExecutor = null;
+    }
+
+    /**
+     * Attempts to stop all actively executing tasks, halts the
+     * processing of waiting tasks, and returns a list of the tasks
+     * that were awaiting execution. These tasks are drained (removed)
+     * from the task queue upon return from this method.
+     *
+     * <p>This method does not wait for actively executing tasks to
+     * terminate.
+     *
+     * <p>There are no guarantees beyond best-effort attempts to stop
+     * processing actively executing tasks.  This implementation
+     * cancels tasks via {@link Thread#interrupt}, so any task that
+     * fails to respond to interrupts may never terminate.
+     */
+    public List<Runnable> shutdownNow() {
+        ThreadPoolExecutor executor = mExecutor;
+        if (Objects.isNull(executor)) {
+            return Collections.emptyList();
+        }
+        try {
+            return executor.shutdownNow();
+        } finally {
+            mExecutor = null;
+        }
     }
 
     @Override
-    public void run() {
-        mTid = Process.myTid();
-        Looper.prepare();
+    public void execute(Runnable command) {
         synchronized (this) {
-            mLooper = Looper.myLooper();
+            if (null == mExecutor) {
+                mExecutor = new ThreadPoolExecutor(0, 1,
+                        mAliveTime, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<Runnable>(),
+                        new SimpleThreadFactory("Lazy Handler"));
+            }
+            // notify anyway
             notifyAll();
         }
-        Process.setThreadPriority(mPriority);
-        onLooperPrepared();
-        Looper.loop();
-        mTid = -1;
-    }
-
-    /**
-     * This method returns the Looper associated with this thread. If this thread not been started
-     * or for any reason is isAlive() returns false, this method will return null. If this thread
-     * has been started, this method will block until the looper has been initialized.
-     * @return The looper.
-     */
-    public Looper getLooper() {
-        if (!isAlive()) {
-            return null;
-        }
-
-        // If the thread has been started, wait until the looper has been created.
-        synchronized (this) {
-            while (isAlive() && mLooper == null) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-        return mLooper;
-    }
-
-    /**
-     * Quits the handler thread's looper.
-     * <p>
-     * Causes the handler thread's looper to terminate without processing any
-     * more messages in the message queue.
-     * </p><p>
-     * Any attempt to post messages to the queue after the looper is asked to quit will fail.
-     * For example, the {@link Handler#sendMessage(Message)} method will return false.
-     * </p><p class="note">
-     * Using this method may be unsafe because some messages may not be delivered
-     * before the looper terminates.  Consider using {@link #quitSafely} instead to ensure
-     * that all pending work is completed in an orderly manner.
-     * </p>
-     *
-     * @return True if the looper looper has been asked to quit or false if the
-     * thread had not yet started running.
-     *
-     * @see #quitSafely
-     */
-    public boolean quit() {
-        Looper looper = getLooper();
-        if (looper != null) {
-            looper.quit();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Quits the handler thread's looper safely.
-     * <p>
-     * Causes the handler thread's looper to terminate as soon as all remaining messages
-     * in the message queue that are already due to be delivered have been handled.
-     * Pending delayed messages with due times in the future will not be delivered.
-     * </p><p>
-     * Any attempt to post messages to the queue after the looper is asked to quit will fail.
-     * For example, the {@link Handler#sendMessage(Message)} method will return false.
-     * </p><p>
-     * If the thread has not been started or has finished (that is if
-     * {@link #getLooper} returns null), then false is returned.
-     * Otherwise the looper is asked to quit and true is returned.
-     * </p>
-     *
-     * @return True if the looper looper has been asked to quit or false if the
-     * thread had not yet started running.
-     */
-    @SuppressLint("NewApi")
-    public boolean quitSafely() {
-        if (DeviceInfos.getAndroidSDKVersion() < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return quit();
-        }
-        Looper looper = getLooper();
-        if (looper != null) {
-            looper.quitSafely();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns the identifier of this thread. See Process.myTid().
-     */
-    public int getThreadId() {
-        return mTid;
+        mExecutor.execute(command);
     }
 }
