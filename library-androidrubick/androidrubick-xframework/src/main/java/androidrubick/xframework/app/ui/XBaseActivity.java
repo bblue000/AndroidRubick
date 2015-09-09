@@ -10,39 +10,46 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidrubick.xframework.app.ui.spi.XLayoutInflateService;
-import androidrubick.xframework.events.XEventAPI;
-import butterknife.ButterKnife;
+import androidrubick.utils.Preconditions;
+import androidrubick.xframework.app.control.XUIController;
 
 /**
  * 封装了一些步骤化的操作，比如初始化View，初始化监听器，初始化数据
+ *
  * <p/>
+ *
  * Created by yong01.yin on 2014/11/11.
  */
-public abstract class XBaseActivity extends FragmentActivity implements IUIFlow {
+public abstract class XBaseActivity extends FragmentActivity implements XUIComponent {
 
     private View mRootView;
-    private XLayoutInflateService mInflater;
+    private XUIController mController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         XActivityCallbackDispatcher.dispatchOnActivityCreated(this, savedInstanceState);
         super.onCreate(savedInstanceState);
-        doOnCreate(savedInstanceState);
+        doOnCreateView(savedInstanceState);
+        doInitOnViewCreated(getRootView(), savedInstanceState);
     }
 
-    protected void doOnCreate(Bundle savedInstanceState) {
+    protected void doOnCreateView(Bundle savedInstanceState) {
         mRootView = provideLayoutView(getLayoutInflater(), (ViewGroup) getWindow().getDecorView(), savedInstanceState);
+        Preconditions.checkNotNull(mRootView, "root view is null, ensure provideLayoutView is right!");
+        setContentView(mRootView);
+    }
 
-        if (null != mRootView) {
-            setContentView(mRootView);
-        }
+    protected void doInitOnViewCreated(View rootView, Bundle savedInstanceState) {
+        initView(rootView, savedInstanceState);
+        initListener(rootView, savedInstanceState);
+        mController = provideController(rootView, savedInstanceState);
+        Preconditions.checkNotNull(mController, "controller is null, ensure provideController is right!");
+        // init data
+        mController.initData();
+    }
 
-        // TODO use ButterKnife
-        ButterKnife.inject(this, mRootView);
-        XEventAPI.register(this);
-        initView(mRootView, savedInstanceState);
-        initListener(mRootView, savedInstanceState);
-        initData(mRootView, savedInstanceState);
+    @Override
+    public <Data, Callback extends XUIController.XUICtrlCallback<Data>> XUIController<Callback> getController() {
+        return mController;
     }
 
     @Override
@@ -112,11 +119,6 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     protected void onDestroy() {
         XActivityCallbackDispatcher.dispatchOnActivityDestroyed(this);
         super.onDestroy();
-        doOnDestroy();
-    }
-
-    protected void doOnDestroy() {
-        XEventAPI.unregister(this);
     }
 
     @Override
@@ -211,6 +213,18 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     @Override
     public boolean validateBackPressFinish() {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p/>
+     *
+     * 默认返回当前Activity
+     */
+    @Override
+    public Object getUITag() {
+        return this;
     }
 }
 

@@ -63,4 +63,16 @@ public class XJobTest {
 
     }
 
+    class A {
+        <D extends A>D get() {
+            return null;
+        }
+    }
+
+    class Aa extends A {
+        Aa get() {
+            return null;
+        }
+    }
+
 }

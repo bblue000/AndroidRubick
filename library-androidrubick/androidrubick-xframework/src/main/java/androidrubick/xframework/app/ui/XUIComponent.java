@@ -7,20 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidrubick.xframework.app.control.XUIController;
+
 /**
  * UI初始化流程，及相关API
  *
  * <p/>
+ *
  * Created by yong01.yin on 2014/11/11.
  */
-interface IUIFlow {
+public interface XUIComponent {
 
     /**
      * 提供activity的layout res ID
      *
      * <p/>
      *
-     * 如果想设置特定的View，可以调用{@link #provideLayoutView()}
+     * 如果想设置特定的View，可以调用{@link #provideLayoutView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}
      *
      * <br/>
      * define the layout res of the activity/fragment
@@ -28,7 +31,7 @@ interface IUIFlow {
     int provideLayoutResId();
 
     /**
-     * 提供activity的content View，默认实现是根据{@link #provideLayoutResId()}
+     * 提供activity/fragment的content View，默认实现是根据{@link #provideLayoutResId()}
      * 加载布局，没有提供则返回null
      *
      * <p/>
@@ -43,29 +46,40 @@ interface IUIFlow {
      *
      * <p/>
      *
-     * @param view root view of the activity/fragment
+     * @param rootView root content view of the activity/fragment
      *
      */
-    void initView(View view, Bundle savedInstanceState);
+    void initView(View rootView, Bundle savedInstanceState);
 
     /**
      * 在{@link Activity#onCreate(Bundle)}中调用，
      * 在{@link #initView(View, Bundle)}之后被调用
      *
-     * @param view root view of the activity/fragment
+     * @param rootView root content view of the activity/fragment
      */
-    void initListener(View view, Bundle savedInstanceState);
+    void initListener(View rootView, Bundle savedInstanceState);
 
     /**
      * 在{@link Activity#onCreate(Bundle)}中调用，
-     * 在{@link #initView(View, Bundle)}和{@link #initListener(View, Bundle)}之后调用
+     * 在{@link #initView(View, Bundle)}和{@link #initListener(View, Bundle)}之后调用。
      *
      * <p/>
      *
-     * @param view root view of the activity/fragment
+     * 该方法中执行Controller的初始化（{@link XUIController#initData()}）和
+     * 绑定（{@link XUIController#bindCallback(XUIController.XUICtrlCallback)}）操作。
+     *
+     * <p/>
+     *
+     * @param rootView root content view of the activity/fragment
      *
      */
-    void initData(View view, Bundle savedInstanceState) ;
+    <Data, Callback extends XUIController.XUICtrlCallback<Data>>XUIController<Callback>
+    provideController(View rootView, Bundle savedInstanceState) ;
+
+    /**
+     * 获取由{@link #provideController(android.view.View, android.os.Bundle)}创建的{@link XUIController}对象
+     */
+    <Data, Callback extends XUIController.XUICtrlCallback<Data>> XUIController<Callback> getController() ;
 
     /**
      * 一个内置的用于更新UI的方法
@@ -112,4 +126,13 @@ interface IUIFlow {
      * @see #doBackPressFinish()
      */
     boolean validateBackPressFinish();
+
+    /**
+     * as a specific UI component, we can mark this by a tag.
+     *
+     * <p/>
+     *
+     * 默认返回当前组件
+     */
+    Object getUITag();
 }

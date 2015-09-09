@@ -13,6 +13,8 @@
  *     <li>M--Manager视图控制器，即控制Android中的Activity/Fragment之间的跳转、数据传递逻辑</li>
  * </ul>
  *
+ * 在框架中依赖是单向的，View依赖于Controller，Controller依赖于ModelManager，依次类推。
+ *
  * <p/>
  *
  * 需要联网的客户端一般都有从Server获取数据，向Server提交数据等操作，也就是跟自身的后台交互。

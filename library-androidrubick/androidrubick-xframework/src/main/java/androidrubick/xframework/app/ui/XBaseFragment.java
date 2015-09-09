@@ -10,21 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidrubick.utils.Preconditions;
 import androidrubick.xbase.util.FrameworkLog;
 import androidrubick.xframework.app.XGlobals;
+import androidrubick.xframework.app.control.XUIController;
 import androidrubick.xframework.events.XEventAPI;
 import butterknife.ButterKnife;
 
 /**
  * Created by yong01.yin on 2014/11/11.
  */
-public abstract class XBaseFragment extends Fragment implements IUIFlow {
+public abstract class XBaseFragment extends Fragment implements XUIComponent {
 
     // root view是否已经创建，如果没有创建，而想使用应该创建后才能使用的方法时，将抛出异常
     private boolean mIsRootViewCreated = false;
     private boolean mFirstTimeBuilt = true;
     // 根View，外部提供的View——Activity的根View其实是内置的FrameLayout
     private View mRootView;
+    private XUIController mController;
 
     /**
      * 持有该Fragment的FragmentActivity的引用
@@ -112,9 +115,16 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
             // 细分生命周期
             initView(mRootView, savedInstanceState);
             initListener(mRootView, savedInstanceState);
-            initData(mRootView, savedInstanceState);
+            mController = provideController(mRootView, savedInstanceState);
+            Preconditions.checkNotNull(mController, "controller is null, ensure provideController is right!");
+            mController.initData();
         }
         mFirstTimeBuilt = false;
+    }
+
+    @Override
+    public <Data, Callback extends XUIController.XUICtrlCallback<Data>> XUIController<Callback> getController() {
+        return mController;
     }
 
     @Override
@@ -185,17 +195,6 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
      * 增加了检测是否已经加入Activity
      *
      */
-    public void startActivityChecked(Intent intent) {
-        if (!isAddToActivity()) return;
-        startActivity(intent);
-    }
-
-    /**
-     * 推荐使用。
-     *
-     * 增加了检测是否已经加入Activity
-     *
-     */
     public void startActivityChecked(Class<? extends Activity> clz) {
         if (!isAddToActivity()) return;
         startActivity(clz);
@@ -207,9 +206,9 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
      * 增加了检测是否已经加入Activity
      *
      */
-    public void startActivityForResultChecked(Intent intent, int requestCode) {
+    public void startActivityChecked(Intent intent) {
         if (!isAddToActivity()) return;
-        startActivityForResult(intent, requestCode);
+        startActivity(intent);
     }
 
     /**
@@ -223,6 +222,17 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
         startActivityForResult(clz, requestCode);
     }
 
+    /**
+     * 推荐使用。
+     *
+     * 增加了检测是否已经加入Activity
+     *
+     */
+    public void startActivityForResultChecked(Intent intent, int requestCode) {
+        if (!isAddToActivity()) return;
+        startActivityForResult(intent, requestCode);
+    }
+
     @Override
     public void startActivity(Intent intent) {
         XActivityController.startActivity(intent);
@@ -234,13 +244,13 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
+    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
+        startActivityForResult(new Intent(getApplicationContext(), clz), requestCode);
     }
 
     @Override
-    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
-        startActivityForResult(new Intent(getApplicationContext(), clz), requestCode);
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -251,11 +261,16 @@ public abstract class XBaseFragment extends Fragment implements IUIFlow {
         getActivity().finish();
     }
 
-    protected void superStartActivity(Intent intent) {
-        super.startActivity(intent);
-    }
-
-    protected void superStartActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
+    /**
+     * {@inheritDoc}
+     *
+     * <p/>
+     *
+     * 默认返回当前Fragment
+     *
+     */
+    @Override
+    public Object getUITag() {
+        return this;
     }
 }
