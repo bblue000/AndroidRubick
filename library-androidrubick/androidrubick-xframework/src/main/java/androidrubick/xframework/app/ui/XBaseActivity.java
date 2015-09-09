@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidrubick.xframework.app.ui.spi.XLayoutInflateService;
 import androidrubick.xframework.events.XEventAPI;
 import butterknife.ButterKnife;
 
@@ -21,10 +22,10 @@ import butterknife.ButterKnife;
 public abstract class XBaseActivity extends FragmentActivity implements IUIFlow {
 
     private View mRootView;
-
+    private XLayoutInflateService mInflater;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        XActivityController.dispatchOnActivityCreated(this, savedInstanceState);
+        XActivityCallbackDispatcher.dispatchOnActivityCreated(this, savedInstanceState);
         super.onCreate(savedInstanceState);
         doOnCreate(savedInstanceState);
     }
@@ -61,55 +62,55 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
 
     @Override
     protected void onNewIntent(Intent intent) {
-        XActivityController.dispatchOnActivityNewIntent(this, intent);
+        XActivityCallbackDispatcher.dispatchOnActivityNewIntent(this, intent);
         super.onNewIntent(intent);
     }
 
     @Override
     protected void onRestart() {
-        XActivityController.dispatchOnActivityRestarted(this);
+        XActivityCallbackDispatcher.dispatchOnActivityRestarted(this);
         super.onRestart();
     }
 
     @Override
     protected void onStart() {
-        XActivityController.dispatchOnActivityStarted(this);
+        XActivityCallbackDispatcher.dispatchOnActivityStarted(this);
         super.onStart();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        XActivityController.dispatchOnActivityRestoreInstanceState(this, savedInstanceState);
+        XActivityCallbackDispatcher.dispatchOnActivityRestoreInstanceState(this, savedInstanceState);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
-        XActivityController.dispatchOnActivityResumed(this);
+        XActivityCallbackDispatcher.dispatchOnActivityResumed(this);
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        XActivityController.dispatchOnActivityPaused(this);
+        XActivityCallbackDispatcher.dispatchOnActivityPaused(this);
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        XActivityController.dispatchOnActivityStopped(this);
+        XActivityCallbackDispatcher.dispatchOnActivityStopped(this);
         super.onStop();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        XActivityController.dispatchOnActivitySaveInstanceState(this, outState);
+        XActivityCallbackDispatcher.dispatchOnActivitySaveInstanceState(this, outState);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onDestroy() {
-        XActivityController.dispatchOnActivityDestroyed(this);
+        XActivityCallbackDispatcher.dispatchOnActivityDestroyed(this);
         super.onDestroy();
         doOnDestroy();
     }
@@ -124,30 +125,62 @@ public abstract class XBaseActivity extends FragmentActivity implements IUIFlow 
     }
 
     @Override
-    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
-        startActivityForResult(new Intent(this, clz), requestCode);
-    }
-
-    @Override
     public void startActivity(Intent intent) {
         XActivityController.startActivity(intent);
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        XActivityController.dispatchStartActivityForResult(intent, requestCode);
-        super.startActivityForResult(intent, requestCode);
+    public void startActivityForResult(Class<? extends Activity> clz, int requestCode) {
+        startActivityForResult(new Intent(this, clz), requestCode);
     }
 
     @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        XActivityCallbackDispatcher.dispatchStartActivityForResult(intent, requestCode);
+        super.startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 这是后续Fragment版本增加的方法，super.startActivityFromFragment(fragment, intent, requestCode)
+     * 调用的是super.startActivityForResult()，也就是原始Activity类的startActivityForResult
+     * （此处是{@link android.support.v4.app.FragmentActivity v4包的FragmentActivity}）。
+     *
+     * <p/>
+     *
+     * 如果是直接继承自Activity：
+     * <pre>
+     * Activity :startActivityForResult
+     *          :startActivityFromFragment
+     *      |- this class   :startActivityForResult
+     *                          |- super.startActivityForResult
+     *                      :startActivityFromFragment
+     *                          |- super.startActivityForResult
+     * </pre>
+     *
+     * <p/>
+     *
+     * 以下是继承自FragmentActivity的实现：
+     * <pre>
+     * Activity
+     *  |- FragmentActivity :startActivityForResult
+     *                          |- super.startActivityForResult
+     *                      :startActivityFromFragment
+     *                          |- super.startActivityForResult
+     *      |- this class   :startActivityForResult
+     *                          |- super.startActivityForResult
+     *                      :startActivityFromFragment
+     *                          |- super.startActivityForResult
+     * </pre>
+     */
+    @Override
     public void startActivityFromFragment(Fragment fragment, Intent intent, int requestCode) {
-        XActivityController.dispatchStartActivityForResult(intent, requestCode);
+        XActivityCallbackDispatcher.dispatchStartActivityForResult(intent, requestCode);
         super.startActivityFromFragment(fragment, intent, requestCode);
     }
 
     @Override
     public void finish() {
-        XActivityController.dispatchFinishActivity(this);
+        XActivityCallbackDispatcher.dispatchFinishActivity(this);
         super.finish();
     }
 

@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.MathCompat;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.app.XGlobals;
@@ -37,6 +38,9 @@ public class AppInfos {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // 获取应用程序相关的信息
+    public static String getPackageName() {
+        return XGlobals.getAppContext().getPackageName();
+    }
     /**
      * 返回当前程序版本号
      */
@@ -145,7 +149,7 @@ public class AppInfos {
         Context context = XGlobals.getAppContext();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = am.getRunningAppProcesses();
-        if (null == runningAppProcessInfos || runningAppProcessInfos.isEmpty()) {
+        if (CollectionsCompat.isEmpty(runningAppProcessInfos)) {
             return null;
         }
         final int myPid = android.os.Process.myPid();
@@ -170,8 +174,52 @@ public class AppInfos {
      * 当前的进程名是否是主应用进程（一般地，主应用进程名同包名）
      */
     public static boolean isMainProcess() {
+        return isProcess(getPackageName());
+    }
+
+    /**
+     * 应用是否存在指定的进程
+     */
+    public static boolean hasProcess(long pid) {
         Context context = XGlobals.getAppContext();
-        return isProcess(context.getPackageName());
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = am.getRunningAppProcesses();
+        if (CollectionsCompat.isEmpty(runningAppProcessInfos)) {
+            return false;
+        }
+        for (ActivityManager.RunningAppProcessInfo info : runningAppProcessInfos) {
+            if (info.pid == pid) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * 应用是否存在指定的进程
+     */
+    public static boolean hasProcess(String processName) {
+        Context context = XGlobals.getAppContext();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = am.getRunningAppProcesses();
+        if (CollectionsCompat.isEmpty(runningAppProcessInfos)) {
+            return false;
+        }
+        final int myPid = android.os.Process.myPid();
+        for (ActivityManager.RunningAppProcessInfo info : runningAppProcessInfos) {
+            if (info.pid == myPid) {
+                if (Objects.equals(processName, info.processName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 主应用是否打开
+     */
+    public static boolean isMainProcessAlive() {
+        return hasProcess(getPackageName());
     }
     // end
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import java.util.LinkedList;
+import java.util.WeakHashMap;
 
 import androidrubick.collect.CollectionsCompat;
+import androidrubick.collect.MapBuilder;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.FrameworkLog;
 import androidrubick.xframework.app.ui.XActivityCallback;
@@ -45,6 +46,7 @@ public abstract class XActivityCtrl implements XActivityCallback {
 
     // 打开/关闭Activity都会
     protected PendingIntentInfo mPendingIntentInfo = new PendingIntentInfo();
+    protected Activity mTopActivity;
     // 发现onSaveInstanceState不是在系统即将清理内存时调用，所以该值不准确
     // 那么，暂时，只要走onCreate的Activity就增加，走onDestroy就减少
     protected int mActivityCount;
@@ -87,18 +89,18 @@ public abstract class XActivityCtrl implements XActivityCallback {
         }
     }
 
-    private LinkedList<XActivityCallback> mActivityLifecycleCallbacks =
-            new LinkedList<XActivityCallback>();
+    private WeakHashMap<XActivityCallback, Object> mActivityCallbacks =
+            MapBuilder.newWeakHashMap(4).build();
 
     public void registerActivityCallback(XActivityCallback callback) {
-        synchronized (mActivityLifecycleCallbacks) {
-            mActivityLifecycleCallbacks.add(callback);
+        synchronized (mActivityCallbacks) {
+            mActivityCallbacks.put(callback, this);
         }
     }
 
     public void unregisterActivityCallback(XActivityCallback callback) {
-        synchronized (mActivityLifecycleCallbacks) {
-            mActivityLifecycleCallbacks.remove(callback);
+        synchronized (mActivityCallbacks) {
+            mActivityCallbacks.remove(callback);
         }
     }
 
@@ -109,14 +111,22 @@ public abstract class XActivityCtrl implements XActivityCallback {
         return mIsForeground;
     }
 
+    public Activity getTopActivity() {
+        return mTopActivity;
+    }
+
     public void dispatchStartActivityForResult(Intent intent, int requestCode) {
         FrameworkLog.d(TAG, "准备打开activity = " + intent);
         // 记录状态，该状态下为当前APP打开其他应用
         mPendingIntentInfo.markPendingIntent(intent);
+
+        performStartActivity(intent, requestCode);
     }
 
     public void dispatchFinishActivity(Activity activity) {
         mPendingIntentInfo.markPendingFinish();
+
+        performFinishActivity(activity);
     }
 
     public void dispatchOnActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -161,8 +171,29 @@ public abstract class XActivityCtrl implements XActivityCallback {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // true do
+    public void performStartActivity(Intent intent, int resultCode) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
+                    callback.performStartActivity(intent, resultCode);
+                }
+            }
+        }
+    }
+
+    public void performFinishActivity(Activity activity) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
+                    callback.performFinishActivity(activity);
+                }
+            }
+        }
+    }
+
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         FrameworkLog.d(TAG, "新activity打开了 = " + activity);
+
         if (mActivityCount < 1) {
             // TODO 应用刚开启时，模拟由Launcher发出的startActivity
             onEnterForeground();
@@ -170,9 +201,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
         }
         mActivityCount++;
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityCreated(activity, savedInstanceState);
                 }
             }
@@ -182,9 +213,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
     public void onActivityNewIntent(Activity activity, Intent intent) {
         FrameworkLog.d(TAG, "activity重新打开了 = " + activity);
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityNewIntent(activity, intent);
                 }
             }
@@ -194,9 +225,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
     public void onActivityRestarted(Activity activity) {
         FrameworkLog.d(TAG, "onActivityRestarted = " + activity);
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityRestarted(activity);
                 }
             }
@@ -205,10 +236,11 @@ public abstract class XActivityCtrl implements XActivityCallback {
 
     public void onActivityStarted(Activity activity) {
         FrameworkLog.d(TAG, "onActivityStarted = " + activity);
-
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        // 最近start的Activity即为顶部Activity
+        mTopActivity = activity;
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityStarted(activity);
                 }
             }
@@ -216,9 +248,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
     }
 
     public void onActivityRestoreInstanceState(Activity activity, Bundle savedInstanceState) {
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityRestoreInstanceState(activity, savedInstanceState);
                 }
             }
@@ -227,6 +259,8 @@ public abstract class XActivityCtrl implements XActivityCallback {
 
     public void onActivityResumed(Activity activity) {
         FrameworkLog.d(TAG, "onActivityResumed = " + activity);
+        // 最近resume的Activity即为顶部Activity
+        mTopActivity = activity;
         mMyAppInSight = true;
         mShowingCount++;
         if (!mPendingIntentInfo.hasPendingIntent) {
@@ -235,9 +269,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
         }
         mPendingIntentInfo.resetIfMatch(activity);
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityResumed(activity);
                 }
             }
@@ -253,9 +287,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
             onEnterBackground();
         }
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityPaused(activity);
                 }
             }
@@ -265,9 +299,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
     public void onActivityStopped(Activity activity) {
         FrameworkLog.d(TAG, "onActivityStopped = " + activity);
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityStopped(activity);
                 }
             }
@@ -280,9 +314,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
 //        mActivityCount--;
         FrameworkLog.d(TAG, "onActivitySaveInstanceState mActivityCount = " + mActivityCount);
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivitySaveInstanceState(activity, outState);
                 }
             }
@@ -298,9 +332,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
             onEnterBackground();
         }
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onActivityDestroyed(activity);
                 }
             }
@@ -312,9 +346,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
         FrameworkLog.d(TAG, "貌似跳出应用了");
         mIsForeground = false;
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onEnterBackground();
                 }
             }
@@ -326,9 +360,9 @@ public abstract class XActivityCtrl implements XActivityCallback {
         FrameworkLog.d(TAG, "貌似回到应用了");
         mIsForeground = true;
 
-        synchronized (mActivityLifecycleCallbacks) {
-            if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
+        synchronized (mActivityCallbacks) {
+            if (!CollectionsCompat.isEmpty(mActivityCallbacks)) {
+                for (XActivityCallback callback : mActivityCallbacks.keySet()) {
                     callback.onEnterForeground();
                 }
             }

@@ -6,6 +6,8 @@ import java.util.WeakHashMap;
 
 import androidrubick.collect.MapBuilder;
 import androidrubick.utils.Objects;
+import androidrubick.xframework.app.ui.XActivityCallback;
+import androidrubick.xframework.app.ui.XActivityController;
 
 /**
  * <p/>
@@ -14,7 +16,22 @@ import androidrubick.utils.Objects;
  */
 public class XAppStateMonitor {
 
-    static final WeakHashMap<XAppStateCallback, Object> sCallbacks = MapBuilder.newHashMap(4).build();
+    static final WeakHashMap<XAppStateCallback, Object> sCallbacks = MapBuilder.newWeakHashMap(4).build();
+    static final XActivityCallback sActivityCallback = new XActivityCallback.SimpleActivityCallback() {
+        @Override
+        public void onEnterForeground() {
+            XAppStateMonitor.onEnterForeground();
+        }
+
+        @Override
+        public void onEnterBackground() {
+            XAppStateMonitor.onEnterBackground();
+        }
+    };
+
+    static {
+        XActivityController.registerActivityCallback(sActivityCallback);
+    }
 
     /**
      * 注册状态监听器

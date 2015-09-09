@@ -63,30 +63,15 @@ public interface XAppStateCallback {
      * 所有的方法都是缺省实现
      */
     public static class SimpleAppStateCallback implements XAppStateCallback {
-
         @Override
-        public void onConfigurationChanged(Configuration newConfig) {
-
-        }
-
+        public void onConfigurationChanged(Configuration newConfig) { }
         @Override
-        public void onLowMemory() {
-
-        }
-
+        public void onLowMemory() { }
         @Override
-        public void onTrimMemory(int level) {
-
-        }
-
+        public void onTrimMemory(int level) { }
         @Override
-        public void onEnterBackground() {
-
-        }
-
+        public void onEnterBackground() { }
         @Override
-        public void onEnterForeground() {
-
-        }
+        public void onEnterForeground() { }
     }
 }

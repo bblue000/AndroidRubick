@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.WeakHashMap;
 
 import static androidrubick.collect.CollectionsCompat.*;
 
@@ -24,6 +25,14 @@ public class MapBuilder {
 
     public static MapBuilder newHashMap(int capacity) {
         return new MapBuilder(new HashMap(capacity));
+    }
+
+    public static MapBuilder newWeakHashMap() {
+        return new MapBuilder(new WeakHashMap());
+    }
+
+    public static MapBuilder newWeakHashMap(int capacity) {
+        return new MapBuilder(new WeakHashMap(capacity));
     }
 
     public static MapBuilder newLinkedHashMap() {

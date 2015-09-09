@@ -12,9 +12,9 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
 import androidrubick.text.Charsets;
 import androidrubick.utils.Objects;
+import androidrubick.xframework.app.XAppStateCallback;
 import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.app.XAppStateMonitor;
-import androidrubick.xframework.app.state.XSimpleAppStateCallback;
 
 /**
  * A service-provider loader.
@@ -48,7 +48,7 @@ import androidrubick.xframework.app.state.XSimpleAppStateCallback;
  * </pre>
  * You might use {@code ServiceProvider} something like this:
  * <pre>
- *   MyService service = XServiceLoader<MyService>.singleton(MyService.class);
+ *   MyService service = XServiceLoader<MyService>.load(MyService.class);
  *   service.handle(o);
  * </pre>
  *
@@ -67,7 +67,7 @@ public class XServiceLoader<S extends XSpiService> {
 
     private static final boolean DEBUG = true;
 
-    static final XSimpleAppStateCallback sAppStateCallback = new XSimpleAppStateCallback() {
+    static final XAppStateCallback sAppStateCallback = new XAppStateCallback.SimpleAppStateCallback() {
         @Override
         public void onLowMemory() {
             trimMemory();

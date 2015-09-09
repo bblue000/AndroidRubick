@@ -13,9 +13,12 @@ include ':androidrubick-base', ':androidrubick-xframework'
 // ********************************************
 // separator line
 def defaultImplForSpi = "./libraries/";
+//def defaultImplLibPath = new File(defaultImplForSpi);
+//def spiProjects = defaultImplLibPath.list();
 def spiProjects = ['json-default',
                    'job-default',
-                   'cache-default'
+                   'cache-default',
+                   'statistics-default'
                   ];
 spiProjects.each { String spiProjectDir ->
     def spiProjectName = ':' + spiProjectDir;

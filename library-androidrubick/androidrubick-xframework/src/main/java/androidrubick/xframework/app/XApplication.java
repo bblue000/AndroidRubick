@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 
 import androidrubick.xbase.util.AppInfos;
-import androidrubick.xframework.app.ui.XActivityController;
+import androidrubick.xframework.app.ui.XActivityCallbackDispatcher;
 
 /**
  * 应用的基类
@@ -54,20 +54,20 @@ public class XApplication extends Application {
     }
 
     @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-        XAppStateMonitor.onAppTrimMemory(level);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         XAppStateMonitor.onAppConfigurationChanged(newConfig);
     }
 
     @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        XAppStateMonitor.onAppTrimMemory(level);
+    }
+
+    @Override
     public void startActivity(Intent intent) {
-        XActivityController.dispatchStartActivityForResult(intent, 0);
+        XActivityCallbackDispatcher.dispatchStartActivityForResult(intent, 0);
         super.startActivity(intent);
     }
 

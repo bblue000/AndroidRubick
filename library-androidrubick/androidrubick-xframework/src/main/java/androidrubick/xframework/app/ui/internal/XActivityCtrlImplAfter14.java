@@ -38,7 +38,7 @@ import androidrubick.xframework.app.XGlobals;
     }
 
     public void dispatchOnActivityRestoreInstanceState(Activity activity, Bundle savedInstanceState) {
-        onActivityRestoreInstanceState(activity, savedInstanceState);
+        super.onActivityRestoreInstanceState(activity, savedInstanceState);
     }
 
     public void dispatchOnActivityResumed(Activity activity) {
