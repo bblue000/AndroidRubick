@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.state;
+package androidrubick.xframework.app;
 
 import android.content.res.Configuration;
 

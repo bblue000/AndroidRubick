@@ -15,7 +15,7 @@ import android.os.Bundle;
  *
  * @see androidrubick.xframework.app.ui.internal.SimpleActivityCallback
  */
-public interface IActivityCallback {
+public interface XActivityCallback {
     void onActivityCreated(Activity activity, Bundle savedInstanceState);
     void onActivityNewIntent(Activity activity, Intent intent);
     void onActivityRestarted(Activity activity);

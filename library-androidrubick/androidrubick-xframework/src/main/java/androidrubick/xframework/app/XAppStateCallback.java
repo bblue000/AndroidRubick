@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.state;
+package androidrubick.xframework.app;
 
 import android.content.res.Configuration;
 
@@ -50,10 +50,41 @@ public interface XAppStateCallback {
     /**
      * 进入后台运行（锁屏暂也属于进入后台，有待改进）
      */
-    void onEnterBackground();
+    public void onEnterBackground();
 
     /**
      * 回到前台运行（锁屏暂也属于进入后台，有待改进）
      */
-    void onEnterForeground();
+    public void onEnterForeground();
+
+    /**
+     * 所有的方法都是缺省实现
+     */
+    public static class SimpleAppStateCallback implements XAppStateCallback {
+
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+
+        }
+
+        @Override
+        public void onLowMemory() {
+
+        }
+
+        @Override
+        public void onTrimMemory(int level) {
+
+        }
+
+        @Override
+        public void onEnterBackground() {
+
+        }
+
+        @Override
+        public void onEnterForeground() {
+
+        }
+    }
 }

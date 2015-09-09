@@ -1,10 +1,10 @@
-package androidrubick.xframework.app.widget;
+package androidrubick.xbase.view.widget;
 
 import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
 
-import androidrubick.xbase.view.ViewUtils;
+import androidrubick.xbase.view.TextViews;
 
 /**
  *
@@ -55,7 +55,7 @@ public class XEditTextCtrller extends XTextViewCtrller {
      */
     @Override
     public XEditTextCtrller text(int resId) {
-        ViewUtils.setText(getView(), resId);
+        TextViews.setText(getView(), resId);
         return self();
     }
 
@@ -64,7 +64,7 @@ public class XEditTextCtrller extends XTextViewCtrller {
      */
     @Override
     public XEditTextCtrller text(CharSequence text) {
-        ViewUtils.setText(getView(), text);
+        TextViews.setText(getView(), text);
         return self();
     }
 

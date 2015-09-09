@@ -9,4 +9,4 @@
  *
  * xframework的宗旨是：<b>简化开发</b>
  */
-package androidrubick.xframework.app.widget;
+package androidrubick.xbase.view.widget;

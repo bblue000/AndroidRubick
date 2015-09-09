@@ -1,10 +1,7 @@
 package androidrubick.xbase.view;
 
 import android.graphics.Rect;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidrubick.utils.Objects;
 
@@ -17,9 +14,9 @@ import androidrubick.utils.Objects;
  *
  * @since 1.0
  */
-public class ViewUtils {
+public class Views {
 
-    private ViewUtils() { /*no instance*/ }
+    private Views() { /*no instance*/ }
 
     public static <V extends View>V setVisibility(V view, int visibility) {
         if (!Objects.isNull(view)) {
@@ -156,47 +153,6 @@ public class ViewUtils {
      */
     public static int maxHeightOfView() {
         return (0x1 << 25) - 1;
-    }
-
-    public static <TV extends TextView>TV setText(TV tv, CharSequence text) {
-        if (!Objects.isNull(tv)) {
-            if (tv instanceof EditText) {
-                setText((EditText) tv, text);
-            } else {
-                tv.setText(text);
-            }
-        }
-        return tv;
-    }
-
-    public static <TV extends TextView>TV setText(TV tv, int resId) {
-        if (!Objects.isNull(tv)) {
-            return setText(tv, tv.getResources().getText(resId));
-        }
-        return tv;
-    }
-
-    /**
-     * 给{@link EditText}设置文本，并将指针移到最后的位置
-     */
-    public static <ET extends EditText>ET setText(ET et, CharSequence text) {
-        if (!Objects.isNull(et)) {
-            et.setText(text);
-            if (!TextUtils.isEmpty(et.getText())) {
-                et.setSelection(et.getText().length());
-            }
-        }
-        return et;
-    }
-
-    /**
-     * 给{@link EditText}设置文本，并将指针移到最后的位置
-     */
-    public static <ET extends EditText>ET setText(ET et, int resId) {
-        if (!Objects.isNull(et)) {
-            return setText(et, et.getResources().getText(resId));
-        }
-        return et;
     }
 
 }

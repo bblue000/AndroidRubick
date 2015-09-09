@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.widget;
+package androidrubick.xbase.view.widget;
 
 import android.app.Activity;
 import android.view.View;
