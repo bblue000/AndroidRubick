@@ -33,7 +33,7 @@ public class XAppStateMonitor {
     /**
      * @hide
      */
-    public static void onAppConfigurationChanged(Configuration newConfig) {
+    /*package*/ static void onAppConfigurationChanged(Configuration newConfig) {
         for (XAppStateCallback callback : sCallbacks.keySet()) {
             if (Objects.isNull(callback)) {
                 continue;
@@ -45,7 +45,7 @@ public class XAppStateMonitor {
     /**
      * @hide
      */
-    public static void onAppLowMemory() {
+    /*package*/ static void onAppLowMemory() {
         for (XAppStateCallback callback : sCallbacks.keySet()) {
             if (Objects.isNull(callback)) {
                 continue;
@@ -57,7 +57,7 @@ public class XAppStateMonitor {
     /**
      * @hide
      */
-    public static void onAppTrimMemory(int level) {
+    /*package*/ static void onAppTrimMemory(int level) {
         for (XAppStateCallback callback : sCallbacks.keySet()) {
             if (Objects.isNull(callback)) {
                 continue;
@@ -70,7 +70,7 @@ public class XAppStateMonitor {
      * 进入后台运行（锁屏暂也属于进入后台，有待改进）
      * @hide
      */
-    public static void onEnterBackground() {
+    /*package*/ static void onEnterBackground() {
         for (XAppStateCallback callback : sCallbacks.keySet()) {
             if (Objects.isNull(callback)) {
                 continue;
@@ -83,7 +83,7 @@ public class XAppStateMonitor {
      * 回到前台运行（锁屏暂也属于进入后台，有待改进）
      * @hide
      */
-    public static void onEnterForeground() {
+    /*package*/ static void onEnterForeground() {
         for (XAppStateCallback callback : sCallbacks.keySet()) {
             if (Objects.isNull(callback)) {
                 continue;

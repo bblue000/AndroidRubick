@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidrubick.xframework.app.ui.IActivityCallback;
+import androidrubick.xframework.app.ui.XActivityCallback;
 
 /**
  * 缺省实现。
@@ -21,7 +21,7 @@ import androidrubick.xframework.app.ui.IActivityCallback;
  *
  * @since 1.0
  */
-public class SimpleActivityCallback implements IActivityCallback {
+public class SimpleActivityCallback implements XActivityCallback {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

@@ -26,7 +26,6 @@ public class LazyHandler implements Executor {
     private static long DEFAULT_ALIVE_TIME = TimeSlots.getNonOpSlot();
 
     int mPriority;
-    int mTid = -1;
     // 闲置时间
     long mAliveTime;
     ThreadPoolExecutor mExecutor;

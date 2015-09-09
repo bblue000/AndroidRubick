@@ -13,7 +13,7 @@ import androidrubick.io.IOUtils;
 import androidrubick.text.Charsets;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.app.XGlobals;
-import androidrubick.xframework.app.state.XAppStateMonitor;
+import androidrubick.xframework.app.XAppStateMonitor;
 import androidrubick.xframework.app.state.XSimpleAppStateCallback;
 
 /**

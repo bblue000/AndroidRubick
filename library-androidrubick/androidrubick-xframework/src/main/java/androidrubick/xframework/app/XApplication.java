@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 
 import androidrubick.xbase.util.AppInfos;
-import androidrubick.xframework.app.state.XAppStateMonitor;
 import androidrubick.xframework.app.ui.XActivityController;
 
 /**

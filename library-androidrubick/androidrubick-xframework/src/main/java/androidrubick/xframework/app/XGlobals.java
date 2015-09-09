@@ -5,6 +5,11 @@ import android.app.Application;
 import android.content.Context;
 import android.os.*;
 
+import java.util.concurrent.Executor;
+
+import androidrubick.utils.Objects;
+import androidrubick.xbase.util.LazyHandler;
+
 /**
  * 提供应用中常见的全局对象及相关工具方法，比如Application，Handler等等。
  *
@@ -18,6 +23,7 @@ public class XGlobals {
 
     private static Handler sHandler;
     private static Application sApplication;
+    private static Executor sBackgroundExecutor;
     /*package*/ static void init(Application application) {
         sApplication = application;
     }
@@ -59,13 +65,36 @@ public class XGlobals {
         return getHandler().postDelayed(runnable, delay);
     }
 
-    public static void runInBackground(Runnable runnable) {
-
+    private static void checkHandler() {
+        if (Objects.isNull(sHandler)) {
+            synchronized (XGlobals.class) {
+                if (Objects.isNull(sHandler)) {
+                    sHandler = new Handler(Looper.getMainLooper());
+                }
+            }
+        }
     }
 
-    private static void checkHandler() {
-        if (null == sHandler) {
-            sHandler = new Handler(Looper.getMainLooper());
+    /**
+     * 该方法让任务在后台执行。
+     *
+     * <p/>
+     *
+     * 任务是单行道，用于执行小而密集的任务，
+     * 如果执行相对耗时的任务，建议使用异步任务（{@link androidrubick.xframework.job.XJob}）
+     */
+    public static void runInBackground(Runnable runnable) {
+        checkBackgroundExecutor();
+        sBackgroundExecutor.execute(runnable);
+    }
+
+    private static void checkBackgroundExecutor() {
+        if (Objects.isNull(sBackgroundExecutor)) {
+            synchronized (XGlobals.class) {
+                if (Objects.isNull(sBackgroundExecutor)) {
+                    sBackgroundExecutor = new LazyHandler();
+                }
+            }
         }
     }
 

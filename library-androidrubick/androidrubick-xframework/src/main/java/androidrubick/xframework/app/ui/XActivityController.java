@@ -45,28 +45,28 @@ public class XActivityController {
     }
 
     /**
-     * 注册{@link IActivityCallback}，外部处理额外的事
+     * 注册{@link XActivityCallback}，外部处理额外的事
      *
      * <p/>
      *
      * 不要忘记使用注销方法。
      *
-     * @see #unregisterActivityCallback(IActivityCallback)
+     * @see #unregisterActivityCallback(XActivityCallback)
      *
      * @see androidrubick.xframework.app.ui.internal.SimpleActivityCallback
      */
-    public static void registerActivityCallback(IActivityCallback callback) {
+    public static void registerActivityCallback(XActivityCallback callback) {
         XActivityCtrl.getInstance().registerActivityCallback(callback);
     }
 
     /**
-     * 注销{@link IActivityCallback}
+     * 注销{@link XActivityCallback}
      *
-     * @see #registerActivityCallback(IActivityCallback)
+     * @see #registerActivityCallback(XActivityCallback)
      *
      * @see androidrubick.xframework.app.ui.internal.SimpleActivityCallback
      */
-    public static void unregisterActivityCallback(IActivityCallback callback) {
+    public static void unregisterActivityCallback(XActivityCallback callback) {
         XActivityCtrl.getInstance().unregisterActivityCallback(callback);
     }
 

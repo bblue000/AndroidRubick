@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
-import androidrubick.xbase.view.ViewUtils;
+import androidrubick.xbase.view.TextViews;
 
 /**
  *
@@ -49,7 +49,7 @@ public class XTextViewCtrller extends XWidgetCtrller<XTextViewCtrller> {
      * 设置文本
      */
     public XTextViewCtrller text(int resId) {
-        ViewUtils.setText(getView(), resId);
+        TextViews.setText(getView(), resId);
         return self();
     }
 
@@ -57,7 +57,7 @@ public class XTextViewCtrller extends XWidgetCtrller<XTextViewCtrller> {
      * 设置文本
      */
     public XTextViewCtrller text(CharSequence text) {
-        ViewUtils.setText(getView(), text);
+        TextViews.setText(getView(), text);
         return self();
     }
 

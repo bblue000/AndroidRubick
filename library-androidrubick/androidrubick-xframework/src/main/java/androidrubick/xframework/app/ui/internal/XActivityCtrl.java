@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.FrameworkLog;
-import androidrubick.xframework.app.ui.IActivityCallback;
+import androidrubick.xframework.app.ui.XActivityCallback;
 
 /**
  *
@@ -23,7 +23,7 @@ import androidrubick.xframework.app.ui.IActivityCallback;
  *
  * @since 1.0
  */
-public abstract class XActivityCtrl implements IActivityCallback {
+public abstract class XActivityCtrl implements XActivityCallback {
 
     private static final String TAG = XActivityCtrl.class.getSimpleName();
 
@@ -87,16 +87,16 @@ public abstract class XActivityCtrl implements IActivityCallback {
         }
     }
 
-    private LinkedList<IActivityCallback> mActivityLifecycleCallbacks =
-            new LinkedList<IActivityCallback>();
+    private LinkedList<XActivityCallback> mActivityLifecycleCallbacks =
+            new LinkedList<XActivityCallback>();
 
-    public void registerActivityCallback(IActivityCallback callback) {
+    public void registerActivityCallback(XActivityCallback callback) {
         synchronized (mActivityLifecycleCallbacks) {
             mActivityLifecycleCallbacks.add(callback);
         }
     }
 
-    public void unregisterActivityCallback(IActivityCallback callback) {
+    public void unregisterActivityCallback(XActivityCallback callback) {
         synchronized (mActivityLifecycleCallbacks) {
             mActivityLifecycleCallbacks.remove(callback);
         }
@@ -172,7 +172,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityCreated(activity, savedInstanceState);
                 }
             }
@@ -184,7 +184,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityNewIntent(activity, intent);
                 }
             }
@@ -196,7 +196,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityRestarted(activity);
                 }
             }
@@ -208,7 +208,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityStarted(activity);
                 }
             }
@@ -218,7 +218,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
     public void onActivityRestoreInstanceState(Activity activity, Bundle savedInstanceState) {
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityRestoreInstanceState(activity, savedInstanceState);
                 }
             }
@@ -237,7 +237,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityResumed(activity);
                 }
             }
@@ -255,7 +255,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityPaused(activity);
                 }
             }
@@ -267,7 +267,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityStopped(activity);
                 }
             }
@@ -282,7 +282,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivitySaveInstanceState(activity, outState);
                 }
             }
@@ -300,7 +300,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onActivityDestroyed(activity);
                 }
             }
@@ -314,7 +314,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onEnterBackground();
                 }
             }
@@ -328,7 +328,7 @@ public abstract class XActivityCtrl implements IActivityCallback {
 
         synchronized (mActivityLifecycleCallbacks) {
             if (!CollectionsCompat.isEmpty(mActivityLifecycleCallbacks)) {
-                for (IActivityCallback callback : mActivityLifecycleCallbacks) {
+                for (XActivityCallback callback : mActivityLifecycleCallbacks) {
                     callback.onEnterForeground();
                 }
             }

@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidrubick.xbase.view.ViewUtils;
+import androidrubick.xbase.view.Views;
 
 /**
  * 基础的View控制器；
@@ -74,7 +74,7 @@ public class XWidgetCtrller<Self extends XWidgetCtrller> {
      * 设置View的可视属性
      */
     public Self visibility(int visibility) {
-        ViewUtils.setVisibility(getView(), visibility);
+        Views.setVisibility(getView(), visibility);
         return self();
     }
 

@@ -15,6 +15,8 @@ import android.content.res.Configuration;
  * <p/>
  *
  * Created by Yin Yong on 2015/9/8.
+ *
+ * @see androidrubick.xframework.app.XAppStateCallback.SimpleAppStateCallback
  */
 public interface XAppStateCallback {
 
