@@ -16,8 +16,27 @@
 #   public *;
 #}
 
+# 对大小写不敏感的系统而言，有效Aa aA
+-dontusemixedcaseclassnames
 -dontpreverify
 -keepattributes *Annotation*
+
+
+# dontwarn start
+# 一类使用到扩展类的地方
+-dontwarn java.beans.**
+-dontwarn java.awt.**
+-dontwarn javax.swing.**
+-dontwarn javax.annotation.**
+-dontwarn javax.lang.**
+-dontwarn javax.tools.**
+-dontwarn sun.misc.**
+
+# butterknife
+-dontwarn butterknife.internal.**
+
+# dontwarn end
+
 
 
 -keep public class * extends android.app.Activity
@@ -52,7 +71,13 @@
 
 
 # 框架中的保留类
+-keep class androidrubick.xbase.util.spi.XJsonParserService
+-keep class androidrubick.xframework.job.spi.XJobExecutorService
+-keep class androidrubick.xframework.cache.spi.XMemCacheService
+-keep class androidrubick.xframework.net.http.spi.XHttpRequestService
+
 -keep class * implements androidrubick.xbase.util.spi.XJsonParserService
 -keep class * implements androidrubick.xframework.job.spi.XJobExecutorService
 -keep class * implements androidrubick.xframework.cache.spi.XMemCacheService
+-keep class * implements androidrubick.xframework.net.http.spi.XHttpRequestService
 
