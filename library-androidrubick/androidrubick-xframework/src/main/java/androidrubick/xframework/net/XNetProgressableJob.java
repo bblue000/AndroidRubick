@@ -2,10 +2,8 @@ package androidrubick.xframework.net;
 
 import java.io.IOException;
 
-import androidrubick.io.IOProgressCallback;
-import androidrubick.io.IOUtils;
 import androidrubick.xframework.net.http.request.XHttpRequest;
-import androidrubick.xframework.net.http.response.XHttpResultHolder;
+import androidrubick.xframework.net.http.response.XHttpRes;
 
 /**
  *
@@ -30,7 +28,7 @@ public abstract class XNetProgressableJob<Param, Progress, Result> extends XNetJ
      * 处理结果
      * @param response 请求结果
      */
-    protected final Result doParse(XHttpResultHolder response) throws IOException {
+    protected final Result doParse(XHttpRes response) throws IOException {
         final long contentLength = response.getContentLength();
 //        XNetJobUtils.getByteArrayPool().getBuf()
 //        IOUtils.writeTo(response.getContent(), null, true, new IOProgressCallback() {

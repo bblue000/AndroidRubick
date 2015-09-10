@@ -18,7 +18,7 @@ import androidrubick.xframework.api.param.XParamable;
 import androidrubick.xframework.api.result.XAPIResultParser;
 import androidrubick.xframework.api.result.XResultable;
 import androidrubick.xframework.net.http.request.XHttpRequest;
-import androidrubick.xframework.net.http.response.XHttpResultHolder;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.job.XJob;
 import androidrubick.xbase.annotation.Configurable;
 
@@ -47,7 +47,7 @@ public class XAPIJob extends XJob<XParamable, Object, XAPIStatusImpl> {
     protected XAPIStatusImpl doInBackground(XParamable[] params) {
         final XParamable param = params[0];
         XHttpRequest request = null;
-        XHttpResultHolder resultHolder = null;
+        XHttpRes resultHolder = null;
         try {
             request = generateHttpRequest(mBaseUrl, mHttpMethod, param);
             resultHolder = request.performRequest();

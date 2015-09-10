@@ -18,6 +18,7 @@ def defaultImplForSpi = "./libraries/";
 def spiProjects = ['json-default',
                    'job-default',
                    'cache-default',
+                   'http-default',
                    'statistics-default'
                   ];
 spiProjects.each { String spiProjectDir ->

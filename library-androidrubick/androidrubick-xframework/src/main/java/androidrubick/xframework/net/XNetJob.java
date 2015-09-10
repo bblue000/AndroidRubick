@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import androidrubick.io.IOUtils;
 import androidrubick.xframework.net.http.request.XHttpRequest;
-import androidrubick.xframework.net.http.response.XHttpResultHolder;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.job.XJob;
 
 /**
@@ -21,7 +21,7 @@ public abstract class XNetJob<Param, Progress, Result> extends XJob<Param, Progr
 
     @Override
     protected final Result doInBackground(Param... params) {
-        XHttpResultHolder response = null;
+        XHttpRes response = null;
         try {
             XHttpRequest request = generateHttpRequest(params);
             response = request.performRequest();
@@ -44,7 +44,7 @@ public abstract class XNetJob<Param, Progress, Result> extends XJob<Param, Progr
      * 处理结果
      * @param response 请求结果
      */
-    protected abstract Result doParse(XHttpResultHolder response) throws IOException;
+    protected abstract Result doParse(XHttpRes response) throws IOException;
 
     /**
      * 处理错误

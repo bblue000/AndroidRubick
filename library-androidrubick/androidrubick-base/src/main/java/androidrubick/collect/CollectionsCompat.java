@@ -142,4 +142,44 @@ public class CollectionsCompat {
         return dest;
     }
 
+    /**
+     * 如果<code>key</code>已存在，则不添加
+     */
+    public static <K, V, R extends Map<? super K, ? super V>>boolean putUnCover(R map, K key, V value) {
+        if (Objects.isNull(map)) {
+            return false;
+        }
+        if (map.containsKey(key)) {
+            return false;
+        }
+        map.put(key, value);
+        return true;
+    }
+
+    /**
+     * 将另外一个Map的元素全部添加到目标Map中，
+     *
+     * 如果<code>key</code>重复，则不添加
+     *
+     * @param dest 目标列表
+     * @param src 数据来源Map
+     * @return 目标Map
+     */
+    public static <K, V, R extends Map<? super K, ? super V>>R putAllUnCover(R dest, Map<K, V> src) {
+        if (Objects.isNull(dest) || isEmpty(src)) {
+            return dest;
+        }
+        for (Map.Entry<K, V> item: src.entrySet()) {
+            putUnCover(dest, item.getKey(), item.getValue());
+        }
+        return dest;
+    }
+
+    public static <K, V, R extends Map<? super K, V>, Result extends V>Result getValue(R map, K key) {
+        if (Objects.isNull(map)) {
+            return null;
+        }
+        return (Result) map.get(key);
+    }
+
 }

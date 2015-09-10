@@ -81,7 +81,7 @@ public class XGlobals {
      * <p/>
      *
      * 任务是单行道，用于执行小而密集的任务，
-     * 如果执行相对耗时的任务，建议使用异步任务（{@link androidrubick.xframework.job.XJob}）
+     * 如果执行重要性较高且相对耗时的任务，建议使用（{@link androidrubick.xframework.job.XJob}）
      */
     public static void runInBackground(Runnable runnable) {
         checkBackgroundExecutor();

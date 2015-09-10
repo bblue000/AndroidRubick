@@ -23,19 +23,23 @@ import androidrubick.utils.Objects;
  *
  * @since 1.0
  */
-public abstract class XHttpResultHolder extends BasicHttpResponse implements Closeable {
+public abstract class XHttpRes extends BasicHttpResponse implements Closeable {
 
     protected String mContentType;
     protected String mCharset;
     protected String mContentEncoding;
     protected long mContentLength;
     protected HttpResponse mWrapped;
-    protected XHttpResultHolder(StatusLine statusline, HttpEntity httpEntity) {
+    protected XHttpRes(StatusLine statusline, HttpEntity httpEntity) {
         super(statusline);
         setEntity(httpEntity);
         parseSpecHeaders();
     }
-    protected XHttpResultHolder(HttpResponse another) {
+
+    /**
+     * 根据另一个<code>HttpResponse</code>创建XHttpResultHolder对象
+     */
+    protected XHttpRes(HttpResponse another) {
         super(another.getStatusLine());
         mWrapped = another;
         setEntity(another.getEntity());
@@ -135,6 +139,7 @@ public abstract class XHttpResultHolder extends BasicHttpResponse implements Clo
 
     @Override
     public void close() throws IOException {
+        consumeContent();
         closeConnection();
     }
 }

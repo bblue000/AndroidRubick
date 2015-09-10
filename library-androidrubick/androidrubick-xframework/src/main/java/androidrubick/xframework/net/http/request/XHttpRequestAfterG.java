@@ -22,7 +22,7 @@ import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpResultHolder;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xbase.annotation.Configurable;
 
 /**
@@ -42,7 +42,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
     }
 
     @Override
-    public XHttpResultHolder performRequest() throws IOException {
+    public XHttpRes performRequest() throws IOException {
         URL url = new URL(getUrl());
         HttpURLConnection connection = openConnection(url);
         addHeaders(connection);
@@ -120,7 +120,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
     }
 
     @Configurable
-    protected XHttpResultHolder prepareResponse(final HttpURLConnection connection) throws IOException {
+    protected XHttpRes prepareResponse(final HttpURLConnection connection) throws IOException {
         // Initialize HttpResponse with data from the HttpURLConnection.
         ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
         int responseCode = connection.getResponseCode();
@@ -131,7 +131,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
         }
         StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                 connection.getResponseCode(), connection.getResponseMessage());
-        XHttpResultHolder response = new XHttpResultHolder(responseStatus, entityFromConnection(connection)) {
+        XHttpRes response = new XHttpRes(responseStatus, entityFromConnection(connection)) {
             @Override
             public void closeConnection() {
                 consumeContent();

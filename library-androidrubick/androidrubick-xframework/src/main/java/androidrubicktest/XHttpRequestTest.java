@@ -8,7 +8,7 @@ import androidrubick.net.HttpMethod;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpResultHolder;
+import androidrubick.xframework.net.http.response.XHttpRes;
 
 /**
  * something
@@ -27,7 +27,7 @@ public class XHttpRequestTest {
     public static void testGet() {
         System.out.println("============testGet");
         try {
-            XHttpResultHolder response = XHttpRequestBuilder.newInstance()
+            XHttpRes response = XHttpRequestBuilder.newInstance()
                     .url("http://www.baidu.com/")
                     .build()
                     .performRequest();
@@ -47,7 +47,7 @@ public class XHttpRequestTest {
     public static void testPost() {
         System.out.println("============testPost");
         try {
-            XHttpResultHolder response = XHttpRequestBuilder.newInstance()
+            XHttpRes response = XHttpRequestBuilder.newInstance()
                     .url("http://www.baidu.com/")
                     .method(HttpMethod.POST)
                     .param("q", "我是中国人")

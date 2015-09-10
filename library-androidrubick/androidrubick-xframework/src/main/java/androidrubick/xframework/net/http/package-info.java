@@ -3,7 +3,13 @@
  *
  * <p/>
  *
- * 此处所做的事都是请求相关的。
+ * HTTP/HTTPS请求可以分为request(method, header, body), response(header, body);
+ *
+ * {@link org.apache.http.client.HttpClient}将二者都抽象为{@link org.apache.http.HttpMessage}，是有道理的。
+ *
+ * <p/>
+ *
+ * 在框架中，请求自身为一个创建器。
  *
  * <p/>
  *

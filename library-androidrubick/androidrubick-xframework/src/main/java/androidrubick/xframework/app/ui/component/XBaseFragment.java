@@ -44,6 +44,7 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        XUIStateMonitor.dispatchOnCreated(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -57,7 +58,9 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                                    Bundle savedInstanceState) {
         if (needBuild()) {
+            XUIStateMonitor.dispatchOnPrepareCreateView(this);
             mRootView = doCreateView(inflater, container, savedInstanceState);
+            XUIStateMonitor.dispatchOnPostCreatedView(this);
         }
         return mRootView;
     }
@@ -110,7 +113,9 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
         mFragmentActivity = getActivity();
         if (needBuild()) {
             // 细分生命周期
+            XUIStateMonitor.dispatchOnPrepareInit(this);
             doInitOnViewCreated(mRootView, savedInstanceState);
+            XUIStateMonitor.dispatchOnPostInit(this);
         }
         mFirstTimeBuilt = false;
     }
@@ -124,6 +129,7 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
 
     @Override
     public void onDestroy() {
+        XUIStateMonitor.dispatchOnDestroy(this);
         super.onDestroy();
     }
 

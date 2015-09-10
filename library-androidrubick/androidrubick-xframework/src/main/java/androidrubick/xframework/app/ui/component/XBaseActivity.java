@@ -27,9 +27,14 @@ public abstract class XBaseActivity extends FragmentActivity implements XUICompo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         XActivityCallbackDispatcher.dispatchOnActivityCreated(this, savedInstanceState);
+        XUIStateMonitor.dispatchOnCreated(this);
         super.onCreate(savedInstanceState);
+        XUIStateMonitor.dispatchOnPrepareCreateView(this);
         doOnCreateView(savedInstanceState);
+        XUIStateMonitor.dispatchOnPostCreatedView(this);
+        XUIStateMonitor.dispatchOnPrepareInit(this);
         doInitOnViewCreated(getRootView(), savedInstanceState);
+        XUIStateMonitor.dispatchOnPostInit(this);
     }
 
     /**
@@ -113,6 +118,7 @@ public abstract class XBaseActivity extends FragmentActivity implements XUICompo
     @Override
     protected void onDestroy() {
         XActivityCallbackDispatcher.dispatchOnActivityDestroyed(this);
+        XUIStateMonitor.dispatchOnDestroy(this);
         super.onDestroy();
     }
 
