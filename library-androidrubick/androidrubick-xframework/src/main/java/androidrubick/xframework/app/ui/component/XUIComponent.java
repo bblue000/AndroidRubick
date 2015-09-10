@@ -1,23 +1,24 @@
-package androidrubick.xframework.app.ui;
+package androidrubick.xframework.app.ui.component;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidrubick.xframework.app.control.XUIController;
-
 /**
  * UI初始化流程，及相关API
- *
+ *http://www.zhihu.com/question/19766132
  * <p/>
  *
  * Created by yong01.yin on 2014/11/11.
  */
 public interface XUIComponent {
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // 初始化
     /**
      * 提供activity的layout res ID
      *
@@ -61,39 +62,42 @@ public interface XUIComponent {
 
     /**
      * 在{@link Activity#onCreate(Bundle)}中调用，
-     * 在{@link #initView(View, Bundle)}和{@link #initListener(View, Bundle)}之后调用。
+     * 在{@link #initView(View, Bundle)}和{@link #initListener(View, Bundle)}之后调用
      *
      * <p/>
      *
-     * 该方法中执行Controller的初始化（{@link XUIController#initData()}）和
-     * 绑定（{@link XUIController#bindCallback(XUIController.XUICtrlCallback)}）操作。
-     *
-     * <p/>
-     *
-     * @param rootView root content view of the activity/fragment
+     * @param view root view of the activity/fragment
      *
      */
-    <Data, Callback extends XUIController.XUICtrlCallback<Data>>XUIController<Callback>
-    provideController(View rootView, Bundle savedInstanceState) ;
-
-    /**
-     * 获取由{@link #provideController(android.view.View, android.os.Bundle)}创建的{@link XUIController}对象
-     */
-    <Data, Callback extends XUIController.XUICtrlCallback<Data>> XUIController<Callback> getController() ;
-
-    /**
-     * 一个内置的用于更新UI的方法
-     *
-     * <br/>
-     *
-     */
-    void updateDataToUI() ;
+    void initData(View view, Bundle savedInstanceState) ;
 
     /**
      * this method returns the pure View.（并非是{@link android.view.Window#getDecorView()}）
      */
     View getRootView();
 
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // 可选实现
+    /**
+     * 一个内置的用于更新UI的方法
+     *
+     * <br/>
+     *
+     * optional
+     *
+     */
+    void updateDataToUI() ;
+
+    /**
+     * 获取应用Context，非Activity context
+     */
+    Context getApplicationContext();
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // 打开界面，回退功能封装
     /**
      *
      * 启动指定的Activity

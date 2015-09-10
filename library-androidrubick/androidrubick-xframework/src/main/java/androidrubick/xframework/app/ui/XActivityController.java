@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import androidrubick.utils.Preconditions;
 import androidrubick.xframework.app.XGlobals;
+import androidrubick.xframework.app.ui.component.XBaseActivity;
 import androidrubick.xframework.app.ui.internal.XActivityCtrl;
 
 /**

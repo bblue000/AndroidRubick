@@ -3,7 +3,7 @@ package org.androidrubick.demo;
 import android.os.Bundle;
 import android.view.View;
 
-import androidrubick.xframework.app.ui.XBaseFragment;
+import androidrubick.xframework.app.ui.component.XBaseFragment;
 
 /**
  * somthing
@@ -33,7 +33,7 @@ public class Fa extends XBaseFragment {
 
     @Override
     public void initData(View view, Bundle savedInstanceState) {
-        startActivity(TestActivity.class);
+
     }
 
     @Override
@@ -50,4 +50,5 @@ public class Fa extends XBaseFragment {
     public boolean validateBackPressFinish() {
         return false;
     }
+
 }

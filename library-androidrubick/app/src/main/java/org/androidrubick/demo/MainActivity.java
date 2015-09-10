@@ -16,7 +16,7 @@ import java.util.List;
 import androidrubick.xbase.util.AndroidUtils;
 import androidrubick.xbase.util.AppInfos;
 import androidrubick.xbase.util.ToastUtils;
-import androidrubick.xframework.app.ui.XBaseActivity;
+import androidrubick.xframework.app.ui.component.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
 import androidrubicktest.AndroidBuildTest;

@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.ui;
+package androidrubick.xframework.app.ui.component;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,23 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidrubick.utils.Preconditions;
-import androidrubick.xbase.util.FrameworkLog;
 import androidrubick.xframework.app.XGlobals;
-import androidrubick.xframework.app.control.XUIController;
-import androidrubick.xframework.events.XEventAPI;
-import butterknife.ButterKnife;
+import androidrubick.xframework.app.ui.XActivityController;
 
 /**
  * Created by yong01.yin on 2014/11/11.
  */
 public abstract class XBaseFragment extends Fragment implements XUIComponent {
 
-    // root view是否已经创建，如果没有创建，而想使用应该创建后才能使用的方法时，将抛出异常
-    private boolean mIsRootViewCreated = false;
     private boolean mFirstTimeBuilt = true;
     // 根View，外部提供的View——Activity的根View其实是内置的FrameLayout
     private View mRootView;
-    private XUIController mController;
 
     /**
      * 持有该Fragment的FragmentActivity的引用
@@ -62,12 +56,8 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                                    Bundle savedInstanceState) {
-        FrameworkLog.i("BaseFragment", "execute onCreateView!!! ");
         if (needBuild()) {
-            mRootView = provideLayoutView(inflater, container, savedInstanceState);
-
-            // 保证RootView加载完成
-            mIsRootViewCreated = (null != mRootView);
+            mRootView = doCreateView(inflater, container, savedInstanceState);
         }
         return mRootView;
     }
@@ -105,32 +95,36 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
         doOnActivityCreated(savedInstanceState);
     }
 
+    /**
+     * 创建contentView，并返回视图。
+     */
+    protected View doCreateView(LayoutInflater inflater, ViewGroup container,
+                                  Bundle savedInstanceState) {
+        View rootView = provideLayoutView(inflater, container, savedInstanceState);
+        Preconditions.checkNotNull(rootView, "root view is null, ensure provideLayoutView is right!");
+        return rootView;
+    }
+
     protected void doOnActivityCreated(Bundle savedInstanceState) {
         // 给一些变量赋值
         mFragmentActivity = getActivity();
-
-        XEventAPI.register(this);
         if (needBuild()) {
-            ButterKnife.inject(this, mRootView);
             // 细分生命周期
-            initView(mRootView, savedInstanceState);
-            initListener(mRootView, savedInstanceState);
-            mController = provideController(mRootView, savedInstanceState);
-            Preconditions.checkNotNull(mController, "controller is null, ensure provideController is right!");
-            mController.initData();
+            doInitOnViewCreated(mRootView, savedInstanceState);
         }
         mFirstTimeBuilt = false;
     }
 
-    @Override
-    public <Data, Callback extends XUIController.XUICtrlCallback<Data>> XUIController<Callback> getController() {
-        return mController;
+    protected void doInitOnViewCreated(View rootView, Bundle savedInstanceState) {
+        // 细分生命周期
+        initView(mRootView, savedInstanceState);
+        initListener(mRootView, savedInstanceState);
+        initData(mRootView, savedInstanceState);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        XEventAPI.unregister(this);
     }
 
     public FragmentActivity getFragmentActivity() {
@@ -141,14 +135,9 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
         return isAdded();
     }
 
+    @Override
     public Context getApplicationContext() {
         return XGlobals.getAppContext();
-    }
-
-    protected final void ensureRootViewCreated() {
-        if (!mIsRootViewCreated) {
-            throw new IllegalStateException("root view hasn't been created yet");
-        }
     }
 
     private boolean needBuild() {
@@ -175,7 +164,6 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
 
     @Override
     public View getRootView() {
-        ensureRootViewCreated();
         return mRootView;
     }
 
@@ -183,7 +171,6 @@ public abstract class XBaseFragment extends Fragment implements XUIComponent {
      * 仿照Activity的findVieById
      */
     public <T extends View> T findViewById(int id) {
-        ensureRootViewCreated();
         return (T) getRootView().findViewById(id);
     }
 

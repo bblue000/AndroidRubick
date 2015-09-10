@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.ui;
+package androidrubick.xframework.app.ui.component;
 
 /**
  *
@@ -16,14 +16,27 @@ package androidrubick.xframework.app.ui;
  */
 public interface XUICallback {
 
+    void onCreated(XUIComponent flow);
+
     /**
      * 当界面加载成功时调用
      */
     void onViewCreated(XUIComponent flow);
 
     /**
+     * 准备进行UI，监听器等的初始化操作
+     */
+    void onPrepareInit(XUIComponent flow) ;
+
+    /**
+     * 已经完成UI，监听器等的初始化操作
+     */
+    void onPostInit(XUIComponent flow) ;
+
+    /**
      * 当界面销毁时调用
      */
     void onViewDestroyed(XUIComponent flow);
 
+    void onDestroy(XUIComponent flow);
 }

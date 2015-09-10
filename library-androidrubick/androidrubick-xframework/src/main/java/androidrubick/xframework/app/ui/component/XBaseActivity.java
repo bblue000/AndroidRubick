@@ -1,4 +1,4 @@
-package androidrubick.xframework.app.ui;
+package androidrubick.xframework.app.ui.component;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.app.control.XUIController;
+import androidrubick.xframework.app.ui.XActivityCallbackDispatcher;
+import androidrubick.xframework.app.ui.XActivityController;
 
 /**
  * 封装了一些步骤化的操作，比如初始化View，初始化监听器，初始化数据
@@ -23,7 +24,6 @@ import androidrubick.xframework.app.control.XUIController;
 public abstract class XBaseActivity extends FragmentActivity implements XUIComponent {
 
     private View mRootView;
-    private XUIController mController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         XActivityCallbackDispatcher.dispatchOnActivityCreated(this, savedInstanceState);
@@ -32,6 +32,9 @@ public abstract class XBaseActivity extends FragmentActivity implements XUICompo
         doInitOnViewCreated(getRootView(), savedInstanceState);
     }
 
+    /**
+     * 创建contentView，并调用{@link #setContentView} 设置视图。
+     */
     protected void doOnCreateView(Bundle savedInstanceState) {
         mRootView = provideLayoutView(getLayoutInflater(), (ViewGroup) getWindow().getDecorView(), savedInstanceState);
         Preconditions.checkNotNull(mRootView, "root view is null, ensure provideLayoutView is right!");
@@ -41,15 +44,7 @@ public abstract class XBaseActivity extends FragmentActivity implements XUICompo
     protected void doInitOnViewCreated(View rootView, Bundle savedInstanceState) {
         initView(rootView, savedInstanceState);
         initListener(rootView, savedInstanceState);
-        mController = provideController(rootView, savedInstanceState);
-        Preconditions.checkNotNull(mController, "controller is null, ensure provideController is right!");
-        // init data
-        mController.initData();
-    }
-
-    @Override
-    public <Data, Callback extends XUIController.XUICtrlCallback<Data>> XUIController<Callback> getController() {
-        return mController;
+        initData(rootView, savedInstanceState);
     }
 
     @Override

@@ -3,7 +3,7 @@ package org.androidrubick.demo;
 import android.os.Bundle;
 import android.view.View;
 
-import androidrubick.xframework.app.ui.XBaseActivity;
+import androidrubick.xframework.app.ui.component.XBaseActivity;
 
 /**
  * somthing
