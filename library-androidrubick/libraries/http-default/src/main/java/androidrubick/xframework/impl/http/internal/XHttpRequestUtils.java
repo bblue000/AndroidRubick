@@ -1,4 +1,4 @@
-package androidrubick.xframework.net.http.request;
+package androidrubick.xframework.impl.http.internal;
 
 import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
@@ -25,9 +25,9 @@ import androidrubick.text.Strings;
 import androidrubick.utils.Function;
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
+import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xbase.annotation.Configurable;
 
 /**
  * 帮助类

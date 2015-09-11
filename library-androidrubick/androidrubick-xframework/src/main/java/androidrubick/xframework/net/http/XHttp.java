@@ -1,17 +1,19 @@
 package androidrubick.xframework.net.http;
 
 import androidrubick.text.Charsets;
-import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
 import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xframework.net.http.request.XHttpReq;
 
 /**
  * 提供HTTP请求相关的操作
  *
  * <p/>
  *
- * 可以通过{@link #builder()}创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest}
- * 的建造器，设置请求必要的元素（如请求URL，方法等）；
+ * 可以创建一个{@link androidrubick.xframework.net.http.request.XHttpReq}，
+ * 设置请求必要的元素（如请求URL，方法等），然后调用{@link XHttpReq#performRequest()} 发送请求；
+ *
  * <br/>
+ *
  * 可以通过{@link androidrubick.xframework.net.http.request.body.XHttpBody request body builder}
  * 创建{@link androidrubick.net.MediaType#FORM_DATA application/x-www-form-urlencoded}或者
  * {@link androidrubick.net.MediaType#FORM_DATA_MULTIPART multipart/form-data}等多种类型的请求体。
@@ -43,15 +45,5 @@ public class XHttp {
      * HTTPS握手超时时间
      */
     public static final int SSL_HANDSHAKE_TIMEOUT = 60 * 1000;
-
-    /**
-     * 开始创建一个HTTP request
-     *
-     * @see androidrubick.xframework.net.http.request.XHttpRequestBuilder
-     * @see androidrubick.xframework.net.http.request.XHttpRequest
-     */
-    public static XHttpRequestBuilder builder() {
-        return XHttpRequestBuilder.newInstance();
-    }
 
 }

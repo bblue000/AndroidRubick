@@ -30,7 +30,7 @@ public interface XHttpRequestService extends XSpiService {
      *     </tr>
      *     <tr>
      *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#Timeout}</td>
-     *         <td>请求服务器建立超时，或者socket读取超过指定时常</td>
+     *         <td>请求服务器建立超时，或者socket读取超时</td>
      *     </tr>
      *     <tr>
      *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#NoConnection}</td>

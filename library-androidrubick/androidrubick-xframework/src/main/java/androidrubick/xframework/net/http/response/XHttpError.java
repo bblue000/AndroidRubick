@@ -1,9 +1,14 @@
 package androidrubick.xframework.net.http.response;
 
+import androidrubick.xframework.net.http.request.XHttpReq;
+import androidrubick.xframework.net.http.spi.XHttpRequestService;
+
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/9/10.
+ *
+ * @see XHttpRequestService#performRequest(XHttpReq)
  */
 public class XHttpError extends Exception {
 
@@ -96,6 +101,9 @@ public class XHttpError extends Exception {
         return mType;
     }
 
+    /**
+     * 设置错误类型
+     */
     public void setType(Type type) {
         mType = type;
     }
@@ -107,6 +115,9 @@ public class XHttpError extends Exception {
         return mStatusCode;
     }
 
+    /**
+     * 设置状态值
+     */
     public void setStatusCode(int code) {
         mStatusCode = code;
     }
@@ -118,6 +129,9 @@ public class XHttpError extends Exception {
         return mRawCause;
     }
 
+    /**
+     * 设置原始异常
+     */
     public void setRawCause(Throwable rawCause) {
         mRawCause = rawCause;
     }
@@ -131,7 +145,13 @@ public class XHttpError extends Exception {
         return mResponse;
     }
 
+    /**
+     * 如果该错误是建立连接之后，由于读取过程，或者服务器返回的status code不再[200, 300)之间等原因，
+     *
+     * 则会有响应对象，此时传入，让外部异常处理。
+     */
     public void setResponse(XHttpRes response) {
         this.mResponse = response;
     }
+
 }

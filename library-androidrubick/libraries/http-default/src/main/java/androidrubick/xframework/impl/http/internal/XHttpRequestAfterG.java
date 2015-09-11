@@ -1,4 +1,4 @@
-package androidrubick.xframework.net.http.request;
+package androidrubick.xframework.impl.http.internal;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
@@ -21,9 +21,11 @@ import androidrubick.io.IOUtils;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
+import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xframework.net.http.request.XHttpRequest;
+import androidrubick.xframework.net.http.request.XHttpRequestUtils;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpRes;
-import androidrubick.xbase.annotation.Configurable;
 
 /**
  * somthing
@@ -152,7 +154,7 @@ public class XHttpRequestAfterG extends XHttpRequest {
 
 
     /**
-     * Initializes an {@link org.apache.http.HttpEntity} from the given {@link HttpURLConnection}.
+     * Initializes an {@link HttpEntity} from the given {@link HttpURLConnection}.
      * @param connection
      * @return an HttpEntity populated with data from <code>connection</code>.
      */

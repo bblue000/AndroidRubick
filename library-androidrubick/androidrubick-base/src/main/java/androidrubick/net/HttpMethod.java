@@ -59,4 +59,8 @@ public enum HttpMethod {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

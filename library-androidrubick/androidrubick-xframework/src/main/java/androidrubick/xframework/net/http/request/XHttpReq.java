@@ -9,16 +9,65 @@ import androidrubick.collect.MapBuilder;
 import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
+import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
+import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.XHttpUtils;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 
 /**
+ * 创建一个HTTP/HTTPS请求：
+ * <ol>
+ *     <li>
+ *         请求行
+ *         <ul>
+ *             <li>Method（{@link #method(androidrubick.net.HttpMethod)}）</li>
+ *             <li>
+ *                 URL（{@link #url(String)}）
+ *                 <p>
+ *                     不一定是完整的URL，对于没有请求体的方法（例如GET），如果设置了参数，会将参数填加到URL尾部。
+ *                 </p>
+ *             </li>
+ *             <li>Version [Option]</li>
+ *         </ul>
+ *     </li>
+ *     <li>
+ *         请求头（{@link #header(String, Object)}和{@link #headers(java.util.Map)}）
+ *         <ul>
+ *             <li>Key1: value1</li>
+ *             <li>Key2: value2</li>
+ *             <li>...</li>
+ *         </ul>
+ *     </li>
+ *     <li>
+ *         请求体，有如下几种组合：
+ *         <ol>
+ *             <li>纯字节流（设置Body-{@link #withBody(androidrubick.xframework.net.http.request.body.XHttpBody)}）</li>
+ *             <li>键值对，即类似表单（{@link #param(String, String)}和{@link #params(java.util.Map)}）</li>
+ *             <li>...</li>
+ *         </ul>
+ *     </li>
+ *     <li>
+ *         请求超时时间（可选）
+ *         <ul>
+ *             <li>统一设置尝试连接时间和读取数据时间（{@link #timeout(int)}）</li>
+ *             <li>设置尝试连接时间（{@link #connectionTimeout(int)}）</li>
+ *             <li>设置读取数据时间（{@link #socketTimeout(int)}）</li>
+ *         </ul>
+ *     </li>
+ * </ol>
+ *
  * <p/>
  *
- * Created by Yin Yong on 2015/9/10.
+ * 几个默认值都在{@link androidrubick.xframework.net.http.XHttp}中
+ *
+ * <p/>
+ *
+ * <p/>
+ * <p/>
+ * Created by Yin Yong on 15/5/15.
  */
 public class XHttpReq {
 
@@ -27,13 +76,15 @@ public class XHttpReq {
     private HttpMethod mMethod;
     private Map<String, Object> mHeaders;
     private XHttpBody mBody;
+    private int mConnectionTimeout;
+    private int mSocketTimeout;
     protected XHttpReq() {
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
         header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET);
         header(HttpHeaders.ACCEPT_ENCODING, "gzip;q=1, *;q=0.1");
         header(HttpHeaders.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        header(HttpHeaders.USER_AGENT, XHttpRequestUtils.getUserAgent());
+        header(HttpHeaders.USER_AGENT, DeviceInfos.getUserAgent());
     }
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -152,6 +203,30 @@ public class XHttpReq {
         return this;
     }
 
+
+    /**
+     * 既设置连接超时时间，也设置读取/传输数据时间
+     */
+    public XHttpReq timeout(int timeout) {
+        return connectionTimeout(timeout).socketTimeout(timeout);
+    }
+
+    /**
+     * 设置连接超时时间
+     */
+    public XHttpReq connectionTimeout(int timeout) {
+        mConnectionTimeout = MathPreconditions.checkNonNegative("conn timeout", timeout);
+        return this;
+    }
+
+    /**
+     * 设置读取/传输数据时间
+     */
+    public XHttpReq socketTimeout(int timeout) {
+        mSocketTimeout = MathPreconditions.checkNonNegative("socket timeout", timeout);
+        return this;
+    }
+
     public String getUrl() {
         return mUrl;
     }
@@ -178,6 +253,24 @@ public class XHttpReq {
         return CollectionsCompat.getValue(mHeaders, headerKey);
     }
 
+    public XHttpBody getBody() {
+        return mBody;
+    }
+
+    /**
+     * 设置连接超时时间
+     */
+    public int getConnectionTimeout() {
+        return mConnectionTimeout;
+    }
+
+    /**
+     * 设置读取/传输数据时间
+     */
+    public int getSocketTimeout() {
+        return mSocketTimeout;
+    }
+
     protected void build() {
 
     }
@@ -188,4 +281,12 @@ public class XHttpReq {
 //        XServiceLoader.load(XHttpRequestService.class).performRequest(this);
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this.getClass())
+                .add("url", this.mUrl)
+                .add("method", this.mMethod)
+                .add("headers", this.mHeaders)
+                .toString();
+    }
 }
