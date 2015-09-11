@@ -3,10 +3,14 @@ package androidrubick.xframework.impl.http.internal;
 import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.entity.BasicHttpEntity;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -91,5 +95,4 @@ public class XHttpRequestUtils {
         }
         return error;
     }
-
 }

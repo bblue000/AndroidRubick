@@ -1,14 +1,10 @@
 package androidrubick.xframework.impl.http.internal;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.message.BasicStatusLine;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -19,12 +15,10 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 import androidrubick.collect.CollectionsCompat;
-import androidrubick.io.IOUtils;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xframework.net.http.XHttpUtils;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
@@ -43,61 +37,10 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  */
 public class XHttpRequestServiceAfterG implements XHttpRequestService {
 
-    @Configurable
-    protected XHttpResponse prepareResponse(final HttpURLConnection connection) throws IOException {
-        // Initialize HttpResponse with data from the HttpURLConnection.
-        ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
-        int responseCode = connection.getResponseCode();
-        if (responseCode == -1) {
-            // -1 is returned by getResponseCode() if the response code could not be retrieved.
-            // Signal to the caller that something was wrong with the connection.
-            throw new IOException("Could not retrieve response code from HttpUrlConnection.");
-        }
-        StatusLine responseStatus = new BasicStatusLine(protocolVersion,
-                connection.getResponseCode(), connection.getResponseMessage());
-        XHttpResponse response = new XHttpResponse(responseStatus, entityFromConnection(connection)) {
-            @Override
-            public void closeConnection() {
-                consumeContent();
-                try {
-                    connection.disconnect();
-                } catch (Throwable t) { }
-            }
-        };
-        for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-            if (!Objects.isNull(header.getKey()) && !CollectionsCompat.isEmpty(header.getValue())) {
-                for (String val : header.getValue()) {
-                    response.addHeader(header.getKey(), val);
-                }
-            }
-        }
-        return response;
-    }
-
-
-    /**
-     * Initializes an {@link HttpEntity} from the given {@link HttpURLConnection}.
-     * @param connection
-     * @return an HttpEntity populated with data from <code>connection</code>.
-     */
-    private static HttpEntity entityFromConnection(HttpURLConnection connection) {
-        BasicHttpEntity entity = new BasicHttpEntity();
-        InputStream inputStream;
-        try {
-            inputStream = connection.getInputStream();
-        } catch (IOException ioe) {
-            inputStream = connection.getErrorStream();
-        }
-        entity.setContent(inputStream);
-        entity.setContentLength(connection.getContentLength());
-        entity.setContentEncoding(connection.getContentEncoding());
-        entity.setContentType(connection.getContentType());
-        return entity;
-    }
-
     @Override
     public XHttpResponse performRequest(XHttpRequest request) throws XHttpError {
         XHttpResponse response = null;
+        // 打开连接
         final URL url;
         final HttpURLConnection connection;
         try {
@@ -111,25 +54,27 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
             // openConnection 抛出异常
             throw XHttpRequestUtils.caseOtherException(response, e);
         }
+
+        // 连接成功，传输头部信息，相关参数，和请求body
         try {
             addHeaders(connection, request);
             addParams(connection, request);
             setConnectionParametersForRequest(connection, request);
 
-            // 写入
-            request.getBody().writeTo(connection.getOutputStream());
-
             // Initialize HttpResponse with data from the HttpURLConnection.
-            ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
             int responseCode = connection.getResponseCode();
             if (responseCode == -1) {
+                try {
+                    connection.disconnect();
+                } catch (Throwable t) { }
                 // -1 is returned by getResponseCode() if the response code could not be retrieved.
                 // Signal to the caller that something was wrong with the connection.
                 throw new IOException("Could not retrieve response code from HttpUrlConnection.");
             }
+            ProtocolVersion protocolVersion = XHttpUtils.defHTTPProtocolVersion();
             StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                     connection.getResponseCode(), connection.getResponseMessage());
-            response = new XHttpResponse(responseStatus, entityFromConnection(connection)) {
+            response = new XHttpResponse(responseStatus, XHttpUtils.entityFromConnection(connection)) {
                 @Override
                 public void closeConnection() {
                     consumeContent();
@@ -221,6 +166,8 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
         if (!Strings.isEmpty(contentType)) {
             connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, request.getHeader(HttpHeaders.CONTENT_TYPE));
         }
+
+        request.getBody().writeTo(connection.getOutputStream());
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.entity.AbstractHttpEntity;
+import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicHeader;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -166,5 +168,25 @@ public class XHttpUtils {
         } finally {
             IOUtils.close(out);
         }
+    }
+
+    /**
+     * Initializes an {@link HttpEntity} from the given {@link java.net.HttpURLConnection}.
+     * @param connection
+     * @return an HttpEntity populated with data from <code>connection</code>.
+     */
+    public static HttpEntity entityFromConnection(HttpURLConnection connection) {
+        BasicHttpEntity entity = new BasicHttpEntity();
+        InputStream inputStream;
+        try {
+            inputStream = connection.getInputStream();
+        } catch (IOException ioe) {
+            inputStream = connection.getErrorStream();
+        }
+        entity.setContent(inputStream);
+        entity.setContentLength(connection.getContentLength());
+        entity.setContentEncoding(connection.getContentEncoding());
+        entity.setContentType(connection.getContentType());
+        return entity;
     }
 }
