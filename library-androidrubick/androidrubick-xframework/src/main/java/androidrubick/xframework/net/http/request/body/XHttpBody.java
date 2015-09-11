@@ -12,6 +12,7 @@ import androidrubick.utils.Exceptions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
+import androidrubick.xframework.net.http.XHttpUtils;
 
 /**
  * 封装POST等含有请求体的请求方法创建请求体的过程。
@@ -38,6 +39,8 @@ import androidrubick.collect.MapBuilder;
  *     </tr>
  * </table>
  *
+ * 可以使用{@link #writeTo(java.io.OutputStream)}提取出内容。
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/5/17 0017.
@@ -59,19 +62,13 @@ public abstract class XHttpBody<R extends XHttpBody> {
         return new XHttpJsonBody();
     }
 
-
-    // static
-    public static final byte[] NONE_BYTE = new byte[0];
-    public static final int DEFAULT_BODY_SIZE = 512;
-
     // instance
     private MediaType mContentType;
     private Charset mParamEncoding;
     private Map<String, Object> mParams;
     private byte[] mRawBody;
     protected XHttpBody() {
-        mContentType = rawContentType();
-        mParamEncoding = Charsets.UTF_8;
+        mParamEncoding = XHttpUtils.DEFAULT_CHARSET;
     }
 
     protected R self() {
@@ -136,7 +133,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
         Preconditions.checkNotNull(charset, "charset");
         mParamEncoding = charset;
         // 修改contentType的
-        mContentType = mContentType.withCharset(mParamEncoding.name());
+        mContentType = Objects.getOr(mContentType, rawContentType()).withCharset(mParamEncoding.name());
         return self();
     }
 
@@ -185,10 +182,13 @@ public abstract class XHttpBody<R extends XHttpBody> {
     /**
      * 获取外部设置的内容类型；
      *
-     * 如果没有调用{@link #contentType}设置过，则返回null。
+     * 如果没有调用{@link #contentType}设置过，则返回{@link #rawContentType()}。
      *
      */
     public MediaType getContentType() {
+        if (Objects.isNull(mContentType)) {
+            mContentType = rawContentType().withCharset(mParamEncoding.name());
+        }
         return mContentType;
     }
 
@@ -265,7 +265,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * @throws Exception
      */
     protected void writeEmpty(OutputStream out) throws Exception {
-        out.write(NONE_BYTE);
+        out.write(XHttpUtils.NONE_BYTE);
     }
 
     /**
@@ -291,7 +291,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 没有设置RawBody的情况下，调用该方法获得实现类生成的body
      */
     protected byte[] generatedBody() throws Exception {
-        return NONE_BYTE;
+        return XHttpUtils.NONE_BYTE;
     }
 
     /**

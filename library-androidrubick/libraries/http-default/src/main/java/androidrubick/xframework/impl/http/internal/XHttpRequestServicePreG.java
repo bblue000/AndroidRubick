@@ -1,6 +1,6 @@
 package androidrubick.xframework.impl.http.internal;
 
-import org.apache.http.HttpStatus;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -23,13 +23,14 @@ import java.util.Map;
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpPatch;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xframework.net.http.XHttp;
-import androidrubick.xframework.net.http.request.XHttpReq;
+import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -61,15 +62,18 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
     }
 
     @Override
-    public XHttpRes performRequest(XHttpReq request) throws XHttpError {
+    public XHttpResponse performRequest(XHttpRequest request) throws XHttpError {
+        // 根据XHttpRequest对象配置成HttpUriRequest
         final HttpUriRequest httpUriRequest = createHttpUriRequest(request);
+        // 配置请求头实体
         addHeaders(httpUriRequest, request);
+        // 配置请求相关的参数，如超时等
         addParams(httpUriRequest, request);
 
         final HttpClient httpClient = prepareHttpClient();
-        XHttpRes response = null;
+        XHttpResponse response = null;
         try {
-            response =  new XHttpRes(httpClient.execute(httpUriRequest)) {
+            response =  new XHttpResponse(httpClient.execute(httpUriRequest)) {
                 @Override
                 public void closeConnection() {
                     try {
@@ -87,29 +91,12 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         } catch (MalformedURLException e) {
             throw new XHttpError(XHttpError.Type.Other, response, e);
         } catch (IOException e) {
-            XHttpError error = new XHttpError(response, e);
-            if (Objects.isNull(response)) {
-                error.setType(XHttpError.Type.NoConnection);
-            } else {
-                int statusCode = error.getStatusCode();
-                if (statusCode < 0) {
-                    error.setType(XHttpError.Type.Network);
-                } else {
-                    if (statusCode == HttpStatus.SC_UNAUTHORIZED ||
-                            statusCode == HttpStatus.SC_FORBIDDEN) {
-                        error.setType(XHttpError.Type.Auth);
-                    } else {
-                        // TODO: Only throw ServerError for 5xx status codes.
-                        error.setType(XHttpError.Type.Server);
-                    }
-                }
-            }
-            throw error;
+            throw XHttpRequestUtils.caseOtherException(response, e);
         }
         return response;
     }
 
-    private HttpUriRequest createHttpUriRequest(XHttpReq request) {
+    private HttpUriRequest createHttpUriRequest(XHttpRequest request) {
         HttpUriRequest httpUriRequest;
         switch (request.getMethod()) {
             case GET: {
@@ -150,18 +137,23 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         return httpUriRequest;
     }
 
-    @Configurable
-    protected void addHeaders(HttpUriRequest httpUriRequest, XHttpReq request) {
-        final Map<String, Object> headers = request.getHeaders();
+    /**
+     * 配置header
+     */
+    protected void addHeaders(HttpUriRequest httpUriRequest, XHttpRequest request) {
+        final Map<String, String> headers = request.getHeaders();
         if (CollectionsCompat.isEmpty(headers)) {
             return;
         }
         for (String key : headers.keySet()) {
-            httpUriRequest.setHeader(key, String.valueOf(headers.get(key)));
+            httpUriRequest.setHeader(key, headers.get(key));
         }
     }
 
-    protected void addParams(HttpUriRequest httpUriRequest, XHttpReq request) {
+    /**
+     * 配置参数
+     */
+    protected void addParams(HttpUriRequest httpUriRequest, XHttpRequest request) {
         HttpParams httpParams = httpUriRequest.getParams();
         int connectTimeoutMs = request.getConnectionTimeout();
         int socketTimeoutMs = request.getSocketTimeout();
@@ -173,7 +165,7 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         }
     }
 
-    protected void setEntityIfNonEmptyBody(HttpUriRequest httpUriRequest, XHttpReq request) {
+    protected void setEntityIfNonEmptyBody(HttpUriRequest httpUriRequest, XHttpRequest request) {
         if (!request.getMethod().canContainBody()
                 || !(httpUriRequest instanceof HttpEntityEnclosingRequestBase)) {
             return ;
@@ -183,45 +175,20 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
             return ;
         }
         HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase = Objects.getAs(httpUriRequest);
-        httpEntityEnclosingRequestBase.setHeader(HttpHeaders.CONTENT_TYPE, body.getContentType());
-//        httpEntityEnclosingRequestBase.setEntity(body.genreateHttpEntity());
+
+        String contentType = XHttpUtils.getContentType(request);
+        if (!Strings.isEmpty(contentType)) {
+            /**
+             * set Content-Type，如果request中已经设置了Content-Type，不予覆盖
+             */
+            httpEntityEnclosingRequestBase.setHeader(HttpHeaders.CONTENT_TYPE,
+                    XHttpUtils.getContentType(request));
+        }
+
+        // set entity
+        HttpEntity entity = XHttpUtils.createEntity(request, contentType);
+        httpEntityEnclosingRequestBase.setEntity(entity);
     }
-
-
-//    /**
-//     * 兼容 for HttpClient
-//     */
-//    public HttpEntity genreateHttpEntity() {
-//        checkBuild();
-//        try {
-//            HttpEntity httpEntity = genreateHttpEntityByRawBody();
-//            if (null != httpEntity) {
-//                return httpEntity;
-//            }
-//            httpEntity = genreateHttpEntityByDerived();
-//            if (null != httpEntity) {
-//                return httpEntity;
-//            }
-//            return genreateEmptyHttpEntity();
-//        } catch (Exception e) {
-//            throw new AndroidRuntimeException(e);
-//        }
-//    }
-//
-//    protected HttpEntity genreateHttpEntityByRawBody() throws Exception {
-//        if (Objects.isNull(mRawBody)) {
-//            return null;
-//        }
-//        return XHttpRequestUtils.createByteArrayEntity(mRawBody, getContentType(), mParamEncoding);
-//    }
-//
-//    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
-//        return null;
-//    }
-//
-//    protected HttpEntity genreateEmptyHttpEntity() throws Exception {
-//        return XHttpRequestUtils.createByteArrayEntity(NONE_BYTE, getContentType(), mParamEncoding);
-//    }
 
     @Override
     public void trimMemory() {

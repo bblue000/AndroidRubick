@@ -18,7 +18,7 @@ import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.XHttpUtils;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -38,7 +38,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  *         </ul>
  *     </li>
  *     <li>
- *         请求头（{@link #header(String, Object)}和{@link #headers(java.util.Map)}）
+ *         请求头（{@link #header(String, String)}和{@link #headers(java.util.Map)}）
  *         <ul>
  *             <li>Key1: value1</li>
  *             <li>Key2: value2</li>
@@ -72,20 +72,20 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  * <p/>
  * Created by Yin Yong on 15/5/15.
  */
-public class XHttpReq {
+public class XHttpRequest {
 
     private String mUrl;
     private ProtocolVersion mProtocolVersion;
     private HttpMethod mMethod;
-    private Map<String, Object> mHeaders;
+    private Map<String, String> mHeaders;
     private XHttpBody mBody;
     private int mConnectionTimeout;
     private int mSocketTimeout;
-    protected XHttpReq() {
+    public XHttpRequest() {
         mProtocolVersion = XHttpUtils.defHTTPProtocolVersion();
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
-        header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET);
+        header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET.name());
         header(HttpHeaders.ACCEPT_ENCODING, "gzip;q=1, *;q=0.1");
         header(HttpHeaders.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         header(HttpHeaders.USER_AGENT, DeviceInfos.getUserAgent());
@@ -101,7 +101,7 @@ public class XHttpReq {
      * @see androidrubick.net.HttpUrls#appendQueryString(String, String)
      * @see androidrubick.net.HttpUrls#toUrlEncodedQueryString
      */
-    public XHttpReq url(String url) {
+    public XHttpRequest url(String url) {
         mUrl = url;
         return this;
     }
@@ -111,7 +111,7 @@ public class XHttpReq {
      *
      * @see androidrubick.net.HttpMethod
      */
-    public XHttpReq method(HttpMethod method) {
+    public XHttpRequest method(HttpMethod method) {
         mMethod = method;
         return this;
     }
@@ -119,7 +119,7 @@ public class XHttpReq {
     /**
      * 设置协议版本信息（一般很少用到）
      */
-    public XHttpReq protocolVersion(ProtocolVersion protocolVersion) {
+    public XHttpRequest protocolVersion(ProtocolVersion protocolVersion) {
         mProtocolVersion = Preconditions.checkNotNull(protocolVersion, "protocolVersion");
         return this;
     }
@@ -132,7 +132,7 @@ public class XHttpReq {
      *
      * @see androidrubick.net.HttpHeaders
      */
-    public XHttpReq header(String headerKey, Object value) {
+    public XHttpRequest header(String headerKey, String value) {
         Preconditions.checkArgument(!Objects.isEmpty(headerKey), "header key is null or empty");
         prepareHeaders();
         mHeaders.put(headerKey, value);
@@ -147,7 +147,7 @@ public class XHttpReq {
      *
      * @see androidrubick.net.HttpHeaders
      */
-    public XHttpReq headerUnCover(String headerKey, Object value) {
+    public XHttpRequest headerUnCover(String headerKey, String value) {
         Preconditions.checkArgument(!Objects.isEmpty(headerKey), "header key is null or empty");
         prepareHeaders();
         CollectionsCompat.putUnCover(mHeaders, headerKey, value);
@@ -162,7 +162,7 @@ public class XHttpReq {
      *
      * @see androidrubick.net.HttpHeaders
      */
-    public XHttpReq headers(Map<String, String> headers) {
+    public XHttpRequest headers(Map<String, String> headers) {
         if (!CollectionsCompat.isEmpty(headers)) {
             prepareHeaders();
             CollectionsCompat.putAll(mHeaders, headers);
@@ -178,7 +178,7 @@ public class XHttpReq {
      *
      * @see androidrubick.net.HttpHeaders
      */
-    public XHttpReq headersUnCover(Map<String, String> headers) {
+    public XHttpRequest headersUnCover(Map<String, String> headers) {
         if (!CollectionsCompat.isEmpty(headers)) {
             prepareHeaders();
             CollectionsCompat.putAllUnCover(mHeaders, headers);
@@ -206,7 +206,7 @@ public class XHttpReq {
      * @see androidrubick.xframework.net.http.request.body.XHttpUrlEncodedBody
      * @see androidrubick.xframework.net.http.request.body.XHttpMultipartBody
      */
-    public XHttpReq withBody(XHttpBody body) {
+    public XHttpRequest withBody(XHttpBody body) {
         this.mBody = Preconditions.checkNotNull(body, "body");
         return this;
     }
@@ -215,14 +215,14 @@ public class XHttpReq {
     /**
      * 既设置连接超时时间，也设置读取/传输数据时间
      */
-    public XHttpReq timeout(int timeout) {
+    public XHttpRequest timeout(int timeout) {
         return connectionTimeout(timeout).socketTimeout(timeout);
     }
 
     /**
      * 设置连接超时时间
      */
-    public XHttpReq connectionTimeout(int timeout) {
+    public XHttpRequest connectionTimeout(int timeout) {
         mConnectionTimeout = MathPreconditions.checkNonNegative("conn timeout", timeout);
         return this;
     }
@@ -230,7 +230,7 @@ public class XHttpReq {
     /**
      * 设置读取/传输数据时间
      */
-    public XHttpReq socketTimeout(int timeout) {
+    public XHttpRequest socketTimeout(int timeout) {
         mSocketTimeout = MathPreconditions.checkNonNegative("socket timeout", timeout);
         return this;
     }
@@ -259,7 +259,7 @@ public class XHttpReq {
     /**
      * 获取所有设置的header
      */
-    public Map<String, Object> getHeaders() {
+    public Map<String, String> getHeaders() {
         return mHeaders;
     }
 
@@ -270,7 +270,7 @@ public class XHttpReq {
     /**
      * 获取<code>headerKey</code>对应的值
      */
-    public Object getHeader(String headerKey) {
+    public String getHeader(String headerKey) {
         return CollectionsCompat.getValue(mHeaders, headerKey);
     }
 
@@ -296,10 +296,11 @@ public class XHttpReq {
     }
 
     protected void build() {
-
+        Preconditions.checkNotNull(mUrl, "url");
+        Preconditions.checkNotNull(mMethod, "method");
     }
 
-    public XHttpRes performRequest() throws XHttpError {
+    public XHttpResponse performRequest() throws XHttpError {
         build();
         return XServiceLoader.load(XHttpRequestService.class).performRequest(this);
     }

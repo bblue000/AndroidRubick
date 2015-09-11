@@ -1,23 +1,11 @@
 package androidrubick.xframework.api.internal;
 
 import org.apache.http.StatusLine;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.HttpHostConnectException;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-
-import androidrubick.io.IOUtils;
 import androidrubick.net.HttpMethod;
-import androidrubick.xframework.api.XAPI;
 import androidrubick.xframework.api.XAPICallback;
-import androidrubick.xframework.api.param.XAPIParamParser;
 import androidrubick.xframework.api.param.XParamable;
-import androidrubick.xframework.api.result.XAPIResultParser;
 import androidrubick.xframework.api.result.XResultable;
-import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.job.XJob;
 import androidrubick.xbase.annotation.Configurable;
 

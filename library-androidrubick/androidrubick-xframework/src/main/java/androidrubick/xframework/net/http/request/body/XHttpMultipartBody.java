@@ -85,7 +85,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
     @Override
     public MediaType rawContentType() {
-        return MediaType.FORM_DATA_MULTIPART.withParameter(HttpHeaderValues.P_BOUNDARY, mBoundary);
+        return MediaType.FORM_DATA_MULTIPART;
     }
 
     /**
@@ -119,7 +119,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
         if (!CollectionsCompat.isEmpty(getDataMap())) {
             for (Map.Entry<String, Object> entry : getDataMap().entrySet()) {
-                Object value = Objects.getOr(entry.getValue(), NONE_BYTE);
+                Object value = Objects.getOr(entry.getValue(), XHttpUtils.NONE_BYTE);
                 if (entry.getValue() instanceof File) {
                     writeFile(dos, entry.getKey(), Objects.getAs(value, File.class));
                 } else if (entry.getValue() instanceof byte[]) {
@@ -199,7 +199,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
     @Override
     protected byte[] generatedBody() throws Exception {
         PoolingByteArrayOutputStream out = new PoolingByteArrayOutputStream(
-                XHttpUtils.BYTE_ARRAY_POOL, DEFAULT_BODY_SIZE);
+                XHttpUtils.BYTE_ARRAY_POOL, XHttpUtils.DEFAULT_BODY_SIZE);
         try {
             writeTo(out);
             return out.toByteArray();

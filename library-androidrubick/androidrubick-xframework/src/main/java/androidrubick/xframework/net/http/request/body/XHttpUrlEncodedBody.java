@@ -37,7 +37,7 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
 
     @Override
     protected byte[] generatedBody() throws Exception {
-        byte[] body = NONE_BYTE;
+        byte[] body = XHttpUtils.NONE_BYTE;
         // 直接写入参数
         String query = HttpUrls.toUrlEncodedQueryString(getParams(), getParamCharset().name());
         if (!Strings.isEmpty(query)) {

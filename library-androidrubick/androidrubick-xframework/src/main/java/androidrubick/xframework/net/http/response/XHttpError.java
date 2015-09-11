@@ -2,7 +2,6 @@ package androidrubick.xframework.net.http.response;
 
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.request.XHttpReq;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -10,7 +9,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  *
  * Created by Yin Yong on 2015/9/10.
  *
- * @see XHttpRequestService#performRequest(XHttpReq)
+ * @see XHttpRequestService#performRequest(androidrubick.xframework.net.http.request.XHttpRequest)
  */
 public class XHttpError extends Exception {
 
@@ -58,13 +57,13 @@ public class XHttpError extends Exception {
     private Type mType;
     private int mStatusCode = -1;
     private Throwable mRawCause;
-    private XHttpRes mResponse;
+    private XHttpResponse mResponse;
     private String mMessage;
     /**
      * Constructs a new {@code XHttpError} with the current stack trace
      * and the specified response, maybe null.
      */
-    public XHttpError(XHttpRes response) {
+    public XHttpError(XHttpResponse response) {
         super();
         this.mResponse = response;
         if (!Objects.isNull(this.mResponse)) {
@@ -77,7 +76,7 @@ public class XHttpError extends Exception {
      * Constructs a new {@code XHttpError} with the current stack trace
      * and the specified response, maybe null.
      */
-    public XHttpError(Type type, XHttpRes response) {
+    public XHttpError(Type type, XHttpResponse response) {
         this(response);
         this.mType = type;
     }
@@ -91,7 +90,7 @@ public class XHttpError extends Exception {
      * @param rawCause
      *            the specified rawCause.
      */
-    public XHttpError(XHttpRes response, Throwable rawCause) {
+    public XHttpError(XHttpResponse response, Throwable rawCause) {
         this(response);
         this.mRawCause = rawCause;
     }
@@ -105,15 +104,15 @@ public class XHttpError extends Exception {
      * @param rawCause
      *            the specified rawCause.
      */
-    public XHttpError(Type type, XHttpRes response, Throwable rawCause) {
+    public XHttpError(Type type, XHttpResponse response, Throwable rawCause) {
         this(response, rawCause);
         this.mType = type;
     }
 
     /**
-     * 如果没有手动设置，将使用{@link XHttpRes#getStatusMessage()}；
+     * 如果没有手动设置，将使用{@link XHttpResponse#getStatusMessage()}；
      *
-     * 如果没有{@link XHttpRes response}，则返回{@link #getCause()}的{@link Throwable#getMessage()}
+     * 如果没有{@link XHttpResponse response}，则返回{@link #getCause()}的{@link Throwable#getMessage()}
      */
     @Override
     public String getMessage() {
@@ -151,7 +150,7 @@ public class XHttpError extends Exception {
      *
      * 则返回响应对象
      */
-    public XHttpRes getResponse() {
+    public XHttpResponse getResponse() {
         return mResponse;
     }
 

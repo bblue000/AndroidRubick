@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import androidrubick.io.IOUtils;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.cache.mem.ByteArrayPool;
 import androidrubick.io.PoolingByteArrayOutputStream;
 import androidrubick.xbase.annotation.Configurable;
@@ -29,7 +29,7 @@ public class XAPIResultParser {
 
     private static final ByteArrayPool sPool = new ByteArrayPool(4096);
 
-    public static <T>T parse(XHttpRes response, Class<? extends T> clz)
+    public static <T>T parse(XHttpResponse response, Class<? extends T> clz)
         throws IOException {
         byte[] buf = sPool.getBuf(512);
         PoolingByteArrayOutputStream out = new PoolingByteArrayOutputStream(sPool,

@@ -85,7 +85,7 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
         try {
             return generateBody().length;
         } catch (Exception e) {
-            return DEFAULT_BODY_SIZE;
+            return XHttpUtils.DEFAULT_BODY_SIZE;
         }
     }
 

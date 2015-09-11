@@ -3,15 +3,14 @@ package androidrubick.xframework.net.http;
 import java.nio.charset.Charset;
 
 import androidrubick.text.Charsets;
-import androidrubick.xframework.net.http.request.XHttpReq;
 
 /**
  * 提供HTTP请求相关的操作
  *
  * <p/>
  *
- * 可以创建一个{@link androidrubick.xframework.net.http.request.XHttpReq}，
- * 设置请求必要的元素（如请求URL，方法等），然后调用{@link XHttpReq#performRequest()} 发送请求；
+ * 可以创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest}，
+ * 设置请求必要的元素（如请求URL，方法等），然后调用{@link androidrubick.xframework.net.http.request.XHttpRequest#performRequest()} 发送请求；
  *
  * <br/>
  *

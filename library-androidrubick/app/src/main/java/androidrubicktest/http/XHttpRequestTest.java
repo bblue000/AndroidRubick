@@ -1,4 +1,4 @@
-package androidrubicktest;
+package androidrubicktest.http;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -6,9 +6,10 @@ import java.io.UnsupportedEncodingException;
 import androidrubick.io.IOUtils;
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.StandardSystemProperty;
-import androidrubick.xframework.net.http.request.XHttpRequestBuilder;
+import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.XHttpError;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
  * something
@@ -27,9 +28,8 @@ public class XHttpRequestTest {
     public static void testGet() {
         System.out.println("============testGet");
         try {
-            XHttpRes response = XHttpRequestBuilder.newInstance()
+            XHttpResponse response = new XHttpRequest()
                     .url("http://www.baidu.com/")
-                    .build()
                     .performRequest();
 
             String result = IOUtils.inputStreamToString(response.getEntity().getContent(), "utf8", true);
@@ -39,6 +39,8 @@ public class XHttpRequestTest {
             System.out.println("content encoding = " + response.getContentEncoding());
             System.out.println("content length = " + response.getContentLength());
 //            System.out.println(result);
+        } catch (XHttpError e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,14 +49,10 @@ public class XHttpRequestTest {
     public static void testPost() {
         System.out.println("============testPost");
         try {
-            XHttpRes response = XHttpRequestBuilder.newInstance()
+            XHttpResponse response = new XHttpRequest()
                     .url("http://www.baidu.com/")
                     .method(HttpMethod.POST)
-                    .param("q", "我是中国人")
-                    .param("word", "我是中国人")
-                    .param("wd", "我是中国人")
-                    .withBody(XHttpBody.newUrlEncodedBody().param("wd", "我是中国人").build())
-                    .build()
+                    .withBody(XHttpBody.newUrlEncodedBody().param("wd", "我是中国人"))
                     .performRequest();
 
             String result = IOUtils.inputStreamToString(response.getEntity().getContent(), "utf8", true);
@@ -63,6 +61,8 @@ public class XHttpRequestTest {
             System.out.println("content encoding = " + response.getContentEncoding());
             System.out.println("content length = " + response.getContentLength());
 //            System.out.println(result);
+        } catch (XHttpError e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

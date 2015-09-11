@@ -1,9 +1,5 @@
 package androidrubick.xframework.net;
 
-import java.io.IOException;
-
-import androidrubick.xframework.net.http.response.XHttpRes;
-
 /**
  *
  * 网络异步任务的基类

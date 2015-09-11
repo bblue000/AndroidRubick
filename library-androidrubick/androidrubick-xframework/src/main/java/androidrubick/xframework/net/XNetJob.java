@@ -1,9 +1,5 @@
 package androidrubick.xframework.net;
 
-import java.io.IOException;
-
-import androidrubick.io.IOUtils;
-import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.job.XJob;
 
 /**
