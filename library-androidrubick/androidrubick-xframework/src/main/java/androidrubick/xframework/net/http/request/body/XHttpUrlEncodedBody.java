@@ -1,13 +1,12 @@
 package androidrubick.xframework.net.http.request.body;
 
-import org.apache.http.HttpEntity;
-
 import java.io.OutputStream;
 
 import androidrubick.collect.CollectionsCompat;
+import androidrubick.net.HttpUrls;
 import androidrubick.net.MediaType;
-import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.request.XHttpRequestUtils;
+import androidrubick.text.Strings;
+import androidrubick.xframework.net.http.XHttpUtils;
 
 /**
  * content type 为<code>application/x-www-form-urlencoded</code>的
@@ -27,46 +26,28 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
     }
 
     @Override
-    protected MediaType rawContentType() {
-        return MediaType.FORM_DATA;
-    }
-
-    @Override
     protected boolean writeGeneratedBody(OutputStream out) throws Exception {
-        if (CollectionsCompat.isEmpty(this.mParams)) {
+        if (CollectionsCompat.isEmpty(getParams())) {
             return false;
         }
-        byte[] body = generateBody();
+        byte[] body = generatedBody();
         out.write(body);
         return true;
     }
 
-    protected byte[] generateBody() throws Exception {
+    @Override
+    protected byte[] generatedBody() throws Exception {
         byte[] body = NONE_BYTE;
         // 直接写入参数
-        String query = XHttpRequestUtils.parseUrlEncodedParameters(mParams, mParamEncoding);
-        if (!Objects.isEmpty(query)) {
-            body = XHttpRequestUtils.getBytes(query, mParamEncoding);
+        String query = HttpUrls.toUrlEncodedQueryString(getParams(), getParamCharset().name());
+        if (!Strings.isEmpty(query)) {
+            body = XHttpUtils.getBytes(query, getParamCharset());
         }
         return body;
     }
 
     @Override
-    protected int calculateByteSize() {
-        checkBuild();
-        int size = super.calculateByteSize();
-        if (size > 0) {
-            return size;
-        }
-        try {
-            return generateBody().length;
-        } catch (Exception e) {
-            return DEFAULT_BODY_SIZE;
-        }
-    }
-
-    @Override
-    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
-        return XHttpRequestUtils.createByteArrayEntity(generateBody(), getContentType(), mParamEncoding);
+    public MediaType rawContentType() {
+        return MediaType.FORM_DATA;
     }
 }

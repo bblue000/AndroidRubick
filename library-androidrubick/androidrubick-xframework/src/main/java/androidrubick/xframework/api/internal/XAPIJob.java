@@ -17,7 +17,6 @@ import androidrubick.xframework.api.param.XAPIParamParser;
 import androidrubick.xframework.api.param.XParamable;
 import androidrubick.xframework.api.result.XAPIResultParser;
 import androidrubick.xframework.api.result.XResultable;
-import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.job.XJob;
 import androidrubick.xbase.annotation.Configurable;
@@ -45,48 +44,49 @@ public class XAPIJob extends XJob<XParamable, Object, XAPIStatusImpl> {
     @Configurable
     @Override
     protected XAPIStatusImpl doInBackground(XParamable[] params) {
-        final XParamable param = params[0];
-        XHttpRequest request = null;
-        XHttpRes resultHolder = null;
-        try {
-            request = generateHttpRequest(mBaseUrl, mHttpMethod, param);
-            resultHolder = request.performRequest();
-
-            // 1、获取状态栏
-            final StatusLine statusLine = resultHolder.getStatusLine();
-            // TODO 判断是否是成功状态
-            if (!isSuccessHttpStatus(statusLine)) {
-                return new XAPIStatusImpl(statusLine.getStatusCode(), statusLine.getReasonPhrase());
-            }
-
-            // 2、获取内容
-            Object parsedData = XAPIResultParser.parse(resultHolder, this.mClz);
-            if (null == parsedData || !XResultable.class.isAssignableFrom(parsedData.getClass())) {
-                return new XAPIStatusImpl(statusLine.getStatusCode(), statusLine.getReasonPhrase(), parsedData);
-            }
-
-            XResultable data = (XResultable) parsedData;
-            if (!isSuccessAPIStatus(data)) {
-                return new XAPIStatusImpl(data.code, data.msg);
-            }
-            return new XAPIStatusImpl(data.code, data.msg, data.data);
-        } catch (MalformedURLException e) {
-            return new XAPIStatusImpl(XAPI.ERR_BAD_URL, e.getMessage());
-        } catch (SocketTimeoutException e) {
-            return new XAPIStatusImpl(XAPI.ERR_TIMEOUT, e.getMessage());
-        } catch (ConnectTimeoutException e) {
-            return new XAPIStatusImpl(XAPI.ERR_TIMEOUT, e.getMessage());
-        } catch (HttpHostConnectException e) {
-            return new XAPIStatusImpl(XAPI.ERR_NETWORK, e.getMessage());
-        } catch (UnknownHostException e) {
-            return new XAPIStatusImpl(XAPI.ERR_NETWORK, e.getMessage());
-        } catch (IOException e) {
-            return new XAPIStatusImpl(XAPI.ERR_UNKNOWN, e.getMessage());
-        } catch (RuntimeException e) {
-            return new XAPIStatusImpl(XAPI.ERR_CLIENT, e.getMessage());
-        } finally {
-            IOUtils.close(resultHolder);
-        }
+//        final XParamable param = params[0];
+//        XHttpRequest request = null;
+//        XHttpRes resultHolder = null;
+//        try {
+//            request = generateHttpRequest(mBaseUrl, mHttpMethod, param);
+//            resultHolder = request.performRequest();
+//
+//            // 1、获取状态栏
+//            final StatusLine statusLine = resultHolder.getStatusLine();
+//            // TODO 判断是否是成功状态
+//            if (!isSuccessHttpStatus(statusLine)) {
+//                return new XAPIStatusImpl(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+//            }
+//
+//            // 2、获取内容
+//            Object parsedData = XAPIResultParser.parse(resultHolder, this.mClz);
+//            if (null == parsedData || !XResultable.class.isAssignableFrom(parsedData.getClass())) {
+//                return new XAPIStatusImpl(statusLine.getStatusCode(), statusLine.getReasonPhrase(), parsedData);
+//            }
+//
+//            XResultable data = (XResultable) parsedData;
+//            if (!isSuccessAPIStatus(data)) {
+//                return new XAPIStatusImpl(data.code, data.msg);
+//            }
+//            return new XAPIStatusImpl(data.code, data.msg, data.data);
+//        } catch (MalformedURLException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_BAD_URL, e.getMessage());
+//        } catch (SocketTimeoutException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_TIMEOUT, e.getMessage());
+//        } catch (ConnectTimeoutException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_TIMEOUT, e.getMessage());
+//        } catch (HttpHostConnectException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_NETWORK, e.getMessage());
+//        } catch (UnknownHostException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_NETWORK, e.getMessage());
+//        } catch (IOException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_UNKNOWN, e.getMessage());
+//        } catch (RuntimeException e) {
+//            return new XAPIStatusImpl(XAPI.ERR_CLIENT, e.getMessage());
+//        } finally {
+//            IOUtils.close(resultHolder);
+//        }
+        return null;
     }
 
     @Override
@@ -104,9 +104,9 @@ public class XAPIJob extends XJob<XParamable, Object, XAPIStatusImpl> {
         super.onCancelled(xapiStatus);
     }
 
-    protected XHttpRequest generateHttpRequest(String baseUrl, HttpMethod method, XParamable param) {
-        return XAPIParamParser.parseParamsAndHeaders(baseUrl, method, param);
-    }
+//    protected XHttpRequest generateHttpRequest(String baseUrl, HttpMethod method, XParamable param) {
+//        return XAPIParamParser.parseParamsAndHeaders(baseUrl, method, param);
+//    }
 
     @Configurable
     protected boolean isSuccessHttpStatus(StatusLine statusLine) {

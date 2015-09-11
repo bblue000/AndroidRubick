@@ -213,7 +213,7 @@ public class MediaType {
         this.type = type;
         this.subtype = subtype;
         this.parameters = parameters;
-        mDisplayName = generateName();
+        this.mDisplayName = generateName();
     }
 
     /**
@@ -261,6 +261,8 @@ public class MediaType {
 
     /**
      * 向当前对象添加/覆盖{@link HttpHeaderValues#P_CHARSET charset}参数
+     *
+     * @return 一个新的对象
      */
     public MediaType withCharset(String charset) {
         return withParameter(HttpHeaderValues.P_CHARSET, Preconditions.checkNotNull(charset));

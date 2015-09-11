@@ -76,26 +76,22 @@ public class HttpUrls {
      *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
      * </pre>
      */
-    public static String toUrlEncodedQueryString(Map<?, ?> params, final String encoding) {
-        return toUrlEncodedQueryString(params, new Function<Object, CharSequence>() {
-                @Override
-                public CharSequence apply(Object input) {
-                    try {
-                        return URLEncoder.encode(String.valueOf(input), encoding);
-                    } catch (UnsupportedEncodingException e) {
-                        throw Exceptions.toRuntime(e);
-                    }
+    public static String toUrlEncodedQueryString(Map<?, ?> params, final String charsetName) {
+        Function<Object, CharSequence> func = toUrlEncodedStringFunc(charsetName);
+        return toUrlEncodedQueryString(params, func, func);
+    }
+
+    public static Function<Object, CharSequence> toUrlEncodedStringFunc(final String charsetName) {
+        return new Function<Object, CharSequence>() {
+            @Override
+            public CharSequence apply(Object input) {
+                try {
+                    return URLEncoder.encode(String.valueOf(input), charsetName);
+                } catch (UnsupportedEncodingException e) {
+                    throw Exceptions.toRuntime(e);
                 }
-            }, new Function<Object, CharSequence>() {
-                    @Override
-                    public CharSequence apply(Object input) {
-                        try {
-                            return URLEncoder.encode(String.valueOf(input), encoding);
-                        } catch (UnsupportedEncodingException e) {
-                            throw Exceptions.toRuntime(e);
-                        }
-                    }
-                });
+            }
+        };
     }
 
     /**

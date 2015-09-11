@@ -52,7 +52,7 @@ public class PoolingByteArrayOutputStream extends ByteArrayOutputStream implemen
      */
     public PoolingByteArrayOutputStream(ByteArrayPool pool, int size) {
         mPool = pool;
-        buf = mPool.getBuf(Math.max(size, DEFAULT_SIZE));
+        buf = mPool.getBuf(Math.max(size, 0));
     }
 
     @Override

@@ -12,10 +12,14 @@ import androidrubick.net.HttpMethod;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
+import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.XHttpUtils;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.net.http.response.XHttpError;
+import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
  * 创建一个HTTP/HTTPS请求：
@@ -45,7 +49,6 @@ import androidrubick.xframework.net.http.request.body.XHttpBody;
  *         请求体，有如下几种组合：
  *         <ol>
  *             <li>纯字节流（设置Body-{@link #withBody(androidrubick.xframework.net.http.request.body.XHttpBody)}）</li>
- *             <li>键值对，即类似表单（{@link #param(String, String)}和{@link #params(java.util.Map)}）</li>
  *             <li>...</li>
  *         </ul>
  *     </li>
@@ -72,13 +75,14 @@ import androidrubick.xframework.net.http.request.body.XHttpBody;
 public class XHttpReq {
 
     private String mUrl;
-    private ProtocolVersion mProtocolVersion = XHttpUtils.defHTTPProtocolVersion();
+    private ProtocolVersion mProtocolVersion;
     private HttpMethod mMethod;
     private Map<String, Object> mHeaders;
     private XHttpBody mBody;
     private int mConnectionTimeout;
     private int mSocketTimeout;
     protected XHttpReq() {
+        mProtocolVersion = XHttpUtils.defHTTPProtocolVersion();
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
         header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET);
@@ -159,8 +163,10 @@ public class XHttpReq {
      * @see androidrubick.net.HttpHeaders
      */
     public XHttpReq headers(Map<String, String> headers) {
-        prepareHeaders();
-        CollectionsCompat.putAll(mHeaders, headers);
+        if (!CollectionsCompat.isEmpty(headers)) {
+            prepareHeaders();
+            CollectionsCompat.putAll(mHeaders, headers);
+        }
         return this;
     }
 
@@ -173,8 +179,10 @@ public class XHttpReq {
      * @see androidrubick.net.HttpHeaders
      */
     public XHttpReq headersUnCover(Map<String, String> headers) {
-        prepareHeaders();
-        CollectionsCompat.putAllUnCover(mHeaders, headers);
+        if (!CollectionsCompat.isEmpty(headers)) {
+            prepareHeaders();
+            CollectionsCompat.putAllUnCover(mHeaders, headers);
+        }
         return this;
     }
 
@@ -227,14 +235,23 @@ public class XHttpReq {
         return this;
     }
 
+    /**
+     * 获取请求URL
+     */
     public String getUrl() {
         return mUrl;
     }
 
+    /**
+     * 获取请求方式
+     */
     public HttpMethod getMethod() {
         return mMethod;
     }
 
+    /**
+     * 获取HTTP协议版本信息
+     */
     public ProtocolVersion getProtocolVersion() {
         return mProtocolVersion;
     }
@@ -246,6 +263,10 @@ public class XHttpReq {
         return mHeaders;
     }
 
+    public boolean containsHeader(String header) {
+        return CollectionsCompat.containsKey(mHeaders, header);
+    }
+
     /**
      * 获取<code>headerKey</code>对应的值
      */
@@ -253,6 +274,9 @@ public class XHttpReq {
         return CollectionsCompat.getValue(mHeaders, headerKey);
     }
 
+    /**
+     * 获取，如果没有请求体，返回Null
+     */
     public XHttpBody getBody() {
         return mBody;
     }
@@ -275,10 +299,9 @@ public class XHttpReq {
 
     }
 
-    public void performRequest() {
+    public XHttpRes performRequest() throws XHttpError {
         build();
-
-//        XServiceLoader.load(XHttpRequestService.class).performRequest(this);
+        return XServiceLoader.load(XHttpRequestService.class).performRequest(this);
     }
 
     @Override

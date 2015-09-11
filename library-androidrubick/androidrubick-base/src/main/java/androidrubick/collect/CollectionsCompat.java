@@ -143,20 +143,6 @@ public class CollectionsCompat {
     }
 
     /**
-     * 如果<code>key</code>已存在，则不添加
-     */
-    public static <K, V, R extends Map<? super K, ? super V>>boolean putUnCover(R map, K key, V value) {
-        if (Objects.isNull(map)) {
-            return false;
-        }
-        if (map.containsKey(key)) {
-            return false;
-        }
-        map.put(key, value);
-        return true;
-    }
-
-    /**
      * 将另外一个Map的元素全部添加到目标Map中，
      *
      * 如果<code>key</code>重复，则不添加
@@ -175,11 +161,50 @@ public class CollectionsCompat {
         return dest;
     }
 
+    /**
+     * 如果<code>key</code>已存在，则覆盖
+     */
+    public static <K, V, R extends Map<? super K, ? super V>>boolean put(R map, K key, V value) {
+        if (Objects.isNull(map)) {
+            return false;
+        }
+        map.put(key, value);
+        return true;
+    }
+
+    /**
+     * 如果<code>key</code>已存在，则不添加
+     */
+    public static <K, V, R extends Map<? super K, ? super V>>boolean putUnCover(R map, K key, V value) {
+        if (Objects.isNull(map)) {
+            return false;
+        }
+        if (map.containsKey(key)) {
+            return false;
+        }
+        map.put(key, value);
+        return true;
+    }
+
     public static <K, V, R extends Map<? super K, V>, Result extends V>Result getValue(R map, K key) {
         if (Objects.isNull(map)) {
             return null;
         }
         return (Result) map.get(key);
+    }
+
+    public static <K, V, R extends Map<? super K, V>>boolean containsKey(R map, K key) {
+        if (Objects.isNull(map)) {
+            return false;
+        }
+        return map.containsKey(key);
+    }
+
+    public static <K, V, R extends Map<K, ? super V>>boolean containsValue(R map, V value) {
+        if (Objects.isNull(map)) {
+            return false;
+        }
+        return map.containsValue(value);
     }
 
 }

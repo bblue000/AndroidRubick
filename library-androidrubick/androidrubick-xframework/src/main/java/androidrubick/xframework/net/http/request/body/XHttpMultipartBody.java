@@ -1,7 +1,5 @@
 package androidrubick.xframework.net.http.request.body;
 
-import org.apache.http.HttpEntity;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,12 +12,12 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.collect.MapBuilder;
 import androidrubick.io.IOUtils;
 import androidrubick.io.MimeUtils;
+import androidrubick.io.PoolingByteArrayOutputStream;
 import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.net.http.request.XHttpRequestUtils;
-import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xframework.net.http.XHttpUtils;
 
 /**
  * content type 为<code>multipart/form-data</code>的
@@ -81,27 +79,46 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
     }
 
     @Override
-    protected MediaType rawContentType() {
+    public MediaType getContentType() {
+        return super.getContentType().withParameter(HttpHeaderValues.P_BOUNDARY, mBoundary);
+    }
+
+    @Override
+    public MediaType rawContentType() {
         return MediaType.FORM_DATA_MULTIPART.withParameter(HttpHeaderValues.P_BOUNDARY, mBoundary);
     }
 
-    @Configurable
+    /**
+     * extra data map
+     */
+    public Map<String, Object> getDataMap() {
+        return mDataMap;
+    }
+
+    /**
+     * 获取用于{@link androidrubick.net.MediaType#FORM_DATA_MULTIPART multipart/form-data}
+     * 类型的请求的boundary。
+     */
+    public String getBoundary() {
+        return mBoundary;
+    }
+
     @Override
     protected boolean writeGeneratedBody(OutputStream out) throws Exception {
-        if (CollectionsCompat.isEmpty(mParams) && CollectionsCompat.isEmpty(mDataMap)) {
+        if (CollectionsCompat.isEmpty(getParams()) && CollectionsCompat.isEmpty(getDataMap())) {
             return false;
         }
         // write parameters
         DataOutputStream dos = new DataOutputStream(out);
 
-        if (!CollectionsCompat.isEmpty(mParams)) {
-            for (Map.Entry<String, Object> entry : mParams.entrySet()) {
+        if (!CollectionsCompat.isEmpty(getParams())) {
+            for (Map.Entry<String, Object> entry : getParams().entrySet()) {
                 writeField(dos, entry.getKey(), entry.getValue());
             }
         }
 
-        if (!CollectionsCompat.isEmpty(mDataMap)) {
-            for (Map.Entry<String, Object> entry : mDataMap.entrySet()) {
+        if (!CollectionsCompat.isEmpty(getDataMap())) {
+            for (Map.Entry<String, Object> entry : getDataMap().entrySet()) {
                 Object value = Objects.getOr(entry.getValue(), NONE_BYTE);
                 if (entry.getValue() instanceof File) {
                     writeFile(dos, entry.getKey(), Objects.getAs(value, File.class));
@@ -121,19 +138,18 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         try {
             dos.flush();
         } catch (Exception e) {}
-        return super.writeGeneratedBody(out);
+        return true;
     }
 
-    @Configurable
     protected void writeFile(DataOutputStream dos, String fieldName, File file) throws Exception {
         final String filename = file.getName();
         final InputStream is = new FileInputStream(file);
         dos.writeBytes(TWO_HYPHENS);
         dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestUtils.getBytes("Content-Disposition: form-data; name=\""
+        dos.write(XHttpUtils.getBytes("Content-Disposition: form-data; name=\""
                 + fieldName + "\";"
-                + " filename=\"" + filename + "\"", mParamEncoding));
+                + " filename=\"" + filename + "\"", getParamCharset()));
         dos.writeBytes(LINE_END);
 
         //added to specify type
@@ -146,13 +162,12 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(LINE_END);
     }
 
-    @Configurable
     protected void writeData(DataOutputStream dos, String name, byte[] data) throws IOException {
         dos.writeBytes(TWO_HYPHENS);
         dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestUtils.getBytes("Content-Disposition: form-data; name=\""
-                + name + "\"", mParamEncoding));
+        dos.write(XHttpUtils.getBytes("Content-Disposition: form-data; name=\""
+                + name + "\"", getParamCharset()));
         dos.writeBytes(LINE_END);
 
         //added to specify type
@@ -165,29 +180,31 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(LINE_END);
     }
 
-    @Configurable
     protected String guessMediaType(String filename) {
         String type = MimeUtils.guessMimeTypeByGetExtensionFromSrc(filename);
         return Objects.getOr(type, MediaType.OCTET_STREAM.name());
     }
 
-    @Configurable
     protected void writeField(DataOutputStream dos, String key, Object value) throws IOException {
         dos.writeBytes(TWO_HYPHENS);
         dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestUtils.getBytes("Content-Disposition: form-data; name=\"" + key + "\"", mParamEncoding));
+        dos.write(XHttpUtils.getBytes("Content-Disposition: form-data; name=\"" + key + "\"", getParamCharset()));
         dos.writeBytes(LINE_END);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpRequestUtils.getBytes(value, mParamEncoding));
+        dos.write(XHttpUtils.getBytes(value, getParamCharset()));
         dos.writeBytes(LINE_END);
     }
 
     @Override
-    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
-        if (CollectionsCompat.isEmpty(mParams) && CollectionsCompat.isEmpty(mDataMap)) {
-            return null;
+    protected byte[] generatedBody() throws Exception {
+        PoolingByteArrayOutputStream out = new PoolingByteArrayOutputStream(
+                XHttpUtils.BYTE_ARRAY_POOL, DEFAULT_BODY_SIZE);
+        try {
+            writeTo(out);
+            return out.toByteArray();
+        } finally {
+            IOUtils.close(out);
         }
-        return XHttpRequestUtils.createMultiPartEntity(this);
     }
 }

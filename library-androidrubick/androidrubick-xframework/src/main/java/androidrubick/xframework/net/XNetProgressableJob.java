@@ -2,7 +2,6 @@ package androidrubick.xframework.net;
 
 import java.io.IOException;
 
-import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpRes;
 
 /**
@@ -17,38 +16,38 @@ import androidrubick.xframework.net.http.response.XHttpRes;
  */
 public abstract class XNetProgressableJob<Param, Progress, Result> extends XNetJob<Param, Progress, Result> {
 
-    /**
-     * 生成HTTP请求对象
-     *
-     * @param params 参数
-     */
-    protected abstract XHttpRequest generateHttpRequest(Param...params);
-
-    /**
-     * 处理结果
-     * @param response 请求结果
-     */
-    protected final Result doParse(XHttpRes response) throws IOException {
-        final long contentLength = response.getContentLength();
-//        XNetJobUtils.getByteArrayPool().getBuf()
-//        IOUtils.writeTo(response.getContent(), null, true, new IOProgressCallback() {
-//            @Override
-//            public void onProgress(long readThisTime, long readTotal) {
-//                publishProgress();
-//            }
+//    /**
+//     * 生成HTTP请求对象
+//     *
+//     * @param params 参数
+//     */
+//    protected abstract XHttpRequest generateHttpRequest(Param...params);
 //
-//            @Override
-//            public void onComplete(long readTotal) {
-//                publishProgress();
-//            }
-//        });
-        return null;
-    }
-
-    /**
-     * 处理错误
-     *
-     * @param exception {@link #doInBackground(Object[])}过程中产生的错误
-     */
-    protected abstract Result doExc(Throwable exception);
+//    /**
+//     * 处理结果
+//     * @param response 请求结果
+//     */
+//    protected final Result doParse(XHttpRes response) throws IOException {
+//        final long contentLength = response.getContentLength();
+////        XNetJobUtils.getByteArrayPool().getBuf()
+////        IOUtils.writeTo(response.getContent(), null, true, new IOProgressCallback() {
+////            @Override
+////            public void onProgress(long readThisTime, long readTotal) {
+////                publishProgress();
+////            }
+////
+////            @Override
+////            public void onComplete(long readTotal) {
+////                publishProgress();
+////            }
+////        });
+//        return null;
+//    }
+//
+//    /**
+//     * 处理错误
+//     *
+//     * @param exception {@link #doInBackground(Object[])}过程中产生的错误
+//     */
+//    protected abstract Result doExc(Throwable exception);
 }

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package androidrubick.xframework.net.http;
+package androidrubick.io;
 
 import java.io.ByteArrayOutputStream;
 

@@ -22,10 +22,11 @@ import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
-import androidrubick.xframework.net.http.request.XHttpRequest;
-import androidrubick.xframework.net.http.request.XHttpRequestUtils;
+import androidrubick.xframework.net.http.request.XHttpReq;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.net.http.response.XHttpError;
 import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
  * somthing
@@ -36,10 +37,10 @@ import androidrubick.xframework.net.http.response.XHttpRes;
  *
  * @since 1.0
  */
-public class XHttpRequestAfterG extends XHttpRequest {
+public class XHttpRequestServiceAfterG implements XHttpRequestService {
 
-    protected XHttpRequestAfterG(String url, HttpMethod method, Map<String, String> header, XHttpBody body,
-                                 int connectionTimeout, int socketTimeout) {
+    protected XHttpRequestServiceAfterG(String url, HttpMethod method, Map<String, String> header, XHttpBody body,
+                                        int connectionTimeout, int socketTimeout) {
         super(url, method, header, body, connectionTimeout, socketTimeout);
     }
 
@@ -171,5 +172,20 @@ public class XHttpRequestAfterG extends XHttpRequest {
         entity.setContentEncoding(connection.getContentEncoding());
         entity.setContentType(connection.getContentType());
         return entity;
+    }
+
+    @Override
+    public XHttpRes performRequest(XHttpReq request) throws XHttpError {
+        return null;
+    }
+
+    @Override
+    public void trimMemory() {
+
+    }
+
+    @Override
+    public boolean multiInstance() {
+        return false;
     }
 }

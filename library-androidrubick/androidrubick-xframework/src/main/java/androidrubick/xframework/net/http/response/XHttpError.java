@@ -1,5 +1,7 @@
 package androidrubick.xframework.net.http.response;
 
+import androidrubick.text.Strings;
+import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.request.XHttpReq;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
@@ -57,41 +59,70 @@ public class XHttpError extends Exception {
     private int mStatusCode = -1;
     private Throwable mRawCause;
     private XHttpRes mResponse;
+    private String mMessage;
+    /**
+     * Constructs a new {@code XHttpError} with the current stack trace
+     * and the specified response, maybe null.
+     */
+    public XHttpError(XHttpRes response) {
+        super();
+        this.mResponse = response;
+        if (!Objects.isNull(this.mResponse)) {
+            this.mStatusCode = this.mResponse.getStatusCode();
+            this.mMessage = this.mResponse.getStatusMessage();
+        }
+    }
+
+    /**
+     * Constructs a new {@code XHttpError} with the current stack trace
+     * and the specified response, maybe null.
+     */
+    public XHttpError(Type type, XHttpRes response) {
+        this(response);
+        this.mType = type;
+    }
+
     /**
      * Constructs a new {@code XHttpError} with the current stack trace
      * and the specified detail message.
      *
-     * @param detailMessage
-     *            the detail message for this exception.
+     * @param response
+     *            the specified response.
+     * @param rawCause
+     *            the specified rawCause.
      */
-    public XHttpError(String detailMessage) {
-        super(detailMessage);
-    }
-
-    /**
-     * Constructs a new {@code XHttpError} with the current stack trace,
-     * the specified detail message and the specified cause.
-     *
-     * @param detailMessage
-     *            the detail message for this exception.
-     * @param throwable
-     *            the cause of this exception.
-     */
-    public XHttpError(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
-        mRawCause = null;
+    public XHttpError(XHttpRes response, Throwable rawCause) {
+        this(response);
+        this.mRawCause = rawCause;
     }
 
     /**
      * Constructs a new {@code XHttpError} with the current stack trace
-     * and the specified cause.
+     * and the specified detail message.
      *
-     * @param throwable
-     *            the cause of this exception.
+     * @param response
+     *            the specified response.
+     * @param rawCause
+     *            the specified rawCause.
      */
-    public XHttpError(Throwable throwable) {
-        super(throwable);
-        mRawCause = throwable;
+    public XHttpError(Type type, XHttpRes response, Throwable rawCause) {
+        this(response, rawCause);
+        this.mType = type;
+    }
+
+    /**
+     * 如果没有手动设置，将使用{@link XHttpRes#getStatusMessage()}；
+     *
+     * 如果没有{@link XHttpRes response}，则返回{@link #getCause()}的{@link Throwable#getMessage()}
+     */
+    @Override
+    public String getMessage() {
+        return Strings.isEmpty(mMessage) && !Objects.isNull(mRawCause) ? mRawCause.getMessage() : mMessage;
+    }
+
+    @Override
+    public Throwable getCause() {
+        return this.mRawCause;
     }
 
     /**
@@ -116,27 +147,6 @@ public class XHttpError extends Exception {
     }
 
     /**
-     * 设置状态值
-     */
-    public void setStatusCode(int code) {
-        mStatusCode = code;
-    }
-
-    /**
-     * 如果该错误是由于Exception抛出，返回原始的异常；没有则返回null
-     */
-    public Throwable getRawCause() {
-        return mRawCause;
-    }
-
-    /**
-     * 设置原始异常
-     */
-    public void setRawCause(Throwable rawCause) {
-        mRawCause = rawCause;
-    }
-
-    /**
      * 如果该错误是建立连接之后，由于读取过程，或者服务器返回的status code不再[200, 300)之间等原因，
      *
      * 则返回响应对象
@@ -146,12 +156,24 @@ public class XHttpError extends Exception {
     }
 
     /**
-     * 如果该错误是建立连接之后，由于读取过程，或者服务器返回的status code不再[200, 300)之间等原因，
-     *
-     * 则会有响应对象，此时传入，让外部异常处理。
+     * 设置状态值
      */
-    public void setResponse(XHttpRes response) {
-        this.mResponse = response;
+    public void setStatusCode(int code) {
+        mStatusCode = code;
+    }
+
+    /**
+     * 代码设置具体信息
+     */
+    public void setMessage(String detailMessage) {
+        mMessage = detailMessage;
+    }
+
+    /**
+     * 设置原始异常
+     */
+    public void setRawCause(Throwable rawCause) {
+        mRawCause = rawCause;
     }
 
 }

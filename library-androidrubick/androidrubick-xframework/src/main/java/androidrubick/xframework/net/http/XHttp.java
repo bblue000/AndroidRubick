@@ -1,7 +1,8 @@
 package androidrubick.xframework.net.http;
 
+import java.nio.charset.Charset;
+
 import androidrubick.text.Charsets;
-import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xframework.net.http.request.XHttpReq;
 
 /**
@@ -25,7 +26,6 @@ import androidrubick.xframework.net.http.request.XHttpReq;
  * @since 1.0
  *
  */
-@Configurable
 public class XHttp {
 
     private XHttp() { /* no instance needed */ }
@@ -39,7 +39,7 @@ public class XHttp {
     /**
      * 默认的编码
      */
-    public static final String DEFAULT_CHARSET = Charsets.UTF_8.name();
+    public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
 
     /**
      * HTTPS握手超时时间

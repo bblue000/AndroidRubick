@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 import androidrubick.net.MediaType;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 
 /**
@@ -108,6 +109,28 @@ public abstract class XHttpRes extends BasicHttpResponse implements Closeable {
 
     public long getContentLength() {
         return mContentLength;
+    }
+
+    /**
+     * 直接的获取status code
+     */
+    public int getStatusCode() {
+        StatusLine statusLine = getStatusLine();
+        if (Objects.isNull(statusLine)) {
+            return -1;
+        }
+        return statusLine.getStatusCode();
+    }
+
+    /**
+     * 直接的获取status 信息
+     */
+    public String getStatusMessage() {
+        StatusLine statusLine = getStatusLine();
+        if (Objects.isNull(statusLine)) {
+            return Strings.EMPTY;
+        }
+        return statusLine.getReasonPhrase();
     }
 
     /**

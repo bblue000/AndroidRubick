@@ -1,25 +1,42 @@
 package androidrubick.xframework.net.http.request.body;
 
-import android.util.AndroidRuntimeException;
-
-import org.apache.http.HttpEntity;
-
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
+import androidrubick.text.Charsets;
+import androidrubick.utils.ArraysCompat;
+import androidrubick.utils.Exceptions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
-import androidrubick.xframework.net.http.PredefinedBAOS;
-import androidrubick.xframework.net.http.XHttp;
-import androidrubick.xframework.net.http.request.XHttpRequestUtils;
-import androidrubick.xbase.annotation.Configurable;
-import androidrubick.xbase.annotation.ForTest;
 
 /**
- * 封装POST等含有请求体的请求方法创建请求体的过程
+ * 封装POST等含有请求体的请求方法创建请求体的过程。
+ *
+ * <p/>
+ *
+ * 创建一个HTTP/HTTPS请求体：
+ * <table>
+ *     <tr>
+ *         <td>方法</td>
+ *         <td>说明</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #param} 和 {@link #params}</td>
+ *         <td>设置参数，每个参数对应请求体中一项，比如，</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #paramCharset(String)}</td>
+ *         <td>设置参数字符编码，默认为{@link androidrubick.text.Charsets#UTF_8 UTF-8}</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #withRawBody(byte[])}</td>
+ *         <td>直接设置请求体的字节数组，所有参数设置将无效</td>
+ *     </tr>
+ * </table>
  *
  * <p/>
  *
@@ -44,19 +61,17 @@ public abstract class XHttpBody<R extends XHttpBody> {
 
 
     // static
-    protected static final byte[] NONE_BYTE = new byte[0];
-    @Configurable
-    protected static final int DEFAULT_BODY_SIZE = 512;
-
+    public static final byte[] NONE_BYTE = new byte[0];
+    public static final int DEFAULT_BODY_SIZE = 512;
 
     // instance
-    protected boolean mUserSetContentType = false;
-    protected String mContentType;
-    protected String mParamEncoding = XHttp.DEFAULT_CHARSET;
-    protected Map<String, Object> mParams;
-    protected byte[] mRawBody;
-    private boolean mIsBuild;
+    private MediaType mContentType;
+    private Charset mParamEncoding;
+    private Map<String, Object> mParams;
+    private byte[] mRawBody;
     protected XHttpBody() {
+        mContentType = rawContentType();
+        mParamEncoding = Charsets.UTF_8;
     }
 
     protected R self() {
@@ -73,7 +88,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
     public R param(String key, Object value) {
         Preconditions.checkArgument(!Objects.isEmpty(key), "param key is null or empty");
         prepareParams();
-        mParams.put(key, value);
+        CollectionsCompat.put(mParams, key, value);
         return self();
     }
 
@@ -87,7 +102,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
     public R params(Map<String, ?> params) {
         if (!CollectionsCompat.isEmpty(params)) {
             prepareParams();
-            mParams.putAll(params);
+            CollectionsCompat.putAll(mParams, params);
         }
         return self();
     }
@@ -99,11 +114,50 @@ public abstract class XHttpBody<R extends XHttpBody> {
     }
 
     /**
-     * 设置参数的字符编码
+     * 设置参数的字符编码。
+     *
+     * <p/>
+     *
+     * 默认为{@link androidrubick.text.Charsets#UTF_8}
      */
-    public R paramEncoding(String charset) {
-        Preconditions.checkArgument(!Objects.isEmpty(charset), "charset is null or empty");
+    public R paramCharset(String charsetName) {
+        Preconditions.checkArgument(!Objects.isEmpty(charsetName), "charset is null or empty");
+        return paramCharset(Charset.forName(charsetName));
+    }
+
+    /**
+     * 设置参数的字符编码。
+     *
+     * <p/>
+     *
+     * 默认为{@link androidrubick.text.Charsets#UTF_8}
+     */
+    public R paramCharset(Charset charset) {
+        Preconditions.checkNotNull(charset, "charset");
         mParamEncoding = charset;
+        // 修改contentType的
+        mContentType = mContentType.withCharset(mParamEncoding.name());
+        return self();
+    }
+
+    /**
+     * 硬性指定ContentType，这将覆盖{@link #rawContentType()}
+     */
+    public R contentType(String contentType) {
+        Preconditions.checkArgument(!Objects.isEmpty(contentType), "charset is null or empty");
+        return contentType(MediaType.parse(contentType));
+    }
+
+    /**
+     * 硬性指定ContentType，这将覆盖{@link #rawContentType()}
+     */
+    public R contentType(MediaType contentType) {
+        Preconditions.checkNotNull(contentType, "contentType");
+        // 如果
+        if (Objects.isNull(contentType.charset())) {
+            contentType = contentType.withCharset(mParamEncoding.name());
+        }
+        mContentType = contentType;
         return self();
     }
 
@@ -115,29 +169,55 @@ public abstract class XHttpBody<R extends XHttpBody> {
         return self();
     }
 
-    /**
-     * 硬性指定ContentType
-     */
-    public R contentType(String contentType) {
-        Preconditions.checkArgument(!Objects.isEmpty(contentType), "charset is null or empty");
-        mUserSetContentType = true;
-        mContentType = contentType;
-        return self();
+    public Map<String, Object> getParams() {
+        return mParams;
     }
 
     /**
-     * 获取内容类型
+     * 获取参数的字符集编码
+     *
+     * @see #paramCharset(String)
      */
-    public String getContentType() {
-        checkBuild();
+    public Charset getParamCharset() {
+        return mParamEncoding;
+    }
+
+    /**
+     * 获取外部设置的内容类型；
+     *
+     * 如果没有调用{@link #contentType}设置过，则返回null。
+     *
+     */
+    public MediaType getContentType() {
         return mContentType;
     }
 
     /**
-     * 将body写入到指定输出流中
+     * 获取直接设置的请求体的内容
+     */
+    public byte[] getRawBody() {
+        return mRawBody;
+    }
+
+    /**
+     * 将body写入到指定输出流中。
+     *
+     * <p/>
+     *
+     * 该方法的执行顺序：
+     * <ol>
+     *     <li>
+     *         首先判断是否有rawBody，有则写入rawBody；没有则转2
+     *     </li>
+     *     <li>
+     *         子类分别实现自己的生成请求体的方法{@link #writeGeneratedBody(java.io.OutputStream)}；没有则转3
+     *     </li>
+     *     <li>
+     *         写入空字节数组。
+     *     </li>
+     * </ol>
      */
     public void writeTo(OutputStream out) {
-        checkBuild();
         try {
             // if raw body supported
             if (writeRawBody(out)) {
@@ -148,7 +228,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
             }
             writeEmpty(out);
         } catch (Exception e) {
-            throw new AndroidRuntimeException(e);
+            throw Exceptions.toRuntime(e);
         }
     }
 
@@ -158,6 +238,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 判断是否设置了原始数据，如果已经设置，则向参数流中写入原始数据，并返回true；
      *
      * 否则直接返回false
+     *
      * @throws Exception
      */
     protected boolean writeRawBody(OutputStream out) throws Exception {
@@ -178,101 +259,43 @@ public abstract class XHttpBody<R extends XHttpBody> {
         return false;
     }
 
+    /**
+     * {@link #writeTo} 的最后一步
+     * @param out
+     * @throws Exception
+     */
     protected void writeEmpty(OutputStream out) throws Exception {
         out.write(NONE_BYTE);
     }
 
     /**
-     * 兼容 for HttpClient
-     */
-    public HttpEntity genreateHttpEntity() {
-        checkBuild();
-        try {
-            HttpEntity httpEntity = genreateHttpEntityByRawBody();
-            if (null != httpEntity) {
-                return httpEntity;
-            }
-            httpEntity = genreateHttpEntityByDerived();
-            if (null != httpEntity) {
-                return httpEntity;
-            }
-            return genreateEmptyHttpEntity();
-        } catch (Exception e) {
-            throw new AndroidRuntimeException(e);
-        }
-    }
-
-    protected HttpEntity genreateHttpEntityByRawBody() throws Exception {
-        if (Objects.isNull(mRawBody)) {
-            return null;
-        }
-        return XHttpRequestUtils.createByteArrayEntity(mRawBody, getContentType(), mParamEncoding);
-    }
-
-    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
-        return null;
-    }
-
-    protected HttpEntity genreateEmptyHttpEntity() throws Exception {
-        return XHttpRequestUtils.createByteArrayEntity(NONE_BYTE, getContentType(), mParamEncoding);
-    }
-
-    /**
-     * 获取内容
-     */
-    @ForTest
-    public byte[] getBody() {
-        checkBuild();
-        PredefinedBAOS out = new PredefinedBAOS(calculateByteSize());
-        writeTo(out);
-        return out.toByteArray();
-    }
-
-    /**
      * 简单计算内容长度
+     *
+     * <p/>
+     *
+     * 默认地，如果设置了{@link #withRawBody(byte[]) rawBody}，返回rawBody的长度。
+     *
+     * 如果没有设置，则返回0。
      */
-    @ForTest
-    protected int calculateByteSize() {
-        checkBuild();
-        if (null != mRawBody) {
-            return mRawBody.length;
+    public int calculateByteSize() {
+        int rawBodySize = ArraysCompat.getLength(mRawBody);
+        if (rawBodySize <= 0) {
+            try {
+                rawBodySize = ArraysCompat.getLength(generatedBody());
+            } catch (Exception e) {}
         }
-        return 0;
+        return rawBodySize;
     }
 
     /**
-     * 是否调用了Build完成了创建过程
+     * 没有设置RawBody的情况下，调用该方法获得实现类生成的body
      */
-    protected boolean isBuild() {
-        return mIsBuild;
-    }
-
-    protected void checkBuild() {
-        Preconditions.checkOperation(isBuild(), "%s not build", toString());
+    protected byte[] generatedBody() throws Exception {
+        return NONE_BYTE;
     }
 
     /**
-     * 子类本身默认的content type
+     * 子类本身默认的content type，在用户没有明确设置时，使用该content-type
      */
-    protected abstract MediaType rawContentType() ;
-
-    protected void validateContentTypeInBuild() {
-        // 如果没有指定指定contentType
-        if (!mUserSetContentType) {
-            MediaType mediaType = rawContentType();
-            if (!Objects.isEmpty(mParamEncoding)) {
-                mediaType = mediaType.withCharset(mParamEncoding);
-            }
-            mContentType = mediaType.name();
-        }
-    }
-
-    /**
-     * 创建当前的请求体
-     */
-    public R build() {
-        validateContentTypeInBuild();
-        mIsBuild = true;
-        return self();
-    }
+    public abstract MediaType rawContentType() ;
 }

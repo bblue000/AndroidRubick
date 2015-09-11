@@ -1,20 +1,27 @@
 package androidrubick.xframework.net.http.request.body;
 
-import org.apache.http.HttpEntity;
-
 import java.io.OutputStream;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.request.XHttpRequestUtils;
-import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xframework.net.http.XHttpUtils;
 
 /**
- * content type 为<code>application/json</code>的
+ * content type 为<code>application/json</code>的请求体。
  *
- * 请求体
+ * <p/>
+ *
+ * 如果调用了{@link #withRawJson(String)}将忽略所有的参数（param）设置（即{@link #param} 和 {@link #params} 视为无效）。
+ *
+ * <br/>
+ *
+ * 特别地，如果没有设置{@link #withRawJson(String)}，则所有的<code>params</code>将组装为一个json字符串。
+ *
+ * <br/>
+ *
+ * 所以，如果请求中只有某个字段是json字符串，不要选择使用该请求体。
  *
  * <p/>
  *
@@ -44,9 +51,16 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
         return this;
     }
 
+    /**
+     * 设置纯JSON文本，一旦设置，无视其他参数设置
+     */
+    public XHttpJsonBody withRawJson(String json, String charsetName) {
+        return withRawJson(json).paramCharset(charsetName);
+    }
+
     @Override
     protected boolean writeGeneratedBody(OutputStream out) throws Exception {
-        if (CollectionsCompat.isEmpty(mParams) && !mRawJsonSet) {
+        if (CollectionsCompat.isEmpty(getParams()) && !mRawJsonSet) {
             return false;
         }
         byte[] body = generateBody();
@@ -56,14 +70,14 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
 
     protected byte[] generateBody() throws Exception {
         if (mRawJsonSet) {
-            return XHttpRequestUtils.getBytes(mRawJson, mParamEncoding);
+            return XHttpUtils.getBytes(mRawJson, getParamCharset());
         }
-        return XHttpRequestUtils.getBytes(XHttpRequestUtils.toJson(mParams), mParamEncoding);
+        String json = Objects.getOr(XHttpUtils.toJson(getParams()), Strings.EMPTY);
+        return XHttpUtils.getBytes(json, getParamCharset());
     }
 
     @Override
-    protected int calculateByteSize() {
-        checkBuild();
+    public int calculateByteSize() {
         int size = super.calculateByteSize();
         if (size > 0) {
             return size;
@@ -75,14 +89,9 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
         }
     }
 
-    @Configurable
     @Override
-    protected MediaType rawContentType() {
+    public MediaType rawContentType() {
         return MediaType.JSON;
     }
 
-    @Override
-    protected HttpEntity genreateHttpEntityByDerived() throws Exception {
-        return XHttpRequestUtils.createByteArrayEntity(generateBody(), getContentType(), mParamEncoding);
-    }
 }
