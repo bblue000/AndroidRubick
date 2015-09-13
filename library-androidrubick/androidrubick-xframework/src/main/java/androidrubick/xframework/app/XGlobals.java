@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.LazyHandler;
+import androidrubick.xframework.BuildConfig;
 
 /**
  * 提供应用中常见的全局对象及相关工具方法，比如Application，Handler等等。
@@ -20,6 +21,11 @@ import androidrubick.xbase.util.LazyHandler;
 public class XGlobals {
 
     private XGlobals() { /* no instance needed */ }
+
+    /**
+     * 工程文件使用的字符集编码
+     */
+    public static final String ProjectEncoding = BuildConfig.ProjectEncoding;
 
     private static Handler sHandler;
     private static Application sApplication;

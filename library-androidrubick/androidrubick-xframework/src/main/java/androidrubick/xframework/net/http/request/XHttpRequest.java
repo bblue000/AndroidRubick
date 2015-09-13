@@ -14,11 +14,10 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xbase.util.DeviceInfos;
-import androidrubick.xframework.net.http.XHttp;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpResponse;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -64,13 +63,26 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  *
  * <p/>
  *
- * 几个默认值都在{@link androidrubick.xframework.net.http.XHttp}中
- *
- * <p/>
+ * 一个简单请求的例子：
+ * <pre>
+ *     XHttpRes response = null;
+ *     try {
+ *         response = new XHttpRequest()
+ *                  .url("http://foo.bar")
+ *                  .method(HttpMethod.GET)
+ *                  .performRequest();
+ *     } catch (XHttpError e) {
+ *         // do exception codes
+ *     } finally {
+ *         IOUtils.close(response);
+ *     }
+ * </pre>
  *
  * <p/>
  * <p/>
  * Created by Yin Yong on 15/5/15.
+ *
+ * @see XHttpBody
  */
 public class XHttpRequest {
 
@@ -82,13 +94,17 @@ public class XHttpRequest {
     private int mConnectionTimeout;
     private int mSocketTimeout;
     public XHttpRequest() {
-        mProtocolVersion = XHttpUtils.defHTTPProtocolVersion();
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
-        header(HttpHeaders.ACCEPT_CHARSET, XHttp.DEFAULT_CHARSET.name());
+        header(HttpHeaders.ACCEPT_CHARSET, XHttps.DEFAULT_CHARSET.name());
         header(HttpHeaders.ACCEPT_ENCODING, "gzip;q=1, *;q=0.1");
         header(HttpHeaders.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         header(HttpHeaders.USER_AGENT, DeviceInfos.getUserAgent());
+    }
+
+    public XHttpRequest(String url, HttpMethod method) {
+        this();
+        url(url).method(method);
     }
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -253,43 +269,49 @@ public class XHttpRequest {
      * 获取HTTP协议版本信息
      */
     public ProtocolVersion getProtocolVersion() {
+        if (Objects.isNull(mProtocolVersion)) {
+            mProtocolVersion = XHttps.defHTTPProtocolVersion();
+        }
         return mProtocolVersion;
     }
 
     /**
-     * 获取所有设置的header
+     * 获取所有设置的header，如果没有设置，返回null
      */
     public Map<String, String> getHeaders() {
         return mHeaders;
     }
 
-    public boolean containsHeader(String header) {
-        return CollectionsCompat.containsKey(mHeaders, header);
-    }
-
     /**
-     * 获取<code>headerKey</code>对应的值
+     * 判断是否存在指定的头信息
      */
-    public String getHeader(String headerKey) {
-        return CollectionsCompat.getValue(mHeaders, headerKey);
+    public boolean containsHeader(String headerField) {
+        return CollectionsCompat.containsKey(mHeaders, headerField);
     }
 
     /**
-     * 获取，如果没有请求体，返回Null
+     * 获取<code>headerKey</code>对应的值，如果没有设置，返回null
+     */
+    public String getHeader(String headerField) {
+        return CollectionsCompat.getValue(mHeaders, headerField);
+    }
+
+    /**
+     * 获取请求体，如果没有请求体，返回Null
      */
     public XHttpBody getBody() {
         return mBody;
     }
 
     /**
-     * 设置连接超时时间
+     * 设置连接超时时间，如果没有设置，返回0
      */
     public int getConnectionTimeout() {
         return mConnectionTimeout;
     }
 
     /**
-     * 设置读取/传输数据时间
+     * 设置读取/传输数据时间，如果没有设置，返回0
      */
     public int getSocketTimeout() {
         return mSocketTimeout;
@@ -300,7 +322,53 @@ public class XHttpRequest {
         Preconditions.checkNotNull(mMethod, "method");
     }
 
-    public XHttpResponse performRequest() throws XHttpError {
+    /**
+     * 执行请求
+     *
+     * <p/>
+     *
+     * 当且仅当，响应状态在[200, 300)区间，返回一个XHttpResultHolder对象；
+     *
+     * 其他响应状态根据具体的含义，抛出不同类型的异常。
+     *
+     * <p/>
+     *
+     * <table>
+     *     <tr>
+     *         <td>错误类型</td>
+     *         <td>描述</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#Timeout}</td>
+     *         <td>请求服务器建立超时，或者socket读取超时</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#NoConnection}</td>
+     *         <td>无法建立连接</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#Auth}</td>
+     *         <td>没有权限访问（401 & 403）</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#Server}</td>
+     *         <td>服务端错误（5xx）</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#Network}</td>
+     *         <td>建立了连接，且能获得请求行（status line），但是获取内容时出错，多为网络原因</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@link androidrubick.xframework.net.http.response.XHttpError.Type#Other}</td>
+     *         <td>其他运行时错误</td>
+     *     </tr>
+     * </table>
+     *
+     * @throws XHttpError
+     *
+     * @see XHttpError
+     */
+    public XHttpRes performRequest() throws XHttpError {
         build();
         return XServiceLoader.load(XHttpRequestService.class).performRequest(this);
     }

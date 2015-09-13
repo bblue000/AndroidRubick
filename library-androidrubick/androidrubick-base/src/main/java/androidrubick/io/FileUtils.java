@@ -12,6 +12,8 @@ import java.io.StringReader;
 
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.NumberUtils;
+import androidrubick.utils.Objects;
+
 import static androidrubick.io.IOUtils.*;
 
 /**
@@ -240,7 +242,7 @@ public class FileUtils {
      * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
      * @param file 目标文件
      * @param append 内容写入时是否使用叠加模式
-     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
      * @param useBuf 使用提供的字节数组进行中间传输变量，
      *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
      * @param callback IO进度的回调，可为null
@@ -496,7 +498,7 @@ public class FileUtils {
      * @param file to read (will not seek, so things like /proc files are OK)
      * @param max length (positive for head, negative of tail, 0 for no limit)
      * @param ellipsis to add of the file was truncated (can be null)
-     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
      * @return the contents of the file, possibly truncated
      * @throws IOException if something goes wrong reading the file
      *
@@ -505,6 +507,7 @@ public class FileUtils {
     public static String readTextFile(File file, int max, String ellipsis, String charsetName)
             throws IOException {
         try {
+            charsetName = Objects.getOr(charsetName, IOConstants.DEF_CHARSET_NAME);
             InputStream input = new FileInputStream(file);
             try {
                 long size = file.length();
@@ -513,8 +516,8 @@ public class FileUtils {
                     byte[] data = new byte[max + 1];
                     int length = input.read(data);
                     if (length <= 0) return "";
-                    if (length <= max) return new String(data, 0, length);
-                    if (ellipsis == null) return new String(data, 0, max);
+                    if (length <= max) return new String(data, 0, length, charsetName);
+                    if (ellipsis == null) return new String(data, 0, max, charsetName);
                     return new String(data, 0, max, charsetName) + ellipsis;
                 } else if (max < 0) {  // "tail" mode: keep the last N
                     int len;
@@ -528,13 +531,13 @@ public class FileUtils {
                     } while (len == data.length);
 
                     if (last == null && len <= 0) return "";
-                    if (last == null) return new String(data, 0, len);
+                    if (last == null) return new String(data, 0, len, charsetName);
                     if (len > 0) {
                         rolled = true;
                         System.arraycopy(last, len, last, 0, last.length - len);
                         System.arraycopy(data, 0, last, last.length - len, len);
                     }
-                    if (ellipsis == null || !rolled) return new String(last);
+                    if (ellipsis == null || !rolled) return new String(last, charsetName);
                     return ellipsis + new String(last, charsetName);
                 } else {  // "cat" mode: size unknown, read it all in streaming fashion
                     ByteArrayOutputStream contents = new ByteArrayOutputStream();
@@ -559,7 +562,7 @@ public class FileUtils {
      * Writes string to file. Basically same as "echo -n $string > $filename"
      * @param file target file
      * @param string char sequence
-     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
      * @return return true if succeed, return false if fail
      *
      * @since 1.0
@@ -572,7 +575,7 @@ public class FileUtils {
      * Writes string to file. Basically same as "echo -n $string > $filename"
      * @param file target file
      * @param string char sequence
-     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+     * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
      * @param append whether to append to file
      * @return return true if succeed, return false if fail
      *

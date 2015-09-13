@@ -21,28 +21,32 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
 import androidrubick.io.PoolingByteArrayOutputStream;
 import androidrubick.net.HttpHeaders;
-import androidrubick.text.Charsets;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.ForTest;
 import androidrubick.xbase.util.JsonParser;
+import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 
 /**
+ *
+ * helper
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/10.
  */
-public class XHttpUtils {
+public class XHttps {
 
-    private XHttpUtils() { /* no instance needed */ }
+    private XHttps() { /* no instance needed */ }
 
     public static final ByteArrayPool BYTE_ARRAY_POOL = new ByteArrayPool(4096);
     // static
     public static final byte[] NONE_BYTE = new byte[0];
     public static final int DEFAULT_BODY_SIZE = 512;
-    public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
+    public static final String DEFAULT_CHARSET_NAME = XGlobals.ProjectEncoding;
+    public static final Charset DEFAULT_CHARSET = Charset.forName(DEFAULT_CHARSET_NAME);
 
     public static ProtocolVersion defHTTPProtocolVersion() {
         return new ProtocolVersion("HTTP", 1, 1);
@@ -70,6 +74,12 @@ public class XHttpUtils {
         return httpEntity;
     }
 
+    /**
+     * 从<code>request</code>中获得Content-Type，如果<code>request</code>的header中没有
+     * 设置，就从{@link XHttpRequest#getBody() request body}中获取。
+     * <br/>
+     * 如果都没有设置，则返回null
+     */
     public static String getContentType(final XHttpRequest request) {
         if (Objects.isNull(request)) {
             return null;

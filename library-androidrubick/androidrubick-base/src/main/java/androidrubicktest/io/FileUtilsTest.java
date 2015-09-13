@@ -3,6 +3,7 @@ package androidrubicktest.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 
 import androidrubick.io.FileProgressCallback;
 import androidrubick.io.FileUtils;
@@ -35,6 +36,79 @@ public class FileUtilsTest {
 
         System.out.println(FileUtils.calFileSizeString(Integer.MAX_VALUE));
         System.out.println(String.format("%s", 100));
+        FileUtils.stringToFile(new File("D://yytest1.txt"),
+                (FileUtils.readTextFile(new File("D://yytest5"), 100, "...", "GBK")),
+                "GBK", false);
+
+        String fileText = FileUtils.readTextFile(new File("D://yytest1.txt"), 100, "...", "GBK");
+        System.out.println("fileText = " + fileText);
+        char[] chars = fileText.toCharArray();
+        for (char c : chars) {
+            System.out.print(Integer.toBinaryString(0x0000ffff & ((int) c)));
+            System.out.print(" ");
+        }
+        System.out.println();
+        chars = "我是中国人".toCharArray();
+        for (char c : chars) {
+            System.out.print(Integer.toBinaryString(0x0000ffff & ((int) c)));
+            System.out.print(" ");
+        }
+        System.out.println();
+        chars = fileText.toCharArray();
+        for (char c : chars) {
+            System.out.print(Integer.toHexString(0x0000ffff & ((int) c)));
+            System.out.print(" ");
+        }
+        System.out.println();
+        chars = "我是中国人".toCharArray();
+        for (char c : chars) {
+            System.out.print(Integer.toHexString(0x0000ffff & ((int) c)));
+            System.out.print(" ");
+        }
+        System.out.println();
+        System.out.println();
+
+
+
+
+
+
+
+
+
+        byte[] buf = fileText.getBytes("GBK");
+        for (byte b : buf) {
+            System.out.print(Integer.toBinaryString(0x000000ff & ((int) b)));
+            System.out.print(" ");
+        }
+        System.out.println();
+        buf = "我是中国人".getBytes();
+        for (byte b : buf) {
+            System.out.print(Integer.toBinaryString(0x000000ff & ((int) b)));
+            System.out.print(" ");
+        }
+        System.out.println();
+
+        buf = fileText.getBytes("GBK");
+        for (byte b : buf) {
+            System.out.print(Integer.toHexString(0x000000ff & ((int) b)));
+            System.out.print(" ");
+        }
+        System.out.println();
+        buf = "我是中国人".getBytes();
+        for (byte b : buf) {
+            System.out.print(Integer.toHexString(0x000000ff & ((int) b)));
+            System.out.print(" ");
+        }
+        System.out.println();
+
+        System.out.println();
+        System.out.println(Integer.toBinaryString(0x0000ffff & ((int) '\u6211')));
+
+
+
+
+//        FileUtils.stringToFile(new File("D://yytest3"), "我是中国人", "UTF-8", false);
     }
 
     private static void calFir() {

@@ -6,13 +6,12 @@ import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
-import androidrubick.text.Charsets;
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Exceptions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.collect.MapBuilder;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 
 /**
  * 封装POST等含有请求体的请求方法创建请求体的过程。
@@ -43,6 +42,21 @@ import androidrubick.xframework.net.http.XHttpUtils;
  *
  * <p/>
  *
+ * 默认提供了三种实现：
+ * <ul>
+ *     <li>
+ *         {@link XHttpJsonBody} 内容为Json字符串的请求体
+ *     </li>
+ *     <li>
+ *         {@link XHttpUrlEncodedBody} 内容为使用UrlEncoder编码的字符串的请求体
+ *     </li>
+ *     <li>
+ *         {@link XHttpMultipartBody} 为表单项请求体
+ *     </li>
+ * </ul>
+ *
+ * <p/>
+ *
  * Created by Yin Yong on 2015/5/17 0017.
  *
  * @see androidrubick.net.MediaType#FORM_DATA
@@ -68,7 +82,6 @@ public abstract class XHttpBody<R extends XHttpBody> {
     private Map<String, Object> mParams;
     private byte[] mRawBody;
     protected XHttpBody() {
-        mParamEncoding = XHttpUtils.DEFAULT_CHARSET;
     }
 
     protected R self() {
@@ -133,7 +146,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
         Preconditions.checkNotNull(charset, "charset");
         mParamEncoding = charset;
         // 修改contentType的
-        mContentType = Objects.getOr(mContentType, rawContentType()).withCharset(mParamEncoding.name());
+        mContentType = getContentType().withCharset(mParamEncoding.name());
         return self();
     }
 
@@ -149,10 +162,10 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 硬性指定ContentType，这将覆盖{@link #rawContentType()}
      */
     public R contentType(MediaType contentType) {
-        Preconditions.checkNotNull(contentType, "contentType");
+        Preconditions.checkNotNull(contentType, "Content-Type");
         // 如果
         if (Objects.isNull(contentType.charset())) {
-            contentType = contentType.withCharset(mParamEncoding.name());
+            contentType = contentType.withCharset(getParamCharset().name());
         }
         mContentType = contentType;
         return self();
@@ -166,17 +179,21 @@ public abstract class XHttpBody<R extends XHttpBody> {
         return self();
     }
 
+    /**
+     * 获得调用{@link #param(String, Object)}和{@link #params(Map)}方法设置的参数，
+     * 如果没有设置过参数，则返回null。
+     */
     public Map<String, Object> getParams() {
         return mParams;
     }
 
     /**
-     * 获取参数的字符集编码
+     * 获取参数的字符集编码，如果没有设置过，默认返回{@link androidrubick.text.Charsets#UTF_8 UTF-8}
      *
      * @see #paramCharset(String)
      */
     public Charset getParamCharset() {
-        return mParamEncoding;
+        return Objects.getOr(mParamEncoding, XHttps.DEFAULT_CHARSET);
     }
 
     /**
@@ -187,7 +204,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      */
     public MediaType getContentType() {
         if (Objects.isNull(mContentType)) {
-            mContentType = rawContentType().withCharset(mParamEncoding.name());
+            mContentType = rawContentType().withCharset(getParamCharset().name());
         }
         return mContentType;
     }
@@ -217,7 +234,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      *     </li>
      * </ol>
      */
-    public void writeTo(OutputStream out) {
+    public synchronized void writeTo(OutputStream out) {
         try {
             // if raw body supported
             if (writeRawBody(out)) {
@@ -265,7 +282,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * @throws Exception
      */
     protected void writeEmpty(OutputStream out) throws Exception {
-        out.write(XHttpUtils.NONE_BYTE);
+        out.write(XHttps.NONE_BYTE);
     }
 
     /**
@@ -291,7 +308,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 没有设置RawBody的情况下，调用该方法获得实现类生成的body
      */
     protected byte[] generatedBody() throws Exception {
-        return XHttpUtils.NONE_BYTE;
+        return XHttps.NONE_BYTE;
     }
 
     /**

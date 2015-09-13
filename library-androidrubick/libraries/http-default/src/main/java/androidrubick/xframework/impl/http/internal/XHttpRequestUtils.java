@@ -3,14 +3,10 @@ package androidrubick.xframework.impl.http.internal;
 import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
-import org.apache.http.entity.BasicHttpEntity;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -18,8 +14,8 @@ import javax.net.ssl.SSLSocketFactory;
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xbase.annotation.Configurable;
-import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.response.XHttpError;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
@@ -34,6 +30,13 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
 public class XHttpRequestUtils {
 
     private XHttpRequestUtils() {}
+
+    /**
+     * HTTPS握手超时时间
+     */
+    @Configurable
+    public static final int SSL_HANDSHAKE_TIMEOUT = 60 * 1000;
+
     @Configurable
     private static SSLSocketFactory sSSLSocketFactory;
 
@@ -46,7 +49,7 @@ public class XHttpRequestUtils {
     public static SSLSocketFactory createSSLSocketFactory() {
         // TODO 第二个参数需要跟HttpClient对应
         if (null == sSSLSocketFactory) {
-            sSSLSocketFactory = SSLCertificateSocketFactory.getDefault(XHttp.SSL_HANDSHAKE_TIMEOUT, null);
+            sSSLSocketFactory = SSLCertificateSocketFactory.getDefault(SSL_HANDSHAKE_TIMEOUT, null);
         }
         return sSSLSocketFactory;
     }
@@ -54,6 +57,10 @@ public class XHttpRequestUtils {
     @Configurable
     public static boolean isHttps(URL url) {
         return "https".equals(url.getProtocol());
+    }
+
+    public static boolean isGzip(XHttpRes response) {
+        return "gzip".equalsIgnoreCase(response.getContentEncoding());
     }
 
     /**

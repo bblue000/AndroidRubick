@@ -17,7 +17,7 @@ import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 
 /**
  * content type 为<code>multipart/form-data</code>的
@@ -89,7 +89,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
     }
 
     /**
-     * extra data map
+     * 额外的信息，如果没有设置，返回null
      */
     public Map<String, Object> getDataMap() {
         return mDataMap;
@@ -119,7 +119,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
 
         if (!CollectionsCompat.isEmpty(getDataMap())) {
             for (Map.Entry<String, Object> entry : getDataMap().entrySet()) {
-                Object value = Objects.getOr(entry.getValue(), XHttpUtils.NONE_BYTE);
+                Object value = Objects.getOr(entry.getValue(), XHttps.NONE_BYTE);
                 if (entry.getValue() instanceof File) {
                     writeFile(dos, entry.getKey(), Objects.getAs(value, File.class));
                 } else if (entry.getValue() instanceof byte[]) {
@@ -147,7 +147,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(TWO_HYPHENS);
         dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpUtils.getBytes("Content-Disposition: form-data; name=\""
+        dos.write(XHttps.getBytes("Content-Disposition: form-data; name=\""
                 + fieldName + "\";"
                 + " filename=\"" + filename + "\"", getParamCharset()));
         dos.writeBytes(LINE_END);
@@ -166,7 +166,7 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(TWO_HYPHENS);
         dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpUtils.getBytes("Content-Disposition: form-data; name=\""
+        dos.write(XHttps.getBytes("Content-Disposition: form-data; name=\""
                 + name + "\"", getParamCharset()));
         dos.writeBytes(LINE_END);
 
@@ -189,17 +189,17 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
         dos.writeBytes(TWO_HYPHENS);
         dos.writeBytes(mBoundary);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpUtils.getBytes("Content-Disposition: form-data; name=\"" + key + "\"", getParamCharset()));
+        dos.write(XHttps.getBytes("Content-Disposition: form-data; name=\"" + key + "\"", getParamCharset()));
         dos.writeBytes(LINE_END);
         dos.writeBytes(LINE_END);
-        dos.write(XHttpUtils.getBytes(value, getParamCharset()));
+        dos.write(XHttps.getBytes(value, getParamCharset()));
         dos.writeBytes(LINE_END);
     }
 
     @Override
     protected byte[] generatedBody() throws Exception {
         PoolingByteArrayOutputStream out = new PoolingByteArrayOutputStream(
-                XHttpUtils.BYTE_ARRAY_POOL, XHttpUtils.DEFAULT_BODY_SIZE);
+                XHttps.BYTE_ARRAY_POOL, XHttps.DEFAULT_BODY_SIZE);
         try {
             writeTo(out);
             return out.toByteArray();

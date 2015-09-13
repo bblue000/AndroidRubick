@@ -1,7 +1,5 @@
 package androidrubick.xframework.impl.json;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
@@ -35,7 +33,7 @@ public class XJsonParserImpl implements XJsonParserService {
             return Strings.NULL;
         }
         if (target instanceof CharSequence) {
-            return Objects.getAs(target, CharSequence.class).toString();
+            return String.valueOf(target);
         }
         if (Objects.isNull(type)) {
             return mGson.toJson(target);
@@ -45,10 +43,7 @@ public class XJsonParserImpl implements XJsonParserService {
 
     @Override
     public <T> T toObject(String json, Class<T> clz) {
-        if (Objects.isNull(json) || Strings.NULL.equals(json)) {
-            return null;
-        }
-        if (TextUtils.isEmpty(json)) {
+        if (Objects.isNull(json) || Strings.isEmpty(json, true)) {
             return null;
         }
         return mGson.fromJson(json, clz);

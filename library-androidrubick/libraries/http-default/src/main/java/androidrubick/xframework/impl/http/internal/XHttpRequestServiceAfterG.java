@@ -19,7 +19,7 @@ import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpError;
@@ -71,10 +71,10 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
                 // Signal to the caller that something was wrong with the connection.
                 throw new IOException("Could not retrieve response code from HttpUrlConnection.");
             }
-            ProtocolVersion protocolVersion = XHttpUtils.defHTTPProtocolVersion();
+            ProtocolVersion protocolVersion = XHttps.defHTTPProtocolVersion();
             StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                     connection.getResponseCode(), connection.getResponseMessage());
-            response = new XHttpResponse(responseStatus, XHttpUtils.entityFromConnection(connection)) {
+            response = new XHttpResponse(responseStatus, XHttps.entityFromConnection(connection)) {
                 @Override
                 public void closeConnection() {
                     consumeContent();
@@ -90,6 +90,7 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
                     }
                 }
             }
+            response = new XHurlResImpl(connection);
         } catch (SocketTimeoutException e) {
             throw new XHttpError(XHttpError.Type.Timeout, response, e);
         } catch (IOException e) {
@@ -162,7 +163,7 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
         connection.setDoOutput(true);
 
         // set connection
-        String contentType = XHttpUtils.getContentType(request);
+        String contentType = XHttps.getContentType(request);
         if (!Strings.isEmpty(contentType)) {
             connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, request.getHeader(HttpHeaders.CONTENT_TYPE));
         }

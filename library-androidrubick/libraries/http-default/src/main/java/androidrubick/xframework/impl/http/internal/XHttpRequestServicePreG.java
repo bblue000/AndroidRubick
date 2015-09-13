@@ -25,11 +25,12 @@ import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpPatch;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.XHttp;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpError;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
@@ -43,15 +44,17 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  */
 public class XHttpRequestServicePreG implements XHttpRequestService {
 
+    @Configurable
+    public static final boolean REUSE_HTTPCLIENT = true;
     private static HttpClient sHttpClient;
 
     protected HttpClient prepareHttpClient() {
-        if (XHttp.REUSE_HTTPCLIENT && null != sHttpClient) {
+        if (REUSE_HTTPCLIENT && null != sHttpClient) {
             return sHttpClient;
         }
         sHttpClient = null;
         HttpClient httpClient = createHttpClient();
-        if (XHttp.REUSE_HTTPCLIENT) {
+        if (REUSE_HTTPCLIENT) {
             return sHttpClient = httpClient;
         }
         return httpClient;
@@ -62,7 +65,7 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
     }
 
     @Override
-    public XHttpResponse performRequest(XHttpRequest request) throws XHttpError {
+    public XHttpRes performRequest(XHttpRequest request) throws XHttpError {
         // 根据XHttpRequest对象配置成HttpUriRequest
         final HttpUriRequest httpUriRequest = createHttpUriRequest(request);
         // 配置请求头实体
@@ -176,17 +179,17 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         }
         HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase = Objects.getAs(httpUriRequest);
 
-        String contentType = XHttpUtils.getContentType(request);
+        String contentType = XHttps.getContentType(request);
         if (!Strings.isEmpty(contentType)) {
             /**
              * set Content-Type，如果request中已经设置了Content-Type，不予覆盖
              */
             httpEntityEnclosingRequestBase.setHeader(HttpHeaders.CONTENT_TYPE,
-                    XHttpUtils.getContentType(request));
+                    XHttps.getContentType(request));
         }
 
         // set entity
-        HttpEntity entity = XHttpUtils.createEntity(request, contentType);
+        HttpEntity entity = XHttps.createEntity(request, contentType);
         httpEntityEnclosingRequestBase.setEntity(entity);
     }
 

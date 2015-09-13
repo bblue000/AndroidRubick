@@ -1,12 +1,13 @@
 package androidrubick.xframework.net.http.request.body;
 
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 
 /**
  * content type 为<code>application/json</code>的请求体。
@@ -52,10 +53,21 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
     }
 
     /**
-     * 设置纯JSON文本，一旦设置，无视其他参数设置
+     * 设置纯JSON文本，一旦设置，无视其他参数设置；
+     *
+     * 并调用{@link #paramCharset(String)}设置字符集编码
      */
     public XHttpJsonBody withRawJson(String json, String charsetName) {
         return withRawJson(json).paramCharset(charsetName);
+    }
+
+    /**
+     * 设置纯JSON文本，一旦设置，无视其他参数设置；
+     *
+     * 并调用{@link #paramCharset(Charset)}设置字符集编码
+     */
+    public XHttpJsonBody withRawJson(String json, Charset charset) {
+        return withRawJson(json).paramCharset(charset);
     }
 
     @Override
@@ -70,10 +82,9 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
 
     protected byte[] generateBody() throws Exception {
         if (mRawJsonSet) {
-            return XHttpUtils.getBytes(mRawJson, getParamCharset());
+            return XHttps.getBytes(mRawJson, getParamCharset());
         }
-        String json = Objects.getOr(XHttpUtils.toJson(getParams()), Strings.EMPTY);
-        return XHttpUtils.getBytes(json, getParamCharset());
+        return XHttps.getBytes(XHttps.toJson(getParams()), getParamCharset());
     }
 
     @Override
@@ -85,7 +96,7 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
         try {
             return generateBody().length;
         } catch (Exception e) {
-            return XHttpUtils.DEFAULT_BODY_SIZE;
+            return XHttps.DEFAULT_BODY_SIZE;
         }
     }
 

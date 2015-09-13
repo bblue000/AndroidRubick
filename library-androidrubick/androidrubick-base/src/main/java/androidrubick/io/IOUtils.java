@@ -1,6 +1,7 @@
 package androidrubick.io;
 
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 
 import java.io.Closeable;
 import java.io.FileOutputStream;
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -49,12 +51,8 @@ public class IOUtils {
 	public static boolean writeTo(InputStream in, boolean closeIns,
 								  OutputStream out, boolean closeOut,
 								  byte[] useBuf, IOProgressCallback callback) throws IOException {
-		if (null == in) {
-			throw new NullPointerException("in is null!");
-		}
-		if (null == out) {
-			throw new NullPointerException("out is null!");
-		}
+		Preconditions.checkNotNull(in, "in");
+		Preconditions.checkNotNull(out, "out");
 		long readTotal = 0;
 		try {
 			byte[] buf = null == useBuf ? new byte[IOConstants.DEF_BUFFER_SIZE] : useBuf;
@@ -97,12 +95,8 @@ public class IOUtils {
 	public static boolean writeTo(Reader in, boolean closeIns,
 								  Writer out, boolean closeOut,
 								  char[] useBuf, IOProgressCallback callback) throws IOException {
-		if (null == in) {
-			throw new NullPointerException("in is null!");
-		}
-		if (null == out) {
-			throw new NullPointerException("out is null!");
-		}
+		Preconditions.checkNotNull(in, "in");
+		Preconditions.checkNotNull(out, "out");
 		long readTotal = 0;
 		try {
 			char[] buffer = null == useBuf ? new char[IOConstants.DEF_BUFFER_SIZE] : useBuf;
@@ -134,7 +128,7 @@ public class IOUtils {
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param charsetName 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
-	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
 	 * @param useBuf 使用提供的字节数组进行中间传输变量，
 	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
 	 * @param callback IO进度的回调，可为null
@@ -151,9 +145,7 @@ public class IOUtils {
 								  String charsetName,
 								  char[] useBuf, IOProgressCallback callback) throws IOException {
 		InputStreamReader reader;
-		if (null == charsetName) {
-			charsetName = IOConstants.DEF_CHARSET;
-		}
+		charsetName = Objects.getOr(charsetName, IOConstants.DEF_CHARSET_NAME);
 		reader = new InputStreamReader(in, charsetName);
 		return writeTo(reader, closeIns, out, closeOut, useBuf, callback);
 	}
@@ -171,7 +163,7 @@ public class IOUtils {
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
 	 * @param charsetName 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
-	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
 	 * @param useBuf 使用提供的字节数组进行中间传输变量，
 	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
 	 * @param callback IO进度的回调，可为null
@@ -188,9 +180,7 @@ public class IOUtils {
 								  String charsetName,
 								  char[] useBuf, IOProgressCallback callback) throws IOException {
 		OutputStreamWriter writer;
-		if (null == charsetName) {
-			charsetName = IOConstants.DEF_CHARSET;
-		}
+		charsetName = Objects.getOr(charsetName, IOConstants.DEF_CHARSET_NAME);
 		writer = new OutputStreamWriter(out, charsetName);
 		return writeTo(in, closeIns, writer, closeOut, useBuf, callback);
 	}
@@ -205,7 +195,7 @@ public class IOUtils {
 	 * 读取字节流，并输出为String
 	 *
 	 * @param in 字节流
-	 * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET}
+	 * @param charsetName 编码方式，如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
 	 * @param closeIns 写入完成或者出错后是否需要关闭输入流
 	 *
 	 * @throws java.io.IOException IO异常
@@ -215,9 +205,7 @@ public class IOUtils {
 	 */
 	public static String inputStreamToString(InputStream in, String charsetName, boolean closeIns)
 			throws IOException {
-		if (null == in) {
-			throw new NullPointerException("in is null!");
-		}
+		Preconditions.checkNotNull(in, "in");
 		StringWriter writer = new StringWriter();
 		writeTo(in, closeIns, writer, true, charsetName, null, null);
 		return writer.toString();
@@ -236,16 +224,29 @@ public class IOUtils {
 	 */
 	public static String readerToString(Reader in, boolean closeIns)
 			throws IOException {
-		if (null == in) {
-			throw new NullPointerException("in is null!");
-		}
+		Preconditions.checkNotNull(in, "in");
 		StringWriter writer = new StringWriter();
 		writeTo(in, closeIns, writer, true, null, null);
 		return writer.toString();
 	}
 
 
+	public static boolean stringToOutputStream(String src, String charsetName,
+											   OutputStream out, boolean closeOut)
+			throws IOException  {
+		Preconditions.checkNotNull(out, "out");
+		StringReader reader = new StringReader(src);
+		return writeTo(reader, true, out, closeOut, charsetName, null, null);
+	}
 
+
+	public static boolean stringToWriter(String src,
+										 Writer out, boolean closeOut)
+			throws IOException  {
+		Preconditions.checkNotNull(out, "out");
+		StringReader reader = new StringReader(src);
+		return writeTo(reader, true, out, closeOut, null, null);
+	}
 
 
 

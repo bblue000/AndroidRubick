@@ -12,6 +12,7 @@ android {
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "ProjectEncoding", "\"UTF-8\""
         //buildConfigField "String", "FOO", "\"bar\""
         //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:"default_channel" ] // manifest文件中的占位符${UMENG_CHANNEL_VALUE}
     }

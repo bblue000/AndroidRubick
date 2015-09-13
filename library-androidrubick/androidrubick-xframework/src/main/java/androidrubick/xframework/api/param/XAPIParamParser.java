@@ -4,7 +4,6 @@ import java.util.Map;
 
 import androidrubick.net.HttpMethod;
 import androidrubick.xframework.api.XAPI;
-import androidrubick.xframework.net.http.XHttp;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubicktest.api.ParametersUtils;

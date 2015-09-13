@@ -6,7 +6,7 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.net.HttpUrls;
 import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 
 /**
  * content type 为<code>application/x-www-form-urlencoded</code>的
@@ -37,11 +37,11 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
 
     @Override
     protected byte[] generatedBody() throws Exception {
-        byte[] body = XHttpUtils.NONE_BYTE;
+        byte[] body = XHttps.NONE_BYTE;
         // 直接写入参数
         String query = HttpUrls.toUrlEncodedQueryString(getParams(), getParamCharset().name());
         if (!Strings.isEmpty(query)) {
-            body = XHttpUtils.getBytes(query, getParamCharset());
+            body = XHttps.getBytes(query, getParamCharset());
         }
         return body;
     }

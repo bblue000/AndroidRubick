@@ -30,7 +30,7 @@ public class Strings {
     public static final String EMPTY = "";
 
 	/**
-	 * check this target string is NULL or empty; <br/>
+	 * check this target string is <code>null</code> or empty; <br/>
 	 * if <code>checkContentNull</code> is set true,
 	 * it'll also check if it is a "null" string, ignoring Case.
 	 * @param target target string to check
@@ -43,7 +43,7 @@ public class Strings {
 		// check if target is null, or a len == 0 string
 		return ((null == target)
 				|| (target.length() == 0)
-				|| (checkContentNull && NULL.equalsIgnoreCase(target.toString())));
+				|| (checkContentNull && NULL.equals(target.toString())));
 	}
 	
 	/**

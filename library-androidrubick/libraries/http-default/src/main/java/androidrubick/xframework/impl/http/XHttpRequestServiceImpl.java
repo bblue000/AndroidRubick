@@ -7,7 +7,7 @@ import androidrubick.xframework.impl.http.internal.XHttpRequestServiceAfterG;
 import androidrubick.xframework.impl.http.internal.XHttpRequestServicePreG;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpResponse;
+import androidrubick.xframework.net.http.response.XHttpRes;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -28,7 +28,7 @@ public class XHttpRequestServiceImpl implements XHttpRequestService {
     }
 
     @Override
-    public XHttpResponse performRequest(XHttpRequest request) throws XHttpError {
+    public XHttpRes performRequest(XHttpRequest request) throws XHttpError {
         return mBase.performRequest(request);
     }
 

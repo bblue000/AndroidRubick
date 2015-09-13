@@ -3,7 +3,7 @@ package androidrubicktest.http;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 
-import androidrubick.xframework.net.http.XHttpUtils;
+import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 
 /**
@@ -25,7 +25,7 @@ public class XHttpRequestBuilderTest {
     public static void testUrlEncodedBody() throws UnsupportedEncodingException {
         System.out.println("============testUrlEncodedBody");
         System.out.println(XHttpBody.newUrlEncodedBody().paramCharset("utf8").getContentType());
-        System.out.println(XHttpUtils.bodyToString(XHttpBody.newUrlEncodedBody()
+        System.out.println(XHttps.bodyToString(XHttpBody.newUrlEncodedBody()
                 .paramCharset("utf8")
                 .param("userName", "帅哥")
                 .param("version", 1.0f)));
@@ -34,22 +34,22 @@ public class XHttpRequestBuilderTest {
     public static void testJsonBody() throws UnsupportedEncodingException {
         System.out.println("============testJsonBody");
         System.out.println(XHttpBody.newJsonBody().paramCharset("utf8").getContentType());
-        System.out.println(XHttpUtils.bodyToString(XHttpBody.newJsonBody()
+        System.out.println(XHttps.bodyToString(XHttpBody.newJsonBody()
                 .paramCharset("utf8")
                 .param("userName", "帅哥")
                 .param("version", 1.0f)));
-        System.out.println(XHttpUtils.bodyToString(XHttpBody.newJsonBody()
+        System.out.println(XHttps.bodyToString(XHttpBody.newJsonBody()
                 .withRawJson("{}").paramCharset("utf8")));
     }
 
     public static void testMultipart() throws UnsupportedEncodingException {
         System.out.println("============testMultipart");
         System.out.println(XHttpBody.newMultipartBody().paramCharset("utf8").getContentType());
-        System.out.println(XHttpUtils.bodyToString(XHttpBody.newMultipartBody()
+        System.out.println(XHttps.bodyToString(XHttpBody.newMultipartBody()
                 .paramCharset("utf8")
                 .param("userName", "帅哥")
                 .param("version", 1.0f)));
-        System.out.println(XHttpUtils.bodyToString(XHttpBody.newMultipartBody()
+        System.out.println(XHttps.bodyToString(XHttpBody.newMultipartBody()
                 .rawField("file", "苍老师.avi".getBytes()).paramCharset("utf8")));
 
         File dir = new File(".");
@@ -61,7 +61,7 @@ public class XHttpRequestBuilderTest {
             }
         }
         System.out.println(file.getAbsolutePath());
-        System.out.println(XHttpUtils.bodyToString(XHttpBody.newMultipartBody()
+        System.out.println(XHttps.bodyToString(XHttpBody.newMultipartBody()
                 .file("file", file)
                 .paramCharset("utf8")));
     }

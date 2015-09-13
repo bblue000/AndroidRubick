@@ -1,5 +1,9 @@
 package androidrubick.io;
 
+import java.nio.charset.Charset;
+
+import androidrubick.base.BuildConfig;
+
 /**
  * IO 操作中的相关常量
  * 
@@ -15,18 +19,18 @@ public interface IOConstants {
      * @since 1.0
 	 */
 	int DEF_BUFFER_SIZE = 512;
-	
+
 	/**
-	 * 默认的编码——UTF-8
+	 * 默认的编码
+	 *
+	 * @since 1.0
+	 */
+	String DEF_CHARSET_NAME = BuildConfig.ProjectEncoding;
+
+	/**
+	 * 默认的编码
      *
      * @since 1.0
 	 */
-	String DEF_CHARSET = "UTF-8";
-	
-	/**
-	 * 默认的超时时间——15s
-     *
-     * @since 1.0
-	 */
-	int DEF_TIMEOUT = 15 * 1000;
+	Charset DEF_CHARSET = Charset.forName(DEF_CHARSET_NAME);
 }

@@ -148,7 +148,14 @@ public class XHttpError extends Exception {
     /**
      * 如果该错误是建立连接之后，由于读取过程，或者服务器返回的status code不再[200, 300)之间等原因，
      *
-     * 则返回响应对象
+     * 则返回响应对象。
+     *
+     * <p/>
+     *
+     * type为
+     * {@link androidrubick.xframework.net.http.response.XHttpError.Type#Auth} 或
+     * {@link androidrubick.xframework.net.http.response.XHttpError.Type#Server}时，
+     * 一定已经生成响应对象，其他类型的错误没有保证。
      */
     public XHttpResponse getResponse() {
         return mResponse;
