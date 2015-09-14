@@ -20,7 +20,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
@@ -35,7 +34,6 @@ import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.*;
-import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -96,72 +94,11 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
                 throw new IOException();
             }
 
-            response =  new androidrubick.xframework.net.http.response.XHttpResponse() {
-
-                @Override
-                public int getStatusCode() {
-                    return statusCode;
-                }
-
-                @Override
-                public String getStatusMessage() {
-                    return statusLine.getReasonPhrase();
-                }
-
-                @Override
-                public ProtocolVersion getProtocolVersion() {
-                    return statusLine.getProtocolVersion();
-                }
-
-                @Override
-                public String getContentType() {
-                    Header header = httpResponse.getEntity().getContentType();
-                    return Objects.isNull(header) ? null : header.getValue();
-                }
-
-                @Override
-                public String getContentCharset() {
-                    Header header = httpResponse.getEntity().getContentType();
-                    return Objects.isNull(header) ? null : header.getValue();
-                }
-
-                @Override
-                public long getContentLength() {
-                    return 0;
-                }
-
-                @Override
-                public String getContentEncoding() {
-                    return null;
-                }
-
-                @Override
-                public InputStream getContent() throws IOException {
-                    return httpResponse.getEntity().getContent();
-                }
-
-                @Override
-                public String getHeaderField(String field) {
-                    return null;
-                }
-
-                @Override
-                public boolean containsHeaderField(String field) {
-                    return false;
-                }
-
-                @Override
-                public void consumeContent() {
-                    if (!Objects.isNull(httpResponse) && !Objects.isNull(httpResponse.getEntity())) {
-                        try {
-                            httpResponse.getEntity().consumeContent();
-                        } catch (Exception e) {}
-                    }
-                }
+            response = new HttpClientResponse(httpResponse) {
 
                 @Override
                 public void close() throws IOException {
-                    consumeContent();
+                    super.close();
                     try {
                         httpUriRequest.abort();
                     } catch (Throwable t) { }

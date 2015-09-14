@@ -24,14 +24,14 @@ import androidrubick.utils.Objects;
  *
  * @since 1.0
  */
-public abstract class XHttpResponse extends BasicHttpResponse implements Closeable {
+public abstract class MyHttpResponse extends BasicHttpResponse implements Closeable {
 
     protected String mContentType;
     protected String mCharset;
     protected String mContentEncoding;
     protected long mContentLength;
     protected HttpResponse mWrapped;
-    protected XHttpResponse(StatusLine statusline, HttpEntity httpEntity) {
+    protected MyHttpResponse(StatusLine statusline, HttpEntity httpEntity) {
         super(statusline);
         setEntity(httpEntity);
         parseSpecHeaders();
@@ -40,7 +40,7 @@ public abstract class XHttpResponse extends BasicHttpResponse implements Closeab
     /**
      * 根据另一个<code>HttpResponse</code>创建XHttpResultHolder对象
      */
-    protected XHttpResponse(HttpResponse another) {
+    protected MyHttpResponse(HttpResponse another) {
         super(another.getStatusLine());
         mWrapped = another;
         setEntity(another.getEntity());

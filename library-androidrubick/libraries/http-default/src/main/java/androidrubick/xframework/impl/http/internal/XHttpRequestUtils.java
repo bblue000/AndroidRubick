@@ -3,14 +3,17 @@ package androidrubick.xframework.impl.http.internal;
 import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import androidrubick.io.IOUtils;
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xbase.annotation.Configurable;
@@ -101,4 +104,40 @@ public class XHttpRequestUtils {
         }
         return error;
     }
+
+    /**
+     * Ensures that the entity content is fully consumed and the content stream, if exists,
+     * is closed. The process is done, <i>quietly</i> , without throwing any IOException.
+     *
+     * @param entity the entity to consume.
+     *
+     *
+     * @since 4.2
+     */
+    public static void consumeQuietly(final HttpEntity entity) {
+        try {
+            consume(entity);
+        } catch (final IOException ignore) {
+        }
+    }
+
+    /**
+     * Ensures that the entity content is fully consumed and the content stream, if exists,
+     * is closed.
+     *
+     * @param entity the entity to consume.
+     * @throws IOException if an error occurs reading the input stream
+     *
+     * @since 4.1
+     */
+    public static void consume(final HttpEntity entity) throws IOException {
+        if (entity == null) {
+            return;
+        }
+        if (entity.isStreaming()) {
+            final InputStream instream = entity.getContent();
+            IOUtils.close(instream);
+        }
+    }
+
 }

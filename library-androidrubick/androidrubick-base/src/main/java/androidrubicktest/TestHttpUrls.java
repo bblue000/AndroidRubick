@@ -29,6 +29,31 @@ public class TestHttpUrls {
         System.out.println(new A().d());
 
 
+        class B {
+            B() {
+                doSth();
+            }
+
+            public void doSth() {
+                System.out.println("1");
+            }
+        }
+
+
+        class Bb extends B {
+            private String b = "2";
+            Bb() {
+                super();
+                b = "3";
+            }
+
+            public void doSth() {
+                System.out.println(b);
+            }
+        }
+
+        new Bb();
+
     }
 
 }

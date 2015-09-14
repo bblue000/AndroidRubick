@@ -12,6 +12,7 @@ import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttps;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
  * HttpURLConnection 版本的实现。
@@ -22,7 +23,7 @@ import androidrubick.xframework.net.http.XHttps;
  *
  * @since 1.0
  */
-public class XHurlResponseImpl implements androidrubick.xframework.net.http.response.XHttpResponse {
+public class XHurlResponseImpl implements XHttpResponse {
 
     private HttpURLConnection mConnection;
     private int mStatusCode = -1;
