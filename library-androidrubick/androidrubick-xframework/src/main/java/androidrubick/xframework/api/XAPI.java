@@ -24,31 +24,6 @@ public class XAPI {
      */
     public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
 
-    public static final String DEFAULT_CHARSET = "UTF-8";
-
-    // error code
-    // 以下code约定都是小于0
-    /**
-     * 连接超时
-     */
-    public static final int ERR_TIMEOUT = -1;
-    /**
-     * 无法识别、或格式不正确的URL
-     */
-    public static final int ERR_BAD_URL = -2;
-    /**
-     * 网络连接不通畅（或许是手机网络不好，或许是受限）
-     */
-    public static final int ERR_NETWORK = -3;
-    /**
-     * 客户端操作，此时将返回{@link Exception#getMessage()}
-     */
-    public static final int ERR_CLIENT = Integer.MIN_VALUE + 1;
-    /**
-     * 其他暂时无法识别的错误
-     */
-    public static final int ERR_UNKNOWN = Integer.MIN_VALUE;
-
     /**
      *
      * @param url 基础URL

@@ -10,7 +10,7 @@ package androidrubick.xframework.api;
  *
  * @since 1.0
  */
-public interface XAPICallback {
+public interface XAPICallback<Result> {
 
     /**
      * 请求成功时，返回指定对象
@@ -21,7 +21,7 @@ public interface XAPICallback {
      *
      * @param result 结果对象
      */
-    void onSuccess(Object result, XAPIStatus status);
+    void onSuccess(Result result, XAPIStatus status);
 
     /**
      * 请求失败时，返回错误信息（错误代码和错误信息）
@@ -29,6 +29,7 @@ public interface XAPICallback {
      * <p/>
      *
      * {@link XAPIStatus#getCode()} 为HTTP状态值，或者API错误码（视具体实现而定），或者
+     *
      * 是XAPI.ERR_*（特征是code<0）。
      *
      * @param status 错误信息对象
@@ -40,6 +41,6 @@ public interface XAPICallback {
      *
      * @param result 虽然取消，但是如果已经执行完毕，则传回结果
      */
-    void onCanceled(Object result);
+    void onCanceled(Result result);
 
 }

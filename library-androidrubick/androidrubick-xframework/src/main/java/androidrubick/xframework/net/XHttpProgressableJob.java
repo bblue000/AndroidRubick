@@ -1,5 +1,7 @@
 package androidrubick.xframework.net;
 
+import androidrubick.xframework.net.http.XHttpJob;
+
 /**
  *
  * 网络异步任务的基类
@@ -10,7 +12,7 @@ package androidrubick.xframework.net;
  *
  * @since 1.0
  */
-public abstract class XNetProgressableJob<Param, Progress, Result> extends XNetJob<Param, Progress, Result> {
+public abstract class XHttpProgressableJob<Progress, Result> extends XHttpJob<Progress, Result> {
 
 //    /**
 //     * 生成HTTP请求对象
