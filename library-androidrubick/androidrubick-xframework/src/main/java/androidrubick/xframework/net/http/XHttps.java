@@ -2,6 +2,7 @@ package androidrubick.xframework.net.http;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.BasicHttpEntity;
@@ -21,6 +22,7 @@ import androidrubick.collect.CollectionsCompat;
 import androidrubick.io.IOUtils;
 import androidrubick.io.PoolingByteArrayOutputStream;
 import androidrubick.net.HttpHeaders;
+import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.ForTest;
@@ -43,15 +45,33 @@ public class XHttps {
 
     public static final ByteArrayPool BYTE_ARRAY_POOL = new ByteArrayPool(4096);
     // static
+    /**
+     * 没有内容的字节数组
+     */
     public static final byte[] NONE_BYTE = new byte[0];
+    /**
+     * 默认的请求体
+     */
     public static final int DEFAULT_BODY_SIZE = 512;
+    /**
+     * 客户端请求/接受的默认的字符集编码
+     */
     public static final String DEFAULT_CHARSET_NAME = XGlobals.ProjectEncoding;
+    /**
+     * 客户端请求/接受的默认的字符集对象
+     */
     public static final Charset DEFAULT_CHARSET = Charset.forName(DEFAULT_CHARSET_NAME);
 
+    /**
+     * 默认的HTTP版本信息
+     */
     public static ProtocolVersion defHTTPProtocolVersion() {
         return new ProtocolVersion("HTTP", 1, 1);
     }
 
+    /**
+     * 将<code>parameters</code>转为json字符串
+     */
     public static String toJson(Map<String, ?> parameters) {
         if (CollectionsCompat.isEmpty(parameters)) {
             return Strings.EMPTY;
@@ -69,6 +89,16 @@ public class XHttps {
 
     public static HttpEntity createNoneByteArrayEntity(String contentType, String charsetName) {
         return createByteArrayEntity(NONE_BYTE, contentType, charsetName);
+    }
+
+    public static HttpEntity createNoneByteArrayEntity(MediaType contentType) {
+        String ct = null;
+        String charsetName = null;
+        if (!Objects.isNull(contentType)) {
+            ct = contentType.withoutParameters().name();
+            charsetName = contentType.charset();
+        }
+        return createByteArrayEntity(NONE_BYTE, ct, charsetName);
     }
 
     public static HttpEntity createByteArrayEntity(byte[] data, String contentType, String charsetName) {
@@ -96,6 +126,47 @@ public class XHttps {
             return contentType;
         }
         return request.getBody().getContentType().name();
+    }
+
+    /**
+     * 从<code>response</code>中查找头信息。
+     *
+     * 如果没有该头信息，则返回null。
+     *
+     * <p/>
+     *
+     * 注意：不是从{@link HttpResponse#getEntity()}中查找
+     */
+    public static String getHeaderField(HttpResponse response, String headerField) {
+        if (Objects.isNull(response)) {
+            return null;
+        }
+        Header header = response.getFirstHeader(headerField);
+        if (Objects.isNull(header)) {
+            return null;
+        }
+        return header.getValue();
+    }
+
+    /**
+     * 从<code>response</code>中查找Content-Type头信息。
+     *
+     * 如果没有该头信息，则返回null。
+     *
+     * <p/>
+     *
+     * 注意：不是从{@link HttpResponse#getEntity()}中查找。
+     */
+    public static MediaType getContentType(HttpResponse response) {
+        String value = getHeaderField(response, HttpHeaders.CONTENT_TYPE);
+        if (Strings.isEmpty(value)) {
+            return null;
+        }
+        try {
+            return MediaType.parse(value);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

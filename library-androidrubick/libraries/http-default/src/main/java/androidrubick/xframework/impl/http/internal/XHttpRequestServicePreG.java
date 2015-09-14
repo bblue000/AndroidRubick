@@ -1,13 +1,11 @@
 package androidrubick.xframework.impl.http.internal;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
@@ -47,13 +45,14 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
 public class XHttpRequestServicePreG implements XHttpRequestService {
 
     @Configurable
-    public static final boolean REUSE_HTTPCLIENT = true;
+    public static final boolean REUSE_HTTPCLIENT = false;
     private static HttpClient sHttpClient;
 
     protected HttpClient prepareHttpClient() {
         if (REUSE_HTTPCLIENT && null != sHttpClient) {
             return sHttpClient;
         }
+        trimMemory();
         sHttpClient = null;
         HttpClient httpClient = createHttpClient();
         if (REUSE_HTTPCLIENT) {
@@ -86,25 +85,20 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
 
             // Some responses such as 204s do not have content.  We must check.
             if (Objects.isNull(httpResponse.getEntity())) {
-                httpResponse.setEntity(XHttps.createNoneByteArrayEntity(null, null));
+                httpResponse.setEntity(XHttps.createNoneByteArrayEntity(
+                        XHttps.getContentType(httpResponse)));
             }
 
             // code is not [200, 300)
             if (statusCode < 200 || statusCode > 299) {
-                throw new IOException();
+                throw new IOException("error status code");
             }
 
             response = new HttpClientResponse(httpResponse) {
 
                 @Override
                 public void close() throws IOException {
-                    super.close();
-                    try {
-                        httpUriRequest.abort();
-                    } catch (Throwable t) { }
-                    try {
-                        httpClient.getConnectionManager().closeExpiredConnections();
-                    } catch (Throwable t) { }
+                    XHttpRequestUtils.close(httpUriRequest, httpResponse);
                 }
             };
         } catch (SocketTimeoutException e) {
@@ -193,27 +187,27 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
      */
     protected void setEntityIfNonEmptyBody(HttpUriRequest httpUriRequest, XHttpRequest request) {
         if (!request.getMethod().canContainBody()
-                || !(httpUriRequest instanceof HttpEntityEnclosingRequestBase)) {
+                || !(httpUriRequest instanceof HttpEntityEnclosingRequest)) {
             return ;
         }
         final XHttpBody body = request.getBody();
         if (Objects.isNull(body)) {
             return ;
         }
-        HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase = Objects.getAs(httpUriRequest);
+        HttpEntityEnclosingRequest httpEntityEnclosingRequest = Objects.getAs(httpUriRequest);
 
         String contentType = XHttps.getContentType(request);
         if (!Strings.isEmpty(contentType)) {
             /**
              * set Content-Type，如果request中已经设置了Content-Type，不予覆盖
              */
-            httpEntityEnclosingRequestBase.setHeader(HttpHeaders.CONTENT_TYPE,
+            httpEntityEnclosingRequest.setHeader(HttpHeaders.CONTENT_TYPE,
                     XHttps.getContentType(request));
         }
 
         // set entity
         HttpEntity entity = XHttps.createEntity(request, contentType);
-        httpEntityEnclosingRequestBase.setEntity(entity);
+        httpEntityEnclosingRequest.setEntity(entity);
     }
 
     @Override
@@ -228,6 +222,6 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
 
     @Override
     public boolean multiInstance() {
-        return false;
+        return true;
     }
 }

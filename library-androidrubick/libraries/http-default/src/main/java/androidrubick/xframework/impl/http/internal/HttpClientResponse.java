@@ -11,6 +11,7 @@ import java.util.zip.GZIPInputStream;
 
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
+import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
@@ -18,7 +19,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
  *
  * Created by Yin Yong on 2015/9/14.
  */
-/*package*/abstract class HttpClientResponse implements XHttpResponse {
+public abstract class HttpClientResponse implements XHttpResponse {
 
     private HttpResponse mHttpResponse;
     private StatusLine mStatusLine;
@@ -107,26 +108,16 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
 
     @Override
     public String getHeaderField(String field) {
-        Header header = mHttpResponse.getLastHeader(field);
-        return Objects.isNull(header) ? null : header.getValue();
+        return XHttps.getHeaderField(mHttpResponse, field);
     }
 
     @Override
     public boolean containsHeaderField(String field) {
-        return !Objects.isNull(mHttpResponse.getFirstHeader(field));
+        return !Objects.isNull(getHeaderField(field));
     }
 
     @Override
     public void consumeContent() {
-        if (!Objects.isNull(mHttpResponse) && !Objects.isNull(mHttpResponse.getEntity())) {
-            try {
-                mHttpResponse.getEntity().consumeContent();
-            } catch (Exception e) {}
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        consumeContent();
+        XHttpRequestUtils.consume(mHttpResponse);
     }
 }

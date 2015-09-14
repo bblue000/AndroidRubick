@@ -3,9 +3,12 @@ package androidrubick.xframework.impl.http.internal;
 import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,9 +17,10 @@ import java.net.URL;
 import javax.net.ssl.SSLSocketFactory;
 
 import androidrubick.io.IOUtils;
+import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
-import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.net.http.response.*;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
@@ -70,21 +74,10 @@ public class XHttpRequestUtils {
      */
     @Configurable
     public static String getUserAgent() {
-        String agent = StandardSystemProperty.HTTP_AGENT.value();
-        if (Objects.isEmpty(agent)) {
-            String osType = "Android";
-            String sdkVersion = android.os.Build.VERSION.RELEASE;
-            String device = android.os.Build.MODEL;
-            String id = android.os.Build.ID;
-            agent = String.format("Mozilla/5.0 (Linux; U; %s %s; %s Build/%s)",
-                    osType, sdkVersion, device, id);
-            // Mozilla/5.0 (Linux; U; Android 4.3; en-us; HTC One - 4.3 - API 18 -
-            // 1080x1920 Build/JLS36G)
-        }
-        return agent;
+        return DeviceInfos.getUserAgent();
     }
 
-    public static XHttpError caseOtherException(androidrubick.xframework.net.http.response.XHttpResponse response, IOException e) {
+    public static XHttpError caseOtherException(XHttpResponse response, IOException e) {
         XHttpError error = new XHttpError(response, e);
         if (Objects.isNull(response)) {
             error.setType(XHttpError.Type.NoConnection);
@@ -107,22 +100,6 @@ public class XHttpRequestUtils {
 
     /**
      * Ensures that the entity content is fully consumed and the content stream, if exists,
-     * is closed. The process is done, <i>quietly</i> , without throwing any IOException.
-     *
-     * @param entity the entity to consume.
-     *
-     *
-     * @since 4.2
-     */
-    public static void consumeQuietly(final HttpEntity entity) {
-        try {
-            consume(entity);
-        } catch (final IOException ignore) {
-        }
-    }
-
-    /**
-     * Ensures that the entity content is fully consumed and the content stream, if exists,
      * is closed.
      *
      * @param entity the entity to consume.
@@ -130,14 +107,39 @@ public class XHttpRequestUtils {
      *
      * @since 4.1
      */
-    public static void consume(final HttpEntity entity) throws IOException {
-        if (entity == null) {
+    public static void consume(final HttpEntity entity) {
+        if (!Objects.isNull(entity)) {
+            try {
+                final InputStream ins = entity.getContent();
+                IOUtils.close(ins);
+            } catch (final Exception ignore) { }
+        }
+    }
+
+    /**
+     * consume content anyway
+     */
+    public static void consume(HttpResponse response) {
+        if (Objects.isNull(response)) {
             return;
         }
-        if (entity.isStreaming()) {
-            final InputStream instream = entity.getContent();
-            IOUtils.close(instream);
+        HttpEntity entity = response.getEntity();
+        if (Objects.isNull(entity)) {
+            return;
         }
+        consume(entity);
+    }
+
+    /**
+     * consume content anyway
+     */
+    public static void close(HttpUriRequest httpUriRequest, HttpResponse response) {
+        if (!Objects.isNull(httpUriRequest)) {
+            try {
+                httpUriRequest.abort();
+            } catch (final Exception ignore) { }
+        }
+        consume(response);
     }
 
 }
