@@ -64,8 +64,12 @@ public class XHttpMultipartBody extends XHttpBody<XHttpMultipartBody> {
     }
 
     private void prepareDataMap() {
-        if (null == mDataMap) {
-            mDataMap = MapBuilder.newHashMap(4).build();
+        if (Objects.isNull(mDataMap)) {
+            synchronized (this) {
+                if (Objects.isNull(mDataMap)) {
+                    mDataMap = MapBuilder.newHashMap(4).build();
+                }
+            }
         }
     }
 

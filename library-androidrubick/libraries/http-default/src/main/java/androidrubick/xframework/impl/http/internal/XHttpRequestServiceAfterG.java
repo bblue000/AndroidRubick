@@ -22,7 +22,7 @@ import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpError;
+import androidrubick.xframework.net.http.response.*;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
@@ -74,7 +74,7 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
             ProtocolVersion protocolVersion = XHttps.defHTTPProtocolVersion();
             StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                     connection.getResponseCode(), connection.getResponseMessage());
-            response = new XHttpResponse(responseStatus, XHttps.entityFromConnection(connection)) {
+            response = new androidrubick.xframework.net.http.response.XHttpResponse(responseStatus, XHttps.entityFromConnection(connection)) {
                 @Override
                 public void closeConnection() {
                     consumeContent();
@@ -90,7 +90,7 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
                     }
                 }
             }
-            response = new XHurlResImpl(connection);
+            response = new XHurlResponseImpl(connection);
         } catch (SocketTimeoutException e) {
             throw new XHttpError(XHttpError.Type.Timeout, response, e);
         } catch (IOException e) {

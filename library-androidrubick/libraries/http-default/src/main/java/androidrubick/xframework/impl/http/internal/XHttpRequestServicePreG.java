@@ -1,6 +1,10 @@
 package androidrubick.xframework.impl.http.internal;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -16,6 +20,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
@@ -29,8 +34,7 @@ import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
-import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.*;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
@@ -65,20 +69,99 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
     }
 
     @Override
-    public XHttpRes performRequest(XHttpRequest request) throws XHttpError {
-        // 根据XHttpRequest对象配置成HttpUriRequest
-        final HttpUriRequest httpUriRequest = createHttpUriRequest(request);
-        // 配置请求头实体
-        addHeaders(httpUriRequest, request);
-        // 配置请求相关的参数，如超时等
-        addParams(httpUriRequest, request);
-
-        final HttpClient httpClient = prepareHttpClient();
+    public XHttpResponse performRequest(XHttpRequest request) throws XHttpError {
+        final HttpUriRequest httpUriRequest;
         XHttpResponse response = null;
         try {
-            response =  new XHttpResponse(httpClient.execute(httpUriRequest)) {
+            // 根据XHttpRequest对象配置成HttpUriRequest
+            httpUriRequest = createHttpUriRequest(request);
+            // 配置请求头实体
+            addHeaders(httpUriRequest, request);
+            // 配置请求相关的参数，如超时等
+            addParams(httpUriRequest, request);
+
+            final HttpClient httpClient = prepareHttpClient();
+
+            final HttpResponse httpResponse = httpClient.execute(httpUriRequest);
+            final StatusLine statusLine = httpResponse.getStatusLine();
+            final int statusCode = statusLine.getStatusCode();
+
+            // Some responses such as 204s do not have content.  We must check.
+            if (Objects.isNull(httpResponse.getEntity())) {
+                httpResponse.setEntity(XHttps.createNoneByteArrayEntity(null, null));
+            }
+
+            // code is not [200, 300)
+            if (statusCode < 200 || statusCode > 299) {
+                throw new IOException();
+            }
+
+            response =  new androidrubick.xframework.net.http.response.XHttpResponse() {
+
                 @Override
-                public void closeConnection() {
+                public int getStatusCode() {
+                    return statusCode;
+                }
+
+                @Override
+                public String getStatusMessage() {
+                    return statusLine.getReasonPhrase();
+                }
+
+                @Override
+                public ProtocolVersion getProtocolVersion() {
+                    return statusLine.getProtocolVersion();
+                }
+
+                @Override
+                public String getContentType() {
+                    Header header = httpResponse.getEntity().getContentType();
+                    return Objects.isNull(header) ? null : header.getValue();
+                }
+
+                @Override
+                public String getContentCharset() {
+                    Header header = httpResponse.getEntity().getContentType();
+                    return Objects.isNull(header) ? null : header.getValue();
+                }
+
+                @Override
+                public long getContentLength() {
+                    return 0;
+                }
+
+                @Override
+                public String getContentEncoding() {
+                    return null;
+                }
+
+                @Override
+                public InputStream getContent() throws IOException {
+                    return httpResponse.getEntity().getContent();
+                }
+
+                @Override
+                public String getHeaderField(String field) {
+                    return null;
+                }
+
+                @Override
+                public boolean containsHeaderField(String field) {
+                    return false;
+                }
+
+                @Override
+                public void consumeContent() {
+                    if (!Objects.isNull(httpResponse) && !Objects.isNull(httpResponse.getEntity())) {
+                        try {
+                            httpResponse.getEntity().consumeContent();
+                        } catch (Exception e) {}
+                    }
+                }
+
+                @Override
+                public void close() throws IOException {
+                    consumeContent();
                     try {
                         httpUriRequest.abort();
                     } catch (Throwable t) { }
@@ -168,6 +251,9 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         }
     }
 
+    /**
+     * 如果请求方式能够包含请求体，且用户设置了请求体，则将内容设置到<code>httpUriRequest</code>中
+     */
     protected void setEntityIfNonEmptyBody(HttpUriRequest httpUriRequest, XHttpRequest request) {
         if (!request.getMethod().canContainBody()
                 || !(httpUriRequest instanceof HttpEntityEnclosingRequestBase)) {

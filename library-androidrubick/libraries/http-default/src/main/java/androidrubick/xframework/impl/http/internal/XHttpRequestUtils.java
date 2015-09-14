@@ -14,8 +14,7 @@ import javax.net.ssl.SSLSocketFactory;
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xbase.annotation.Configurable;
-import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.*;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
@@ -59,7 +58,7 @@ public class XHttpRequestUtils {
         return "https".equals(url.getProtocol());
     }
 
-    public static boolean isGzip(XHttpRes response) {
+    public static boolean isGzip(XHttpResponse response) {
         return "gzip".equalsIgnoreCase(response.getContentEncoding());
     }
 
@@ -82,7 +81,7 @@ public class XHttpRequestUtils {
         return agent;
     }
 
-    public static XHttpError caseOtherException(XHttpResponse response, IOException e) {
+    public static XHttpError caseOtherException(androidrubick.xframework.net.http.response.XHttpResponse response, IOException e) {
         XHttpError error = new XHttpError(response, e);
         if (Objects.isNull(response)) {
             error.setType(XHttpError.Type.NoConnection);

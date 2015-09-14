@@ -17,7 +17,7 @@ import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -368,7 +368,7 @@ public class XHttpRequest {
      *
      * @see XHttpError
      */
-    public XHttpRes performRequest() throws XHttpError {
+    public XHttpResponse performRequest() throws XHttpError {
         build();
         return XServiceLoader.load(XHttpRequestService.class).performRequest(this);
     }

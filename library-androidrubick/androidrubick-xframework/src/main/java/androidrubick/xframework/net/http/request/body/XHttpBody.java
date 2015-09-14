@@ -59,7 +59,7 @@ import androidrubick.xframework.net.http.XHttps;
  *
  * Created by Yin Yong on 2015/5/17 0017.
  *
- * @see androidrubick.net.MediaType#FORM_DATA
+ * @see androidrubick.net.MediaType#FORM_DATA_URLENCODED
  * @see androidrubick.net.MediaType#FORM_DATA_MULTIPART
  */
 public abstract class XHttpBody<R extends XHttpBody> {
@@ -143,8 +143,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 默认为{@link androidrubick.text.Charsets#UTF_8}
      */
     public R paramCharset(Charset charset) {
-        Preconditions.checkNotNull(charset, "charset");
-        mParamEncoding = charset;
+        mParamEncoding = Preconditions.checkNotNull(charset, "charset");
         // 修改contentType的
         mContentType = getContentType().withCharset(mParamEncoding.name());
         return self();
@@ -154,7 +153,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 硬性指定ContentType，这将覆盖{@link #rawContentType()}
      */
     public R contentType(String contentType) {
-        Preconditions.checkArgument(!Objects.isEmpty(contentType), "charset is null or empty");
+        Preconditions.checkNotNull(contentType, "Content-Type");
         return contentType(MediaType.parse(contentType));
     }
 
@@ -204,7 +203,9 @@ public abstract class XHttpBody<R extends XHttpBody> {
      */
     public MediaType getContentType() {
         if (Objects.isNull(mContentType)) {
-            mContentType = rawContentType().withCharset(getParamCharset().name());
+            MediaType rawContentType = rawContentType();
+            Preconditions.checkNotNull(rawContentType, "%s#%s", getClass().getSimpleName(), "rawContentType");
+            mContentType = rawContentType.withCharset(getParamCharset().name());
         }
         return mContentType;
     }

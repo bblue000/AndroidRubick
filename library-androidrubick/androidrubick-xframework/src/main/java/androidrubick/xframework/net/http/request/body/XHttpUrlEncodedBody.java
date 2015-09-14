@@ -48,6 +48,6 @@ public class XHttpUrlEncodedBody extends XHttpBody<XHttpUrlEncodedBody> {
 
     @Override
     public MediaType rawContentType() {
-        return MediaType.FORM_DATA;
+        return MediaType.FORM_DATA_URLENCODED;
     }
 }

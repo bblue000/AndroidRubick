@@ -3,7 +3,7 @@ package androidrubick.xframework.net.http.spi;
 import androidrubick.xbase.aspi.XSpiService;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpRes;
+import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
  * 提供实现HTTP请求的服务
@@ -60,6 +60,6 @@ public interface XHttpRequestService extends XSpiService {
      *
      * @see XHttpError
      */
-    XHttpRes performRequest(XHttpRequest request) throws XHttpError;
+    XHttpResponse performRequest(XHttpRequest request) throws XHttpError;
 
 }

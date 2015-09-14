@@ -8,8 +8,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import java.io.IOException;
 import java.io.InputStream;
 
-import androidrubick.xframework.net.http.response.XHttpRes;
-
 /**
  * somthing
  *
@@ -19,12 +17,12 @@ import androidrubick.xframework.net.http.response.XHttpRes;
  *
  * @since 1.0
  */
-public class XHclientResImpl implements XHttpRes {
+public class XHclientResponseImpl implements androidrubick.xframework.net.http.response.XHttpResponse {
 
     private HttpClient mHttpClient;
     private HttpUriRequest mHttpUriRequest;
     private HttpResponse mHttpResponse;
-    public XHclientResImpl(HttpClient httpClient, HttpUriRequest httpUriRequest, HttpResponse response) {
+    public XHclientResponseImpl(HttpClient httpClient, HttpUriRequest httpUriRequest, HttpResponse response) {
         mHttpClient = httpClient;
         mHttpUriRequest = httpUriRequest;
         mHttpResponse = response;

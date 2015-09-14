@@ -165,7 +165,7 @@ public class MediaType {
     public static final MediaType APPLICATION_JAVASCRIPT = createConstant(APPLICATION_TYPE, "javascript");
 
     // media type for form data
-    public static final MediaType FORM_DATA = createConstant(APPLICATION_TYPE,
+    public static final MediaType FORM_DATA_URLENCODED = createConstant(APPLICATION_TYPE,
             "x-www-form-urlencoded");
     public static final MediaType FORM_DATA_MULTIPART = createConstant("multipart",
             "form-data");

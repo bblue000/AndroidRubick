@@ -67,6 +67,10 @@ public class XHttps {
         return String.valueOf(value).getBytes(charset.name());
     }
 
+    public static HttpEntity createNoneByteArrayEntity(String contentType, String charsetName) {
+        return createByteArrayEntity(NONE_BYTE, contentType, charsetName);
+    }
+
     public static HttpEntity createByteArrayEntity(byte[] data, String contentType, String charsetName) {
         ByteArrayEntity httpEntity = new ByteArrayEntity(data);
         httpEntity.setContentEncoding(charsetName);

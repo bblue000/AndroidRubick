@@ -112,7 +112,7 @@ public class XHttpError extends Exception {
     /**
      * 如果没有手动设置，将使用{@link XHttpResponse#getStatusMessage()}；
      *
-     * 如果没有{@link XHttpResponse response}，则返回{@link #getCause()}的{@link Throwable#getMessage()}
+     * 如果{@link XHttpResponse response}为null，则返回{@link #getCause()}的{@link Throwable#getMessage()}
      */
     @Override
     public String getMessage() {

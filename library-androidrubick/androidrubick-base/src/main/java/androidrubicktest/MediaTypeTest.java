@@ -27,7 +27,7 @@ public class MediaTypeTest {
         System.out.println(MediaType.ANY);
         System.out.println(MediaType.ANY_APPLICATION);
         System.out.println(MediaType.JSON);
-        System.out.println(MediaType.FORM_DATA);
+        System.out.println(MediaType.FORM_DATA_URLENCODED);
     }
 
     public static void testWithParam() {

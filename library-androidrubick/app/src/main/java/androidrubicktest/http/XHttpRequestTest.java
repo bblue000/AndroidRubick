@@ -32,7 +32,7 @@ public class XHttpRequestTest {
                     .url("http://www.baidu.com/")
                     .performRequest();
 
-            String result = IOUtils.inputStreamToString(response.getEntity().getContent(), "utf8", true);
+            String result = IOUtils.inputStreamToString(response.getContent(), "utf8", true);
             System.out.println(StandardSystemProperty.HTTP_AGENT.value());
             System.out.println("content type = " + response.getContentType());
             System.out.println("content charset = " + response.getContentCharset());
@@ -55,7 +55,7 @@ public class XHttpRequestTest {
                     .withBody(XHttpBody.newUrlEncodedBody().param("wd", "我是中国人"))
                     .performRequest();
 
-            String result = IOUtils.inputStreamToString(response.getEntity().getContent(), "utf8", true);
+            String result = IOUtils.inputStreamToString(response.getContent(), "utf8", true);
             System.out.println("content type = " + response.getContentType());
             System.out.println("content charset = " + response.getContentCharset());
             System.out.println("content encoding = " + response.getContentEncoding());
