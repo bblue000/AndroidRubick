@@ -7,7 +7,6 @@ import org.apache.http.StatusLine;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
 
 import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
@@ -43,7 +42,8 @@ public abstract class HttpClientResponse implements XHttpResponse {
     protected void parseSpecHeaders() {
         Header header = mHttpResponse.getEntity().getContentType();
         if (!Objects.isNull(header)) {
-            MediaType mediaType = MediaType.parse(header.getValue());
+            mContentType = header.getValue();
+            MediaType mediaType = XHttps.parseContentType(header.getValue());
             if (!Objects.isNull(mediaType)) {
                 mContentType = mediaType.withoutParameters().name();
                 mCharset = mediaType.charset();
@@ -59,11 +59,9 @@ public abstract class HttpClientResponse implements XHttpResponse {
     }
 
     protected void parseContent() throws IOException {
-        mContent = mHttpResponse.getEntity().getContent();
         // check and transfer content to GZIP input stream if needed
-        if (XHttpRequestUtils.isGzip(this) && !(mContent instanceof GZIPInputStream)) {
-            mContent = new GZIPInputStream(mContent);
-        }
+        mContent = HttpInnerUtils.checkContent(getContentEncoding(),
+                mHttpResponse.getEntity().getContent());
     }
 
     @Override
@@ -118,6 +116,6 @@ public abstract class HttpClientResponse implements XHttpResponse {
 
     @Override
     public void consumeContent() {
-        XHttpRequestUtils.consume(mHttpResponse);
+        HttpInnerUtils.consume(mHttpResponse);
     }
 }

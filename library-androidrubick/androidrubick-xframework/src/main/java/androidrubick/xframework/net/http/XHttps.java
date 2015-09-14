@@ -157,16 +157,32 @@ public class XHttps {
      *
      * 注意：不是从{@link HttpResponse#getEntity()}中查找。
      */
-    public static MediaType getContentType(HttpResponse response) {
-        String value = getHeaderField(response, HttpHeaders.CONTENT_TYPE);
-        if (Strings.isEmpty(value)) {
-            return null;
-        }
+    public static String getContentTypeStr(HttpResponse response) {
+        return getHeaderField(response, HttpHeaders.CONTENT_TYPE);
+    }
+
+    /**
+     * 从<code>value</code>转换成{@link MediaType}。
+     *
+     * 如果不是有效的{@link MediaType}，则返回null。
+     */
+    public static MediaType parseContentType(String value) {
         try {
             return MediaType.parse(value);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 从<code>response</code>中查找Content-Type头信息。
+     *
+     * 如果没有该头信息，则返回null。
+     *
+     * 如果不是有效的{@link MediaType}，则返回null。
+     */
+    public static MediaType getContentType(HttpResponse response) {
+        return parseContentType(getContentTypeStr(response));
     }
 
     /**

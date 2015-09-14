@@ -84,6 +84,9 @@ public interface XHttpResponse extends Closeable {
      */
     public boolean containsHeaderField(String field) ;
 
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // consume content, close connection, and recycle
     /**
      * This method is called to indicate that the content of this entity is no longer required.
      *

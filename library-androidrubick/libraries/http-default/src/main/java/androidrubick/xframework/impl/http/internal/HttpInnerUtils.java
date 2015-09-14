@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -33,9 +34,9 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
  *
  * @since 1.0
  */
-public class XHttpRequestUtils {
+public class HttpInnerUtils {
 
-    private XHttpRequestUtils() {}
+    private HttpInnerUtils() {}
 
     /**
      * HTTPS握手超时时间
@@ -66,7 +67,21 @@ public class XHttpRequestUtils {
     }
 
     public static boolean isGzip(XHttpResponse response) {
-        return "gzip".equalsIgnoreCase(response.getContentEncoding());
+        return isGzip(response.getContentEncoding());
+    }
+
+    public static boolean isGzip(String contentEncoding) {
+        return "gzip".equalsIgnoreCase(contentEncoding);
+    }
+
+    public static InputStream checkContent(String contentEncoding, InputStream originIns) throws IOException {
+        if (Objects.isNull(originIns)) {
+            return originIns;
+        }
+        if (!isGzip(contentEncoding)) {
+            return originIns;
+        }
+        return new GZIPInputStream(originIns);
     }
 
     /**

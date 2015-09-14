@@ -1,15 +1,10 @@
 package androidrubick.xframework.impl.http.internal;
 
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.message.BasicStatusLine;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -27,7 +22,6 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
- * somthing
  *
  * <p/>
  *
@@ -46,55 +40,19 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
         try {
             url = new URL(request.getUrl());
             connection = openConnection(url);
+
+            // 连接成功，传输头部信息，相关参数，和请求body
+            addHeaders(connection, request);
+            addParams(connection, request);
+            setConnectionParametersForRequest(connection, request);
+            response = new HttpUrlConnectionResponse(connection);
         } catch (SocketTimeoutException e) {
             throw new XHttpError(XHttpError.Type.Timeout, response, e);
         } catch (MalformedURLException e) {
             throw new XHttpError(XHttpError.Type.Other, response, e);
         } catch (IOException e) {
             // openConnection 抛出异常
-            throw XHttpRequestUtils.caseOtherException(response, e);
-        }
-
-        // 连接成功，传输头部信息，相关参数，和请求body
-        try {
-            addHeaders(connection, request);
-            addParams(connection, request);
-            setConnectionParametersForRequest(connection, request);
-
-            // Initialize HttpResponse with data from the HttpURLConnection.
-            int responseCode = connection.getResponseCode();
-            if (responseCode == -1) {
-                try {
-                    connection.disconnect();
-                } catch (Throwable t) { }
-                // -1 is returned by getResponseCode() if the response code could not be retrieved.
-                // Signal to the caller that something was wrong with the connection.
-                throw new IOException("Could not retrieve response code from HttpUrlConnection.");
-            }
-            ProtocolVersion protocolVersion = XHttps.defHTTPProtocolVersion();
-            StatusLine responseStatus = new BasicStatusLine(protocolVersion,
-                    connection.getResponseCode(), connection.getResponseMessage());
-            response = new androidrubick.xframework.net.http.response.XHttpResponse(responseStatus, XHttps.entityFromConnection(connection)) {
-                @Override
-                public void closeConnection() {
-                    consumeContent();
-                    try {
-                        connection.disconnect();
-                    } catch (Throwable t) { }
-                }
-            };
-            for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-                if (!Objects.isNull(header.getKey()) && !CollectionsCompat.isEmpty(header.getValue())) {
-                    for (String val : header.getValue()) {
-                        response.addHeader(header.getKey(), val);
-                    }
-                }
-            }
-            response = new XHurlResponseImpl(connection);
-        } catch (SocketTimeoutException e) {
-            throw new XHttpError(XHttpError.Type.Timeout, response, e);
-        } catch (IOException e) {
-            throw XHttpRequestUtils.caseOtherException(response, e);
+            throw HttpInnerUtils.caseOtherException(response, e);
         }
         return response;
     }
@@ -115,8 +73,8 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
     private HttpURLConnection openConnection(URL url) throws IOException {
         HttpURLConnection connection = createConnection(url);
         // use caller-provided custom SslSocketFactory, if any, for HTTPS
-        if (XHttpRequestUtils.isHttps(url)) {
-            ((HttpsURLConnection)connection).setSSLSocketFactory(XHttpRequestUtils.createSSLSocketFactory());
+        if (HttpInnerUtils.isHttps(url)) {
+            ((HttpsURLConnection)connection).setSSLSocketFactory(HttpInnerUtils.createSSLSocketFactory());
         }
         return connection;
     }

@@ -62,7 +62,7 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
     }
 
     protected HttpClient createHttpClient() {
-        return XHttpRequestUtils.createNewHttpClient();
+        return HttpInnerUtils.createNewHttpClient();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
             // Some responses such as 204s do not have content.  We must check.
             if (Objects.isNull(httpResponse.getEntity())) {
                 httpResponse.setEntity(XHttps.createNoneByteArrayEntity(
-                        XHttps.getContentType(httpResponse)));
+                        XHttps.getContentTypeStr(httpResponse), null));
             }
 
             // code is not [200, 300)
@@ -98,7 +98,8 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
 
                 @Override
                 public void close() throws IOException {
-                    XHttpRequestUtils.close(httpUriRequest, httpResponse);
+                    HttpInnerUtils.close(httpUriRequest, httpResponse);
+                    trimMemory();
                 }
             };
         } catch (SocketTimeoutException e) {
@@ -108,7 +109,7 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         } catch (MalformedURLException e) {
             throw new XHttpError(XHttpError.Type.Other, response, e);
         } catch (IOException e) {
-            throw XHttpRequestUtils.caseOtherException(response, e);
+            throw HttpInnerUtils.caseOtherException(response, e);
         }
         return response;
     }

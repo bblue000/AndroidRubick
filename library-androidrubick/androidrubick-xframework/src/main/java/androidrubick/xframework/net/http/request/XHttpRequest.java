@@ -93,6 +93,7 @@ public class XHttpRequest {
     private XHttpBody mBody;
     private int mConnectionTimeout;
     private int mSocketTimeout;
+    private XHttpRequestService mRequestService;
     public XHttpRequest() {
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
@@ -252,6 +253,14 @@ public class XHttpRequest {
     }
 
     /**
+     * 设置单独的{@link XHttpRequestService}，为其他模块提供更多的修改可能性
+     */
+    public XHttpRequest withRequestService(XHttpRequestService requestService) {
+        mRequestService = Preconditions.checkNotNull(requestService, "requestService");
+        return this;
+    }
+
+    /**
      * 获取请求URL
      */
     public String getUrl() {
@@ -370,7 +379,10 @@ public class XHttpRequest {
      */
     public XHttpResponse performRequest() throws XHttpError {
         build();
-        return XServiceLoader.load(XHttpRequestService.class).performRequest(this);
+        if (Objects.isNull(mRequestService)) {
+            mRequestService = XServiceLoader.load(XHttpRequestService.class);
+        }
+        return mRequestService.performRequest(this);
     }
 
     @Override

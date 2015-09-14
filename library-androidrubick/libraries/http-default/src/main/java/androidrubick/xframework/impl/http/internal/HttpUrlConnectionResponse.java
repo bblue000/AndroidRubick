@@ -5,7 +5,6 @@ import org.apache.http.ProtocolVersion;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.zip.GZIPInputStream;
 
 import androidrubick.io.IOUtils;
 import androidrubick.net.MediaType;
@@ -15,15 +14,14 @@ import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
- * HttpURLConnection 版本的实现。
  *
  * <p/>
  *
- * Created by Yin Yong on 2015/9/12 0012.
+ * Created by Yin Yong on 2015/9/14 0014.
  *
  * @since 1.0
  */
-public class XHurlResponseImpl implements XHttpResponse {
+public class HttpUrlConnectionResponse implements XHttpResponse {
 
     private HttpURLConnection mConnection;
     private int mStatusCode = -1;
@@ -34,7 +32,7 @@ public class XHurlResponseImpl implements XHttpResponse {
     private String mContentEncoding;
     private long mContentLength = -1;
     private InputStream mContent;
-    public XHurlResponseImpl(HttpURLConnection connection) throws IOException {
+    public HttpUrlConnectionResponse(HttpURLConnection connection) throws IOException {
         mConnection = connection;
         parseSpecStatusLine();
         parseSpecHeaders();
@@ -46,7 +44,7 @@ public class XHurlResponseImpl implements XHttpResponse {
         mStatusMessage = mConnection.getResponseMessage();
         if (mStatusCode == -1) {
             try {
-                IOUtils.close(this);
+                close();
             } catch (Throwable t) { }
             // -1 is returned by getResponseCode() if the response code could not be retrieved.
             // Signal to the caller that something was wrong with the connection.
@@ -58,17 +56,15 @@ public class XHurlResponseImpl implements XHttpResponse {
     protected void parseSpecHeaders() throws IOException {
         String header = mConnection.getContentType();
         if (!Strings.isEmpty(header)) {
-            MediaType mediaType = MediaType.parse(header);
+            mContentType = header;
+            MediaType mediaType = XHttps.parseContentType(header);
             if (!Objects.isNull(mediaType)) {
                 mContentType = mediaType.withoutParameters().name();
                 mCharset = mediaType.charset();
             }
         }
 
-        header = mConnection.getContentEncoding();
-        if (!Objects.isNull(header)) {
-            mContentEncoding = header;
-        }
+        mContentEncoding = mConnection.getContentEncoding();
         mContentLength = mConnection.getContentLength();
     }
 
@@ -79,9 +75,7 @@ public class XHurlResponseImpl implements XHttpResponse {
             mContent = mConnection.getErrorStream();
         }
         // check and transfer content to GZIP input stream if needed
-        if (XHttpRequestUtils.isGzip(this) && !(mContent instanceof GZIPInputStream)) {
-            mContent = new GZIPInputStream(mContent);
-        }
+        mContent = HttpInnerUtils.checkContent(getContentEncoding(), mContent);
     }
 
     @Override
@@ -131,20 +125,19 @@ public class XHurlResponseImpl implements XHttpResponse {
 
     @Override
     public boolean containsHeaderField(String field) {
-        return !Objects.isNull(getHeaderField(field));
+        return !Objects.isNull(mConnection.getHeaderField(field));
+    }
+
+    @Override
+    public void consumeContent() {
+        IOUtils.close(mContent);
     }
 
     @Override
     public void close() throws IOException {
         consumeContent();
         try {
-            // close or for reuse
             mConnection.disconnect();
-        } catch (Throwable t) { }
-    }
-
-    @Override
-    public void consumeContent() {
-        IOUtils.close(mContent);
+        } catch (Exception e) {}
     }
 }
