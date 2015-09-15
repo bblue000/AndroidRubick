@@ -332,7 +332,8 @@ public class XHttpRequest {
     }
 
     /**
-     * 执行请求
+     * 执行请求，如果没有{@link #withRequestService}设置过，则返回全局配置的
+     * {@link androidrubick.xframework.net.http.spi.XHttpRequestService}。
      *
      * <p/>
      *

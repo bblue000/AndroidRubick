@@ -1,6 +1,7 @@
 package androidrubick.xframework.impl.http.internal;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -8,7 +9,9 @@ import org.apache.http.StatusLine;
 import java.io.IOException;
 import java.io.InputStream;
 
+import androidrubick.net.HttpHeaders;
 import androidrubick.net.MediaType;
+import androidrubick.utils.NumberUtils;
 import androidrubick.utils.Objects;
 import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.response.XHttpResponse;
@@ -39,29 +42,45 @@ public abstract class HttpClientResponse implements XHttpResponse {
         mStatusLine = mHttpResponse.getStatusLine();
     }
 
-    protected void parseSpecHeaders() {
-        Header header = mHttpResponse.getEntity().getContentType();
-        if (!Objects.isNull(header)) {
-            mContentType = header.getValue();
-            MediaType mediaType = XHttps.parseContentType(header.getValue());
+    protected void parseSpecHeaders() throws IOException {
+        HttpEntity httpEntity = mHttpResponse.getEntity();
+        Header contentType, contentEncoding;
+        // Some responses such as 204s do not have content.  We must check.
+        if (Objects.isNull(httpEntity)) {
+            contentType = mHttpResponse.getFirstHeader(HttpHeaders.CONTENT_TYPE);
+            contentEncoding = mHttpResponse.getFirstHeader(HttpHeaders.CONTENT_ENCODING);
+            Header contentLength = mHttpResponse.getFirstHeader(HttpHeaders.CONTENT_LENGTH);
+            if (!Objects.isNull(contentLength)) {
+                mContentLength = NumberUtils.getLong(contentLength.getValue(), -1);
+            }
+        } else {
+            contentType = httpEntity.getContentType();
+            contentEncoding = httpEntity.getContentEncoding();
+            mContentLength = httpEntity.getContentLength();
+        }
+        if (!Objects.isNull(contentType)) {
+            mContentType = contentType.getValue();
+            MediaType mediaType = XHttps.parseContentType(contentType.getValue());
             if (!Objects.isNull(mediaType)) {
                 mContentType = mediaType.withoutParameters().name();
                 mCharset = mediaType.charset();
             }
         }
-
-        header = mHttpResponse.getEntity().getContentEncoding();
-        if (!Objects.isNull(header)) {
-            mContentEncoding = header.getValue();
+        if (!Objects.isNull(contentEncoding)) {
+            mContentEncoding = contentEncoding.getValue();
         }
-
-        mContentLength = mHttpResponse.getEntity().getContentLength();
     }
 
     protected void parseContent() throws IOException {
-        // check and transfer content to GZIP input stream if needed
-        mContent = HttpInnerUtils.checkContent(getContentEncoding(),
-                mHttpResponse.getEntity().getContent());
+        HttpEntity httpEntity = mHttpResponse.getEntity();
+        // Some responses such as 204s do not have content.  We must check.
+        if (Objects.isNull(httpEntity)) {
+
+        } else {
+            // check and transfer content to GZIP input stream if needed
+            mContent = HttpInnerUtils.resolveContent(getContentEncoding(),
+                    mHttpResponse.getEntity().getContent());
+        }
     }
 
     @Override
@@ -100,7 +119,7 @@ public abstract class HttpClientResponse implements XHttpResponse {
     }
 
     @Override
-    public InputStream getContent() throws IOException {
+    public InputStream getContent() {
         return mContent;
     }
 

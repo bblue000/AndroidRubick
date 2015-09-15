@@ -3,7 +3,6 @@ package androidrubick.xframework.impl.http.internal;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -78,30 +77,19 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
             addParams(httpUriRequest, request);
 
             final HttpClient httpClient = prepareHttpClient();
-
             final HttpResponse httpResponse = httpClient.execute(httpUriRequest);
-            final StatusLine statusLine = httpResponse.getStatusLine();
-            final int statusCode = statusLine.getStatusCode();
 
-            // Some responses such as 204s do not have content.  We must check.
-            if (Objects.isNull(httpResponse.getEntity())) {
-                httpResponse.setEntity(XHttps.createNoneByteArrayEntity(
-                        XHttps.getContentTypeStr(httpResponse), null));
-            }
-
-            // code is not [200, 300)
-            if (statusCode < 200 || statusCode > 299) {
-                throw new IOException("error status code");
-            }
-
+            // create from a HttpResponse
             response = new HttpClientResponse(httpResponse) {
 
                 @Override
-                public void close() throws IOException {
-                    HttpInnerUtils.close(httpUriRequest, httpResponse);
+                public void close() {
+                    HttpInnerUtils.close(httpUriRequest);
+                    consumeContent();
                     trimMemory();
                 }
             };
+            HttpInnerUtils.verifyStatusCode(response);
         } catch (SocketTimeoutException e) {
             throw new XHttpError(XHttpError.Type.Timeout, response, e);
         } catch (ConnectTimeoutException e) {

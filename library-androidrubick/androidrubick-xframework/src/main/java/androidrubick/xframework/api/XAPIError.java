@@ -2,6 +2,13 @@ package androidrubick.xframework.api;
 
 /**
  *
+ * API请求出现的错误类型常量。
+ *
+ * <p/>
+ *
+ *
+ * 该处提供的错误类型值都是<0的，这是为了跟HTTP请求相关的status code（特征为>0）区分开。
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/15 0015.

@@ -18,7 +18,6 @@ import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.*;
-import androidrubick.xframework.net.http.response.XHttpResponse;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
@@ -46,12 +45,13 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
             addParams(connection, request);
             setConnectionParametersForRequest(connection, request);
             response = new HttpUrlConnectionResponse(connection);
+            HttpInnerUtils.verifyStatusCode(response);
         } catch (SocketTimeoutException e) {
             throw new XHttpError(XHttpError.Type.Timeout, response, e);
         } catch (MalformedURLException e) {
             throw new XHttpError(XHttpError.Type.Other, response, e);
         } catch (IOException e) {
-            // openConnection 抛出异常
+            // openConnection 等抛出异常
             throw HttpInnerUtils.caseOtherException(response, e);
         }
         return response;

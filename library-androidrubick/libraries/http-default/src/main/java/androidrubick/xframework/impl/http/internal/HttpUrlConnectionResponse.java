@@ -42,14 +42,6 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
     protected void parseSpecStatusLine() throws IOException {
         mStatusCode = mConnection.getResponseCode();
         mStatusMessage = mConnection.getResponseMessage();
-        if (mStatusCode == -1) {
-            try {
-                close();
-            } catch (Throwable t) { }
-            // -1 is returned by getResponseCode() if the response code could not be retrieved.
-            // Signal to the caller that something was wrong with the connection.
-            throw new IOException("Could not retrieve response code from HttpUrlConnection.");
-        }
         mProtocolVersion = XHttps.defHTTPProtocolVersion();
     }
 
@@ -75,7 +67,7 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
             mContent = mConnection.getErrorStream();
         }
         // check and transfer content to GZIP input stream if needed
-        mContent = HttpInnerUtils.checkContent(getContentEncoding(), mContent);
+        mContent = HttpInnerUtils.resolveContent(getContentEncoding(), mContent);
     }
 
     @Override
@@ -114,7 +106,7 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
     }
 
     @Override
-    public InputStream getContent() throws IOException {
+    public InputStream getContent() {
         return mContent;
     }
 
@@ -134,7 +126,7 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         consumeContent();
         try {
             mConnection.disconnect();

@@ -3,7 +3,6 @@ package androidrubick.xframework.impl.http.internal;
 import android.net.SSLCertificateSocketFactory;
 import android.net.http.AndroidHttpClient;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -18,7 +17,6 @@ import java.util.zip.GZIPInputStream;
 import javax.net.ssl.SSLSocketFactory;
 
 import androidrubick.io.IOUtils;
-import androidrubick.net.MediaType;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.DeviceInfos;
@@ -74,7 +72,7 @@ public class HttpInnerUtils {
         return "gzip".equalsIgnoreCase(contentEncoding);
     }
 
-    public static InputStream checkContent(String contentEncoding, InputStream originIns) throws IOException {
+    public static InputStream resolveContent(String contentEncoding, InputStream originIns) throws IOException {
         if (Objects.isNull(originIns)) {
             return originIns;
         }
@@ -82,6 +80,27 @@ public class HttpInnerUtils {
             return originIns;
         }
         return new GZIPInputStream(originIns);
+    }
+
+    /**
+     * 验证状态值是否正确
+     */
+    public static void verifyStatusCode(XHttpResponse response) throws IOException {
+        int statusCode = response.getStatusCode();
+        if (statusCode == -1) {
+            // close the response content
+            response.close();
+            // -1 is returned by getResponseCode() if the response code could not be retrieved.
+            // Signal to the caller that something was wrong with the connection.
+            throw new IOException("Could not retrieve response code from request.");
+        }
+
+        // code is not [200, 300)
+        if (statusCode < 200 || statusCode > 299) {
+            // close the response content
+            response.close();
+            throw new IOException("error status code");
+        }
     }
 
     /**
@@ -139,22 +158,20 @@ public class HttpInnerUtils {
             return;
         }
         HttpEntity entity = response.getEntity();
-        if (Objects.isNull(entity)) {
-            return;
+        if (!Objects.isNull(entity)) {
+            consume(entity);
         }
-        consume(entity);
     }
 
     /**
      * consume content anyway
      */
-    public static void close(HttpUriRequest httpUriRequest, HttpResponse response) {
+    public static void close(HttpUriRequest httpUriRequest) {
         if (!Objects.isNull(httpUriRequest)) {
             try {
                 httpUriRequest.abort();
             } catch (final Exception ignore) { }
         }
-        consume(response);
     }
 
 }

@@ -3,7 +3,6 @@ package androidrubick.xframework.net.http.response;
 import org.apache.http.ProtocolVersion;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -60,9 +59,11 @@ public interface XHttpResponse extends Closeable {
     public String getContentEncoding() ;
 
     /**
-     * 获取直接可读的输入流（如果包含类似GZIP方式的Content-Encoding，需要进行处理）
+     * 获取直接可读的输入流（如果包含类似GZIP方式的Content-Encoding，需要进行处理）；
+     *
+     * 如果没有内容，将返回null
      */
-    public InputStream getContent() throws IOException ;
+    public InputStream getContent() ;
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>
     // header
@@ -107,8 +108,7 @@ public interface XHttpResponse extends Closeable {
      *
      * 关闭/释放连接
      *
-     * @throws IOException
      */
     @Override
-    public void close() throws IOException;
+    public void close();
 }
