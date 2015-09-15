@@ -182,4 +182,12 @@ public class XHttpError extends Exception {
         mRawCause = rawCause;
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("type", mType)
+                .add("statusCode", getStatusCode())
+                .add("message", getMessage())
+                .toString();
+    }
 }

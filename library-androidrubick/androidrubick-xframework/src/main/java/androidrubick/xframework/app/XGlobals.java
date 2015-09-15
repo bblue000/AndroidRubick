@@ -26,6 +26,7 @@ public class XGlobals {
      * 工程文件使用的字符集编码
      */
     public static final String ProjectEncoding = BuildConfig.ProjectEncoding;
+    public static final boolean DEBUG = true;
 
     private static Handler sHandler;
     private static Application sApplication;

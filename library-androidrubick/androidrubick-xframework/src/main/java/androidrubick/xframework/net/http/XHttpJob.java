@@ -2,6 +2,8 @@ package androidrubick.xframework.net.http;
 
 import androidrubick.io.IOUtils;
 import androidrubick.utils.ArraysCompat;
+import androidrubick.xbase.util.XLog;
+import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.job.XJob;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
@@ -33,14 +35,9 @@ public abstract class XHttpJob<Progress, Result> extends XJob<XHttpRequest, Prog
             IOUtils.close(response);
             return result;
         } catch (XHttpError e) {
-            Result result = onHttpExc(request, e);
-            // to make sure response is closed
-            IOUtils.close(response);
-            return result;
+            return onHttpExc(request, e);
         } catch (Throwable e) {
-            // to make sure response is closed
-            IOUtils.close(response);
-            return onOtherExc(request, e);
+            return onOtherExc(request, response, e);
         }
     }
 
@@ -67,7 +64,9 @@ public abstract class XHttpJob<Progress, Result> extends XJob<XHttpRequest, Prog
      * @return 返回错误时的请求结果，默认返回null
      */
     protected Result onHttpExc(XHttpRequest request, XHttpError exception) {
-        IOUtils.close(exception.getResponse());
+        if (XGlobals.DEBUG) {
+            XLog.d(getClass(), "onHttpExc", exception);
+        }
         return null;
     }
 
@@ -78,12 +77,20 @@ public abstract class XHttpJob<Progress, Result> extends XJob<XHttpRequest, Prog
      *
      * 该方法仍是在子线程中调用
      *
+     * <p/>
+     *
+     * 默认实现中，该方法关闭了<code>response</code>，并返回null
+     *
      * @param exception {@link #doInBackground(Object[])}过程中产生的错误
      *
      * @return 返回错误时的请求结果，默认返回null
      *
      */
-    protected Result onOtherExc(XHttpRequest request, Throwable exception) {
+    protected Result onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
+        if (XGlobals.DEBUG) {
+            XLog.d(getClass(), "onOtherExc", exception);
+        }
+        IOUtils.close(response);
         return null;
     }
 }
