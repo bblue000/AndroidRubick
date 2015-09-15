@@ -2,9 +2,11 @@ package androidrubick.xframework.impl.api.internal;
 
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
+import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIError;
 import androidrubick.xframework.api.XAPIHolder;
+import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.impl.api.internal.param.XAPIParamParser;
 import androidrubick.xframework.impl.api.internal.result.XAPIResultParser;
 import androidrubick.xframework.net.http.XHttpJob;
@@ -38,6 +40,9 @@ public class XAPIHolderImpl implements XAPIHolder {
             mJob.execute(mRequest);
             return true;
         }
+        if (XGlobals.DEBUG) {
+            XLog.d(getClass(), "XAPIHolder#execute not idle");
+        }
         return false;
     }
 
@@ -53,7 +58,6 @@ public class XAPIHolderImpl implements XAPIHolder {
         }
         return mJob.cancel(mayInterruptIfRunning);
     }
-
 
     protected class XAPIJob extends XHttpJob<Object, XAPIStatusImpl> {
 
@@ -72,25 +76,35 @@ public class XAPIHolderImpl implements XAPIHolder {
 
         @Override
         protected void onPostExecute(XAPIStatusImpl xapiStatus) {
-            if (Objects.isNull(mCallback)) {
-                return;
-            }
-            if (xapiStatus.successMark) {
-                mCallback.onSuccess(xapiStatus.data, xapiStatus);
-            } else {
-                mCallback.onFailed(xapiStatus);
+            try {
+                if (Objects.isNull(mCallback)) {
+                    return;
+                }
+                if (xapiStatus.successMark) {
+                    mCallback.onSuccess(xapiStatus.data, xapiStatus);
+                } else {
+                    mCallback.onFailed(xapiStatus);
+                }
+            } finally {
+                // clear mJob
+                XAPIHolderImpl.this.mJob = null;
             }
         }
 
         @Override
         protected void onCancelled(XAPIStatusImpl xapiStatus) {
-            super.onCancelled(xapiStatus);
-            if (!Objects.isNull(mCallback)) {
-                Object resultData = null;
-                if (!Objects.isNull(xapiStatus) && !xapiStatus.successMark) {
-                    resultData = xapiStatus.data;
+            try {
+                super.onCancelled(xapiStatus);
+                if (!Objects.isNull(mCallback)) {
+                    Object resultData = null;
+                    if (!Objects.isNull(xapiStatus) && !xapiStatus.successMark) {
+                        resultData = xapiStatus.data;
+                    }
+                    mCallback.onCanceled(resultData);
                 }
-                mCallback.onCanceled(resultData);
+            } finally {
+                // clear mJob
+                XAPIHolderImpl.this.mJob = null;
             }
         }
 
@@ -100,6 +114,7 @@ public class XAPIHolderImpl implements XAPIHolder {
             switch (exception.getType()) {
                 case Timeout:
                     return new XAPIStatusImpl(XAPIError.ERR_TIMEOUT, exception.getMessage());
+                case Auth:
                 case Server:
                     return new XAPIStatusImpl(exception.getStatusCode(), exception.getMessage());
                 case Other:

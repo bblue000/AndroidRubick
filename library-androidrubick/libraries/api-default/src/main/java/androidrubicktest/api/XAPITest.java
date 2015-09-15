@@ -20,7 +20,7 @@ import androidrubick.xframework.api.XAPIStatus;
 public class XAPITest {
 
     public static void test() {
-        XAPI.get(APIConfig.GET_AREA_DATA, null, JSONObject.class, new XAPICallback() {
+        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, JSONObject.class, new XAPICallback() {
             @Override
             public void onSuccess(Object result, XAPIStatus status) {
                 Log.d("yytest", "onSuccess result = " + result);
@@ -37,6 +37,12 @@ public class XAPITest {
                 Log.d("yytest", "onCanceled result = " + result);
             }
         });
+        holder.execute();
+        holder.execute();
+        holder.execute();
+        holder.execute();
+        holder.execute();
+        holder.execute();
     }
 
     public static void testHolder() {
@@ -58,6 +64,12 @@ public class XAPITest {
         });
 
         holder.cancel(true);
+        holder.execute();
+        holder.execute();
+        holder.execute();
+        holder.execute();
+        holder.execute();
+        holder.execute();
     }
 
 }
