@@ -65,7 +65,7 @@ import androidrubick.xframework.app.XAppStateMonitor;
  */
 public class XServiceLoader<S extends XSpiService> {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = XGlobals.DEBUG;
 
     static final XAppStateCallback sAppStateCallback = new XAppStateCallback.SimpleAppStateCallback() {
         @Override
@@ -107,7 +107,9 @@ public class XServiceLoader<S extends XSpiService> {
             XServiceLoader<S> serviceLoader;
             if (!CollectionsCompat.isEmpty(sCaches)) {
                 serviceLoader = sCaches.get(service);
-                return serviceLoader.load();
+                if (!Objects.isNull(serviceLoader)) {
+                    return serviceLoader.load();
+                }
             }
             if (DEBUG) {
                 serviceLoader = new XServiceLoaderForTest(service, classLoader);

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
 import androidrubick.text.MapJoiner;
 import androidrubick.text.Strings;
 import androidrubick.utils.Exceptions;
@@ -77,6 +78,9 @@ public class HttpUrls {
      * </pre>
      */
     public static String toUrlEncodedQueryString(Map<?, ?> params, final String charsetName) {
+        if (CollectionsCompat.isEmpty(params)) {
+            return Strings.EMPTY;
+        }
         Function<Object, CharSequence> func = toUrlEncodedStringFunc(charsetName);
         return toUrlEncodedQueryString(params, func, func);
     }

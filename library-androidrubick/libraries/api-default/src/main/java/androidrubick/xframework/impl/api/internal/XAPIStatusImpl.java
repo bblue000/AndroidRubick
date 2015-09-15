@@ -1,4 +1,4 @@
-package androidrubick.xframework.api.internal;
+package androidrubick.xframework.impl.api.internal;
 
 import androidrubick.xframework.api.XAPIStatus;
 
@@ -11,7 +11,7 @@ import androidrubick.xframework.api.XAPIStatus;
  *
  * @since 1.0
  */
-/*package*/ class XAPIStatusImpl extends XAPIStatus {
+/*package*/ public class XAPIStatusImpl extends XAPIStatus {
     public boolean successMark;
     public Object data;
     public XAPIStatusImpl(int code, String msg) {

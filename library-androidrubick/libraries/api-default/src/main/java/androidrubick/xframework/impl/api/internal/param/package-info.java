@@ -5,4 +5,4 @@
  *
  * xframework的宗旨是：<b>简化开发</b>
  */
-package androidrubick.xframework.api.param;
+package androidrubick.xframework.impl.api.internal.param;

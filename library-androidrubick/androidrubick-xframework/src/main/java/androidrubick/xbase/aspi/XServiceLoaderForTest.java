@@ -1,9 +1,11 @@
 package androidrubick.xbase.aspi;
 
 import androidrubick.xbase.util.spi.XJsonParserService;
+import androidrubick.xframework.api.spi.XAPIService;
 import androidrubick.xframework.cache.spi.XDiskCacheService;
 import androidrubick.xframework.cache.spi.XMemCacheService;
 import androidrubick.xframework.job.spi.XJobExecutorService;
+import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
  * <p/>
@@ -31,6 +33,10 @@ class XServiceLoaderForTest<S extends XSpiService> extends XServiceLoader<S> {
             mClassName = "androidrubick.xframework.impl.json.XJsonParserImpl";
         } else if (XJobExecutorService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.job.XJobExecutorServiceImpl";
+        } else if (XHttpRequestService.class.equals(this.mService)) {
+            mClassName = "androidrubick.xframework.impl.http.XHttpRequestServiceImpl";
+        } else if (XAPIService.class.equals(this.mService)) {
+            mClassName = "androidrubick.xframework.impl.api.XAPIServiceImpl";
         }
     }
 }

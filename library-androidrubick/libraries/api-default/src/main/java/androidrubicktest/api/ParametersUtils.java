@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import androidrubick.encode.MD5;
-import androidrubick.xframework.api.param.XParamable;
 
 /**
  * 网络请求构建工具类.
@@ -86,7 +85,7 @@ public class ParametersUtils {
      * @param baseParam
      * @param signStrings
      */
-    public ParametersUtils(XParamable baseParam, Map<String, String> signStrings) {
+    public ParametersUtils(Object baseParam, Map<String, String> signStrings) {
         this.p = baseParam;
         this.mSignStrings = signStrings;
         parseFromObject();
@@ -231,7 +230,7 @@ public class ParametersUtils {
     }
 
     private void parseFromObjectAsClass(Class<?> clz) {
-        if (XParamable.class.isAssignableFrom(clz)) {
+        if (Object.class.isAssignableFrom(clz)) {
             parseFromObjectAsClass(clz.getSuperclass());
 
             Field[] fs = clz.getDeclaredFields();

@@ -19,8 +19,6 @@ import androidrubick.xbase.util.ToastUtils;
 import androidrubick.xframework.app.ui.component.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
-import androidrubicktest.AndroidBuildTest;
-import androidrubicktest.TestFileSystem;
 import androidrubicktest.api.XAPITest;
 import butterknife.OnClick;
 
@@ -62,8 +60,6 @@ public class MainActivity extends XBaseActivity {
             }
         }.start();
 
-        AndroidBuildTest.testGet();
-        TestFileSystem.test();
         AppInfos.printMemeory();
 //        XApplication.is();
     }

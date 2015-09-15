@@ -1,4 +1,4 @@
-package androidrubick.xframework.api.param;
+package androidrubick.xframework.impl.api.internal.param;
 
 /**
  * 标识对象是否可以转为参数，它并没有包含任何方法。

@@ -1,8 +1,8 @@
 package androidrubick.xframework.api;
 
 import androidrubick.net.HttpMethod;
-import androidrubick.xframework.api.internal.XAPIJob;
-import androidrubick.xframework.api.param.XParamable;
+import androidrubick.xbase.aspi.XServiceLoader;
+import androidrubick.xframework.api.spi.XAPIService;
 
 /**
  * API
@@ -33,14 +33,15 @@ public class XAPI {
      *
      * @return 返回API请求处理对象
      */
-    public static XAPIHolder get(String url, XParamable param, Class<?> result, XAPICallback callback) {
-        XAPIJob job = new XAPIJob(url, HttpMethod.GET, result, callback);
-        XAPIHolder holder = new XAPIHolder(job);
-        try {
-            return holder;
-        } finally {
-            job.execute(param);
-        }
+    public static <Result>XAPIHolder get(String url, Object param, Class<Result> result, XAPICallback<Result> callback) {
+        return XServiceLoader.load(XAPIService.class).doAPI(url, HttpMethod.GET, param, result, callback);
+//        XAPIJob job = new XAPIJob(url, HttpMethod.GET, result, callback);
+//        XAPIHolder holder = new XAPIHolder(job);
+//        try {
+//            return holder;
+//        } finally {
+//            job.execute(param);
+//        }
     }
 
     /**
@@ -52,14 +53,15 @@ public class XAPI {
      *
      * @return 返回API请求处理对象
      */
-    public static XAPIHolder post(String url, XParamable param, Class<?> result, XAPICallback callback) {
-        XAPIJob job = new XAPIJob(url, HttpMethod.POST, result, callback);
-        XAPIHolder holder = new XAPIHolder(job);
-        try {
-            return holder;
-        } finally {
-            job.execute(param);
-        }
+    public static XAPIHolder post(String url, Object param, Class<?> result, XAPICallback callback) {
+        return XServiceLoader.load(XAPIService.class).doAPI(url, HttpMethod.POST, param, result, callback);
+//        XAPIJob job = new XAPIJob(url, HttpMethod.POST, result, callback);
+//        XAPIHolder holder = new XAPIHolder(job);
+//        try {
+//            return holder;
+//        } finally {
+//            job.execute(param);
+//        }
     }
 
 }

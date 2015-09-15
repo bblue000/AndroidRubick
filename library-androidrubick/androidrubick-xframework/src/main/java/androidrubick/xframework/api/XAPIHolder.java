@@ -1,7 +1,5 @@
 package androidrubick.xframework.api;
 
-import androidrubick.xframework.job.XJob;
-
 /**
  *
  * API任务持有对象，提供给外界调用，如取消
@@ -12,12 +10,17 @@ import androidrubick.xframework.job.XJob;
  *
  * @since 1.0
  */
-public class XAPIHolder {
+public interface XAPIHolder {
 
-    private XJob job;
-    protected XAPIHolder(XJob job) {
-        this.job = job;
-    }
+    /**
+     * 执行API请求，如果已经在进行，将直接返回false
+     */
+    public boolean execute() ;
+
+    /**
+     * 判断是否处于闲置状态，即没有正在进行API请求
+     */
+    public boolean isIdle();
 
     /**
      * 取消API请求，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled(Object)}
@@ -30,12 +33,5 @@ public class XAPIHolder {
      *         typically because it has already completed normally;
      *         <tt>true</tt> otherwise
      */
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        return this.job.cancel(mayInterruptIfRunning);
-    }
-
-    public boolean isCancelled() {
-        return job.isCancelled();
-    }
-
+    public boolean cancel(boolean mayInterruptIfRunning) ;
 }

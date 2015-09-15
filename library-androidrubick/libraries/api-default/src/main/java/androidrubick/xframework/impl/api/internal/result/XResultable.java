@@ -1,4 +1,4 @@
-package androidrubick.xframework.api.result;
+package androidrubick.xframework.impl.api.internal.result;
 
 import androidrubick.xbase.annotation.Configurable;
 

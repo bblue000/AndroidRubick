@@ -75,9 +75,11 @@
 -keep class androidrubick.xframework.job.spi.XJobExecutorService
 -keep class androidrubick.xframework.cache.spi.XMemCacheService
 -keep class androidrubick.xframework.net.http.spi.XHttpRequestService
+-keep class androidrubick.xframework.api.spi.XAPIService
 
 -keep class * implements androidrubick.xbase.util.spi.XJsonParserService
 -keep class * implements androidrubick.xframework.job.spi.XJobExecutorService
 -keep class * implements androidrubick.xframework.cache.spi.XMemCacheService
 -keep class * implements androidrubick.xframework.net.http.spi.XHttpRequestService
+-keep class * implements androidrubick.xframework.api.spi.XAPIService
 
