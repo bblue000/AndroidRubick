@@ -3,7 +3,7 @@ package androidrubick.xframework.impl.cache.disk;
 import java.io.File;
 
 import androidrubick.xframework.cache.disk.XDiskCacheStats;
-import androidrubick.xframework.cache.spi.XDiskCacheService;
+import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 
 /**
  * <p/>

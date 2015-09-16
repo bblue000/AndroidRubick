@@ -8,7 +8,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.base.LimitedMeasurableCache;
-import androidrubick.xframework.cache.spi.XDiskCacheService;
+import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 
 /**
  * 文件缓存抽象类。

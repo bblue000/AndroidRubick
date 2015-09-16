@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache.spi;
+package androidrubick.xframework.cache.disk.spi;
 
 import java.io.File;
 

@@ -2,8 +2,8 @@ package androidrubick.xbase.aspi;
 
 import androidrubick.xbase.util.spi.XJsonParserService;
 import androidrubick.xframework.api.spi.XAPIService;
-import androidrubick.xframework.cache.spi.XDiskCacheService;
-import androidrubick.xframework.cache.spi.XMemCacheService;
+import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
+import androidrubick.xframework.cache.mem.spi.XMemCacheService;
 import androidrubick.xframework.job.spi.XJobExecutorService;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 

@@ -74,8 +74,12 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
             while (iterator.hasNext()) {
                 Runnable rawRun = iterator.next();
                 XJob job = XJob.asXJob(rawRun);
-                if (!Objects.isNull(job) && job.isExpired()) {
-                    iterator.remove();
+                if (!Objects.isNull(job)) {
+                    if (job.isExpired()) {
+                        iterator.remove();
+                    } else {
+                        break;
+                    }
                 }
             }
         }

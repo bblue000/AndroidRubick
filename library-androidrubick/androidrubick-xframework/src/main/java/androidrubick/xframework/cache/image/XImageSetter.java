@@ -5,16 +5,21 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidrubick.utils.Objects;
+
 /**
  *
- * 设置图片的
+ * 设置图片的操作对象
  *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/15.
  */
-public interface XImageSetter<V extends View> {
+public interface XImageSetter {
 
+    /**
+     * 设置背景图片的对象
+     */
     XImageSetter VIEW_BG_SETTER = new XImageSetter() {
         @Override
         public void setImage(View view, Bitmap bitmap) {
@@ -22,16 +27,21 @@ public interface XImageSetter<V extends View> {
         }
     };
 
-    XImageSetter<ImageView> IMAGE_SRC_SETTER = new XImageSetter<ImageView>() {
+    /**
+     * 设置Image src图片的对象
+     */
+    XImageSetter IMAGE_SRC_SETTER = new XImageSetter() {
         @Override
-        public void setImage(ImageView view, Bitmap bitmap) {
-            view.setImageBitmap(bitmap);
+        public void setImage(View view, Bitmap bitmap) {
+            if (view instanceof ImageView) {
+                Objects.getAs(view, ImageView.class).setImageBitmap(bitmap);
+            }
         }
     };
 
     /**
      * 根据提供的<code>bitmap</code>设置图片
      */
-    public void setImage(V view, Bitmap bitmap) ;
+    public void setImage(View view, Bitmap bitmap) ;
 
 }

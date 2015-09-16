@@ -6,7 +6,7 @@ import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.base.LimitedMeasurableCache;
-import androidrubick.xframework.cache.spi.XMemCacheService;
+import androidrubick.xframework.cache.mem.spi.XMemCacheService;
 
 /**
  * {@inheritDoc}

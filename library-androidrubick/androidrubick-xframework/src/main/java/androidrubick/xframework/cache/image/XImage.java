@@ -9,13 +9,29 @@ import android.view.View;
  */
 public class XImage {
 
-    public static <V extends View>V setBackground(V view, String url) {
+    public static <V extends View>XImage fromRes() {
 
     }
 
+    public static <V extends View>XImage fromAsset() {
 
-    public static void setImage() {
+    }
 
+    public static <V extends View>XImage fromFile() {
+
+    }
+
+    public static <V extends View>XImage fromD() {
+
+    }
+
+    private XImageSetter mImageSetter;
+    public XImage withSetter() {
+
+    }
+
+    public XImageSetter getImageSetter() {
+        return mImageSetter;
     }
 
 }
