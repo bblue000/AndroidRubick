@@ -19,6 +19,11 @@ public interface XAPIConstants {
      */
     public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
 
+    /**
+     * 错误后尝试请求次数
+     */
+    public static final int RETRY_COUNT = 1;
+
     public static final String CHARSET = Charsets.UTF_8.name();
 
 }

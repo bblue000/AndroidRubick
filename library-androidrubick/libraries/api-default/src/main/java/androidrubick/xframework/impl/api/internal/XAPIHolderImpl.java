@@ -7,9 +7,10 @@ import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIError;
 import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.app.XGlobals;
+import androidrubick.xframework.impl.api.XAPIConstants;
 import androidrubick.xframework.impl.api.internal.param.XAPIParamParser;
 import androidrubick.xframework.impl.api.internal.result.XAPIResultParser;
-import androidrubick.xframework.net.http.XHttpJob;
+import androidrubick.xframework.net.http.XHttpRetryJob;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
 import androidrubick.xframework.net.http.response.XHttpResponse;
@@ -36,9 +37,14 @@ public class XAPIHolderImpl implements XAPIHolder {
     @Override
     public boolean execute() {
         if (isIdle()) {
-            mJob = new XAPIJob();
-            mJob.execute(mRequest);
-            return true;
+            // lazy create a new job
+            synchronized (this) {
+                if (isIdle()) {
+                    mJob = new XAPIJob();
+                    mJob.execute(mRequest);
+                    return true;
+                }
+            }
         }
         if (XGlobals.DEBUG) {
             XLog.d(getClass(), "XAPIHolder#execute not idle");
@@ -59,10 +65,10 @@ public class XAPIHolderImpl implements XAPIHolder {
         return mJob.cancel(mayInterruptIfRunning);
     }
 
-    protected class XAPIJob extends XHttpJob<Object, XAPIStatusImpl> {
+    protected class XAPIJob extends XHttpRetryJob<Object, XAPIStatusImpl> {
 
         public XAPIJob() {
-
+            super(XAPIConstants.RETRY_COUNT);
         }
 
         @Override
@@ -109,8 +115,7 @@ public class XAPIHolderImpl implements XAPIHolder {
         }
 
         @Override
-        protected XAPIStatusImpl onHttpExc(XHttpRequest request, XHttpError exception) {
-            super.onHttpExc(request, exception);
+        protected XAPIStatusImpl onNoMoreRetryOnHttpExc(XHttpRequest request, XHttpError exception) {
             switch (exception.getType()) {
                 case Timeout:
                     return new XAPIStatusImpl(XAPIError.ERR_TIMEOUT, exception.getMessage());
@@ -128,5 +133,6 @@ public class XAPIHolderImpl implements XAPIHolder {
             super.onOtherExc(request, response, exception);
             return new XAPIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
         }
+
     }
 }

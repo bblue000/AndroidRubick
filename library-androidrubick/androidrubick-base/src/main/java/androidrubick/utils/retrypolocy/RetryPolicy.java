@@ -16,5 +16,5 @@ public interface RetryPolicy {
      * @throws Throwable In the event that the retry could not be performed (for example if we
      * ran out of attempts), the passed in error is thrown.
      */
-    public <Ex extends Throwable>void retry(Ex error) throws Throwable;
+    public <Ex extends Throwable>void retry(Ex error) throws Ex;
 }

@@ -8,7 +8,6 @@ import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
-import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
  * 网络异步任务，且可以进行重试，达到最大重试次数时，若还不能完成请求，则返回结果null
@@ -30,29 +29,38 @@ public abstract class XHttpRetryJob<Progress, Result> extends XHttpJob<Progress,
         this(new SimpleRetryPolicy(MathPreconditions.checkNoLessThanMin("retryCount", retryCount, 0)));
     }
 
-    @Override
-    protected Result onHttpExc(XHttpRequest request, XHttpError exception) {
-        super.onHttpExc(request, exception);
-        return attemptRetryOnExc(request, exception);
+    /**
+     * 获取重试策略
+     */
+    public RetryPolicy getRetryPolicy() {
+        return mRetryPolicy;
     }
 
+    /**
+     * HTTP请求时发生的错误导致任务失败，尝试重试；
+     *
+     * 如果达到最大尝试次数，则转为调用{@link #onNoMoreRetryOnHttpExc}。
+     *
+     * @param request
+     * @param exception {@link #doInBackground(Object[])}过程中产生的错误
+     *
+     * @return
+     */
     @Override
-    protected Result onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
-        super.onOtherExc(request, response, exception);
-        return attemptRetryOnExc(request, exception);
-    }
-
-    protected Result attemptRetryOnExc(XHttpRequest request, Throwable exception) {
+    protected final Result onHttpExc(XHttpRequest request, XHttpError exception) {
         try {
             mRetryPolicy.retry(exception);
             return doInBackground(request);
         } catch (Throwable throwable) {
-            return onNoMoreRetry(request, exception);
+            if (XGlobals.DEBUG) {
+                XLog.d(getClass(), "attemptRetryOnHttpExc", throwable);
+            }
+            return onNoMoreRetryOnHttpExc(request, exception);
         }
     }
 
     /**
-     * 没有重试次数时调用。
+     * 没有重试次数时调用，且最后一次失败是因为HTTP请求时发生的错误。
      *
      * <p/>
      *
@@ -60,15 +68,8 @@ public abstract class XHttpRetryJob<Progress, Result> extends XHttpJob<Progress,
      *
      * <p/>
      *
-     * 默认实现返回null。
-     *
-     * @return
+     * @return 重试次数时的处理结果
      */
-    protected Result onNoMoreRetry(XHttpRequest request, Throwable exception) {
-        if (XGlobals.DEBUG) {
-            XLog.d(getClass(), "onNoMoreRetry", exception);
-        }
-        return null;
-    }
+    protected abstract Result onNoMoreRetryOnHttpExc(XHttpRequest request, XHttpError exception) ;
 
 }
