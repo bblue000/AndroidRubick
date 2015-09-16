@@ -34,4 +34,8 @@ public class XImage {
         return mImageSetter;
     }
 
+    public static void setBackground(View view, int resId) {
+
+    }
+
 }

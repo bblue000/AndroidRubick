@@ -5,6 +5,9 @@ import java.io.File;
 import androidrubick.xframework.cache.base.MeasurableCache;
 
 /**
+ *
+ * 以{@link }为根目录的文件缓存
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/16.
@@ -12,7 +15,7 @@ import androidrubick.xframework.cache.base.MeasurableCache;
 public class DiskBasedCache<K, V> extends MeasurableCache<K, V> {
 
     private File mPath;
-    protected DiskBasedCache() {
+    protected DiskBasedCache(String cacheDirName) {
 
     }
 

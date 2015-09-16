@@ -4,7 +4,13 @@ import androidrubick.utils.Objects;
 
 /**
  *
- * API的执行结果
+ * API的执行结果。
+ *
+ * <p/>
+ *
+ * <code>code</code>如果是错误码，则可参见{@link androidrubick.xframework.api.XAPIError}#ERR_*，特征是<0；
+ *
+ * 如果是成功代码，可能是HTTP状态，特征是>0，或者是API返回状态（视具体实现而定）
  *
  * <p/>
  * <p/>

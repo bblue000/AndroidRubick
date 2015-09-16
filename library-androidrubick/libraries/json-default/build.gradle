@@ -3,8 +3,8 @@ apply plugin: 'android-library'
 
 // 项目配置
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
     // android项目默认参数，相对多渠道而言，如果多渠道没有设置相关参数，则使用该配置中的默认值	
     defaultConfig {

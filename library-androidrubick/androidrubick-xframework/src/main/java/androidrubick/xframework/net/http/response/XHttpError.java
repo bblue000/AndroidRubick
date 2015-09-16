@@ -54,7 +54,7 @@ public class XHttpError extends Exception {
         Other
     }
 
-    private Type mType;
+    private Type mType = Type.Other;
     private int mStatusCode = -1;
     private Throwable mRawCause;
     private XHttpResponse mResponse;
@@ -92,6 +92,7 @@ public class XHttpError extends Exception {
      */
     public XHttpError(XHttpResponse response, Throwable rawCause) {
         this(response);
+        initCause(rawCause);
         this.mRawCause = rawCause;
     }
 

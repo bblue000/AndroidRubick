@@ -21,18 +21,18 @@ public interface XAPIError {
     /**
      * 连接超时
      */
-    public static final int ERR_TIMEOUT = -1;
+    int ERR_TIMEOUT = -1;
     /**
      * 网络连接不通畅（或许是手机网络不好，或许是受限）
      */
-    public static final int ERR_NETWORK = -2;
+    int ERR_NETWORK = -2;
     /**
      * 客户端操作，此时将返回{@link Exception#getMessage()}
      */
-    public static final int ERR_CLIENT = Integer.MIN_VALUE + 1;
+    int ERR_CLIENT = Integer.MIN_VALUE + 1;
     /**
      * 其他暂时无法识别的错误
      */
-    public static final int ERR_OTHER = Integer.MIN_VALUE;
+    int ERR_OTHER = Integer.MIN_VALUE;
 
 }

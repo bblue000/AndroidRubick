@@ -122,6 +122,8 @@ public class XAPIHolderImpl implements XAPIHolder {
                 case Auth:
                 case Server:
                     return new XAPIStatusImpl(exception.getStatusCode(), exception.getMessage());
+                case Network:
+                    return new XAPIStatusImpl(XAPIError.ERR_NETWORK, exception.getMessage());
                 case Other:
                 default:
                     return new XAPIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());

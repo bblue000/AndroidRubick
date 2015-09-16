@@ -16,15 +16,6 @@ public class XAPI {
     private XAPI() { }
 
     /**
-     * 默认连接延迟
-     */
-    public static final int DEFAULT_CONNECTION_TIMEOUT = 10000;
-    /**
-     * 默认传输延迟
-     */
-    public static final int DEFAULT_SOCKET_TIMEOUT = 30000;
-
-    /**
      *
      * @param url 基础URL
      * @param param 作为参数来源的对象
@@ -35,13 +26,6 @@ public class XAPI {
      */
     public static <Result>XAPIHolder get(String url, Object param, Class<Result> result, XAPICallback<Result> callback) {
         return XServiceLoader.load(XAPIService.class).doAPI(url, HttpMethod.GET, param, result, callback);
-//        XAPIJob job = new XAPIJob(url, HttpMethod.GET, result, callback);
-//        XAPIHolder holder = new XAPIHolder(job);
-//        try {
-//            return holder;
-//        } finally {
-//            job.execute(param);
-//        }
     }
 
     /**
@@ -55,13 +39,6 @@ public class XAPI {
      */
     public static XAPIHolder post(String url, Object param, Class<?> result, XAPICallback callback) {
         return XServiceLoader.load(XAPIService.class).doAPI(url, HttpMethod.POST, param, result, callback);
-//        XAPIJob job = new XAPIJob(url, HttpMethod.POST, result, callback);
-//        XAPIHolder holder = new XAPIHolder(job);
-//        try {
-//            return holder;
-//        } finally {
-//            job.execute(param);
-//        }
     }
 
 }
