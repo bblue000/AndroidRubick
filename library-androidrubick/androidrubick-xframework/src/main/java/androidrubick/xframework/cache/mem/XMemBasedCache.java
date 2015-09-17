@@ -13,13 +13,38 @@ import androidrubick.xframework.cache.mem.spi.XMemCacheService;
  *
  * <p/>
  *
- * 能够对cache中的元素指定大小——{@link #sizeOf}，
+ * 可以通过{@link #sizeOf}方法对cache中的缓存项指定大小。
+ *
+ * <p/>
+ *
+ * 可以通过覆写{@link #createXMemCacheMap}方法（使用{@link #newMemCacheMap}方法）创建缓存容器。
  *
  * <p/>
  *
  * Created by Yin Yong on 2015/5/17 0017.
  */
 public abstract class XMemBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
+
+    /**
+     * 创建一个缓存Map
+     */
+    public static <K, V>XMemCacheMap<K, V> newMemCacheMap() {
+        return XServiceLoader.load(XMemCacheService.class).newMemCacheMap();
+    }
+
+    /**
+     * 创建一个初始容量为<code>initialCapacity</code>的缓存Map
+     */
+    public static <K, V>XMemCacheMap<K, V> newMemCacheMap(int initialCapacity) {
+        return XServiceLoader.load(XMemCacheService.class).newMemCacheMap(initialCapacity);
+    }
+
+    /**
+     * 创建一个初始容量为<code>initialCapacity</code>的缓存Map
+     */
+    public static <K, V>XMemCacheMap<K, V> newMemCacheMap(int initialCapacity, float loadFactor) {
+        return XServiceLoader.load(XMemCacheService.class).newMemCacheMap(initialCapacity, loadFactor);
+    }
 
     private int mMeasuredSize;
 
@@ -50,7 +75,7 @@ public abstract class XMemBasedCache<K, V> extends LimitedMeasurableCache<K, V> 
      * create a XMemCacheMap
      */
     protected XMemCacheMap<K, V> createXMemCacheMap() {
-        return XServiceLoader.load(XMemCacheService.class).newXMemCacheMap(8);
+        return newMemCacheMap(8);
     }
 
     public XMemCacheMap<K, V> getMemCacheMap() {

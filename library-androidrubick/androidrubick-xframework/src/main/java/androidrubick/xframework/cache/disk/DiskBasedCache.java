@@ -1,6 +1,7 @@
 package androidrubick.xframework.cache.disk;
 
 import java.io.File;
+import java.io.OutputStream;
 
 import androidrubick.xframework.cache.base.MeasurableCache;
 
@@ -12,12 +13,18 @@ import androidrubick.xframework.cache.base.MeasurableCache;
  *
  * Created by Yin Yong on 2015/9/16.
  */
-public class DiskBasedCache<K, V> extends MeasurableCache<K, V> {
+public abstract class DiskBasedCache<K, V> extends MeasurableCache<K, V> {
 
-    private File mPath;
-    protected DiskBasedCache(String cacheDirName) {
+    public abstract interface Editor {
+
+        OutputStream openFileOutput(String fileName);
+
+        OutputStream openFileInput(String fileName);
 
     }
+
+    private File mPath;
+    public abstract Editor editor() ;
 
     @Override
     public int measuredSize() {

@@ -17,7 +17,7 @@ public interface XMemCacheService extends XSpiService {
     /**
      * Constructs a new empty {@code XMemCacheMap} instance.
      */
-    <K, V> XMemCacheMap<K, V> newXMemCacheMap();
+    <K, V> XMemCacheMap<K, V> newMemCacheMap();
 
     /**
      * Constructs a new {@code XMemCacheMap} instance with the specified
@@ -28,7 +28,7 @@ public interface XMemCacheService extends XSpiService {
      * @throws IllegalArgumentException
      *                when the capacity is less than zero.
      */
-    <K, V> XMemCacheMap<K, V> newXMemCacheMap(int initialCapacity);
+    <K, V> XMemCacheMap<K, V> newMemCacheMap(int initialCapacity);
 
     /**
      * Constructs a new {@code XMemCacheMap} instance with the specified
@@ -42,6 +42,6 @@ public interface XMemCacheService extends XSpiService {
      *             when the capacity is less than zero or the load factor is
      *             less or equal to zero.
      */
-    <K, V> XMemCacheMap<K, V> newXMemCacheMap(int initialCapacity, float loadFactor);
+    <K, V> XMemCacheMap<K, V> newMemCacheMap(int initialCapacity, float loadFactor);
 
 }
