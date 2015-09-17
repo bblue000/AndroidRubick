@@ -26,7 +26,6 @@ import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
     private File mRootPath;
-    private AtomicBoolean mStatsInitFlag = new AtomicBoolean(false);
     private XDiskCacheStats mDiskCacheStats;
     protected XDiskBasedCache(String rootPath, int maxMeasureSize) {
         this(new File(rootPath), maxMeasureSize);
@@ -56,12 +55,12 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
     }
 
     protected void checkInitRetrieve() {
-        if (mStatsInitFlag.get()) {
-            return;
-        }
-        synchronized (this) {
-            mDiskCacheStats = XServiceLoader.load(XDiskCacheService.class).newDiskCacheStats(getRootPath());
-            mStatsInitFlag.set(true);
+        if (Objects.isNull(mDiskCacheStats)) {
+            synchronized (this) {
+                if (Objects.isNull(mDiskCacheStats)) {
+                    mDiskCacheStats = XServiceLoader.load(XDiskCacheService.class).newDiskCacheStats(getRootPath());
+                }
+            }
         }
     }
 

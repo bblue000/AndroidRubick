@@ -60,11 +60,6 @@ public abstract class MeasurableCache<K, V> implements Cache<K, V> {
      */
     protected void entryRemoved(boolean evicted, K key, V oldValue, V newValue) {}
 
-    @Override
-    public Cache<K, V> asCache() {
-        return this;
-    }
-
     @Override public synchronized String toString() {
         return String.format("%s[size=%d, measuredSize=%d]",
                 getClass().getSimpleName(),

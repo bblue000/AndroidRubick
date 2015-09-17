@@ -40,11 +40,6 @@ public final class NoCache implements Cache {
     }
 
     @Override
-    public Cache asCache() {
-        return this;
-    }
-
-    @Override
     public String toString() {
         return "NoCache";
     }

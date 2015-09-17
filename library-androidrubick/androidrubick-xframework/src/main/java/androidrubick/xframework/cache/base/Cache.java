@@ -15,7 +15,7 @@ package androidrubick.xframework.cache.base;
  *
  * @since 1.0
  */
-public abstract interface Cache<K, V> extends ICacheable {
+public abstract interface Cache<K, V> {
 
     /**
      * Returns the value associated with {@code key} in this cache, or {@code null} if there is no
