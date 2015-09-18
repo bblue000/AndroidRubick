@@ -1,9 +1,10 @@
-package androidrubick.xframework.impl.api.internal.param;
+package androidrubick.xframework.impl.api.param;
 
 import java.util.Map;
 
 import androidrubick.net.HttpMethod;
 import androidrubick.net.HttpUrls;
+import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xframework.impl.api.XAPIConstants;
 import androidrubick.xframework.net.http.request.XHttpRequest;
@@ -11,7 +12,9 @@ import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubicktest.api.ParametersUtils;
 
 /**
- * something
+ *
+ * 统一配置
+ *
  * <p/>
  * <p/>
  * Created by Yin Yong on 15/6/4.
@@ -27,17 +30,21 @@ public class XAPIParamParser {
         String charset = XAPIConstants.CHARSET;
         Map<String, String> paramMap = null;
         Map<String, String> headerMap = null;
-        if (null != param) {
-            ParametersUtils parametersUtils = new ParametersUtils(param);
-            paramMap = parametersUtils.getReqMap();
-            headerMap = parametersUtils.getHeaderMap();
-        }
 
+        if (!Objects.isNull(param)) {
+            if (param instanceof XParamable) {
+                ParametersUtils parametersUtils = new ParametersUtils(param);
+                paramMap = parametersUtils.getReqMap();
+                headerMap = parametersUtils.getHeaderMap();
+            } else {
+                // common parse
+            }
+        }
         XHttpRequest request = new XHttpRequest(baseUrl, method);
         if (method.canContainBody()) {
             request.withBody(XHttpBody.newJsonBody().params(paramMap).paramCharset(charset));
         } else {
-            request.url(HttpUrls.appendQueryString(baseUrl, HttpUrls.toUrlEncodedQueryString(paramMap, charset)));
+            request.url(HttpUrls.appendParamsAsQueryString(baseUrl, paramMap, charset));
         }
 
         request.connectionTimeout(XAPIConstants.DEFAULT_CONNECTION_TIMEOUT)

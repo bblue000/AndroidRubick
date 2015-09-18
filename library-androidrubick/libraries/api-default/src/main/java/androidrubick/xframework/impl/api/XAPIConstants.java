@@ -1,12 +1,14 @@
 package androidrubick.xframework.impl.api;
 
-import androidrubick.text.Charsets;
+import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xframework.app.XGlobals;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/9/15.
  */
+@Configurable
 public interface XAPIConstants {
 
     /**
@@ -24,6 +26,9 @@ public interface XAPIConstants {
      */
     public static final int RETRY_COUNT = 1;
 
-    public static final String CHARSET = Charsets.UTF_8.name();
+    /**
+     * API请求的字符集编码
+     */
+    public static final String CHARSET = XGlobals.ProjectEncoding;
 
 }

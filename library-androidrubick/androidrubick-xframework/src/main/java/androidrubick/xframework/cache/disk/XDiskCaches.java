@@ -50,7 +50,8 @@ public class XDiskCaches {
          * 获取缓存信息后的回调方法
          *
          * @param cacheSize 总缓存大小
-         * @param cacheInfos 根据指定的<code>flag</code>判断是否返回缓存信息，及返回的缓存信息中的哪些值
+         * @param cacheInfos 根据指定的<code>flag</code>判断是否返回缓存信息，及返回的缓存信息中的哪些值；
+         *                   如果没有设置有效地flag，则为null
          */
         void onResult(long cacheSize, CacheInfo...cacheInfos);
     }
@@ -69,14 +70,20 @@ public class XDiskCaches {
     }
 
     private static class GetCacheSizeJob extends XJob<File, Object, Long> {
-        int flag;
+        private GetCacheSizeCallback mGetCacheSizeCallback;
+        private int mFlags;
+
+        public GetCacheSizeJob(GetCacheSizeCallback callback, int flags) {
+            mGetCacheSizeCallback = callback;
+            mFlags = flags;
+        }
         @Override
         protected Long doInBackground(File... params) {
             // 获取单个文件的
-            if ((flag & FLAG_BYTE_SIZE) != 0) {
+            if ((mFlags & FLAG_BYTE_SIZE) != 0) {
 
             }
-            if ((flag & FLAG_FILE_COUNT) != 0) {
+            if ((mFlags & FLAG_FILE_COUNT) != 0) {
 
             }
             long cacheSize = 0;

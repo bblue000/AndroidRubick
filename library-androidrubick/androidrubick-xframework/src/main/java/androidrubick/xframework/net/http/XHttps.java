@@ -43,7 +43,7 @@ public class XHttps {
 
     private XHttps() { /* no instance needed */ }
 
-    public static final ByteArrayPool BYTE_ARRAY_POOL = new ByteArrayPool(4096);
+    public static final ByteArrayPool BYTE_ARRAY_POOL = XGlobals.BYTE_ARRAY_POOL;
     // static
     /**
      * 没有内容的字节数组

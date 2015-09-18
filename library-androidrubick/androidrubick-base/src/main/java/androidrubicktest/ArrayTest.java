@@ -19,6 +19,19 @@ public class ArrayTest {
         System.out.println("" + (Object[].class.isAssignableFrom(String[].class)));
 
 
+        d((String) null);
+        d((String[]) null);
+        d();
+        String[] arr = null;
+        d(arr);
+    }
+
+    private static void d(String...args) {
+        if (null == args) {
+            System.out.println("不可能执行这里?");
+            return;
+        }
+        System.out.println("" + args.length);
     }
 
 }

@@ -3,7 +3,6 @@ package androidrubick.xframework.impl.http.internal;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 
 import java.io.IOException;
@@ -91,11 +90,6 @@ public abstract class HttpClientResponse implements XHttpResponse {
     @Override
     public String getStatusMessage() {
         return mStatusLine.getReasonPhrase();
-    }
-
-    @Override
-    public ProtocolVersion getProtocolVersion() {
-        return mStatusLine.getProtocolVersion();
     }
 
     @Override

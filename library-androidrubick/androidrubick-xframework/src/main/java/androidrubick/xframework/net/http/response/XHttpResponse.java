@@ -32,11 +32,11 @@ public interface XHttpResponse extends Closeable {
      */
     public String getStatusMessage() ;
 
-    /**
-     * Represents a protocol version, as specified in RFC 2616.
-     * RFC 2616 specifies only HTTP versions, like "HTTP/1.1" and "HTTP/1.0".
-     */
-    public ProtocolVersion getProtocolVersion();
+//    /**
+//     * Represents a protocol version, as specified in RFC 2616.
+//     * RFC 2616 specifies only HTTP versions, like "HTTP/1.1" and "HTTP/1.0".
+//     */
+//    public ProtocolVersion getProtocolVersion();
 
     /**
      * 获取content type，如果该响应头中没有设置该项，则返回null

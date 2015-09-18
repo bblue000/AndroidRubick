@@ -1,7 +1,5 @@
 package androidrubick.xframework.net.http.request;
 
-import org.apache.http.ProtocolVersion;
-
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
@@ -87,7 +85,6 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
 public class XHttpRequest {
 
     private String mUrl;
-    private ProtocolVersion mProtocolVersion;
     private HttpMethod mMethod;
     private Map<String, String> mHeaders;
     private XHttpBody mBody;
@@ -130,14 +127,6 @@ public class XHttpRequest {
      */
     public XHttpRequest method(HttpMethod method) {
         mMethod = method;
-        return this;
-    }
-
-    /**
-     * 设置协议版本信息（一般很少用到）
-     */
-    public XHttpRequest protocolVersion(ProtocolVersion protocolVersion) {
-        mProtocolVersion = Preconditions.checkNotNull(protocolVersion, "protocolVersion");
         return this;
     }
 
@@ -272,16 +261,6 @@ public class XHttpRequest {
      */
     public HttpMethod getMethod() {
         return mMethod;
-    }
-
-    /**
-     * 获取HTTP协议版本信息
-     */
-    public ProtocolVersion getProtocolVersion() {
-        if (Objects.isNull(mProtocolVersion)) {
-            mProtocolVersion = XHttps.defHTTPProtocolVersion();
-        }
-        return mProtocolVersion;
     }
 
     /**

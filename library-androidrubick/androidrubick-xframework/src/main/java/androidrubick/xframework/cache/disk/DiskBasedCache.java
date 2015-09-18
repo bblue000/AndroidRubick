@@ -4,42 +4,24 @@ import android.graphics.Bitmap;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
 import androidrubick.io.FileUtils;
-import androidrubick.xframework.cache.base.MeasurableCache;
 
 /**
  *
- * 以{@link }为根目录的文件缓存
+ * 以{@link }为根目录的文件缓存；
+ *
+ * <p/>
+ *
+ * 个人感觉
  *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/16.
  */
 public abstract class DiskBasedCache {
-
-    @Override
-    public V get(K key) {
-        return null;
-    }
-
-    @Override
-    public V remove(K key) {
-        return null;
-    }
-
-    @Override
-    public V put(K key, V value) {
-        return null;
-    }
-
-    @Override
-    public int size() {
-        return 0;
-    }
 
     /**
      * 获取该缓存的根目录
@@ -61,8 +43,18 @@ public abstract class DiskBasedCache {
      */
     public abstract long getByteSize();
 
+    /**
+     * 清除缓存
+     */
     public void clear() {
-        FileUtils.deleteFile(getRootPath())
+        FileUtils.deleteFile(getRootPath(), false, null);
+    }
+
+    /**
+     * 判断文件名为<code>fileName</code>缓存是否存在。
+     */
+    public boolean exists(String fileName) {
+        return FileUtils.exists(new File(getRootPath(), fileName));
     }
 
     public boolean save(String fileName, InputStream ins, boolean closeIns) {
@@ -71,14 +63,22 @@ public abstract class DiskBasedCache {
             FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
         }
     }
-    public abstract boolean save(String fileName, byte[] data) ;
-    public abstract boolean save(String fileName, String data) ;
+
+    public boolean save(String fileName, byte[] data) {
+        File targetFile = new File(getRootPath(), fileName);
+        if (FileUtils.deleteFile(targetFile, true, null)) {
+            FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
+        }
+    }
+    public abstract boolean save(String fileName, String data, String charsetName) {
+        return save(fileName, data.getBytes(charsetName));
+    }
     public abstract boolean save(String fileName, Reader ins, String charsetName, boolean closeIns) ;
     public abstract boolean save(String fileName, Reader ins, Charset charset, boolean closeIns) ;
     public abstract boolean save(String fileName, Bitmap bm, Bitmap.CompressFormat format, int quality) ;
 
-    /**
-     * 以当前缓存目录为父目录，创建名以<code>subDir</code>子目录为根目录的缓存
-     */
-    public abstract DiskBasedCache subDirCache(String subDir) ;
+//    /**
+//     * 以当前缓存目录为父目录，创建名以<code>subDir</code>子目录为根目录的缓存
+//     */
+//    public abstract DiskBasedCache subDirCache(String subDir) ;
 }

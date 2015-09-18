@@ -1,4 +1,4 @@
-package androidrubick.xframework.impl.api.internal.result;
+package androidrubick.xframework.impl.api.result;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import androidrubick.cache.mem.ByteArrayPool;
 import androidrubick.io.IOUtils;
@@ -45,12 +47,16 @@ public class XAPIResultParser {
             IOUtils.writeTo(response.getContent(), false, out, false, buf, null);
             IOUtils.close(response);
             final byte[] data = out.toByteArray();
-            // 1、String
+            // 1、byte[]
+            if (Objects.equals(clz, byte[].class)) {
+                return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(), data);
+            }
+            // 2、String
             if (Objects.equals(clz, String.class)) {
                 return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
                         new String(data, charset));
             }
-            // 2、JSONObject
+            // 3、JSONObject
             if (Objects.equals(clz, JSONObject.class) || Objects.equals(clz, JSONArray.class)) {
                 String str = new String(data, charset);
                 try {
@@ -59,6 +65,28 @@ public class XAPIResultParser {
                 } catch (JSONException e) {
                     throw Exceptions.toRuntime(e);
                 }
+            }
+            // 4、API object
+            if (BaseResult.class.isAssignableFrom(clz)) {
+                ParameterizedType type = new ParameterizedType() {
+                    @Override
+                    public Type[] getActualTypeArguments() {
+                        return new Type[0];
+                    }
+
+                    @Override
+                    public Type getOwnerType() {
+                        return null;
+                    }
+
+                    @Override
+                    public Type getRawType() {
+                        return null;
+                    }
+                };
+
+                return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
+                        JsonParser.toObject(new String(data, charset), clz));
             }
             return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
                     JsonParser.toObject(new String(data, charset), clz));

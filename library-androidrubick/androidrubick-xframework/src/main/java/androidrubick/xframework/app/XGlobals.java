@@ -7,6 +7,7 @@ import android.os.*;
 
 import java.util.concurrent.Executor;
 
+import androidrubick.cache.mem.ByteArrayPool;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.LazyHandler;
 import androidrubick.xframework.BuildConfig;
@@ -27,6 +28,7 @@ public class XGlobals {
      */
     public static final String ProjectEncoding = BuildConfig.ProjectEncoding;
     public static final boolean DEBUG = true;
+    public static final ByteArrayPool BYTE_ARRAY_POOL = new ByteArrayPool(4096);
 
     private static Handler sHandler;
     private static Application sApplication;

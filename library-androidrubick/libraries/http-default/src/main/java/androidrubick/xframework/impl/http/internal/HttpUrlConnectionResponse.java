@@ -26,7 +26,6 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
     private HttpURLConnection mConnection;
     private int mStatusCode = -1;
     private String mStatusMessage;
-    private ProtocolVersion mProtocolVersion;
     private String mContentType;
     private String mCharset;
     private String mContentEncoding;
@@ -42,7 +41,6 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
     protected void parseSpecStatusLine() throws IOException {
         mStatusCode = mConnection.getResponseCode();
         mStatusMessage = mConnection.getResponseMessage();
-        mProtocolVersion = XHttps.defHTTPProtocolVersion();
     }
 
     protected void parseSpecHeaders() throws IOException {
@@ -78,11 +76,6 @@ public class HttpUrlConnectionResponse implements XHttpResponse {
     @Override
     public String getStatusMessage() {
         return mStatusMessage;
-    }
-
-    @Override
-    public ProtocolVersion getProtocolVersion() {
-        return mProtocolVersion;
     }
 
     @Override

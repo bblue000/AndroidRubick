@@ -5,7 +5,11 @@ import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.api.spi.XAPIService;
 
 /**
- * API
+ * API请求入口类。
+ *
+ * <p/>
+ *
+ * 现只封装了GET和POST方式，分别调用{@link #get} 和 {@link #post}方法
  *
  * <p/>
  *

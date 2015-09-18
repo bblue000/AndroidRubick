@@ -1,4 +1,4 @@
-package androidrubick.xframework.impl.api.internal.result;
+package androidrubick.xframework.impl.api.result;
 
 import androidrubick.xbase.annotation.Configurable;
 
@@ -12,7 +12,7 @@ import androidrubick.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-public class XResultable<T> {
+public class BaseResult<T> {
 
     public int code;
 

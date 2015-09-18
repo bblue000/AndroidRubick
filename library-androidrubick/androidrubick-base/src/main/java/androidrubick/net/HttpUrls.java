@@ -70,6 +70,11 @@ public class HttpUrls {
         return url;
     }
 
+    public static String appendParamsAsQueryString(String originUrl, Map<?, ?> params, final String charsetName) {
+        String queryString = toUrlEncodedQueryString(params, charsetName);
+        return appendQueryString(originUrl, queryString);
+    }
+
     /**
      * 使用简单的{@link URLEncoder}将参数Map转为url请求参数：
      *
