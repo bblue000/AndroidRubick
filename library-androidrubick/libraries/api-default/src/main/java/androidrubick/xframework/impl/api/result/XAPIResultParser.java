@@ -8,6 +8,7 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 
 import androidrubick.cache.mem.ByteArrayPool;
 import androidrubick.io.IOUtils;
@@ -34,8 +35,13 @@ public class XAPIResultParser {
 
     private XAPIResultParser() { }
 
-    public static XAPIStatusImpl parse(XHttpRequest request, XHttpResponse response, Class<?> clz)
+    public static XAPIStatusImpl parse(XHttpRequest request, XHttpResponse response, final Class<?> clz)
         throws IOException {
+
+        // 首先判断是不是200
+        if (response.getStatusCode() != HttpURLConnection.HTTP_OK) {
+            return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage());
+        }
 
         ByteArrayPool pool = XHttps.BYTE_ARRAY_POOL;
 
@@ -71,7 +77,9 @@ public class XAPIResultParser {
                 ParameterizedType type = new ParameterizedType() {
                     @Override
                     public Type[] getActualTypeArguments() {
-                        return new Type[0];
+                        return new Type[] {
+                                clz
+                        };
                     }
 
                     @Override

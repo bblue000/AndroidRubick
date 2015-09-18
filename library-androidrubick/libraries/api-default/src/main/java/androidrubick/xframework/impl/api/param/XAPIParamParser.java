@@ -32,12 +32,15 @@ public class XAPIParamParser {
         Map<String, String> headerMap = null;
 
         if (!Objects.isNull(param)) {
-            if (param instanceof XParamable) {
+            if (param instanceof BaseParam) {
                 ParametersUtils parametersUtils = new ParametersUtils(param);
                 paramMap = parametersUtils.getReqMap();
                 headerMap = parametersUtils.getHeaderMap();
             } else {
                 // common parse
+                ParametersUtils parametersUtils = new ParametersUtils(param);
+                paramMap = parametersUtils.getReqMap();
+                headerMap = parametersUtils.getHeaderMap();
             }
         }
         XHttpRequest request = new XHttpRequest(baseUrl, method);

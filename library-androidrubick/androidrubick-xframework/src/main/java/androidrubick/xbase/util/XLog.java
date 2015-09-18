@@ -78,7 +78,7 @@ public class XLog {
 
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    // log for DEBUG
+    // log for WARN
 	public static void w(String tag, String msg) {
 		if (out_print_warn) {
 			Log.w(tag, msg);
@@ -105,7 +105,7 @@ public class XLog {
 
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    // log for DEBUG
+    // log for ERROR
 	public static void e(String tag, String msg) {
 		if (out_print_error) {
 			Log.e(tag, msg);
