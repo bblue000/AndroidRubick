@@ -11,6 +11,6 @@ import androidrubick.xframework.cache.image.XImageSetter;
  */
 public interface XBitmapService {
 
-    public void loadImage(View view, String uri, XImageSetter imageSetter);
+    public void loadBitmap(View view, String uri, XImageSetter imageSetter);
 
 }

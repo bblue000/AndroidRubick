@@ -171,11 +171,11 @@ public class XServiceLoader<S extends XSpiService> {
         String name = "META-INF/services/" + mService.getName();
         final URL url = this.mClassLoader.getResource(name);
         if (Objects.isNull(url)) {
-            throw new Error("Couldn't read " + name);
+            throw new Error("Couldn't read service " + name);
         }
         this.mClassName = readClass(url, Charsets.UTF_8.name());
         if (Objects.isNull(this.mClassName)) {
-            throw new Error("Couldn't read " + name);
+            throw new Error("Couldn't read service class " + name);
         }
     }
 

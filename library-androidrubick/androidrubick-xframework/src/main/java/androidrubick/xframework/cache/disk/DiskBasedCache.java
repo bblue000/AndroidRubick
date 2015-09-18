@@ -41,11 +41,6 @@ public abstract class DiskBasedCache {
         return 0;
     }
 
-    @Override
-    public void clear() {
-
-    }
-
     /**
      * 获取该缓存的根目录
      */
@@ -67,7 +62,7 @@ public abstract class DiskBasedCache {
     public abstract long getByteSize();
 
     public void clear() {
-
+        FileUtils.deleteFile(getRootPath())
     }
 
     public boolean save(String fileName, InputStream ins, boolean closeIns) {

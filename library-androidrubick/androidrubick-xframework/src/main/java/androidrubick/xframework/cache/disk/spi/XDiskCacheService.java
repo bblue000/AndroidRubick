@@ -24,4 +24,19 @@ public interface XDiskCacheService extends XSpiService {
      */
     DiskBasedCache dirCache(String subCacheDir);
 
+    /**
+     * 获取本应用所有的缓存（前提是受缓存模块控制）目录
+     */
+    File[] getCacheDirs();
+
+    /**
+     * 获取本应用在data中缓存目录
+     */
+    File getDataCacheDir();
+
+    /**
+     * 获取本应用在外部存储设备上的缓存文件夹，包括内存模拟的外接存储，SD卡等设备上的缓存目录
+     */
+    File[] getExternalCacheDir();
+
 }
