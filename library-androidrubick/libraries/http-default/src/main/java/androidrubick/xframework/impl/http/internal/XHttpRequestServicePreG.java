@@ -185,13 +185,12 @@ public class XHttpRequestServicePreG implements XHttpRequestService {
         }
         HttpEntityEnclosingRequest httpEntityEnclosingRequest = Objects.getAs(httpUriRequest);
 
+        /**
+         * set Content-Type
+         */
         String contentType = XHttps.getContentType(request);
         if (!Strings.isEmpty(contentType)) {
-            /**
-             * set Content-Type，如果request中已经设置了Content-Type，不予覆盖
-             */
-            httpEntityEnclosingRequest.setHeader(HttpHeaders.CONTENT_TYPE,
-                    XHttps.getContentType(request));
+            httpEntityEnclosingRequest.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
         }
 
         // set entity

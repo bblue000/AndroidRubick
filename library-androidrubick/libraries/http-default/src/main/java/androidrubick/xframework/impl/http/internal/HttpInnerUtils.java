@@ -79,6 +79,9 @@ public class HttpInnerUtils {
         if (!isGzip(contentEncoding)) {
             return originIns;
         }
+        if (originIns instanceof GZIPInputStream) {
+            return originIns;
+        }
         return new GZIPInputStream(originIns);
     }
 

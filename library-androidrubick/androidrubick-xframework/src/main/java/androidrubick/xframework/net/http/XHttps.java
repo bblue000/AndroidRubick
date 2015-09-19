@@ -1,5 +1,8 @@
 package androidrubick.xframework.net.http;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,7 +28,9 @@ import androidrubick.net.HttpHeaders;
 import androidrubick.net.MediaType;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 import androidrubick.xbase.annotation.ForTest;
+import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xbase.util.JsonParser;
 import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.net.http.request.XHttpRequest;
@@ -83,35 +88,44 @@ public class XHttps {
         return String.valueOf(value).getBytes(charsetName);
     }
 
+    @SuppressLint("NewApi")
     public static byte[] getBytes(Object value, Charset charset) throws UnsupportedEncodingException {
-        return String.valueOf(value).getBytes(charset.name());
+        if (DeviceInfos.isSDKOver(Build.VERSION_CODES.GINGERBREAD)) {
+            return String.valueOf(value).getBytes(charset);
+        } else {
+            return String.valueOf(value).getBytes(charset.name());
+        }
     }
 
-    public static HttpEntity createNoneByteArrayEntity(String contentType, String charsetName) {
-        return createByteArrayEntity(NONE_BYTE, contentType, charsetName);
+    public static HttpEntity createNoneByteArrayEntity(String contentType) {
+        return createByteArrayEntity(NONE_BYTE, contentType);
     }
 
     public static HttpEntity createNoneByteArrayEntity(MediaType contentType) {
         String ct = null;
-        String charsetName = null;
         if (!Objects.isNull(contentType)) {
-            ct = contentType.withoutParameters().name();
-            charsetName = contentType.charset();
+            ct = contentType.name();
         }
-        return createByteArrayEntity(NONE_BYTE, ct, charsetName);
+        return createByteArrayEntity(NONE_BYTE, ct);
     }
 
-    public static HttpEntity createByteArrayEntity(byte[] data, String contentType, String charsetName) {
+    public static HttpEntity createByteArrayEntity(byte[] data,
+                                                   String contentType) {
         ByteArrayEntity httpEntity = new ByteArrayEntity(data);
-        httpEntity.setContentEncoding(charsetName);
         httpEntity.setContentType(contentType);
         return httpEntity;
     }
 
     /**
-     * 从<code>request</code>中获得Content-Type，如果<code>request</code>的header中没有
-     * 设置，就从{@link XHttpRequest#getBody() request body}中获取。
+     * 从<code>request</code>中获得Content-Type；
+     *
      * <br/>
+     *
+     * 如果<code>request</code>的header中没有设置，
+     * 就从{@link XHttpRequest#getBody() request body}中获取。
+     *
+     * <br/>
+     *
      * 如果都没有设置，则返回null
      */
     public static String getContentType(final XHttpRequest request) {
@@ -191,6 +205,10 @@ public class XHttps {
      * 该方法是使用提供的content type作为最终生成的{@link HttpEntity}的{@link HttpEntity#getContentType()}
      */
     public static HttpEntity createEntity(final XHttpRequest request, final String outerContentType) {
+        Preconditions.checkNotNull(request, "request");
+        if (Objects.isNull(request.getBody())) {
+            return createNoneByteArrayEntity(outerContentType);
+        }
         final Header contentTypeHeader;
         if (Objects.isNull(outerContentType)) {
             contentTypeHeader = null;
@@ -244,6 +262,9 @@ public class XHttps {
 
             @Override
             public void writeTo(OutputStream outputStream) throws IOException {
+                if (Objects.isNull(request.getBody())) {
+                    return;
+                }
                 request.getBody().writeTo(outputStream);
             }
 
@@ -251,9 +272,7 @@ public class XHttps {
     }
 
     public static HttpEntity createEntity(final XHttpRequest request) {
-        if (Objects.isNull(request) || Objects.isNull(request.getBody())) {
-            return createByteArrayEntity(NONE_BYTE, null, null);
-        }
+        Preconditions.checkNotNull(request, "request");
         return createEntity(request, getContentType(request));
     }
 

@@ -38,7 +38,7 @@ public class $APIResultParser {
 
     @Configurable
     private static Object parseTypeResult(XHttpResponse response,
-                                             final Type clz) throws Throwable {
+                                          final Type clz) throws Throwable {
         final String charset = Objects.getOr(response.getContentCharset(), APIConstants.CHARSET);
         Reader reader = null;
         try {
@@ -48,6 +48,23 @@ public class $APIResultParser {
             IOUtils.close(reader);
             IOUtils.close(response);
         }
+    }
+
+    /**
+     * 是否是HTTP请求成功的状态
+     */
+    @Configurable
+    private static boolean isSuccessHttpResponse(XHttpResponse response) {
+        // 判断是不是200
+        return HttpURLConnection.HTTP_OK == response.getStatusCode();
+    }
+
+    /**
+     * 是否是API请求成功的状态
+     */
+    @Configurable
+    private static boolean isSuccessAPIResponse(BaseResult<?> result) {
+        return !Objects.isNull(result) && HttpURLConnection.HTTP_OK == result.code;
     }
 
     public static $APIStatusImpl parse(XHttpRequest request, XHttpResponse response,
@@ -65,21 +82,6 @@ public class $APIResultParser {
         } else {
             return new $APIStatusImpl(apiResult.code, apiResult.msg);
         }
-    }
-
-    /**
-     * 是否是HTTP请求成功的状态
-     */
-    private static boolean isSuccessHttpResponse(XHttpResponse response) {
-        // 判断是不是200
-        return HttpURLConnection.HTTP_OK == response.getStatusCode();
-    }
-
-    /**
-     * 是否是API请求成功的状态
-     */
-    private static boolean isSuccessAPIResponse(BaseResult<?> result) {
-        return !Objects.isNull(result) && HttpURLConnection.HTTP_OK == result.code;
     }
 
     /**

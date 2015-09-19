@@ -9,7 +9,7 @@ import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIError;
 import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.app.XGlobals;
-import androidrubick.xframework.impl.api.param.APIParamParser;
+import androidrubick.xframework.impl.api.param.$APIParamParser;
 import androidrubick.xframework.impl.api.result.$APIResultParser;
 import androidrubick.xframework.net.http.XHttpRetryJob;
 import androidrubick.xframework.net.http.request.XHttpRequest;
@@ -31,7 +31,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
                           Object param, Map<String, String> extraHeaders,
                           Class<?> resultClz,
                           XAPICallback<?> callback) {
-        this.mRequest = APIParamParser.parseParamsAndHeaders(url, method, param, extraHeaders);
+        this.mRequest = $APIParamParser.parse(url, method, param, extraHeaders);
         this.mResultClz = resultClz;
         this.mCallback = callback;
     }
@@ -80,7 +80,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
      * 执行并处理API请求的job
      *
      */
-    private class XAPIJob extends XHttpRetryJob<Object, $APIStatusImpl> {
+    private class XAPIJob extends XHttpRetryJob<Void, $APIStatusImpl> {
 
         public XAPIJob() {
             super(APIConstants.RETRY_COUNT);

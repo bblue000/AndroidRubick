@@ -97,6 +97,10 @@ public class DeviceInfos {
         return Build.VERSION.SDK_INT;
     }
 
+    public static boolean isSDKOver(int targetSDK) {
+        return getAndroidSDKVersion() >= targetSDK;
+    }
+
     /**
      * 获取android 系统发布版本，如“2.3.3”，“4.0.3”
      */

@@ -1,6 +1,7 @@
 package androidrubick.reflect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import androidrubick.utils.Exceptions;
@@ -122,16 +123,24 @@ public class Reflects {
     /**
      * 获取字段值
      */
-    public static Object getFieldValue(Object target, Field field) {
+    public static <Result>Result getFieldValue(Object target, Field field) {
         boolean isAccessible = field.isAccessible();
         if (!isAccessible) {
             field.setAccessible(true);
         }
         try {
-            return field.get(target);
+            return (Result) field.get(target);
         } catch (IllegalAccessException e) {
             throw Exceptions.toRuntime(e);
+        } finally {
+            if (!isAccessible) {
+                field.setAccessible(isAccessible);
+            }
         }
+    }
+
+    public static boolean isModifierPresent(Member member, int modifier) {
+        return (member.getModifiers() & modifier) == modifier;
     }
 
 }

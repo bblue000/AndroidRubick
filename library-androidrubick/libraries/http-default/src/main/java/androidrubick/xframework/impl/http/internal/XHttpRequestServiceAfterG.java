@@ -121,9 +121,12 @@ public class XHttpRequestServiceAfterG implements XHttpRequestService {
         connection.setDoOutput(true);
 
         // set connection
+        /**
+         * set Content-Type
+         */
         String contentType = XHttps.getContentType(request);
         if (!Strings.isEmpty(contentType)) {
-            connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, request.getHeader(HttpHeaders.CONTENT_TYPE));
+            connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
         }
 
         request.getBody().writeTo(connection.getOutputStream());
