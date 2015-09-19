@@ -11,12 +11,12 @@ import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.JsonParser;
 import androidrubick.xframework.impl.api.XAPIConstants;
+import androidrubick.xframework.impl.api.annotation.APICommResponse;
 import androidrubick.xframework.impl.api.internal.XAPIStatusImpl;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
 /**
- * something
  * <p/>
  * <p/>
  * Created by Yin Yong on 15/6/4.
@@ -24,9 +24,9 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
  * @since 1.0
  */
 @Configurable
-public class XAPIResultParser {
+public class APIResultParser {
 
-    private XAPIResultParser() { }
+    private APIResultParser() { }
 
     public static boolean isSuccessHttpResponse(XHttpResponse response) {
         // 判断是不是200
@@ -39,6 +39,11 @@ public class XAPIResultParser {
 
     public static XAPIStatusImpl parse(XHttpRequest request, XHttpResponse response,
                                        final Class<?> clz) throws Throwable {
+        // 如果是通用的响应结果，不是API响应结果
+        if (clz.isAnnotationPresent(APICommResponse.class)) {
+            return parseComm(request, response, clz);
+        }
+
         // 都是直接进行json转换对象，只是如果是BaseResult，则进行额外的处理
         final String charset = Objects.getOr(response.getContentCharset(), XAPIConstants.CHARSET);
         Reader reader = null;

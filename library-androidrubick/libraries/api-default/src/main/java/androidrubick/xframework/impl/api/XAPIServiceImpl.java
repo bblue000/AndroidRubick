@@ -1,5 +1,7 @@
 package androidrubick.xframework.impl.api;
 
+import java.util.Map;
+
 import androidrubick.net.HttpMethod;
 import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIHolder;
@@ -15,9 +17,10 @@ public class XAPIServiceImpl implements XAPIService {
 
     @Override
     public <Result> XAPIHolder doAPI(String url, HttpMethod method,
-                                     Object param, Class<Result> result,
+                                     Object param, Map<String, String> extraHeaders,
+                                     Class<Result> result,
                                      XAPICallback<Result> callback) {
-        XAPIHolder holder = new XAPIHolderImpl(url, method, param, result, callback);
+        XAPIHolder holder = new XAPIHolderImpl(url, method, param, extraHeaders, result, callback);
         try {
             return holder;
         } finally {

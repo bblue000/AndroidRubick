@@ -1,5 +1,7 @@
 package androidrubick.xframework.impl.api.internal;
 
+import java.util.Map;
+
 import androidrubick.net.HttpMethod;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.XLog;
@@ -9,7 +11,7 @@ import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.impl.api.XAPIConstants;
 import androidrubick.xframework.impl.api.param.XAPIParamParser;
-import androidrubick.xframework.impl.api.result.XAPIResultParser;
+import androidrubick.xframework.impl.api.result.APIResultParser;
 import androidrubick.xframework.net.http.XHttpRetryJob;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
@@ -27,9 +29,10 @@ public class XAPIHolderImpl implements XAPIHolder {
     private XAPICallback mCallback;
     private XAPIJob mJob;
     public XAPIHolderImpl(String url, HttpMethod method,
-                          Object param, Class<?> resultClz,
+                          Object param, Map<String, String> extraHeaders,
+                          Class<?> resultClz,
                           XAPICallback<?> callback) {
-        this.mRequest = XAPIParamParser.parseParamsAndHeaders(url, method, param);
+        this.mRequest = XAPIParamParser.parseParamsAndHeaders(url, method, param, extraHeaders);
         this.mResultClz = resultClz;
         this.mCallback = callback;
     }
@@ -87,7 +90,7 @@ public class XAPIHolderImpl implements XAPIHolder {
         @Override
         protected XAPIStatusImpl parseResponse(XHttpRequest request, XHttpResponse response)
                 throws Throwable {
-            return XAPIResultParser.parse(request, response, mResultClz);
+            return APIResultParser.parse(request, response, mResultClz);
         }
 
         @Override

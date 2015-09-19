@@ -26,7 +26,8 @@ public class XAPIParamParser {
 
     private XAPIParamParser() { }
 
-    public static XHttpRequest parseParamsAndHeaders(String baseUrl, HttpMethod method, Object param) {
+    public static XHttpRequest parseParamsAndHeaders(String baseUrl, HttpMethod method,
+                                                     Object param, Map<String, String> extraHeaders) {
         String charset = XAPIConstants.CHARSET;
         Map<String, String> paramMap = null;
         Map<String, String> headerMap = null;
@@ -52,7 +53,8 @@ public class XAPIParamParser {
 
         request.connectionTimeout(XAPIConstants.DEFAULT_CONNECTION_TIMEOUT)
                 .socketTimeout(XAPIConstants.DEFAULT_SOCKET_TIMEOUT)
-                .headers(headerMap);
+                .headers(headerMap)
+                .headers(extraHeaders);
         return request;
     }
 

@@ -1,5 +1,7 @@
 package androidrubick.xframework.api;
 
+import java.util.Map;
+
 import androidrubick.net.HttpMethod;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.api.spi.XAPIService;
@@ -23,15 +25,15 @@ public class XAPI {
      *
      * @param url 基础URL
      * @param param 作为参数来源的对象
-     * @param result 作为结果输出的对象类型
+     * @param result 作为结果输出的对象类型，如果该类继承自{@link }
      * @param callback 请求的回调
      *
      * @return 返回API请求处理对象
      */
-    public static <Result>XAPIHolder get(String url, Object param,
+    public static <Result>XAPIHolder get(String url, Object param, Map<String, String> extraHeaders,
                                          Class<Result> result, XAPICallback<Result> callback) {
         return XServiceLoader.load(XAPIService.class)
-                .doAPI(url, HttpMethod.GET, param, result, callback);
+                .doAPI(url, HttpMethod.GET, param, extraHeaders, result, callback);
     }
 
     /**
@@ -43,10 +45,10 @@ public class XAPI {
      *
      * @return 返回API请求处理对象
      */
-    public static <Result>XAPIHolder post(String url, Object param,
+    public static <Result>XAPIHolder post(String url, Object param, Map<String, String> extraHeaders,
                                           Class<Result> result, XAPICallback<Result> callback) {
         return XServiceLoader.load(XAPIService.class)
-                .doAPI(url, HttpMethod.POST, param, result, callback);
+                .doAPI(url, HttpMethod.POST, param, extraHeaders, result, callback);
     }
 
 }

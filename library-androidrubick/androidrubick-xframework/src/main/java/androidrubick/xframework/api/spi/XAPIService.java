@@ -1,5 +1,7 @@
 package androidrubick.xframework.api.spi;
 
+import java.util.Map;
+
 import androidrubick.net.HttpMethod;
 import androidrubick.xbase.aspi.XSpiService;
 import androidrubick.xframework.api.XAPICallback;
@@ -29,7 +31,8 @@ public interface XAPIService extends XSpiService {
      *
      * @return API任务持有对象，提供给外界调用，如取消
      */
-    public <Result>XAPIHolder doAPI(String url, HttpMethod method, Object param,
+    public <Result>XAPIHolder doAPI(String url, HttpMethod method,
+                                    Object param, Map<String, String> extraHeaders,
                                     Class<Result> result, XAPICallback<Result> callback);
 
 }
