@@ -1,5 +1,6 @@
 package androidrubick.reflect;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import androidrubick.utils.Exceptions;
@@ -95,9 +96,10 @@ public class Reflects {
             result = (Result) method.invoke(target, params);
         } catch (Exception e) {
             throw Exceptions.toRuntime(e);
-        }
-        if (!isAccessible) {
-            method.setAccessible(isAccessible);
+        } finally {
+            if (!isAccessible) {
+                method.setAccessible(isAccessible);
+            }
         }
         return result;
     }
@@ -114,6 +116,21 @@ public class Reflects {
             return clz.getDeclaredMethods();
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * 获取字段值
+     */
+    public static Object getFieldValue(Object target, Field field) {
+        boolean isAccessible = field.isAccessible();
+        if (!isAccessible) {
+            field.setAccessible(true);
+        }
+        try {
+            return field.get(target);
+        } catch (IllegalAccessException e) {
+            throw Exceptions.toRuntime(e);
         }
     }
 

@@ -1,5 +1,6 @@
 package androidrubick.xframework.impl.api.param;
 
+import androidrubick.xbase.util.AppInfos;
 import androidrubick.xbase.util.DeviceInfos;
 
 /**
@@ -31,10 +32,16 @@ public class BaseParam {
      */
     public String resolution;
 
+    /**
+     * 应用的版本号
+     */
+    public String appVersion;
+
     public BaseParam() {
         deviceToken = DeviceInfos.getDeviceUuid();
         deviceType = "android";
         resolution = DeviceInfos.getDeviceResolution("x");
+        appVersion = AppInfos.getVersionName("1.0");
     }
 
 }

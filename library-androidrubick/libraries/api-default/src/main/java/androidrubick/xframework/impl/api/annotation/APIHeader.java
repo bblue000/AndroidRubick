@@ -19,7 +19,7 @@ import androidrubick.text.Strings;
  * Created by Yin Yong on 2015/9/18.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.FIELD})
 public @interface APIHeader {
 
     /**

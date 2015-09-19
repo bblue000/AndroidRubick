@@ -4,7 +4,7 @@ import androidrubick.cache.mem.ByteArrayPool;
 import androidrubick.io.IOUtils;
 import androidrubick.io.PoolingByteArrayOutputStream;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.impl.api.XAPIConstants;
+import androidrubick.xframework.impl.api.APIConstants;
 import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
@@ -27,12 +27,13 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
             IOUtils.writeTo(response.getContent(), false, out, false, buf, null);
             byte data[] = out.toByteArray();
 
+            // 再次，先释放byte[]
             pool.returnBuf(buf);
             IOUtils.close(out);
             buf = null;
             out = null;
 
-            final String charset = Objects.getOr(response.getContentCharset(), XAPIConstants.CHARSET);
+            final String charset = Objects.getOr(response.getContentCharset(), APIConstants.CHARSET);
             return new String(data, charset);
         } finally {
             // 确保释放

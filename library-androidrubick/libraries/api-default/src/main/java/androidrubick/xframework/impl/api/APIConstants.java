@@ -9,7 +9,7 @@ import androidrubick.xframework.app.XGlobals;
  * Created by Yin Yong on 2015/9/15.
  */
 @Configurable
-public interface XAPIConstants {
+public interface APIConstants {
 
     /**
      * 默认连接延迟

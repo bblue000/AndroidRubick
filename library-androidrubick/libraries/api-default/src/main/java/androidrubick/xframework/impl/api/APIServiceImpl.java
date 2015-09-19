@@ -6,21 +6,19 @@ import androidrubick.net.HttpMethod;
 import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.api.spi.XAPIService;
-import androidrubick.xframework.impl.api.internal.XAPIHolderImpl;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/9/15.
  */
-public class XAPIServiceImpl implements XAPIService {
+public class APIServiceImpl implements XAPIService {
 
     @Override
     public <Result> XAPIHolder doAPI(String url, HttpMethod method,
                                      Object param, Map<String, String> extraHeaders,
-                                     Class<Result> result,
-                                     XAPICallback<Result> callback) {
-        XAPIHolder holder = new XAPIHolderImpl(url, method, param, extraHeaders, result, callback);
+                                     Class<Result> result, XAPICallback<Result> callback) {
+        XAPIHolder holder = new $APIHolderImpl(url, method, param, extraHeaders, result, callback);
         try {
             return holder;
         } finally {

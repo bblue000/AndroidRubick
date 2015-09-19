@@ -1,4 +1,4 @@
-package androidrubick.xframework.impl.api.internal;
+package androidrubick.xframework.impl.api;
 
 import java.util.Map;
 
@@ -9,9 +9,8 @@ import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIError;
 import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.app.XGlobals;
-import androidrubick.xframework.impl.api.XAPIConstants;
-import androidrubick.xframework.impl.api.param.XAPIParamParser;
-import androidrubick.xframework.impl.api.result.APIResultParser;
+import androidrubick.xframework.impl.api.param.APIParamParser;
+import androidrubick.xframework.impl.api.result.$APIResultParser;
 import androidrubick.xframework.net.http.XHttpRetryJob;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
@@ -22,17 +21,17 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
  *
  * Created by Yin Yong on 2015/9/15.
  */
-public class XAPIHolderImpl implements XAPIHolder {
+/*package*/ class $APIHolderImpl implements XAPIHolder {
 
     private XHttpRequest mRequest;
     private Class mResultClz;
     private XAPICallback mCallback;
     private XAPIJob mJob;
-    public XAPIHolderImpl(String url, HttpMethod method,
+    public $APIHolderImpl(String url, HttpMethod method,
                           Object param, Map<String, String> extraHeaders,
                           Class<?> resultClz,
                           XAPICallback<?> callback) {
-        this.mRequest = XAPIParamParser.parseParamsAndHeaders(url, method, param, extraHeaders);
+        this.mRequest = APIParamParser.parseParamsAndHeaders(url, method, param, extraHeaders);
         this.mResultClz = resultClz;
         this.mCallback = callback;
     }
@@ -81,20 +80,20 @@ public class XAPIHolderImpl implements XAPIHolder {
      * 执行并处理API请求的job
      *
      */
-    private class XAPIJob extends XHttpRetryJob<Object, XAPIStatusImpl> {
+    private class XAPIJob extends XHttpRetryJob<Object, $APIStatusImpl> {
 
         public XAPIJob() {
-            super(XAPIConstants.RETRY_COUNT);
+            super(APIConstants.RETRY_COUNT);
         }
 
         @Override
-        protected XAPIStatusImpl parseResponse(XHttpRequest request, XHttpResponse response)
+        protected $APIStatusImpl parseResponse(XHttpRequest request, XHttpResponse response)
                 throws Throwable {
-            return APIResultParser.parse(request, response, mResultClz);
+            return $APIResultParser.parse(request, response, mResultClz);
         }
 
         @Override
-        protected void onPostExecute(XAPIStatusImpl apiStatus) {
+        protected void onPostExecute($APIStatusImpl apiStatus) {
             try {
                 if (!Objects.isNull(mCallback)) {
                     if (!Objects.isNull(apiStatus) && apiStatus.successMark) {
@@ -110,7 +109,7 @@ public class XAPIHolderImpl implements XAPIHolder {
         }
 
         @Override
-        protected void onCancelled(XAPIStatusImpl apiStatus) {
+        protected void onCancelled($APIStatusImpl apiStatus) {
             try {
                 super.onCancelled(apiStatus);
                 if (!Objects.isNull(mCallback)) {
@@ -127,26 +126,26 @@ public class XAPIHolderImpl implements XAPIHolder {
         }
 
         @Override
-        protected XAPIStatusImpl onNoMoreRetryOnHttpExc(XHttpRequest request, XHttpError exception) {
+        protected $APIStatusImpl onNoMoreRetryOnHttpExc(XHttpRequest request, XHttpError exception) {
             switch (exception.getType()) {
                 case Timeout:
-                    return new XAPIStatusImpl(XAPIError.ERR_TIMEOUT, exception.getMessage());
+                    return new $APIStatusImpl(XAPIError.ERR_TIMEOUT, exception.getMessage());
                 case Auth:
                 case Server:
-                    return new XAPIStatusImpl(exception.getStatusCode(), exception.getMessage());
+                    return new $APIStatusImpl(exception.getStatusCode(), exception.getMessage());
                 case Network:
                 case NoConnection:
-                    return new XAPIStatusImpl(XAPIError.ERR_NETWORK, exception.getMessage());
+                    return new $APIStatusImpl(XAPIError.ERR_NETWORK, exception.getMessage());
                 case Other:
                 default:
-                    return new XAPIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
+                    return new $APIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
             }
         }
 
         @Override
-        protected XAPIStatusImpl onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
+        protected $APIStatusImpl onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
             super.onOtherExc(request, response, exception);
-            return new XAPIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
+            return new $APIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
         }
 
     }

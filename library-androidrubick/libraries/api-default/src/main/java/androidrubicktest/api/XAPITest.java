@@ -20,7 +20,7 @@ import androidrubick.xframework.api.XAPIStatus;
 public class XAPITest {
 
     public static void test() {
-        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, JSONObject.class, new XAPICallback() {
+        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, null, JSONObject.class, new XAPICallback() {
             @Override
             public void onSuccess(Object result, XAPIStatus status) {
                 Log.d("yytest", "onSuccess result = " + result);
@@ -33,7 +33,7 @@ public class XAPITest {
             }
 
             @Override
-            public void onCanceled(Object result) {
+            public void onCanceled(Object result, XAPIStatus status) {
                 Log.d("yytest", "onCanceled result = " + result);
             }
         });
@@ -46,7 +46,7 @@ public class XAPITest {
     }
 
     public static void testHolder() {
-        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, JSONObject.class, new XAPICallback() {
+        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, null, JSONObject.class, new XAPICallback() {
             @Override
             public void onSuccess(Object result, XAPIStatus status) {
                 Log.d("yytest", "testHolder onSuccess result = " + result);
@@ -58,12 +58,12 @@ public class XAPITest {
             }
 
             @Override
-            public void onCanceled(Object result) {
+            public void onCanceled(Object result, XAPIStatus status) {
                 Log.d("yytest", "testHolder onCanceled result = " + result);
             }
         });
 
-        holder.cancel(true);
+        holder.cancel();
         holder.execute();
         holder.execute();
         holder.execute();
