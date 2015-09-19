@@ -1,24 +1,17 @@
 package androidrubick.xframework.impl.api.result;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.google.gson.internal.$Gson$Types;
 
-import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 
-import androidrubick.cache.mem.ByteArrayPool;
 import androidrubick.io.IOUtils;
-import androidrubick.io.PoolingByteArrayOutputStream;
-import androidrubick.utils.Exceptions;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.JsonParser;
+import androidrubick.xframework.impl.api.XAPIConstants;
 import androidrubick.xframework.impl.api.internal.XAPIStatusImpl;
-import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpResponse;
 
@@ -35,74 +28,71 @@ public class XAPIResultParser {
 
     private XAPIResultParser() { }
 
-    public static XAPIStatusImpl parse(XHttpRequest request, XHttpResponse response, final Class<?> clz)
-        throws IOException {
+    public static boolean isSuccessHttpResponse(XHttpResponse response) {
+        // 判断是不是200
+        return HttpURLConnection.HTTP_OK == response.getStatusCode();
+    }
 
-        // 首先判断是不是200
-        if (response.getStatusCode() != HttpURLConnection.HTTP_OK) {
+    public static boolean isSuccessAPIResponse(BaseResult<?> result) {
+        return !Objects.isNull(result) && HttpURLConnection.HTTP_OK == result.code;
+    }
+
+    public static XAPIStatusImpl parse(XHttpRequest request, XHttpResponse response,
+                                       final Class<?> clz) throws Throwable {
+        // 都是直接进行json转换对象，只是如果是BaseResult，则进行额外的处理
+        final String charset = Objects.getOr(response.getContentCharset(), XAPIConstants.CHARSET);
+        Reader reader = null;
+        try {
+            reader = new InputStreamReader(response.getContent(), charset);
+            Object jsonResult = JsonParser.toObject(reader,
+                    $Gson$Types.newParameterizedTypeWithOwner(null, BaseResult.class, clz));
+            BaseResult apiResult = Objects.getAs(jsonResult);
+            if (isSuccessAPIResponse(apiResult)) {
+                return new XAPIStatusImpl(apiResult.code, apiResult.msg, apiResult.data);
+            } else {
+                return new XAPIStatusImpl(apiResult.code, apiResult.msg);
+            }
+        } finally {
+            IOUtils.close(reader);
+            IOUtils.close(response);
+        }
+    }
+
+    /**
+     * 普通的json数据解析
+     */
+    public static XAPIStatusImpl parseComm(XHttpRequest request, XHttpResponse response,
+                                           final Class<?> clz) throws Throwable {
+        XAPIStatusImpl apiStatus = parseBase(request, response, clz);
+        if (!Objects.isNull(apiStatus)) {
+            return apiStatus;
+        }
+
+        final String charset = Objects.getOr(response.getContentCharset(), XAPIConstants.CHARSET);
+        Reader reader = null;
+        try {
+            reader = new InputStreamReader(response.getContent(), charset);
+            return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
+                    JsonParser.toObject(reader, clz));
+        } finally {
+            IOUtils.close(reader);
+            IOUtils.close(response);
+        }
+    }
+
+    private static XAPIStatusImpl parseBase(XHttpRequest request, XHttpResponse response,
+                                            final Class<?> clz) throws Throwable {
+        // 如果HTTP响应状态值不属于成功状态，直接返回
+        if (!isSuccessHttpResponse(response)) {
             return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage());
         }
 
-        ByteArrayPool pool = XHttps.BYTE_ARRAY_POOL;
-
-        byte[] buf = pool.getBuf(512);
-        PoolingByteArrayOutputStream out = new PoolingByteArrayOutputStream(pool,
-                (int) response.getContentLength());
-        try {
-            final String charset = response.getContentCharset();
-            IOUtils.writeTo(response.getContent(), false, out, false, buf, null);
-            IOUtils.close(response);
-            final byte[] data = out.toByteArray();
-            // 1、byte[]
-            if (Objects.equals(clz, byte[].class)) {
-                return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(), data);
-            }
-            // 2、String
-            if (Objects.equals(clz, String.class)) {
-                return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
-                        new String(data, charset));
-            }
-            // 3、JSONObject
-            if (Objects.equals(clz, JSONObject.class) || Objects.equals(clz, JSONArray.class)) {
-                String str = new String(data, charset);
-                try {
-                    return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
-                            new JSONTokener(str).nextValue());
-                } catch (JSONException e) {
-                    throw Exceptions.toRuntime(e);
-                }
-            }
-            // 4、API object
-            if (BaseResult.class.isAssignableFrom(clz)) {
-                ParameterizedType type = new ParameterizedType() {
-                    @Override
-                    public Type[] getActualTypeArguments() {
-                        return new Type[] {
-                                clz
-                        };
-                    }
-
-                    @Override
-                    public Type getOwnerType() {
-                        return null;
-                    }
-
-                    @Override
-                    public Type getRawType() {
-                        return null;
-                    }
-                };
-
-                return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
-                        JsonParser.toObject(new String(data, charset), clz));
-            }
+        APITransformer transformer = APITransformer.getTransformer(clz);
+        if (null != transformer) {
             return new XAPIStatusImpl(response.getStatusCode(), response.getStatusMessage(),
-                    JsonParser.toObject(new String(data, charset), clz));
-        } finally {
-            pool.returnBuf(buf);
-            IOUtils.close(response);
-            IOUtils.close(out);
+                    transformer.transform(response));
         }
+        return null;
     }
 
 }

@@ -28,8 +28,10 @@ public class XAPI {
      *
      * @return 返回API请求处理对象
      */
-    public static <Result>XAPIHolder get(String url, Object param, Class<Result> result, XAPICallback<Result> callback) {
-        return XServiceLoader.load(XAPIService.class).doAPI(url, HttpMethod.GET, param, result, callback);
+    public static <Result>XAPIHolder get(String url, Object param,
+                                         Class<Result> result, XAPICallback<Result> callback) {
+        return XServiceLoader.load(XAPIService.class)
+                .doAPI(url, HttpMethod.GET, param, result, callback);
     }
 
     /**
@@ -41,8 +43,10 @@ public class XAPI {
      *
      * @return 返回API请求处理对象
      */
-    public static XAPIHolder post(String url, Object param, Class<?> result, XAPICallback callback) {
-        return XServiceLoader.load(XAPIService.class).doAPI(url, HttpMethod.POST, param, result, callback);
+    public static <Result>XAPIHolder post(String url, Object param,
+                                          Class<Result> result, XAPICallback<Result> callback) {
+        return XServiceLoader.load(XAPIService.class)
+                .doAPI(url, HttpMethod.POST, param, result, callback);
     }
 
 }

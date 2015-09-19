@@ -109,4 +109,5 @@ dependencies {
     //compile project(':androidrubick')
     //compile 'com.android.support:support-v4:22.0.0'
     compile project(':androidrubick-xframework')
+    compile project(':json-default')
 }

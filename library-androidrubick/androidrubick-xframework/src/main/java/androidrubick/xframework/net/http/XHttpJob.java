@@ -61,7 +61,8 @@ public abstract class XHttpJob<Progress, Result> extends XJob<XHttpRequest, Prog
      *
      * @param response 请求结果
      */
-    protected abstract Result parseResponse(XHttpRequest request, XHttpResponse response);
+    protected abstract Result parseResponse(XHttpRequest request, XHttpResponse response)
+            throws Throwable;
 
     /**
      * 处理HTTP请求相关的错误。

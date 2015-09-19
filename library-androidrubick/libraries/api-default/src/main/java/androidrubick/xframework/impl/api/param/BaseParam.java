@@ -1,5 +1,7 @@
 package androidrubick.xframework.impl.api.param;
 
+import androidrubick.xbase.util.DeviceInfos;
+
 /**
  * 标识对象是否可以转为参数，它并没有包含任何方法。
  *
@@ -14,6 +16,25 @@ package androidrubick.xframework.impl.api.param;
  */
 public class BaseParam {
 
+    /**
+     * 设备识别号
+     */
+    public String deviceToken;
 
+    /**
+     * 机器类型，分ios和android
+     */
+    public String deviceType;
+
+    /**
+     * 分辨率
+     */
+    public String resolution;
+
+    public BaseParam() {
+        deviceToken = DeviceInfos.getDeviceUuid();
+        deviceType = "android";
+        resolution = DeviceInfos.getDeviceResolution("x");
+    }
 
 }

@@ -109,5 +109,5 @@ dependencies {
     //compile project(':androidrubick')
     //compile 'com.android.support:support-v4:22.0.0'
     compile project(':androidrubick-xframework')
-    compile 'com.google.code.gson:gson:2.2.4'
+//    compile 'com.google.code.gson:gson:2.2.4'
 }

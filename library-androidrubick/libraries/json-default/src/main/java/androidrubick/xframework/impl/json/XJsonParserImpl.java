@@ -2,6 +2,7 @@ package androidrubick.xframework.impl.json;
 
 import com.google.gson.Gson;
 
+import java.io.Reader;
 import java.lang.reflect.Type;
 
 import androidrubick.text.Strings;
@@ -42,11 +43,19 @@ public class XJsonParserImpl implements XJsonParserService {
     }
 
     @Override
-    public <T> T toObject(String json, Class<T> clz) {
+    public <T> T toObject(String json, Type clz) {
         if (Objects.isNull(json) || Strings.isEmpty(json, true)) {
             return null;
         }
         return mGson.fromJson(json, clz);
+    }
+
+    @Override
+    public <T> T toObject(Reader reader, Type clz) {
+        if (Objects.isNull(reader)) {
+            return null;
+        }
+        return mGson.fromJson(reader, clz);
     }
 
     @Override

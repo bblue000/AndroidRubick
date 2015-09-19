@@ -25,13 +25,9 @@ public interface XAPIHolder {
     /**
      * 取消API请求，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled(Object)}
      *
-     * @param mayInterruptIfRunning <tt>true</tt> if the thread executing this
-     *        task should be interrupted; otherwise, in-progress tasks are allowed
-     *        to complete.
-     *
      * @return <tt>false</tt> if the task could not be cancelled,
      *         typically because it has already completed normally;
      *         <tt>true</tt> otherwise
      */
-    public boolean cancel(boolean mayInterruptIfRunning) ;
+    public boolean cancel() ;
 }

@@ -34,6 +34,9 @@ public class XAPIHolderImpl implements XAPIHolder {
         this.mCallback = callback;
     }
 
+    /**
+     * 该处为了避免重复请求，如果正在处理请求则直接返回
+     */
     @Override
     public boolean execute() {
         if (isIdle()) {
@@ -58,59 +61,65 @@ public class XAPIHolderImpl implements XAPIHolder {
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel() {
         if (Objects.isNull(mJob)) {
             return true;
         }
-        return mJob.cancel(mayInterruptIfRunning);
+        return mJob.cancel(true);
     }
 
-    protected class XAPIJob extends XHttpRetryJob<Object, XAPIStatusImpl> {
+    protected void restJob() {
+        synchronized (this) {
+            mJob = null;
+        }
+    }
+
+    /**
+     * 执行并处理API请求的job
+     *
+     */
+    private class XAPIJob extends XHttpRetryJob<Object, XAPIStatusImpl> {
 
         public XAPIJob() {
             super(XAPIConstants.RETRY_COUNT);
         }
 
         @Override
-        protected XAPIStatusImpl parseResponse(XHttpRequest request, XHttpResponse response) {
-            try {
-                return XAPIResultParser.parse(request, response, mResultClz);
-            } catch (Throwable e) {
-                return new XAPIStatusImpl(XAPIError.ERR_CLIENT, e.getMessage());
-            }
+        protected XAPIStatusImpl parseResponse(XHttpRequest request, XHttpResponse response)
+                throws Throwable {
+            return XAPIResultParser.parse(request, response, mResultClz);
         }
 
         @Override
-        protected void onPostExecute(XAPIStatusImpl xapiStatus) {
+        protected void onPostExecute(XAPIStatusImpl apiStatus) {
             try {
-                if (Objects.isNull(mCallback)) {
-                    return;
-                }
-                if (xapiStatus.successMark) {
-                    mCallback.onSuccess(xapiStatus.data, xapiStatus);
-                } else {
-                    mCallback.onFailed(xapiStatus);
-                }
-            } finally {
-                // clear mJob
-                XAPIHolderImpl.this.mJob = null;
-            }
-        }
-
-        @Override
-        protected void onCancelled(XAPIStatusImpl xapiStatus) {
-            try {
-                super.onCancelled(xapiStatus);
                 if (!Objects.isNull(mCallback)) {
-                    Object resultData = null;
-                    if (!Objects.isNull(xapiStatus) && !xapiStatus.successMark) {
-                        resultData = xapiStatus.data;
+                    if (!Objects.isNull(apiStatus) && apiStatus.successMark) {
+                        mCallback.onSuccess(apiStatus.data, apiStatus);
+                    } else {
+                        mCallback.onFailed(apiStatus);
                     }
-                    mCallback.onCanceled(resultData);
                 }
             } finally {
                 // clear mJob
-                XAPIHolderImpl.this.mJob = null;
+                restJob();
+            }
+        }
+
+        @Override
+        protected void onCancelled(XAPIStatusImpl apiStatus) {
+            try {
+                super.onCancelled(apiStatus);
+                if (!Objects.isNull(mCallback)) {
+                    if (!Objects.isNull(apiStatus) && apiStatus.successMark) {
+                        mCallback.onCanceled(apiStatus.data, apiStatus);
+                    } else {
+                        mCallback.onCanceled(null, apiStatus);
+                    }
+                }
+            } finally {
+                // clear mJob
+                restJob();
             }
         }
 
@@ -123,6 +132,7 @@ public class XAPIHolderImpl implements XAPIHolder {
                 case Server:
                     return new XAPIStatusImpl(exception.getStatusCode(), exception.getMessage());
                 case Network:
+                case NoConnection:
                     return new XAPIStatusImpl(XAPIError.ERR_NETWORK, exception.getMessage());
                 case Other:
                 default:

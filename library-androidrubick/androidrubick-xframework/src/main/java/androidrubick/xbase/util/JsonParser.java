@@ -1,5 +1,8 @@
 package androidrubick.xbase.util;
 
+import java.io.Reader;
+import java.lang.reflect.Type;
+
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xbase.util.spi.XJsonParserService;
 
@@ -12,6 +15,7 @@ import androidrubick.xbase.util.spi.XJsonParserService;
  * @since 1.0
  */
 public class JsonParser {
+
     private JsonParser() { }
 
     /**
@@ -46,7 +50,25 @@ public class JsonParser {
      *     <li>"{field1:value1, field2:value2...}"   --> object</li>
      * </ul>
      */
-    public static <T>T toObject(String json, Class<T> clz) {
+    public static <T>T toObject(String json, Type clz) {
         return XServiceLoader.load(XJsonParserService.class).toObject(json, clz);
+    }
+
+    /**
+     * 从reader中获取所有字符，转为指定类型的对象
+     *
+     * <p/>
+     *
+     * <ul>
+     *     <li>"null"     --> null</li>
+     *     <li>""     --> null</li>
+     *     <li>"{}"     --> empty object of <code>clz</code></li>
+     *     <li>"[item1, item2, item3...]"    --> array</li>
+     *     <li>"{key1:value1, key2:value2...}"      --> map</li>
+     *     <li>"{field1:value1, field2:value2...}"   --> object</li>
+     * </ul>
+     */
+    public static <T>T toObject(Reader reader, Type clz) {
+        return XServiceLoader.load(XJsonParserService.class).toObject(reader, clz);
     }
 }
