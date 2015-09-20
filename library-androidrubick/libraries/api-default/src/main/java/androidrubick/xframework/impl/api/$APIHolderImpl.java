@@ -23,6 +23,8 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
  */
 /*package*/ class $APIHolderImpl implements XAPIHolder {
 
+    private static final String TAG = $APIHolderImpl.class.getSimpleName();
+
     private XHttpRequest mRequest;
     private Class mResultClz;
     private XAPICallback mCallback;
@@ -52,7 +54,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
             }
         }
         if (XGlobals.DEBUG) {
-            XLog.d(getClass(), "XAPIHolder#execute not idle");
+            XLog.d(TAG, "XAPIHolder@" + Integer.toHexString(hashCode()) + "#execute not idle");
         }
         return false;
     }
@@ -94,6 +96,9 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
 
         @Override
         protected void onPostExecute($APIStatusImpl apiStatus) {
+            if (XGlobals.DEBUG) {
+                XLog.d(TAG, "XAPIHolder@" + Integer.toHexString(hashCode()) + "#onPostExecute");
+            }
             try {
                 if (!Objects.isNull(mCallback)) {
                     if (!Objects.isNull(apiStatus) && apiStatus.successMark) {
@@ -110,6 +115,9 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
 
         @Override
         protected void onCancelled($APIStatusImpl apiStatus) {
+            if (XGlobals.DEBUG) {
+                XLog.d(TAG, "XAPIHolder@" + Integer.toHexString(hashCode()) + "#onCancelled");
+            }
             try {
                 super.onCancelled(apiStatus);
                 if (!Objects.isNull(mCallback)) {

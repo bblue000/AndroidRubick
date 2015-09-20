@@ -2,6 +2,7 @@ package androidrubick.xframework.impl.cache.disk;
 
 import java.io.File;
 
+import androidrubick.xframework.cache.disk.DiskBasedCache;
 import androidrubick.xframework.cache.disk.XDiskCacheStats;
 import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 
@@ -15,6 +16,26 @@ public class XDiskCacheServiceImpl implements XDiskCacheService {
     @Override
     public XDiskCacheStats newDiskCacheStats(File cachePath) {
         return new SimpleDiskCacheStats(cachePath);
+    }
+
+    @Override
+    public DiskBasedCache dirCache(String subCacheDir) {
+        return null;
+    }
+
+    @Override
+    public File[] getCacheDirs() {
+        return new File[0];
+    }
+
+    @Override
+    public File getDataCacheDir() {
+        return null;
+    }
+
+    @Override
+    public File[] getExternalCacheDir() {
+        return new File[0];
     }
 
     @Override

@@ -30,6 +30,10 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
         return CACHED.get(clz);
     }
 
+    static boolean isBase(Class<?> clz) {
+        return CACHED.containsKey(clz);
+    }
+
     abstract T transform(XHttpResponse response) throws Throwable;
 
 }

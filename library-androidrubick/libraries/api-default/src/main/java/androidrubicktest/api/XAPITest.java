@@ -8,6 +8,7 @@ import androidrubick.xframework.api.XAPI;
 import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.api.XAPIStatus;
+import androidrubick.xframework.impl.api.param.BaseParam;
 
 /**
  * something
@@ -20,7 +21,7 @@ import androidrubick.xframework.api.XAPIStatus;
 public class XAPITest {
 
     public static void test() {
-        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, null, JSONObject.class, new XAPICallback() {
+        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, new BaseParam(), null, JSONObject.class, new XAPICallback() {
             @Override
             public void onSuccess(Object result, XAPIStatus status) {
                 Log.d("yytest", "onSuccess result = " + result);

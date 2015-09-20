@@ -70,7 +70,7 @@ public class $APIResultParser {
     public static $APIStatusImpl parse(XHttpRequest request, XHttpResponse response,
                                        final Class<?> clz) throws Throwable {
         // 如果是通用的请求结果，使用通用的解析方式
-        if (clz.isAnnotationPresent(APICommResponse.class)) {
+        if (APITransformer.isBase(clz) || clz.isAnnotationPresent(APICommResponse.class)) {
             return parseComm(request, response, clz);
         }
 

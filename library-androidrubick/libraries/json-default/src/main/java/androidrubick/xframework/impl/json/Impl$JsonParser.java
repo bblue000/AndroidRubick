@@ -14,10 +14,10 @@ import androidrubick.xbase.util.spi.XJsonParserService;
  *
  * Created by Yin Yong on 2015/8/28.
  */
-public class XJsonParserImpl implements XJsonParserService {
+public class Impl$JsonParser implements XJsonParserService {
 
     private Gson mGson;
-    public XJsonParserImpl() {
+    public Impl$JsonParser() {
         mGson = new Gson();
     }
 

@@ -57,22 +57,22 @@ public abstract class DiskBasedCache {
         return FileUtils.exists(new File(getRootPath(), fileName));
     }
 
-    public boolean save(String fileName, InputStream ins, boolean closeIns) {
-        File targetFile = new File(getRootPath(), fileName);
-        if (FileUtils.deleteFile(targetFile, true, null)) {
-            FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
-        }
-    }
-
-    public boolean save(String fileName, byte[] data) {
-        File targetFile = new File(getRootPath(), fileName);
-        if (FileUtils.deleteFile(targetFile, true, null)) {
-            FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
-        }
-    }
-    public abstract boolean save(String fileName, String data, String charsetName) {
-        return save(fileName, data.getBytes(charsetName));
-    }
+//    public boolean save(String fileName, InputStream ins, boolean closeIns) {
+//        File targetFile = new File(getRootPath(), fileName);
+//        if (FileUtils.deleteFile(targetFile, true, null)) {
+//            FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
+//        }
+//    }
+//
+//    public boolean save(String fileName, byte[] data) {
+//        File targetFile = new File(getRootPath(), fileName);
+//        if (FileUtils.deleteFile(targetFile, true, null)) {
+//            FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
+//        }
+//    }
+//    public abstract boolean save(String fileName, String data, String charsetName) {
+//        return save(fileName, data.getBytes(charsetName));
+//    }
     public abstract boolean save(String fileName, Reader ins, String charsetName, boolean closeIns) ;
     public abstract boolean save(String fileName, Reader ins, Charset charset, boolean closeIns) ;
     public abstract boolean save(String fileName, Bitmap bm, Bitmap.CompressFormat format, int quality) ;
