@@ -33,6 +33,7 @@ public class XDiskCaches {
      * 指定缓存信息中包含缓存目录文件数目的标识
      */
     public static final int FLAG_FILE_COUNT = 0x0000002;
+
     /**
      * 提供计算缓存大小的方法，因为缓存文件的大小不可预测，该操作将异步处理，并给
      * 调用处提供回调
@@ -42,7 +43,21 @@ public class XDiskCaches {
      *             可以组合使用{@link #FLAG_BYTE_SIZE}，{@link #FLAG_FILE_COUNT}
      */
     public static void getCacheSize(GetCacheSizeCallback callback, int flags) {
-        new GetCacheSizeJob(callback, flags).execute();
+        new GetCacheSizeJob(callback, flags).execute(
+                XServiceLoader.load(XDiskCacheService.class).getCacheDirs());
+    }
+
+    /**
+     * 提供计算缓存大小的方法，因为缓存文件的大小不可预测，该操作将异步处理，并给
+     * 调用处提供回调
+     *
+     * @param cacheDir 要清除的缓存目录
+     * @param callback
+     * @param flags 方法会根据指定的<code>flag</code>判断是否返回缓存信息，及返回的缓存信息中的哪些值，
+     *             可以组合使用{@link #FLAG_BYTE_SIZE}，{@link #FLAG_FILE_COUNT}
+     */
+    public static void getCacheSize(File cacheDir, GetCacheSizeCallback callback, int flags) {
+        new GetCacheSizeJob(callback, flags).execute(cacheDir);
     }
 
     public interface GetCacheSizeCallback {
@@ -69,7 +84,7 @@ public class XDiskCaches {
         public long dirCount;
     }
 
-    private static class GetCacheSizeJob extends XJob<Void, Object, Long> {
+    private static class GetCacheSizeJob extends XJob<File, Object, Long> {
         private GetCacheSizeCallback mGetCacheSizeCallback;
         private int mFlags;
         private CacheInfo[] mCacheInfos;
@@ -79,8 +94,7 @@ public class XDiskCaches {
             mFlags = flags;
         }
         @Override
-        protected Long doInBackground(Void... params) {
-            File[] cacheDirs = XServiceLoader.load(XDiskCacheService.class).getCacheDirs();
+        protected Long doInBackground(File... cacheDirs) {
             if (ArraysCompat.isEmpty(cacheDirs)) {
                 return NumberUtils.LONG_ZERO;
             }
@@ -136,7 +150,18 @@ public class XDiskCaches {
      * @param callback 不需要回调，则可以传null
      */
     public static void clearCache(ClearCacheCallback callback) {
-        new ClearCacheJob(callback).execute();
+        new ClearCacheJob(callback).execute(XServiceLoader.load(XDiskCacheService.class).getCacheDirs());
+    }
+
+    /**
+     * 提供清除缓存的方法，因为缓存文件的大小不可预测，该操作将异步处理，并给
+     * 调用处提供回调
+     *
+     * @param cacheDir 要清除的缓存目录
+     * @param callback 不需要回调，则可以传null
+     */
+    public static void clearCache(File cacheDir, ClearCacheCallback callback) {
+        new ClearCacheJob(callback).execute(cacheDir);
     }
 
     /**
@@ -166,9 +191,8 @@ public class XDiskCaches {
         }
 
         @Override
-        protected Void doInBackground(File... params) {
+        protected Void doInBackground(File... cacheDirs) {
             // clear data cache
-            File[] cacheDirs = XServiceLoader.load(XDiskCacheService.class).getCacheDirs();
             if (ArraysCompat.isEmpty(cacheDirs)) {
                 return null;
             }

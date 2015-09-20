@@ -238,6 +238,27 @@ public class FileUtils {
 
     /**
      *
+     * @param data byte array data
+     * @param file 目标文件
+     * @param append 内容写入时是否使用叠加模式
+     * @param useBuf 使用提供的字节数组进行中间传输变量，
+     *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
+     * @param callback IO进度的回调，可为null
+     * @return 如果成功写入，返回true，否则返回false
+     *
+     * @see {@link #openFileOutput(File, boolean, boolean)}
+     *
+     * @since 1.0
+     */
+    public static boolean saveToFile(byte[] data,
+                                     File file, boolean append,
+                                     byte[] useBuf, IOProgressCallback callback) throws IOException {
+        FileOutputStream out = openFileOutput(file, true, append);
+        return IOUtils.writeTo(data, out, true, useBuf, callback);
+    }
+
+    /**
+     *
      * @param ins 字符流
      * @param closeIns 是否关闭参数 <code>InputStream ins</code> （无论成功与否）
      * @param file 目标文件

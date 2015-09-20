@@ -1,8 +1,10 @@
 package androidrubick.io;
 
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.FileOutputStream;
 import java.io.Flushable;
@@ -71,6 +73,43 @@ public class IOUtils {
 		}
 	}
 
+	/**
+	 * 将byte array data写入到输出流
+	 *
+	 * @param data byte array data
+	 * @param out 写入完成或者出错后是否需要关闭输出流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param useBuf 使用提供的字节数组进行中间传输变量，
+	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
+	 * @param callback IO进度的回调，可为null
+	 *
+	 * @return true代表写入成功
+	 *
+	 * @throws IOException IO异常
+	 * @throws NullPointerException <code>in</code>或者<code>out</code>为null时抛出
+	 */
+	public static boolean writeTo(byte[] data,
+								  OutputStream out, boolean closeOut,
+								  byte[] useBuf, IOProgressCallback callback) throws IOException {
+		Preconditions.checkNotNull(data, "data");
+		Preconditions.checkNotNull(out, "out");
+		if (ArraysCompat.isEmpty(useBuf)) {
+			try {
+				out.write(data);
+				if (null != callback)
+					callback.onProgress(data.length, data.length);
+				if (null != callback)
+					callback.onComplete(data.length);
+				return true;
+			} finally {
+				if (closeOut) close(out);
+			}
+		} else {
+			return IOUtils.writeTo(new ByteArrayInputStream(data), true,
+					out, closeOut, useBuf, callback);
+		}
+
+	}
 
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// TODO write char
@@ -150,7 +189,45 @@ public class IOUtils {
 		return writeTo(reader, closeIns, out, closeOut, useBuf, callback);
 	}
 
-
+	/**
+	 * 将byte array data写入到字符输出流
+	 *
+	 * @param data byte array data
+	 * @param out 写入完成或者出错后是否需要关闭输出流
+	 * @param closeOut 写入完成或者出错后是否需要关闭输出流
+	 * @param charsetName 字符编码方式，将{@code in}以指定编码方式写入到{@code out}中，
+	 *                 如果为null，则默认为{@link IOConstants#DEF_CHARSET_NAME}
+	 * @param useBuf 使用提供的字节数组进行中间传输变量，
+	 *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字节数组
+	 * @param callback IO进度的回调，可为null
+	 *
+	 * @return true代表写入成功
+	 *
+	 * @throws IOException IO异常
+	 * @throws NullPointerException <code>in</code>或者<code>out</code>为null时抛出
+	 */
+	public static boolean writeTo(byte[] data,
+								  Writer out, boolean closeOut,
+								  String charsetName,
+								  char[] useBuf, IOProgressCallback callback) throws IOException {
+		Preconditions.checkNotNull(data, "data");
+		Preconditions.checkNotNull(out, "out");
+		if (ArraysCompat.isEmpty(useBuf)) {
+			try {
+				out.write(new String(data, charsetName));
+				if (null != callback)
+					callback.onProgress(data.length, data.length);
+				if (null != callback)
+					callback.onComplete(data.length);
+				return true;
+			} finally {
+				if (closeOut) close(out);
+			}
+		} else {
+			return IOUtils.writeTo(new ByteArrayInputStream(data), true,
+					out, closeOut, charsetName, useBuf, callback);
+		}
+	}
 
 
 
@@ -234,18 +311,20 @@ public class IOUtils {
 	public static boolean stringToOutputStream(String src, String charsetName,
 											   OutputStream out, boolean closeOut)
 			throws IOException  {
-		Preconditions.checkNotNull(out, "out");
-		StringReader reader = new StringReader(src);
-		return writeTo(reader, true, out, closeOut, charsetName, null, null);
+		return writeTo(src.getBytes(charsetName), out, closeOut, null, null);
 	}
 
 
 	public static boolean stringToWriter(String src,
 										 Writer out, boolean closeOut)
-			throws IOException  {
+			throws IOException {
 		Preconditions.checkNotNull(out, "out");
-		StringReader reader = new StringReader(src);
-		return writeTo(reader, true, out, closeOut, null, null);
+		try {
+			out.write(src);
+			return true;
+		} finally {
+			if (closeOut) close(out);
+		}
 	}
 
 

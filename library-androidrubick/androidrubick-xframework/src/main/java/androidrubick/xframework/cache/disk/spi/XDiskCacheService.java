@@ -3,7 +3,7 @@ package androidrubick.xframework.cache.disk.spi;
 import java.io.File;
 
 import androidrubick.xbase.aspi.XSpiService;
-import androidrubick.xframework.cache.disk.DiskBasedCache;
+import androidrubick.xframework.cache.disk.XDiskBasedCache;
 
 /**
  * <p/>
@@ -16,7 +16,7 @@ public interface XDiskCacheService extends XSpiService {
      * 获取（如果不存在则创建新的）指定目录下的文件缓存对象。
      * @param subCacheDir 在cache根目录下创建子文件夹
      */
-    DiskBasedCache dirCache(String subCacheDir);
+    XDiskBasedCache dirCache(String subCacheDir);
 
     /**
      * 获取本应用所有的缓存（前提是受缓存模块控制）目录
