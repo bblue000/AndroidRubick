@@ -41,7 +41,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  * <p/>
  * Created by Yin Yong on 15/5/15.
  */
-public class XHttpRequestServicePreG implements XHttpRequestService {
+public class HttpRequestServicePreG implements XHttpRequestService {
 
     @Configurable
     public static final boolean REUSE_HTTPCLIENT = false;

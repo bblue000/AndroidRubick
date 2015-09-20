@@ -26,7 +26,7 @@ public abstract class DiskBasedCache {
     /**
      * 获取该缓存的根目录
      */
-    public abstract File getRootPath();
+    public abstract File getDirectory();
 
     /**
      * 获取缓存目录中文件的数目，不包括子文件夹
@@ -47,14 +47,14 @@ public abstract class DiskBasedCache {
      * 清除缓存
      */
     public void clear() {
-        FileUtils.deleteFile(getRootPath(), false, null);
+        FileUtils.deleteFile(getDirectory(), false, null);
     }
 
     /**
      * 判断文件名为<code>fileName</code>缓存是否存在。
      */
     public boolean exists(String fileName) {
-        return FileUtils.exists(new File(getRootPath(), fileName));
+        return FileUtils.exists(new File(getDirectory(), fileName));
     }
 
 //    public boolean save(String fileName, InputStream ins, boolean closeIns) {

@@ -3,8 +3,8 @@ package androidrubick.xframework.impl.http;
 import android.os.Build;
 
 import androidrubick.xbase.util.DeviceInfos;
-import androidrubick.xframework.impl.http.internal.XHttpRequestServiceAfterG;
-import androidrubick.xframework.impl.http.internal.XHttpRequestServicePreG;
+import androidrubick.xframework.impl.http.internal.HttpRequestServiceAfterG;
+import androidrubick.xframework.impl.http.internal.HttpRequestServicePreG;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.response.XHttpError;
 import androidrubick.xframework.net.http.response.XHttpResponse;
@@ -15,15 +15,15 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  *
  * Created by Yin Yong on 2015/9/10.
  */
-public class XHttpRequestServiceImpl implements XHttpRequestService {
+public class Impl$XHttpRequestService implements XHttpRequestService {
 
     private XHttpRequestService mBase;
-    public XHttpRequestServiceImpl() {
+    public Impl$XHttpRequestService() {
         int version = DeviceInfos.getAndroidSDKVersion();
         if (version <= Build.VERSION_CODES.GINGERBREAD) {
-            mBase = new XHttpRequestServicePreG();
+            mBase = new HttpRequestServicePreG();
         } else {
-            mBase = new XHttpRequestServiceAfterG();
+            mBase = new HttpRequestServiceAfterG();
         }
     }
 

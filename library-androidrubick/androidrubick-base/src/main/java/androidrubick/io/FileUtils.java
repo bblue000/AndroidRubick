@@ -265,7 +265,7 @@ public class FileUtils {
      *
      * @since 1.0
      */
-    public static long caculateFileSize(File file) {
+    public static long calculateFileSize(File file) {
         if (null == file || !file.exists()) {
             return 0L;
         }
@@ -274,7 +274,7 @@ public class FileUtils {
             File[] childFile = file.listFiles();
             if (!ArraysCompat.isEmpty(childFile)) {
                 for (File cFile : childFile) {
-                    size += caculateFileSize(cFile);
+                    size += calculateFileSize(cFile);
                 }
             }
             return size;

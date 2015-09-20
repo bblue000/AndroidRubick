@@ -12,9 +12,9 @@ import androidrubick.xframework.api.spi.XAPIService;
  *
  * Created by Yin Yong on 2015/9/15.
  */
-public class Impl$APIService implements XAPIService {
+public class Impl$XAPIService implements XAPIService {
 
-    public Impl$APIService() {
+    public Impl$XAPIService() {
 
     }
 

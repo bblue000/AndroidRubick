@@ -1,14 +1,11 @@
 package androidrubick.xframework.cache.disk;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidrubick.io.FileUtils;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.base.LimitedMeasurableCache;
-import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 
 /**
  * 文件缓存抽象类。
@@ -26,7 +23,6 @@ import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V> {
 
     private File mRootPath;
-    private XDiskCacheStats mDiskCacheStats;
     protected XDiskBasedCache(String rootPath, int maxMeasureSize) {
         this(new File(rootPath), maxMeasureSize);
     }
@@ -49,21 +45,6 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
         return mRootPath;
     }
 
-    public final XDiskCacheStats getDiskCacheStats() {
-        checkInitRetrieve();
-        return mDiskCacheStats;
-    }
-
-    protected void checkInitRetrieve() {
-        if (Objects.isNull(mDiskCacheStats)) {
-            synchronized (this) {
-                if (Objects.isNull(mDiskCacheStats)) {
-                    mDiskCacheStats = XServiceLoader.load(XDiskCacheService.class).newDiskCacheStats(getRootPath());
-                }
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -75,7 +56,6 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
     @Override
     public V get(K key) {
         Preconditions.checkNotNull(key, "key");
-        checkInitRetrieve();
         return fileToValue(keyToFile(key, getRootPath()));
     }
 
@@ -87,11 +67,10 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
     @Override
     public V remove(K key) {
         Preconditions.checkNotNull(key, "key");
-        checkInitRetrieve();
         File file = keyToFile(key, getRootPath());
         boolean existsBefore = FileUtils.exists(file);
         if (FileUtils.deleteFile(keyToFile(key, getRootPath()), true, null)) {
-            mDiskCacheStats.update();
+//            mDiskCacheStats.update();
         }
         if (existsBefore) {
             fileRemoved(false, file, key);
@@ -112,11 +91,9 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
     public V put(K key, V value) {
         Preconditions.checkNotNull(key, "key");
         Preconditions.checkNotNull(value, "value");
-        checkInitRetrieve();
         File file = keyToFile(key, getRootPath());
         boolean existsBefore = FileUtils.exists(file);
         if (valueToFile(value, file)) {
-            mDiskCacheStats.update();
             if (existsBefore) {
                 fileRemoved(false, file, key);
             }
@@ -129,8 +106,9 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
      */
     @Override
     public int size() {
-        checkInitRetrieve();
-        return (int) mDiskCacheStats.getFileCount();
+//        checkInitRetrieve();
+//        return (int) mDiskCacheStats.getFileCount();
+        return 0;
     }
 
     /**
@@ -142,7 +120,6 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
      */
     @Override
     public void clear() {
-        checkInitRetrieve();
         trimToSize(-1);
     }
 
@@ -160,7 +137,7 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
         final int measuredSize = measuredSize();
         final int size = size();
         while (true) {
-            File file;
+            File file = null;
             synchronized (this) {
                 if (measuredSize < 0 || (size == 0 && measuredSize != 0)) {
                     throw new IllegalStateException(getClass().getName()
@@ -172,7 +149,7 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
                 }
 
                 // evict a cache file.
-                file = mDiskCacheStats.evictCacheFile();
+//                file = mDiskCacheStats.evictCacheFile();
 
                 if (Objects.isNull(file)) {
                     break;
@@ -227,6 +204,5 @@ public abstract class XDiskBasedCache<K, V> extends LimitedMeasurableCache<K, V>
 
     @Override
     public void trimMemory() {
-        checkInitRetrieve();
     }
 }

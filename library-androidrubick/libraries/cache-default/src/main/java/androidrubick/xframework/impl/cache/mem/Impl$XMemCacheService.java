@@ -8,9 +8,9 @@ import androidrubick.xframework.cache.mem.spi.XMemCacheService;
  *
  * Created by Yin Yong on 2015/9/6.
  */
-public class XMemCacheServiceImpl implements XMemCacheService {
+public class Impl$XMemCacheService implements XMemCacheService {
 
-    public XMemCacheServiceImpl() {
+    public Impl$XMemCacheService() {
 
     }
 

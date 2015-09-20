@@ -563,7 +563,7 @@ import androidrubick.xbase.util.FrameworkLog;
      * @see #execute(Object[])
      * @see #executeOnExecutor(java.util.concurrent.Executor, Object[])
      */
-    public static void execute(Runnable runnable) {
+    protected static void execute(Runnable runnable) {
         getDefaultExecutor().execute(runnable);
     }
 

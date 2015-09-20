@@ -5,9 +5,9 @@ import java.io.File;
 import androidrubick.io.FileProgressCallback;
 import androidrubick.io.FileUtils;
 import androidrubick.utils.ArraysCompat;
+import androidrubick.utils.NumberUtils;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.aspi.XServiceLoader;
-import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 import androidrubick.xframework.job.XJob;
 
@@ -38,11 +38,11 @@ public class XDiskCaches {
      * 调用处提供回调
      *
      * @param callback
-     * @param flag 方法会根据指定的<code>flag</code>判断是否返回缓存信息，及返回的缓存信息中的哪些值，
+     * @param flags 方法会根据指定的<code>flag</code>判断是否返回缓存信息，及返回的缓存信息中的哪些值，
      *             可以组合使用{@link #FLAG_BYTE_SIZE}，{@link #FLAG_FILE_COUNT}
      */
-    public static void getCacheSize(GetCacheSizeCallback callback, int flag) {
-
+    public static void getCacheSize(GetCacheSizeCallback callback, int flags) {
+        new GetCacheSizeJob(callback, flags).execute();
     }
 
     public interface GetCacheSizeCallback {
@@ -69,41 +69,63 @@ public class XDiskCaches {
         public long dirCount;
     }
 
-    private static class GetCacheSizeJob extends XJob<File, Object, Long> {
+    private static class GetCacheSizeJob extends XJob<Void, Object, Long> {
         private GetCacheSizeCallback mGetCacheSizeCallback;
         private int mFlags;
+        private CacheInfo[] mCacheInfos;
 
         public GetCacheSizeJob(GetCacheSizeCallback callback, int flags) {
             mGetCacheSizeCallback = callback;
             mFlags = flags;
         }
         @Override
-        protected Long doInBackground(File... params) {
-            // 获取单个文件的
-            if ((mFlags & FLAG_BYTE_SIZE) != 0) {
-
+        protected Long doInBackground(Void... params) {
+            File[] cacheDirs = XServiceLoader.load(XDiskCacheService.class).getCacheDirs();
+            if (ArraysCompat.isEmpty(cacheDirs)) {
+                return NumberUtils.LONG_ZERO;
             }
-            if ((mFlags & FLAG_FILE_COUNT) != 0) {
+            final boolean getByteSize = (mFlags & FLAG_BYTE_SIZE) == FLAG_BYTE_SIZE;
+            final boolean getFileCount = (mFlags & FLAG_FILE_COUNT) == FLAG_FILE_COUNT;
+            long totalCacheSize = 0;
+            int[] intArr = null;
+            for (int i = 0; i < cacheDirs.length; i++) {
+                // 获取单个文件的
+                File dir = cacheDirs[i];
+                long dirSize = FileUtils.calculateFileSize(dir);
+                if (getByteSize || getFileCount) {
+                    if (Objects.isNull(mCacheInfos)) {
+                        mCacheInfos = new CacheInfo[cacheDirs.length];
+                    }
+                    if (Objects.isNull(mCacheInfos[i])) {
+                        mCacheInfos[i] = new CacheInfo(dir);
+                    }
 
-            }
-            long cacheSize = 0;
-            File cacheDir = XGlobals.getAppContext().getCacheDir();
-            cacheSize += FileUtils.caculateFileSize(cacheDir);
+                    if (getByteSize) {
+                        mCacheInfos[i].size = dirSize;
+                    }
 
-            File exCacheDirs[] = XGlobals.getAppContext().getExternalCacheDirs();
-            if (ArraysCompat.isEmpty(exCacheDirs)) {
-                cacheSize += FileUtils.caculateFileSize(XGlobals.getAppContext().getExternalCacheDir());
-            } else {
-                for (File file : exCacheDirs) {
-                    cacheSize += FileUtils.caculateFileSize(file);
+                    if (getFileCount) {
+                        if (Objects.isNull(intArr)) {
+                            intArr = new int[2];
+                        }
+                        FileUtils.calculateFileAndDirCount(dir, intArr, true, true);
+                        mCacheInfos[i].fileCount = intArr[0];
+                        mCacheInfos[i].dirCount = intArr[1];
+                    }
+
                 }
+                totalCacheSize += dirSize;
             }
-            return cacheSize;
+            return totalCacheSize;
         }
 
         @Override
         protected void onPostExecute(Long aLong) {
             super.onPostExecute(aLong);
+            if (Objects.isNull(mGetCacheSizeCallback)) {
+                return;
+            }
+            mGetCacheSizeCallback.onResult(aLong, mCacheInfos);
         }
     }
 

@@ -30,7 +30,7 @@ import androidrubick.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
+public class $JobExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -42,7 +42,7 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
     @Configurable
     private static final int MAX_QUEUE_SIZE = 32;
 
-    public XJobExecutor() {
+    public $JobExecutor() {
         // TODO blocking Queue最好自行实现，排序、清除无用项更快捷
         super(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, KEEP_ALIVE_TIMEUNIT,
                 createBlockingQueue(), createThreadFactory());
@@ -68,7 +68,7 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
 
     protected void clearExpiredJobs() {
         FrameworkLog.d(XJob.TAG, "clearExpiredJobs");
-        synchronized (XJobExecutor.class) {
+        synchronized ($JobExecutor.class) {
             PriorityBlockingQueue blockingQueue = Objects.getAs(getQueue());
             Iterator<Runnable> iterator = blockingQueue.iterator();
             while (iterator.hasNext()) {
@@ -87,7 +87,7 @@ public class XJobExecutor extends ThreadPoolExecutor implements RejectedExecutio
 
     @Configurable
     protected static BlockingQueue<Runnable> createBlockingQueue() {
-        return new PriorityBlockingQueue<Runnable>(MAX_QUEUE_SIZE, XJobComparator.INSTANCE);
+        return new PriorityBlockingQueue<Runnable>(MAX_QUEUE_SIZE, $JobComparator.INSTANCE);
     }
 
     protected static ThreadFactory createThreadFactory() {

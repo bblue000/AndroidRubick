@@ -88,6 +88,15 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
     }
 
     /**
+     * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行；
+     *
+     * 该方法不带任何参数。
+     */
+    public final XJob<Params, Progress, Result> execute() {
+        return execute((Params[]) null);
+    }
+
+    /**
      * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行
      *
      * @param params The parameters of the task.

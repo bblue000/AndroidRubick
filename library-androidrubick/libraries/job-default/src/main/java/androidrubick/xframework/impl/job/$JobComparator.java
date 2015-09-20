@@ -21,14 +21,14 @@ import androidrubick.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-public class XJobComparator implements Comparator<Runnable> {
+public class $JobComparator implements Comparator<Runnable> {
 
     /**
      * 单例入口
      */
-    public static final XJobComparator INSTANCE = new XJobComparator();
+    public static final $JobComparator INSTANCE = new $JobComparator();
 
-    private XJobComparator(){ }
+    private $JobComparator(){ }
 
     @Override
     public int compare(Runnable lhsRun, Runnable rhsRun) {

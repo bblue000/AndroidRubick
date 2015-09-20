@@ -28,7 +28,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  *
  * @since 1.0
  */
-public class XHttpRequestServiceAfterG implements XHttpRequestService {
+public class HttpRequestServiceAfterG implements XHttpRequestService {
 
     @Override
     public XHttpResponse performRequest(XHttpRequest request) throws XHttpError {
