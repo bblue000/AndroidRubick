@@ -40,6 +40,20 @@ public interface XImageSetter {
     };
 
     /**
+     * 如果是通用的View，则设置背景图片；如果是ImageView，设置Image src
+     */
+    XImageSetter BOTH_WAY = new XImageSetter() {
+        @Override
+        public void setImage(View view, Bitmap bitmap) {
+            if (view instanceof ImageView) {
+                IMAGE_SRC_SETTER.setImage(Objects.getAs(view, ImageView.class), bitmap);
+            } else {
+                VIEW_BG_SETTER.setImage(view, bitmap);
+            }
+        }
+    };
+
+    /**
      * 根据提供的<code>bitmap</code>设置图片
      */
     public void setImage(View view, Bitmap bitmap) ;

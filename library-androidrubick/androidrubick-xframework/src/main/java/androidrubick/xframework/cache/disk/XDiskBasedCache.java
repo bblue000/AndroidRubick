@@ -9,7 +9,7 @@ import java.io.Reader;
 
 /**
  *
- * 以{@link }为根目录的文件缓存；
+ * 以{@link #getDirectory()}为根目录的文件缓存；
  *
  * <p/>
  *
@@ -22,7 +22,11 @@ import java.io.Reader;
 public abstract interface XDiskBasedCache {
 
     /**
-     * 获取该缓存的根目录
+     * 获取该缓存的根目录；
+     *
+     * 由于开机状态下存储设备也可能发生安装、卸载、失效等状况，此时需要切换存储路径，
+     *
+     * 因此，该方法返回的路径不一定保持不变
      */
     File getDirectory();
 

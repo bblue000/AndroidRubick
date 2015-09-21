@@ -4,6 +4,15 @@
 
     <application>
 
+        <receiver android:name=".disk.ExternalStorageReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.MEDIA_UNMOUNTED"/>
+                <action android:name="android.intent.action.MEDIA_UNMOUNTABLE"/>
+                <action android:name="android.intent.action.MEDIA_EJECT"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

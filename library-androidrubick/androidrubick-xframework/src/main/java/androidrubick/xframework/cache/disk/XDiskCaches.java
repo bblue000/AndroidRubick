@@ -7,6 +7,7 @@ import androidrubick.io.FileUtils;
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.NumberUtils;
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 import androidrubick.xframework.job.XJob;
@@ -23,6 +24,28 @@ import androidrubick.xframework.job.XJob;
 public class XDiskCaches {
 
     private XDiskCaches() { /* no instance needed */ }
+
+    /**
+     * 获取（如果不存在则创建新的）指定目录下的文件缓存对象。
+     * @param subCacheDirName 在cache根目录下创建子文件夹
+     */
+    public static XDiskBasedCache dirCache(String subCacheDirName) {
+        return XServiceLoader.load(XDiskCacheService.class).dirCache(subCacheDirName);
+    }
+
+    /**
+     * 获取（如果不存在则创建新的）指定目录下的文件持久化对象。
+     *
+     * 与缓存不同，该类持久化存储存放应用必要的文件，不在清理缓存时清理。
+     *
+     * <p/>
+     *
+     * 类似{@link android.content.Context#getFilesDir()}，与cache文件区分。
+     *
+     */
+    public static XDiskBasedCache fileDirPersist(String subFileDirName) {
+        return XServiceLoader.load(XDiskCacheService.class).fileDirPersist(subFileDirName);
+    }
 
     /**
      * 指定缓存信息中包含缓存目录文件总大小的标识
@@ -57,6 +80,7 @@ public class XDiskCaches {
      *             可以组合使用{@link #FLAG_BYTE_SIZE}，{@link #FLAG_FILE_COUNT}
      */
     public static void getCacheSize(File cacheDir, GetCacheSizeCallback callback, int flags) {
+        Preconditions.checkNotNull(cacheDir, "cacheDir");
         new GetCacheSizeJob(callback, flags).execute(cacheDir);
     }
 
@@ -161,6 +185,7 @@ public class XDiskCaches {
      * @param callback 不需要回调，则可以传null
      */
     public static void clearCache(File cacheDir, ClearCacheCallback callback) {
+        Preconditions.checkNotNull(cacheDir, "cacheDir");
         new ClearCacheJob(callback).execute(cacheDir);
     }
 

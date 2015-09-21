@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import androidrubick.xbase.util.BitmapUtils;
 import androidrubick.xframework.cache.base.Cache;
+import androidrubick.xframework.cache.disk.XDiskBasedCache;
+import androidrubick.xframework.cache.disk.XDiskCaches;
 import androidrubick.xframework.cache.mem.XMemBasedCache;
 
 /**
@@ -19,8 +21,14 @@ public class XBitmapCache {
         }
     };
 
-    private XMemBasedCache<String, Bitmap> mDiskCache = new XMemBasedCache<String, Bitmap>(0) {
-    };
+    private XDiskBasedCache mDiskCache = XDiskCaches.dirCache("images");
+
+
+    private int mMaxSize;
+    public XBitmapCache(int maxMeasureSize) {
+
+    }
+
 //    /**
 //     * @param maxMeasureSize for caches that do not override {@link #sizeOf}, this is
 //     *                       the maximum number of entries in the cache. For all other caches,
@@ -29,7 +37,7 @@ public class XBitmapCache {
 //    protected XBitmapCache(int maxMeasureSize) {
 //        super(maxMeasureSize);
 //    }
-//
+
 //    @Override
 //    protected Bitmap createCache(String key) {
 //        return super.createCache(key);

@@ -28,7 +28,7 @@ class XServiceLoaderForTest<S extends XSpiService> extends XServiceLoader<S> {
         if (XMemCacheService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.cache.mem.Impl$XMemCacheService";
         } else if (XDiskCacheService.class.equals(this.mService)) {
-            mClassName = "androidrubick.xframework.impl.cache.disk.XDiskCacheServiceImpl";
+            mClassName = "androidrubick.xframework.impl.cache.disk.Impl$XDiskCacheService";
         } else if (XJsonParserService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.json.Impl$XJsonParserService";
         } else if (XJobExecutorService.class.equals(this.mService)) {
