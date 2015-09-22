@@ -92,15 +92,17 @@ public class LazyHandler implements Executor {
 
     @Override
     public void execute(Runnable command) {
-        synchronized (this) {
-            if (null == mExecutor) {
-                mExecutor = new ThreadPoolExecutor(0, 1,
-                        mAliveTime, TimeUnit.MILLISECONDS,
-                        new LinkedBlockingQueue<Runnable>(),
-                        new SimpleThreadFactory("Lazy Handler"));
+        if (null == mExecutor) {
+            synchronized (this) {
+                if (null == mExecutor) {
+                    mExecutor = new ThreadPoolExecutor(0, 1,
+                            mAliveTime, TimeUnit.MILLISECONDS,
+                            new LinkedBlockingQueue<Runnable>(),
+                            new SimpleThreadFactory("Lazy Handler"));
+                }
+                // notify anyway
+                notifyAll();
             }
-            // notify anyway
-            notifyAll();
         }
         mExecutor.execute(command);
     }

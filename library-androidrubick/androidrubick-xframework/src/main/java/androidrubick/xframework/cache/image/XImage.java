@@ -22,6 +22,56 @@ import androidrubick.xframework.cache.image.spi.XImageService;
  */
 public class XImage {
 
+    /**
+     * 加载图片
+     *
+     * @param uri 图片Uri
+     * @param callback 加载图片的回调
+     */
+    public static void fromUrl(String uri, XImageLoadCallback callback) {
+
+    }
+
+    /**
+     * 加载图片
+     *
+     * @param uri 图片Uri
+     * @param options 加载图片的回调
+     */
+    public static void fromUrl(String uri, XImageOptions options) {
+
+    }
+
+    /**
+     * 加载图片
+     *
+     * @param filePath 图片路径
+     * @param callback 加载图片的回调
+     */
+    public static void fromFile(String filePath, XImageLoadCallback callback) {
+
+    }
+
+    /**
+     * 加载图片
+     *
+     * @param res 图片资源id
+     * @param callback 加载图片的回调
+     */
+    public static void fromRes(int res, XImageLoadCallback callback) {
+
+    }
+
+    /**
+     * 加载图片
+     *
+     * @param fileName 图片Uri
+     * @param callback 加载图片的回调
+     */
+    public static void fromAsset(String fileName, XImageLoadCallback callback) {
+
+    }
+
     public static <V extends View>void displayImage(String uri, V view) {
         XServiceLoader.load(XImageService.class).loadBitmap(view, uri, null);
     }

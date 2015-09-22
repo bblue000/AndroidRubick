@@ -1,7 +1,5 @@
 package androidrubick.xframework.net.http.response;
 
-import org.apache.http.ProtocolVersion;
-
 import java.io.Closeable;
 import java.io.InputStream;
 

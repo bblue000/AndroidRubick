@@ -15,4 +15,7 @@ public interface XImageLoadCallback {
 
     void onLoadFailed();
 
+    void onLoadCanceled(Bitmap bitmap);
+
+
 }

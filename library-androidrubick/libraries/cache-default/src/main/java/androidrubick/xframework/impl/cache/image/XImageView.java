@@ -1,6 +1,7 @@
 package androidrubick.xframework.impl.cache.image;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -36,8 +37,18 @@ public class XImageView extends ImageView {
      *
      */
     public void setImageUrl(String url) {
+        Object oldTag = getTag(R.id.imageview_tag_url);
         setTag(R.id.imageview_tag_url, url);
-        // to load
+        if (Objects.equals(url, oldTag)) {
+            return;
+        }
+        // to load new image
+
+    }
+
+    @Override
+    public void setImageDrawable(Drawable drawable) {
+        super.setImageDrawable(drawable);
     }
 
     protected void showOnPreload() {

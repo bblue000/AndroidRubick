@@ -89,10 +89,10 @@ public abstract class XHttpJob<Progress, Result> extends XJob<XHttpRequest, Prog
      * <p/>
      *
      * <b>注意：</b><br/>
-     * 如果子类重写此方法，如果不处理<code>response</code>，请及时调用{@link IOUtils#close IOUtils.close(response)}。
+     * 如果子类重写此方法，不处理<code>response</code>，请及时调用{@link IOUtils#close IOUtils.close(response)}。
      * <p/>
      *
-     * 方法中默认已经调用了：
+     * 父类方法中默认已经调用了：
      * <pre>
      *     IOUtils.close(response)
      * </pre>
@@ -100,13 +100,13 @@ public abstract class XHttpJob<Progress, Result> extends XJob<XHttpRequest, Prog
      *
      * <br/>
      *
-     * 你如果不处理<code>response</code>，可以在子类中进行如下处理：
+     * 你如果不处理<code>response</code>，可以在子类中进行如下操作：
      * <pre>
      *     \@Override
-     *     protected XAPIStatusImpl onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
+     *     protected Result onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
      *         super.onOtherExc(request, response, exception);
      *         // do your code
-     *         return &lt;your result&gt;
+     *         return &lt;your result&gt or null;
      *     }
      * </pre>
      *

@@ -84,6 +84,14 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  */
 public class XHttpRequest {
 
+    /**
+     * 根据<code>url</code>和<code>method</code>创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest}
+     * 对象
+     */
+    public static XHttpRequest by(String url, HttpMethod method) {
+        return new XHttpRequest(url, method);
+    }
+
     private String mUrl;
     private HttpMethod mMethod;
     private Map<String, String> mHeaders;

@@ -1,10 +1,19 @@
 package androidrubick.xframework.net.http.response;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
+import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
+ *
+ * HTTP请求执行过程中的异常，该异常没有捕获客户端代码导致的运行时异常，
+ *
+ * 这些异常理所应当让客户端知道，并自己处理。
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/10.
@@ -12,6 +21,8 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  * @see XHttpRequestService#performRequest(androidrubick.xframework.net.http.request.XHttpRequest)
  */
 public class XHttpError extends Exception {
+
+    private static final String TAG = XHttpError.class.getSimpleName();
 
     public enum Type {
         /**
@@ -181,6 +192,57 @@ public class XHttpError extends Exception {
      */
     public void setRawCause(Throwable rawCause) {
         mRawCause = rawCause;
+    }
+
+    @Override
+    public void printStackTrace() {
+        if (Objects.isNull(mRawCause)) {
+            super.printStackTrace();
+            XLog.e(TAG, toString());
+        } else {
+            mRawCause.printStackTrace();
+        }
+    }
+
+    @Override
+    public void printStackTrace(PrintStream err) {
+        if (Objects.isNull(mRawCause)) {
+            super.printStackTrace(err);
+        } else {
+            mRawCause.printStackTrace(err);
+        }
+    }
+
+    @Override
+    public void printStackTrace(PrintWriter err) {
+        if (Objects.isNull(mRawCause)) {
+            super.printStackTrace(err);
+        } else {
+            mRawCause.printStackTrace(err);
+        }
+    }
+
+    @Override
+    public void setStackTrace(StackTraceElement[] trace) {
+        if (Objects.isNull(mRawCause)) {
+            super.setStackTrace(trace);
+        } else {
+            mRawCause.setStackTrace(trace);
+        }
+    }
+
+    @Override
+    public StackTraceElement[] getStackTrace() {
+        if (Objects.isNull(mRawCause)) {
+            return super.getStackTrace();
+        } else {
+            return mRawCause.getStackTrace();
+        }
+    }
+
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
     }
 
     @Override

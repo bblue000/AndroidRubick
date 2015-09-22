@@ -14,7 +14,7 @@ public class Exceptions {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
         }
-        return new RuntimeException(e);
+        return new DummyRuntimeException(e);
     }
 
     public static RuntimeException toRuntime(String msg) {

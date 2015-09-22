@@ -4,6 +4,9 @@ import androidrubick.xbase.aspi.XServiceLoader;
 import androidrubick.xframework.cache.image.spi.XImageService;
 
 /**
+ *
+ * 加载图片的大小、内存占用等信息的设置项。
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/21.
