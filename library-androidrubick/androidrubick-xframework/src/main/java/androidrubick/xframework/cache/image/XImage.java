@@ -93,4 +93,6 @@ public class XImage {
         XServiceLoader.load(XImageService.class).loadBitmap(view, uri, options);
     }
 
+//    public static
+
 }

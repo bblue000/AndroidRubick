@@ -12,6 +12,7 @@ import androidrubick.io.FileUtils;
 import androidrubick.io.IOUtils;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
+import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
 import androidrubick.xframework.cache.disk.XDiskCaches;
@@ -27,6 +28,8 @@ import androidrubick.xframework.cache.disk.XDiskCaches;
  * @since 1.0
  */
 public class SimpleDiskBasedCache implements XDiskBasedCache {
+
+    private static final String TAG = "disk cache";
 
     /** {@value */
     @Configurable
@@ -95,7 +98,7 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
     @Override
     public boolean save(String fileName, InputStream ins, boolean closeIns) throws IOException {
         File targetFile = new File(getDirectory(), fileName);
-        if (FileUtils.deleteFile(targetFile, true, null)) {
+        if (ensureTargetFile(targetFile)) {
             return FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
         }
         return false;
@@ -104,7 +107,7 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
     @Override
     public boolean save(String fileName, byte[] data) throws IOException {
         File targetFile = new File(getDirectory(), fileName);
-        if (FileUtils.deleteFile(targetFile, true, null)) {
+        if (ensureTargetFile(targetFile)) {
             return FileUtils.saveToFile(data, targetFile, false, null, null);
         }
         return false;
@@ -119,7 +122,7 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
     public boolean save(String fileName,
                         Reader ins, String charsetName, boolean closeIns) throws IOException {
         File targetFile = new File(getDirectory(), fileName);
-        if (FileUtils.deleteFile(targetFile, true, null)) {
+        if (ensureTargetFile(targetFile)) {
             return FileUtils.saveToFile(ins, closeIns, targetFile, false, charsetName, null, null);
         }
         return false;
@@ -128,7 +131,7 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
     @Override
     public boolean save(String fileName, Bitmap bm) throws IOException {
         File targetFile = new File(getDirectory(), fileName);
-        if (FileUtils.deleteFile(targetFile, true, null)) {
+        if (ensureTargetFile(targetFile)) {
             FileOutputStream out = FileUtils.openFileOutput(targetFile, true, false);
             try {
                 return bm.compress(mCF, mQuality, out);
@@ -136,6 +139,14 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
                 IOUtils.close(out);
             }
         }
+        return false;
+    }
+
+    private boolean ensureTargetFile(File targetFile) {
+        if (FileUtils.deleteFile(targetFile, true, null)) {
+            return true;
+        }
+        XLog.w(TAG, "save cannot save, reason : cannot delete");
         return false;
     }
 

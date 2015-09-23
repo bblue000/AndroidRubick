@@ -9,13 +9,19 @@ import android.graphics.Bitmap;
  */
 public interface XImageLoadCallback {
 
-    void onLoadStart();
+    /**
+     * 准备加载图片时回调
+     */
+    void onLoadStart(String imageUri);
 
-    void onLoadSuccess(Bitmap bitmap);
+    /**
+     * 图片加载成功时回调
+     */
+    void onLoadSuccess(String imageUri, Bitmap bitmap);
 
-    void onLoadFailed();
-
-    void onLoadCanceled(Bitmap bitmap);
-
+    /**
+     * 图片加载失败时回调
+     */
+    void onLoadFailed(String imageUri);
 
 }
