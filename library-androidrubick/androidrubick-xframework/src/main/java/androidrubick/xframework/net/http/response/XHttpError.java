@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
@@ -147,7 +148,7 @@ public class XHttpError extends Exception {
      * 设置错误类型
      */
     public void setType(Type type) {
-        mType = type;
+        mType = Preconditions.checkNotNull(type, "type");
     }
 
     /**
@@ -248,7 +249,7 @@ public class XHttpError extends Exception {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("type", mType)
+                .add("type", getType())
                 .add("statusCode", getStatusCode())
                 .add("message", getMessage())
                 .toString();

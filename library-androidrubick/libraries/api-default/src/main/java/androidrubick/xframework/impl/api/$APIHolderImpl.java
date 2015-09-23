@@ -3,6 +3,7 @@ package androidrubick.xframework.impl.api;
 import java.util.Map;
 
 import androidrubick.net.HttpMethod;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.api.XAPICallback;
@@ -153,7 +154,12 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
         @Override
         protected $APIStatusImpl onOtherExc(XHttpRequest request, XHttpResponse response, Throwable exception) {
             super.onOtherExc(request, response, exception);
-            return new $APIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
+            // TODO get message
+            String message = exception.getMessage();
+            if (!Objects.isNull(response) && !Strings.isEmpty(response.getStatusMessage())) {
+                message = response.getStatusMessage();
+            }
+            return new $APIStatusImpl(XAPIError.ERR_CLIENT, message);
         }
 
     }

@@ -47,7 +47,7 @@ public class $APIParamParser {
 
     public static XHttpRequest parse(String baseUrl, HttpMethod method,
                                      Object param, Map<String, String> extraHeaders) {
-        XHttpRequest request = new XHttpRequest();
+        XHttpRequest request = XHttpRequest.by(method);
 
         Map<String, Object> paramMap = null;
         Class<?> paramClz = Objects.isNull(param) ? null : param.getClass();
@@ -87,7 +87,6 @@ public class $APIParamParser {
         // 根据处理得到的参数，对URL或body进行处理
         parseUrlAndBody(baseUrl, method, request, paramMap);
 
-        request.method(method);
         request.connectionTimeout(APIConstants.DEFAULT_CONNECTION_TIMEOUT)
                 .socketTimeout(APIConstants.DEFAULT_SOCKET_TIMEOUT)
                 .headers(extraHeaders);

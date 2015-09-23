@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import androidrubick.text.Strings;
-
 /**
  * 标识API请求参数中的字段作为是作为Header信息的。
  *
@@ -23,9 +21,9 @@ import androidrubick.text.Strings;
 public @interface APIHeader {
 
     /**
-     * 不设置将以字段名作为Header名称
+     * 设置Header的名称
      */
-    String name() default Strings.EMPTY;
+    String name();
 
     /**
      * 设置Header的值

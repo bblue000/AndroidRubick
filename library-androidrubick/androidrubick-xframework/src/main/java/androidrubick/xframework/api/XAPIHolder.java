@@ -2,7 +2,7 @@ package androidrubick.xframework.api;
 
 /**
  *
- * API任务持有对象，提供给外界调用，如取消
+ * API任务持有对象，提供给外界调用，如取消...
  *
  * <p/>
  * <p/>
@@ -14,6 +14,8 @@ public interface XAPIHolder {
 
     /**
      * 执行API请求，如果已经在进行，将直接返回false
+     *
+     * @see #isIdle()
      */
     public boolean execute() ;
 
@@ -23,7 +25,7 @@ public interface XAPIHolder {
     public boolean isIdle();
 
     /**
-     * 取消API请求，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled(Object)}
+     * 取消API请求，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled}
      *
      * @return <tt>false</tt> if the task could not be cancelled,
      *         typically because it has already completed normally;
