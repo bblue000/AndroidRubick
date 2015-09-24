@@ -38,6 +38,11 @@ public class Impl$XDiskCacheService implements XDiskCacheService {
     }
 
     @Override
+    public File getPreferredCacheDir() {
+        return mCacheDirProvider.getSuitableCacheDir();
+    }
+
+    @Override
     public XDiskBasedCache fileDirPersist(String subFileDirName) {
         return null;
     }

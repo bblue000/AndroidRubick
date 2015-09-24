@@ -38,6 +38,11 @@ public interface XDiskCacheService extends XSpiService {
      */
     File[] getExternalCacheDirs();
 
+    /**
+     * 获取当前状态下优先使用的缓存目录
+     */
+    File getPreferredCacheDir();
+
 
     // file persistent，存储有用文件，不是临时的缓存
     /**

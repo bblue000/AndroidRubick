@@ -10,7 +10,9 @@ import java.io.Reader;
 
 import androidrubick.io.FileUtils;
 import androidrubick.io.IOUtils;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
+import androidrubick.utils.Preconditions;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.app.XGlobals;
@@ -84,26 +86,30 @@ import androidrubick.xframework.cache.disk.XDiskCaches;
 
     @Override
     public boolean remove(String fileName) {
-        return FileUtils.deleteFile(new File(getDirectory(), fileName), true, null);
+        return FileUtils.deleteFile(getFileByName(fileName), true, null);
     }
 
     @Override
     public boolean exists(String fileName) {
-        return FileUtils.exists(new File(getDirectory(), fileName));
+        return FileUtils.exists(getFileByName(fileName));
     }
 
     @Override
     public boolean save(String fileName, InputStream ins, boolean closeIns) throws IOException {
-        File targetFile = new File(getDirectory(), fileName);
-        if (ensureTargetFile(targetFile)) {
-            return FileUtils.saveToFile(ins, closeIns, targetFile, false, null, null);
+        try {
+            File targetFile = getFileByName(fileName);
+            if (ensureTargetFile(targetFile)) {
+                return FileUtils.saveToFile(ins, false, targetFile, false, null, null);
+            }
+            return false;
+        } finally {
+            IOUtils.close(ins);
         }
-        return false;
     }
 
     @Override
     public boolean save(String fileName, byte[] data) throws IOException {
-        File targetFile = new File(getDirectory(), fileName);
+        File targetFile = getFileByName(fileName);
         if (ensureTargetFile(targetFile)) {
             return FileUtils.saveToFile(data, targetFile, false, null, null);
         }
@@ -118,16 +124,20 @@ import androidrubick.xframework.cache.disk.XDiskCaches;
     @Override
     public boolean save(String fileName,
                         Reader ins, String charsetName, boolean closeIns) throws IOException {
-        File targetFile = new File(getDirectory(), fileName);
-        if (ensureTargetFile(targetFile)) {
-            return FileUtils.saveToFile(ins, closeIns, targetFile, false, charsetName, null, null);
+        try {
+            File targetFile = getFileByName(fileName);
+            if (ensureTargetFile(targetFile)) {
+                return FileUtils.saveToFile(ins, false, targetFile, false, charsetName, null, null);
+            }
+            return false;
+        } finally {
+            IOUtils.close(ins);
         }
-        return false;
     }
 
     @Override
     public boolean save(String fileName, Bitmap bm) throws IOException {
-        File targetFile = new File(getDirectory(), fileName);
+        File targetFile = getFileByName(fileName);
         if (ensureTargetFile(targetFile)) {
             FileOutputStream out = FileUtils.openFileOutput(targetFile, true, false);
             try {
@@ -143,8 +153,18 @@ import androidrubick.xframework.cache.disk.XDiskCaches;
         if (FileUtils.deleteFile(targetFile, true, null)) {
             return true;
         }
-        XLog.w(TAG, "save cannot save, reason : cannot delete");
+        XLog.w(TAG, "file cannot save, reason : cannot delete");
         return false;
+    }
+
+    /**
+     * 此处可以尝试优化，存储时临时创建的File对象蛮多
+     */
+    @Configurable
+    private File getFileByName(String fileName) {
+        Preconditions.checkArgument(!Strings.isEmpty(fileName),
+                "fileName cannot be null or empty");
+        return new File(getDirectory(), fileName);
     }
 
 //    /**

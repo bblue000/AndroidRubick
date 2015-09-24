@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
+import androidrubick.collect.MapBuilder;
 import androidrubick.io.IOUtils;
 import androidrubick.text.Charsets;
 import androidrubick.utils.Objects;
@@ -136,7 +137,7 @@ public class XServiceLoader<S extends XSpiService> {
     }
 
     private static HashMap<Class<? extends XSpiService>, XServiceLoader> sCaches
-            = new HashMap<Class<? extends XSpiService>, XServiceLoader>(8);
+            = MapBuilder.newHashMap(8).build();
 
     String mClassName;
     final Class<S> mService;

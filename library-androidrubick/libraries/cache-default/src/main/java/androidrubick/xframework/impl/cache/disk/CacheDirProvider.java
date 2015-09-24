@@ -1,10 +1,8 @@
 package androidrubick.xframework.impl.cache.disk;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,7 +34,6 @@ public class CacheDirProvider {
             recheckDirs();
         }
     };
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public CacheDirProvider() {
         checkInitDirs();
         registerBC();
@@ -100,16 +97,19 @@ public class CacheDirProvider {
 
     public XDiskBasedCache dirCache(final String dirName) {
         return new SimpleDiskBasedCache() {
-            private File mParentDir;
             private File mMyDir;
             @Override
             public File getDirectory() {
+                // getParent returns path field of the object
+                String curParentDir = null;
+                if (!Objects.isNull(mMyDir)) {
+                    curParentDir = mMyDir.getParent();
+                }
                 File curRoot = getSuitableCacheDir();
-                if (Objects.equals(mParentDir, curRoot)) {
+                if (Objects.equals(curParentDir, curRoot.getPath())) {
                     return null;
                 }
-                mParentDir = curRoot;
-                mMyDir = new File(mParentDir, dirName);
+                mMyDir = new File(curRoot, dirName);
                 return mMyDir;
             }
         };
