@@ -2,5 +2,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item name="imageview.tag.url" type="id"/>
+    <item name="imageview.tag.imageloader" type="id"/>
 
 </resources>

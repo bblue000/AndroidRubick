@@ -1,10 +1,13 @@
 package androidrubick.xframework.impl.image;
 
 import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 import androidrubick.xbase.util.BitmapUtils;
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
 import androidrubick.xframework.cache.disk.XDiskCaches;
+import androidrubick.xframework.cache.image.XImageOptions;
+import androidrubick.xframework.cache.image.XImageSetter;
 import androidrubick.xframework.cache.mem.XMemBasedCache;
 
 /**
@@ -13,6 +16,15 @@ import androidrubick.xframework.cache.mem.XMemBasedCache;
  * Created by Yin Yong on 2015/9/7.
  */
 public class XBitmapCache {
+
+    private XImageOptions mGlobalOptions;
+    {
+        mGlobalOptions = new XImageOptions()
+            .imageSetter(XImageSetter.BOTH_WAY)
+        ;
+    }
+    private XImageSetter mDefaultImageSetter = XImageSetter.BOTH_WAY;
+
     private XMemBasedCache<String, Bitmap> mMemCache = new XMemBasedCache<String, Bitmap>(0) {
 
         protected int sizeOf(String key, Bitmap value) {
@@ -25,6 +37,13 @@ public class XBitmapCache {
 
     private int mMaxSize;
     public XBitmapCache(int maxMeasureSize) {
+
+    }
+
+    /**
+     *
+     */
+    /*package*/ void load(ImageView view, String url) {
 
     }
 
