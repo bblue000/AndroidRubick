@@ -18,6 +18,7 @@ def defaultImplForSpi = "./libraries/";
 def spiProjects = ['json-default',
                    'job-default',
                    'cache-default',
+                   'image-default',
                    'http-default',
                    'api-default',
                    'statistics-default'

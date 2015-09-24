@@ -1,9 +1,8 @@
-package androidrubick.xframework.impl.cache.image;
+package androidrubick.xframework.impl.image;
 
 import android.graphics.Bitmap;
 
 import androidrubick.xbase.util.BitmapUtils;
-import androidrubick.xframework.cache.base.Cache;
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
 import androidrubick.xframework.cache.disk.XDiskCaches;
 import androidrubick.xframework.cache.mem.XMemBasedCache;

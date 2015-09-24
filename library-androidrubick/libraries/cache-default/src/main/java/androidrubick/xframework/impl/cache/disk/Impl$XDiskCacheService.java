@@ -19,7 +19,7 @@ public class Impl$XDiskCacheService implements XDiskCacheService {
 
     @Override
     public XDiskBasedCache dirCache(String subCacheDir) {
-        return new SimpleDiskBasedCache(mCacheDirProvider.getSuitableCacheDir(), subCacheDir);
+        return mCacheDirProvider.dirCache(subCacheDir);
     }
 
     @Override

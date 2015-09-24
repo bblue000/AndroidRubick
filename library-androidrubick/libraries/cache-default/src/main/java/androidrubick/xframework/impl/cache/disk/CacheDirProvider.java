@@ -1,14 +1,20 @@
 package androidrubick.xframework.impl.cache.disk;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidrubick.utils.ArraysCompat;
+import androidrubick.utils.Objects;
 import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.app.XGlobals;
+import androidrubick.xframework.app.broadcast.Broadcasts;
+import androidrubick.xframework.cache.disk.XDiskBasedCache;
 
 /**
  *
@@ -21,25 +27,19 @@ import androidrubick.xframework.app.XGlobals;
  */
 public class CacheDirProvider {
 
-    public interface CacheDirChangeListener {
-
-    }
-
+    private AtomicBoolean mAmountLastTime = new AtomicBoolean(false);
     private File mDataCacheDir;
     private File[] mExtCacheDirs;
+    private BroadcastReceiver mBC = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            recheckDirs();
+        }
+    };
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public CacheDirProvider() {
-        mDataCacheDir = XGlobals.getAppContext().getCacheDir();
-        if (DeviceInfos.isSDKOver(Build.VERSION_CODES.KITKAT)) {
-            File[] extCacheDirs = XGlobals.getAppContext().getExternalCacheDirs();
-            if (!ArraysCompat.isEmpty(extCacheDirs)) {
-                mExtCacheDirs = extCacheDirs;
-                return;
-            }
-        }
-        mExtCacheDirs = new File[] {
-                XGlobals.getAppContext().getExternalCacheDir()
-        };
+        checkInitDirs();
+        registerBC();
     }
 
     public File[] getAllCacheDirs() {
@@ -67,4 +67,51 @@ public class CacheDirProvider {
         return mExtCacheDirs[0];
     }
 
+    private void checkInitDirs() {
+        boolean hasExternalStorage = DeviceInfos.hasExternalStorage();
+        mAmountLastTime.set(hasExternalStorage);
+        // clear first
+        mDataCacheDir = XGlobals.getAppContext().getCacheDir();
+        mExtCacheDirs = DeviceInfos.getExternalCacheDirs();
+    }
+
+    private void recheckDirs() {
+        boolean hasExternalStorage = DeviceInfos.hasExternalStorage();
+        if (hasExternalStorage == mAmountLastTime.get()) {
+            return;
+        }
+        checkInitDirs();
+    }
+
+    private void registerBC() {
+        Broadcasts.registerReceiver(mBC, Intent.ACTION_MEDIA_UNMOUNTED,
+                Intent.ACTION_MEDIA_MOUNTED);
+    }
+
+    private void unregisterBC() {
+        Broadcasts.unregisterReceiver(mBC);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        unregisterBC();
+    }
+
+    public XDiskBasedCache dirCache(final String dirName) {
+        return new SimpleDiskBasedCache() {
+            private File mParentDir;
+            private File mMyDir;
+            @Override
+            public File getDirectory() {
+                File curRoot = getSuitableCacheDir();
+                if (Objects.equals(mParentDir, curRoot)) {
+                    return null;
+                }
+                mParentDir = curRoot;
+                mMyDir = new File(mParentDir, dirName);
+                return mMyDir;
+            }
+        };
+    }
 }

@@ -2,6 +2,9 @@ package androidrubicktest.reflect;
 
 import junit.framework.TestCase;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import androidrubick.reflect.Reflects;
 
 public class ReflectsTest extends TestCase {
@@ -29,4 +32,15 @@ public class ReflectsTest extends TestCase {
     public void testIsModifierPresent() throws Exception {
 
     }
+
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method m = ReflectsTest.class.getDeclaredMethod("d", new Class[]{String.class, Object[].class});
+        m.invoke(null, null, null, null);
+    }
+
+    private static void d(String t, Object...p) {
+        System.out.println(t);
+        System.out.println(p);
+    }
+
 }

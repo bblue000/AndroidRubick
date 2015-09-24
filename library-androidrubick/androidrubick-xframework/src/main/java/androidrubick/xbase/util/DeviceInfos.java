@@ -1,5 +1,6 @@
 package androidrubick.xbase.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
@@ -8,6 +9,10 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import java.io.File;
+
+import androidrubick.io.FileUtils;
+import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
 import androidrubick.xframework.app.XGlobals;
@@ -208,6 +213,32 @@ public class DeviceInfos {
      */
     public static boolean hasExternalStorage() {
         return Objects.equals(Environment.MEDIA_MOUNTED, Environment.getExternalStorageState());
+    }
+
+    /**
+     * 如果没有模拟存储和外部存储设备，返回null；
+     * <br/>
+     * 如果API < 21，返回{@link android.content.Context#getExternalCacheDir()}；
+     * <br/>
+     * 如果API >= 21，返回{@link android.content.Context#getExternalCacheDirs()}；
+     * <br/>
+     */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static File[] getExternalCacheDirs() {
+        // get ext cache dir
+        if (DeviceInfos.isSDKOver(Build.VERSION_CODES.KITKAT)) {
+            File[] extCacheDirs = XGlobals.getAppContext().getExternalCacheDirs();
+            if (!ArraysCompat.isEmpty(extCacheDirs)) {
+                return extCacheDirs;
+            }
+        }
+        File extCacheDir = XGlobals.getAppContext().getExternalCacheDir();
+        if (Objects.isNull(extCacheDir) || FileUtils.exists(extCacheDir)) {
+            return null;
+        }
+        return new File[] {
+                extCacheDir
+        };
     }
 
 }

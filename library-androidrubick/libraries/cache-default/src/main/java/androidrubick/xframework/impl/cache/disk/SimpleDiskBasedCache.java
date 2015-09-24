@@ -27,7 +27,8 @@ import androidrubick.xframework.cache.disk.XDiskCaches;
  *
  * @since 1.0
  */
-public class SimpleDiskBasedCache implements XDiskBasedCache {
+@Configurable
+/*package*/abstract class SimpleDiskBasedCache implements XDiskBasedCache {
 
     private static final String TAG = "disk cache";
 
@@ -41,20 +42,16 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
 
     private final Bitmap.CompressFormat mCF = DEFAULT_COMPRESS_FORMAT;
     private final int mQuality = DEFAULT_COMPRESS_QUALITY;
-    private File mDir;
+//    private File mDir;
     private XDiskCaches.CacheInfo mCacheInfo;
-    public SimpleDiskBasedCache(String dirName) {
-        this(null, dirName);
-    }
+//    SimpleDiskBasedCache(File parentDir, String subDirName) {
+//        mDir = new File(parentDir, subDirName);
+//    }
 
-    SimpleDiskBasedCache(File parentDir, String subDirName) {
-        mDir = new File(parentDir, subDirName);
-    }
-
-    @Override
-    public File getDirectory() {
-        return mDir;
-    }
+//    @Override
+//    public File getDirectory() {
+//        return mDir;
+//    }
 
     /**
      * 暂时是不准确的，不是同步的
@@ -150,10 +147,14 @@ public class SimpleDiskBasedCache implements XDiskBasedCache {
         return false;
     }
 
-    /**
-     * 以当前缓存目录为父目录，创建名以<code>subDir</code>子目录为根目录的缓存
-     */
-    public XDiskBasedCache subDirCache(String subDir) {
-        return new SimpleDiskBasedCache(getDirectory(), subDir);
-    }
+//    /**
+//     * 以当前缓存目录为父目录，创建名以<code>subDir</code>子目录为根目录的缓存
+//     */
+//    public XDiskBasedCache subDirCache(String subDir) {
+//        return new SimpleDiskBasedCache(getDirectory(), subDir);
+//    }
+//
+//    /*package*/ void cacheRootChanged(File suitableDir) {
+//        mDir = new File(suitableDir, mDir.getName());
+//    }
 }

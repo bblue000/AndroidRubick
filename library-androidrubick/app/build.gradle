@@ -34,6 +34,8 @@ dependencies {
     compile project(':job-default')
     compile project(':http-default')
     compile project(':api-default')
+    compile project(':cache-default')
+    compile project(':image-default')
     compile project(':statistics-default')
     compile 'com.jakewharton:butterknife:5.1.1'
 }

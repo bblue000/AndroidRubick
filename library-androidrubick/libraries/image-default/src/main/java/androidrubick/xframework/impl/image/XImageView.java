@@ -1,4 +1,4 @@
-package androidrubick.xframework.impl.cache.image;
+package androidrubick.xframework.impl.image;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import androidrubick.utils.Objects;
-import androidrubick.xframework.impl.cache.R;
+import androidrubick.xframework.impl.image.R;
 
 /**
  * <p/>

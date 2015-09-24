@@ -62,6 +62,7 @@ public class MainActivity extends XBaseActivity {
 
         AppInfos.printMemeory();
 //        XApplication.is();
+
     }
 
     @Subscribe

@@ -1,4 +1,4 @@
-package androidrubick.xframework.impl.cache.image;
+package androidrubick.xframework.impl.image;
 
 import android.view.View;
 
