@@ -57,6 +57,7 @@ public interface XHttpRequestService extends XSpiService {
      * </table>
      *
      * @throws XHttpError
+     * @throws java.lang.RuntimeException <code>request</code>为空将抛出空指针异常，其他代码导致的运行时异常
      *
      * @see XHttpError
      */

@@ -20,6 +20,8 @@ public interface XJobExecutorService extends XSpiService {
      * @param <Param> 参数类型
      * @param <Progress> 任务执行进度类型
      * @param <Result> 任务执行结果类型
+     *
+     * @throws java.lang.NullPointerException 如果<code>job</code>为空，将抛出空指针异常
      */
     public <Param, Progress, Result> void execute(XJob<Param, Progress, Result> job, Param... params);
 

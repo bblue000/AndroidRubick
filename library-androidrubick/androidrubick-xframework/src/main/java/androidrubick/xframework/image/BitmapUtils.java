@@ -1,11 +1,11 @@
-package androidrubick.xbase.util;
+package androidrubick.xframework.image;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-import androidrubick.utils.NumberUtils;
 import androidrubick.utils.Objects;
+import androidrubick.xbase.util.DeviceInfos;
 
 /**
  * <p/>
@@ -22,7 +22,7 @@ public class BitmapUtils {
     @SuppressLint("NewApi")
     public static int getByteCount(Bitmap bm) {
         if (Objects.isNull(bm)) {
-            return NumberUtils.INT_ZERO;
+            return 0;
         }
         if (DeviceInfos.getAndroidSDKVersion() < Build.VERSION_CODES.HONEYCOMB_MR1) {
             return bm.getRowBytes() * bm.getHeight();

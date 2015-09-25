@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache.image;
+package androidrubick.xframework.image;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,12 +19,12 @@ import androidrubick.utils.Objects;
  *
  * Created by Yin Yong on 2015/9/15.
  */
-public interface XImageSetter {
+public interface XImageSetter<V extends View> {
 
     /**
      * 设置背景图片的对象
      */
-    XImageSetter VIEW_BG_SETTER = new XImageSetter() {
+    XImageSetter<View> VIEW_BG_SETTER = new XImageSetter<View>() {
         @Override
         public void setImage(View view, Bitmap bitmap) {
             view.setBackgroundDrawable(new BitmapDrawable(view.getResources(), bitmap));
@@ -34,17 +34,17 @@ public interface XImageSetter {
     /**
      * 设置Image src图片的对象
      */
-    XImageSetter IMAGE_SRC_SETTER = new XImageSetter() {
+    XImageSetter<ImageView> IMAGE_SRC_SETTER = new XImageSetter<ImageView>() {
         @Override
-        public void setImage(View view, Bitmap bitmap) {
-            if (view instanceof ImageView) {
-                Objects.getAs(view, ImageView.class).setImageBitmap(bitmap);
-            }
+        public void setImage(ImageView view, Bitmap bitmap) {
+            Objects.getAs(view, ImageView.class).setImageBitmap(bitmap);
         }
     };
 
     /**
-     * 如果是通用的View，则设置背景图片；如果是ImageView，设置Image src
+     * 如果是通用的View，则设置背景图片；
+     *
+     * 如果是ImageView，设置Image src
      */
     XImageSetter BOTH_WAY = new XImageSetter() {
         @Override
@@ -60,6 +60,6 @@ public interface XImageSetter {
     /**
      * 根据提供的<code>bitmap</code>设置图片
      */
-    public void setImage(View view, Bitmap bitmap) ;
+    public void setImage(V view, Bitmap bitmap) ;
 
 }

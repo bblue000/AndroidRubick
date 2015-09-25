@@ -28,8 +28,7 @@ public class XHttpRequestTest {
     public static void testGet() {
         System.out.println("============testGet");
         try {
-            XHttpResponse response = new XHttpRequest()
-                    .url("http://www.baidu.com/")
+            XHttpResponse response = XHttpRequest.get("http://www.baidu.com/")
                     .performRequest();
 
             String result = IOUtils.inputStreamToString(response.getContent(), "utf8", true);
@@ -49,8 +48,7 @@ public class XHttpRequestTest {
     public static void testPost() {
         System.out.println("============testPost");
         try {
-            XHttpResponse response = new XHttpRequest()
-                    .url("http://www.baidu.com/")
+            XHttpResponse response = XHttpRequest.post("http://www.baidu.com/")
                     .method(HttpMethod.POST)
                     .withBody(XHttpBody.newUrlEncodedBody().param("wd", "我是中国人"))
                     .performRequest();

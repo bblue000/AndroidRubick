@@ -316,4 +316,9 @@ public abstract class XHttpBody<R extends XHttpBody> {
      * 子类本身默认的content type，在用户没有明确设置时，使用该content-type
      */
     public abstract MediaType rawContentType() ;
+
+    @Override
+    public String toString() {
+        return "HTTP BODY[" + getContentType() + "]";
+    }
 }

@@ -9,14 +9,14 @@
  *
  * <p/>
  *
- * 在框架中，可以创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest XHttpReq}，
+ * 在框架中，可以创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest XHttpRequest}，
  * 设置请求必要的元素（如请求URL，方法等），
- * 然后调用{@link androidrubick.xframework.net.http.request.XHttpRequest#performRequest XHttpReq.performRequest}
+ * 然后调用{@link androidrubick.xframework.net.http.request.XHttpRequest#performRequest XHttpRequest.performRequest}
  * 发送请求。
  *
  * <p/>
  *
- * {@link androidrubick.xframework.net.http.request.XHttpRequest#performRequest XHttpReq.performRequest}
+ * {@link androidrubick.xframework.net.http.request.XHttpRequest#performRequest XHttpRequest.performRequest}
  * 方法内部调用了
  * {@link androidrubick.xframework.net.http.spi.XHttpRequestService#performRequest XHttpRequestService.performRequest}
  * 执行请求，项目默认提供了“http-default”模块，实现了该服务。

@@ -3,12 +3,15 @@ package androidrubick.xframework.impl.image;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import androidrubick.xbase.util.BitmapUtils;
+import androidrubick.utils.Objects;
+import androidrubick.xframework.image.BitmapUtils;
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
 import androidrubick.xframework.cache.disk.XDiskCaches;
-import androidrubick.xframework.cache.image.XImageOptions;
-import androidrubick.xframework.cache.image.XImageSetter;
+import androidrubick.xframework.image.XImageOptions;
+import androidrubick.xframework.image.XImageSetter;
 import androidrubick.xframework.cache.mem.XMemBasedCache;
+import androidrubick.xframework.impl.image.naming.FileNameGenerator;
+import androidrubick.xframework.impl.image.naming.Md5FileNameGenerator;
 
 /**
  * <p/>
@@ -32,8 +35,12 @@ public class XBitmapCache {
         }
     };
 
+    /**
+     * disk cache
+     */
     private XDiskBasedCache mDiskCache = XDiskCaches.dirCache("images");
 
+    private FileNameGenerator mFNG = new Md5FileNameGenerator();
 
     private int mMaxSize;
     public XBitmapCache(int maxMeasureSize) {
@@ -43,8 +50,26 @@ public class XBitmapCache {
     /**
      *
      */
-    /*package*/ void load(ImageView view, String url) {
+    /*package*/ void loadBitmap(String url, XImageOptions options) {
 
+    }
+
+    /**
+     *
+     */
+    /*package*/ void load(ImageView view, String url) {
+        Bitmap bm = mMemCache.get(url);
+        if (!Objects.isNull(bm)) {
+            // set
+            return;
+        }
+    }
+
+    private void deployTaskFor(ImageView view, String url) {
+        String oldUrl = (String) view.getTag(R.id.imageview_tag_url);
+        if (Objects.equals(oldUrl, url)) {
+            // 如果当前的url相等，看
+        }
     }
 
 //    /**

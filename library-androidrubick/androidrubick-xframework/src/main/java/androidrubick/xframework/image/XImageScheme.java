@@ -1,4 +1,4 @@
-package androidrubick.xframework.cache.image;
+package androidrubick.xframework.image;
 
 import java.util.Locale;
 

@@ -1,11 +1,11 @@
-package androidrubick.xframework.cache.image.spi;
+package androidrubick.xframework.image.spi;
 
 import android.view.View;
 
 import androidrubick.xbase.aspi.XSpiService;
-import androidrubick.xframework.cache.image.XImageLoadCallback;
-import androidrubick.xframework.cache.image.XImageOptions;
-import androidrubick.xframework.cache.image.XImageSetter;
+import androidrubick.xframework.image.XImageLoadCallback;
+import androidrubick.xframework.image.XImageOptions;
+import androidrubick.xframework.image.XImageSetter;
 
 /**
  * <p/>

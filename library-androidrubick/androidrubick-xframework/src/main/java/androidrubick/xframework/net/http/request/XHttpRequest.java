@@ -85,7 +85,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
 public class XHttpRequest {
 
     /**
-     * 根据<code>url</code>和<code>method</code>创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest}
+     * 根据<code>url</code>和<code>method</code>创建一个{@link XHttpRequest}
      * 对象
      */
     public static XHttpRequest by(String url, HttpMethod method) {
@@ -93,12 +93,27 @@ public class XHttpRequest {
     }
 
     /**
-     * 根据<code>url</code>和<code>method</code>创建一个{@link androidrubick.xframework.net.http.request.XHttpRequest}
+     * 根据<code>url</code>和<code>method</code>创建一个{@link XHttpRequest}
      * 对象
      */
     public static XHttpRequest by(HttpMethod method) {
         return new XHttpRequest().method(method);
     }
+
+    /**
+     * 封装常用的GET请求，直接传入URL
+     */
+    public static XHttpRequest get(String url) {
+        return by(url, HttpMethod.GET);
+    }
+
+    /**
+     * 封装常用的POST请求，直接传入URL
+     */
+    public static XHttpRequest post(String url) {
+        return by(url, HttpMethod.POST);
+    }
+
 
     private String mUrl;
     private HttpMethod mMethod;
@@ -107,7 +122,7 @@ public class XHttpRequest {
     private int mConnectionTimeout;
     private int mSocketTimeout;
     private XHttpRequestService mRequestService;
-    public XHttpRequest() {
+    private XHttpRequest() {
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
         header(HttpHeaders.ACCEPT_CHARSET, XHttps.DEFAULT_CHARSET.name());
@@ -116,7 +131,7 @@ public class XHttpRequest {
         header(HttpHeaders.USER_AGENT, DeviceInfos.getUserAgent());
     }
 
-    public XHttpRequest(String url, HttpMethod method) {
+    private XHttpRequest(String url, HttpMethod method) {
         this();
         url(url).method(method);
     }
@@ -332,6 +347,11 @@ public class XHttpRequest {
      *
      * <p/>
      *
+     * 每次调用，都会重新，因此，
+     * 在实现{@link XHttpResponse}接口时，不能认为{@link XHttpRequest}是保持不变的
+     *
+     * <p/>
+     *
      * 当且仅当，响应状态在[200, 300)区间，返回一个XHttpResultHolder对象；
      *
      * 其他响应状态根据具体的含义，抛出不同类型的异常。
@@ -387,6 +407,7 @@ public class XHttpRequest {
                 .add("url", this.mUrl)
                 .add("method", this.mMethod)
                 .add("headers", this.mHeaders)
+                .add("body", this.mBody)
                 .toString();
     }
 }

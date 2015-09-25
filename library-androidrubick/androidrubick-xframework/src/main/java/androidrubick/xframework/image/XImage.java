@@ -1,9 +1,9 @@
-package androidrubick.xframework.cache.image;
+package androidrubick.xframework.image;
 
 import android.view.View;
 
 import androidrubick.xbase.aspi.XServiceLoader;
-import androidrubick.xframework.cache.image.spi.XImageService;
+import androidrubick.xframework.image.spi.XImageService;
 
 /**
  *
@@ -56,9 +56,9 @@ public class XImage {
      * 加载图片
      *
      * @param res 图片资源id
-     * @param callback 加载图片的回调
+     * @param options 加载图片的回调
      */
-    public static void fromRes(int res, XImageLoadCallback callback) {
+    public static void fromRes(int res, XImageOptions options) {
 
     }
 
