@@ -531,7 +531,7 @@ import androidrubick.xbase.util.FrameworkLog;
      *
      * @see #execute(Object[])
      */
-    public final AsyncTaskCompat<Params, Progress, Result> executeOnExecutor(Executor exec,
+    /*package*/ AsyncTaskCompat<Params, Progress, Result> executeOnExecutor(Executor exec,
                                                                        Params... params) {
         if (mStatus != XJobStatus.PENDING) {
             switch (mStatus) {

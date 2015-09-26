@@ -15,6 +15,11 @@ import androidrubick.xframework.job.spi.XJobExecutorService;
  *
  * 使用{@link XJob#execute(Object[])}执行任务。
  *
+ * <br/>
+ *
+ * 一个任务只能运行一次，无论正在执行，还是执行结束，或是已经取消，
+ * 再次调用{@link #execute}时，将抛出异常。
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/5/10 0010.
@@ -91,6 +96,10 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
      * 将默认的任务执行转换为使用{@link XJobExecutorService}来执行；
      *
      * 该方法不带任何参数。
+     *
+     * <p/>
+     *
+     * 该方法为了在不传参数的情况下避免创建一个空数组。
      */
     public final XJob<Params, Progress, Result> execute() {
         return execute((Params[]) null);
@@ -105,6 +114,11 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
     public final XJob<Params, Progress, Result> execute(Params... params) {
         XServiceLoader.load(XJobExecutorService.class).execute(this, params);
         return this;
+    }
+
+    @Override
+    public final XJob<Params, Progress, Result> executeOnExecutor(Executor exec, Params... params) {
+        return (XJob) super.executeOnExecutor(exec, params);
     }
 
     @Override
