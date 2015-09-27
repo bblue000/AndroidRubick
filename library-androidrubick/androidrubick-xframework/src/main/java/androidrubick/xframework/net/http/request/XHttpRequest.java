@@ -7,6 +7,7 @@ import androidrubick.collect.MapBuilder;
 import androidrubick.net.HttpHeaderValues;
 import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
+import androidrubick.text.Strings;
 import androidrubick.utils.MathPreconditions;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
@@ -65,9 +66,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  * <pre>
  *     XHttpRes response = null;
  *     try {
- *         response = new XHttpRequest()
- *                  .url("http://foo.bar")
- *                  .method(HttpMethod.GET)
+ *         response = XHttpRequest.by("http://foo.bar", HttpMethod.GET)
  *                  .performRequest();
  *     } catch (XHttpError e) {
  *         // do exception codes
@@ -77,6 +76,10 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  * </pre>
  *
  * <p/>
+ *
+ * 该类多次调用{@link #performRequest()}方法将重复执行请求，
+ * 如果两次之间更新了请求设置，前后两次请求将不尽相同。
+ *
  * <p/>
  * Created by Yin Yong on 15/5/15.
  *
@@ -90,14 +93,6 @@ public class XHttpRequest {
      */
     public static XHttpRequest by(String url, HttpMethod method) {
         return new XHttpRequest(url, method);
-    }
-
-    /**
-     * 根据<code>url</code>和<code>method</code>创建一个{@link XHttpRequest}
-     * 对象
-     */
-    public static XHttpRequest by(HttpMethod method) {
-        return new XHttpRequest().method(method);
     }
 
     /**
@@ -336,6 +331,30 @@ public class XHttpRequest {
         return mSocketTimeout;
     }
 
+    /**
+     * 从当前请求对象中获得Content-Type；
+     *
+     * <br/>
+     *
+     * 如果<code>request</code>的header中没有设置，
+     * 就从{@link XHttpRequest#getBody() request body}中获取。
+     *
+     * <br/>
+     *
+     * 如果都没有设置，则返回null
+     */
+    public String getContentType() {
+        String contentType = getHeader(HttpHeaders.CONTENT_TYPE);
+        if (!Strings.isEmpty(contentType)) {
+            return contentType;
+        }
+        final XHttpBody body = getBody();
+        if (Objects.isNull(body)) {
+            return contentType;
+        }
+        return body.getContentType().name();
+    }
+
     protected void build() {
         Preconditions.checkNotNull(mUrl, "url");
         Preconditions.checkNotNull(mMethod, "method");
@@ -346,9 +365,6 @@ public class XHttpRequest {
      * {@link androidrubick.xframework.net.http.spi.XHttpRequestService}。
      *
      * <p/>
-     *
-     * 每次调用，都会重新，因此，
-     * 在实现{@link XHttpResponse}接口时，不能认为{@link XHttpRequest}是保持不变的
      *
      * <p/>
      *
@@ -403,7 +419,7 @@ public class XHttpRequest {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this.getClass())
+        return Objects.toStringHelper(this)
                 .add("url", this.mUrl)
                 .add("method", this.mMethod)
                 .add("headers", this.mHeaders)

@@ -17,6 +17,8 @@ import java.util.zip.GZIPInputStream;
 import javax.net.ssl.SSLSocketFactory;
 
 import androidrubick.io.IOUtils;
+import androidrubick.net.HttpHeaderValues;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.DeviceInfos;
@@ -69,7 +71,9 @@ public class HttpInnerUtils {
     }
 
     public static boolean isGzip(String contentEncoding) {
-        return "gzip".equalsIgnoreCase(contentEncoding);
+        final String gzip = HttpHeaderValues.CONTENT_ENCODING_GZIP;
+        return gzip.equalsIgnoreCase(contentEncoding)
+                || (!Strings.isEmpty(contentEncoding) && contentEncoding.contains(gzip));
     }
 
     public static InputStream resolveContent(String contentEncoding, InputStream originIns) throws IOException {

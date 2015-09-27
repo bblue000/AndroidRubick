@@ -75,12 +75,13 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
         if (CollectionsCompat.isEmpty(getParams()) && !mRawJsonSet) {
             return false;
         }
-        byte[] body = generateBody();
+        byte[] body = generatedBody();
         out.write(body);
         return true;
     }
 
-    protected byte[] generateBody() throws Exception {
+    @Override
+    protected byte[] generatedBody() throws Exception {
         if (mRawJsonSet) {
             return XHttps.getBytes(mRawJson, getParamCharset());
         }
@@ -94,7 +95,7 @@ public class XHttpJsonBody extends XHttpBody<XHttpJsonBody> {
             return size;
         }
         try {
-            return generateBody().length;
+            return generatedBody().length;
         } catch (Exception e) {
             return XHttps.DEFAULT_BODY_SIZE;
         }

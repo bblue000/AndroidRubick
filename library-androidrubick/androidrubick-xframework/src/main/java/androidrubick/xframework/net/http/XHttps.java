@@ -127,19 +127,14 @@ public class XHttps {
      * <br/>
      *
      * 如果都没有设置，则返回null
+     *
+     * @see XHttpRequest#getContentType()
      */
     public static String getContentType(final XHttpRequest request) {
         if (Objects.isNull(request)) {
             return null;
         }
-        String contentType = request.getHeader(HttpHeaders.CONTENT_TYPE);
-        if (!Strings.isEmpty(contentType)) {
-            return contentType;
-        }
-        if (Objects.isNull(request.getBody())) {
-            return contentType;
-        }
-        return request.getBody().getContentType().name();
+        return request.getContentType();
     }
 
     /**
@@ -273,7 +268,7 @@ public class XHttps {
 
     public static HttpEntity createEntity(final XHttpRequest request) {
         Preconditions.checkNotNull(request, "request");
-        return createEntity(request, getContentType(request));
+        return createEntity(request, request.getContentType());
     }
 
     @ForTest

@@ -9,6 +9,7 @@ import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.api.XAPICallback;
 import androidrubick.xframework.api.XAPIError;
 import androidrubick.xframework.api.XAPIHolder;
+import androidrubick.xframework.api.XAPIStatus;
 import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.impl.api.param.$APIParamParser;
 import androidrubick.xframework.impl.api.result.$APIResultParser;
@@ -22,7 +23,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
  *
  * Created by Yin Yong on 2015/9/15.
  */
-/*package*/ class $APIHolderImpl implements XAPIHolder {
+/*package*/ class $APIHolderImpl implements XAPIHolder, XAPICallback {
 
     private static final String TAG = $APIHolderImpl.class.getSimpleName();
 
@@ -48,7 +49,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
             // lazy create a new job
             synchronized (this) {
                 if (isIdle()) {
-                    mJob = new XAPIJob();
+                    mJob = new XAPIJob(mResultClz, mCallback);
                     mJob.execute(mRequest);
                     return true;
                 }
@@ -62,31 +63,77 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
 
     @Override
     public boolean isIdle() {
-        return Objects.isNull(mJob) || mJob.isFinished();
+        return isIdle(mJob);
     }
 
     @Override
     public boolean cancel() {
-        if (Objects.isNull(mJob)) {
+        final XAPIJob job = mJob;
+        if (Objects.isNull(job)) {
             return true;
         }
-        return mJob.cancel(true);
+        return job.cancel(true);
+    }
+
+    @Override
+    public void destroy() {
+        final XAPIJob job = mJob;
+        if (Objects.isNull(job)) {
+            return ;
+        }
+        job.clearCallback();
+        job.cancel(true);
+        restJob();
     }
 
     protected void restJob() {
-        synchronized (this) {
-            mJob = null;
+        if (!Objects.isNull(mJob)) {
+            synchronized (this) {
+                mJob = null;
+            }
         }
     }
 
+    @Override
+    public void onSuccess(Object o, XAPIStatus status) {
+        restJob();
+    }
+
+    @Override
+    public void onFailed(XAPIStatus status) {
+        restJob();
+    }
+
+    @Override
+    public void onCanceled(Object o, XAPIStatus status) {
+        restJob();
+    }
+
+    private boolean isIdle(XAPIJob job) {
+        return Objects.isNull(job) || job.isFinished();
+    }
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // inner job class
     /**
      * 执行并处理API请求的job
      *
      */
-    private class XAPIJob extends XHttpRetryJob<Void, $APIStatusImpl> {
+    private static class XAPIJob extends XHttpRetryJob<Void, $APIStatusImpl> {
 
-        public XAPIJob() {
+        private Class mResultClz;
+        private XAPICallback mCallback;
+        public XAPIJob(Class resultClz, XAPICallback callback) {
             super(APIConstants.RETRY_COUNT);
+            mResultClz = resultClz;
+            mCallback = callback;
+        }
+
+        public void clearCallback() {
+            synchronized (XAPIJob.this) {
+                mCallback = null;
+            }
         }
 
         @Override
@@ -100,7 +147,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
             if (XGlobals.DEBUG) {
                 XLog.d(TAG, "XAPIHolder@" + Integer.toHexString(hashCode()) + "#onPostExecute");
             }
-            try {
+            synchronized (XAPIJob.this) {
                 if (!Objects.isNull(mCallback)) {
                     if (!Objects.isNull(apiStatus) && apiStatus.successMark) {
                         mCallback.onSuccess(apiStatus.data, apiStatus);
@@ -108,9 +155,6 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
                         mCallback.onFailed(apiStatus);
                     }
                 }
-            } finally {
-                // clear mJob
-                restJob();
             }
         }
 
@@ -119,7 +163,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
             if (XGlobals.DEBUG) {
                 XLog.d(TAG, "XAPIHolder@" + Integer.toHexString(hashCode()) + "#onCancelled");
             }
-            try {
+            synchronized (XAPIJob.this) {
                 super.onCancelled(apiStatus);
                 if (!Objects.isNull(mCallback)) {
                     if (!Objects.isNull(apiStatus) && apiStatus.successMark) {
@@ -128,9 +172,6 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
                         mCallback.onCanceled(null, apiStatus);
                     }
                 }
-            } finally {
-                // clear mJob
-                restJob();
             }
         }
 

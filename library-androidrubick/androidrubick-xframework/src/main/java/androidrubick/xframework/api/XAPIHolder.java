@@ -13,7 +13,12 @@ package androidrubick.xframework.api;
 public interface XAPIHolder {
 
     /**
-     * 执行API请求，如果已经在进行，将直接返回false
+     * 执行API请求，如果API请求已经在进行，将直接返回false；
+     *
+     * <p/>
+     *
+     * 该方法针对的是多次调用执行，只是为了获取结果，
+     * 而对是否是哪次请求返回的结果并不关注。
      *
      * @see #isIdle()
      */
@@ -27,9 +32,22 @@ public interface XAPIHolder {
     /**
      * 取消API请求，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled}
      *
+     * @param ignoreCallback 是否忽略回调，如果传入true，则不
+     *
      * @return <tt>false</tt> if the task could not be cancelled,
      *         typically because it has already completed normally;
      *         <tt>true</tt> otherwise
      */
-    public boolean cancel() ;
+    public boolean cancel(boolean ignoreCallback) ;
+
+    /**
+     * 取消API请求，并不再调用{@link XAPICallback}中的任何回调
+     *
+     * <p/>
+     *
+     * if the task could not be cancelled or destroyed,
+     * typically because it has already completed normally, 任务还是会执行，
+     * 但是回调不会再执行回调;
+     */
+    public void destroy();
 }

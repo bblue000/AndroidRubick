@@ -68,9 +68,9 @@ public class XHttpError extends Exception {
 
     private Type mType = Type.Other;
     private int mStatusCode = -1;
+    private String mMessage;
     private Throwable mRawCause;
     private XHttpResponse mResponse;
-    private String mMessage;
     /**
      * Constructs a new {@code XHttpError} with the current stack trace
      * and the specified response, maybe null.

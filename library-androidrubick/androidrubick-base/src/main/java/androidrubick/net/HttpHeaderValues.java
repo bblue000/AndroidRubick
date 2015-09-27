@@ -39,6 +39,11 @@ public final class HttpHeaderValues {
      */
     public static final String KEEP_ALIVE = "Keep-Alive";
 
+    /**
+     * @see androidrubick.net.HttpHeaders#CONTENT_ENCODING
+     */
+    public static final String CONTENT_ENCODING_GZIP = "gzip";
+
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // optional parameter keys

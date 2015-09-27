@@ -24,8 +24,8 @@ public class XAPI {
     /**
      *
      * @param url 基础URL
-     * @param param 作为参数来源的对象
-     * @param result 作为结果输出的对象类型，如果该类继承自{@link }
+     * @param param 作为参数来源的对象，may be null
+     * @param result 作为结果输出的对象类型
      * @param callback 请求的回调
      *
      * @return 返回API请求处理对象
@@ -39,7 +39,7 @@ public class XAPI {
     /**
      *
      * @param url 基础URL
-     * @param param 作为参数来源的对象
+     * @param param 作为参数来源的对象，may be null
      * @param result 作为结果输出的对象类型
      * @param callback 请求的回调
      *

@@ -14,7 +14,6 @@ import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xframework.net.http.XHttps;
 import androidrubick.xframework.net.http.request.XHttpRequest;
 import androidrubick.xframework.net.http.request.body.XHttpBody;
 import androidrubick.xframework.net.http.response.*;
@@ -84,8 +83,8 @@ public class HttpRequestServiceAfterG implements XHttpRequestService {
         if (CollectionsCompat.isEmpty(headers)) {
             return;
         }
-        for (String key : headers.keySet()) {
-            urlConnection.setRequestProperty(key, headers.get(key));
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
         }
     }
 
@@ -124,12 +123,12 @@ public class HttpRequestServiceAfterG implements XHttpRequestService {
         /**
          * set Content-Type
          */
-        String contentType = XHttps.getContentType(request);
+        String contentType = request.getContentType();
         if (!Strings.isEmpty(contentType)) {
             connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
         }
 
-        request.getBody().writeTo(connection.getOutputStream());
+        body.writeTo(connection.getOutputStream());
     }
 
     @Override

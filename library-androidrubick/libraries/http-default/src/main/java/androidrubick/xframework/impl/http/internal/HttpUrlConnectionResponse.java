@@ -1,7 +1,5 @@
 package androidrubick.xframework.impl.http.internal;
 
-import org.apache.http.ProtocolVersion;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

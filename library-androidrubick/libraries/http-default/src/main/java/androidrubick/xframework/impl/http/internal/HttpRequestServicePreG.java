@@ -151,8 +151,8 @@ public class HttpRequestServicePreG implements XHttpRequestService {
         if (CollectionsCompat.isEmpty(headers)) {
             return;
         }
-        for (String key : headers.keySet()) {
-            httpUriRequest.setHeader(key, headers.get(key));
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            httpUriRequest.setHeader(entry.getKey(), entry.getValue());
         }
     }
 
@@ -188,7 +188,7 @@ public class HttpRequestServicePreG implements XHttpRequestService {
         /**
          * set Content-Type
          */
-        String contentType = XHttps.getContentType(request);
+        String contentType = request.getContentType();
         if (!Strings.isEmpty(contentType)) {
             httpEntityEnclosingRequest.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
         }
@@ -210,6 +210,6 @@ public class HttpRequestServicePreG implements XHttpRequestService {
 
     @Override
     public boolean multiInstance() {
-        return true;
+        return false;
     }
 }
