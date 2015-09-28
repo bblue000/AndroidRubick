@@ -17,17 +17,17 @@ package androidrubick.xframework.api;
  */
 public interface XAPIError {
 
-    // 以下code约定都是小于0
+    // 以下code约定都是小于0，又因为HTTP模块的status code有-1的情况，API的错误值限定在<-1
     /**
      * 连接超时
      */
-    int ERR_TIMEOUT = -1;
+    int ERR_TIMEOUT = -2;
     /**
      * 网络连接不通畅（或许是手机网络不好，或许是受限）
      */
-    int ERR_NETWORK = -2;
+    int ERR_NETWORK = -3;
     /**
-     * 客户端操作，此时将返回{@link Exception#getMessage()}
+     * 客户端代码异常，此时将返回{@link Exception#getMessage()}
      */
     int ERR_CLIENT = Integer.MIN_VALUE + 1;
     /**

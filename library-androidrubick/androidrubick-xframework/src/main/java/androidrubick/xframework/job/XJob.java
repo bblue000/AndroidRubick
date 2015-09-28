@@ -17,8 +17,7 @@ import androidrubick.xframework.job.spi.XJobExecutorService;
  *
  * <br/>
  *
- * 一个任务只能运行一次，无论正在执行，还是执行结束，或是已经取消，
- * 再次调用{@link #execute}时，将抛出异常。
+ * 一个任务只能运行一次，因此，无论正在执行，还是执行结束，或是已经取消，再次调用{@link #execute}时，将抛出异常。
  *
  * <p/>
  *
@@ -176,10 +175,16 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
     /**
      * 获取任务类型。
      *
-     * 默认为{@link #TEMP_JOB}
+     * 默认为{@link #TEMP_JOB}。
+     *
+     * <p/>
+     *
+     * 子类指定的类型值必须在{@link #FIRST_JOB_TYPE}和{@link #LAST_JOB_TYPE}之间。
      *
      * @see #UI_JOB
      * @see #TEMP_JOB
+     * @see #FIRST_JOB_TYPE
+     * @see #LAST_JOB_TYPE
      *
      */
     public int getJobType() {

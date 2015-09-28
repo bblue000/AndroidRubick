@@ -8,6 +8,7 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.net.http.spi.XHttpRequestService;
+import androidrubick.xframework.net.http.request.XHttpRequest;
 
 /**
  *
@@ -32,9 +33,16 @@ public class XHttpError extends Exception {
         Timeout,
 
         /**
-         * 无法建立连接
+         * 无法建立连接，尝试连接过程中出错；
          */
         NoConnection,
+
+        /**
+         * 建立了连接，但是没有获得有效的请求行；
+         *
+         * 或者能获得请求行（status line），但是获取其他内容时出错（多为网络原因）；
+         */
+        Network,
 
         /**
          * 没有权限访问
@@ -47,21 +55,17 @@ public class XHttpError extends Exception {
         Auth,
 
         /**
-        * for 5xx status codes
+        * for 5xx status codes（100...199也会包括在其中，如果{@link XHttpRequest#isAutoRedirect()}为false，
+         * 300...399也会包含其中）
         */
         Server,
-
-        /**
-         * 建立了连接，且能获得请求行（status line），但是获取内容时出错，多为网络原因
-         */
-        Network,
 
         /**
          * 其他未知的异常；
          *
          * <p/>
          *
-         * other unknown runtime exception
+         * other unknown runtime IO exception
          */
         Other
     }

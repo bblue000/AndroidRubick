@@ -78,7 +78,7 @@ import androidrubick.xframework.net.http.spi.XHttpRequestService;
  * <p/>
  *
  * 该类多次调用{@link #performRequest()}方法将重复执行请求，
- * 如果两次之间更新了请求设置，前后两次请求将不尽相同。
+ * 如果两次之间更新了请求设置，前后两次请求将不尽相同（跟{@link XHttpRequestService}的实现有关）。
  *
  * <p/>
  * Created by Yin Yong on 15/5/15.
@@ -117,6 +117,7 @@ public class XHttpRequest {
     private int mConnectionTimeout;
     private int mSocketTimeout;
     private XHttpRequestService mRequestService;
+    private boolean mAutoRedirect = true;
     private XHttpRequest() {
         // append default headers
         header(HttpHeaders.ACCEPT, "application/json;q=1, text/*;q=1, application/xhtml+xml, application/xml;q=0.9, image/*;q=0.9, */*;q=0.7");
@@ -276,6 +277,18 @@ public class XHttpRequest {
     }
 
     /**
+     * 是否自动处理请求过程中的跳转；
+     *
+     * <p/>
+     *
+     * 默认为true
+     */
+    public XHttpRequest autoRedirect(boolean auto) {
+        mAutoRedirect = auto;
+        return this;
+    }
+
+    /**
      * 获取请求URL
      */
     public String getUrl() {
@@ -353,6 +366,15 @@ public class XHttpRequest {
             return contentType;
         }
         return body.getContentType().name();
+    }
+
+    /**
+     * 是否自动处理请求过程中的跳转；
+     *
+     * @see #autoRedirect(boolean)
+     */
+    public boolean isAutoRedirect() {
+        return mAutoRedirect;
     }
 
     protected void build() {

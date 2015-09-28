@@ -1,5 +1,6 @@
 package androidrubick.xframework.impl.api.param;
 
+import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.AppInfos;
 import androidrubick.xbase.util.DeviceInfos;
 
@@ -15,6 +16,7 @@ import androidrubick.xbase.util.DeviceInfos;
  *
  * @since 1.0
  */
+@Configurable
 public class BaseParam {
 
     /**

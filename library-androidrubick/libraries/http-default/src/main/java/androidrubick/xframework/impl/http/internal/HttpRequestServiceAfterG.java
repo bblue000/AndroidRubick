@@ -97,6 +97,9 @@ public class HttpRequestServiceAfterG implements XHttpRequestService {
         if (socketTimeoutMs > 0) {
             connection.setReadTimeout(socketTimeoutMs);
         }
+
+        // 是否自动处理跳转
+        connection.setInstanceFollowRedirects(request.isAutoRedirect());
         connection.setUseCaches(false);
         connection.setDoInput(true);
     }

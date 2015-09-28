@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -169,6 +170,8 @@ public class HttpRequestServicePreG implements XHttpRequestService {
         if (socketTimeoutMs > 0) {
             HttpConnectionParams.setSoTimeout(httpParams, socketTimeoutMs);
         }
+        // 是否自动处理跳转
+        httpParams.setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, request.isAutoRedirect());
     }
 
     /**

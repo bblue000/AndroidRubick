@@ -188,7 +188,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
                     return new $APIStatusImpl(XAPIError.ERR_NETWORK, exception.getMessage());
                 case Other:
                 default:
-                    return new $APIStatusImpl(XAPIError.ERR_CLIENT, exception.getMessage());
+                    return new $APIStatusImpl(XAPIError.ERR_OTHER, exception.getMessage());
             }
         }
 
