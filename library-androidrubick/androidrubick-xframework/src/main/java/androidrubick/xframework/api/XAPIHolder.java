@@ -30,24 +30,17 @@ public interface XAPIHolder {
     public boolean isIdle();
 
     /**
-     * 取消API请求，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled}
+     * 取消API请求。
      *
-     * @param ignoreCallback 是否忽略回调，如果传入true，则不
+     * <code>ignoreCallback</code>传入false，如果API尚未返回结果，后续将调用{@link XAPICallback#onCanceled}；
+     *
+     * <code>ignoreCallback</code>传入true，则不会执行回调
+     *
+     * @param ignoreCallback 是否忽略回调，如果传入true，则不会执行回调
      *
      * @return <tt>false</tt> if the task could not be cancelled,
      *         typically because it has already completed normally;
      *         <tt>true</tt> otherwise
      */
     public boolean cancel(boolean ignoreCallback) ;
-
-    /**
-     * 取消API请求，并不再调用{@link XAPICallback}中的任何回调
-     *
-     * <p/>
-     *
-     * if the task could not be cancelled or destroyed,
-     * typically because it has already completed normally, 任务还是会执行，
-     * 但是回调不会再执行回调;
-     */
-    public void destroy();
 }

@@ -67,23 +67,18 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
     }
 
     @Override
-    public boolean cancel() {
+    public boolean cancel(boolean ignoreCallback) {
         final XAPIJob job = mJob;
         if (Objects.isNull(job)) {
             return true;
         }
-        return job.cancel(true);
-    }
 
-    @Override
-    public void destroy() {
-        final XAPIJob job = mJob;
-        if (Objects.isNull(job)) {
-            return ;
-        }
+        // ignore callback
         job.clearCallback();
-        job.cancel(true);
         restJob();
+
+        job.cancel(true);
+        return job.cancel(true);
     }
 
     protected void restJob() {
