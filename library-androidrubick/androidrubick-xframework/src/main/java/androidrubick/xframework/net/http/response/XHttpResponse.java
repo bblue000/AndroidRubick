@@ -21,6 +21,60 @@ import java.io.InputStream;
 public interface XHttpResponse extends Closeable {
 
     /**
+     * 连接超时
+     */
+    int CODE_TIMEOUT = -101;
+
+    /**
+     * 没有权限访问
+     *
+     * <p/>
+     *
+     * for 401 & 403 status codes
+     *
+     */
+    int Auth_Err = -100;
+
+    /**
+     * for 5xx status codes（100...199也会包括在其中，如果{@link XHttpRequest#isAutoRedirect()}为false，
+     * 300...399也会包含其中）
+     */
+    int Server_Err = -101;
+
+    /**
+     * 建立了连接，但是没有获得有效的请求行；
+     *
+     * 或者能获得请求行（status line），但是获取其他内容时出错（多为网络原因）；
+     */
+    Network,
+
+    /**
+     * 没有权限访问
+     *
+     * <p/>
+     *
+     * for 401 & 403 status codes
+     *
+     */
+    Auth,
+
+    /**
+     * for 5xx status codes（100...199也会包括在其中，如果{@link XHttpRequest#isAutoRedirect()}为false，
+     * 300...399也会包含其中）
+     */
+    Server,
+
+    /**
+     * 其他未知的异常；
+     *
+     * <p/>
+     *
+     * other unknown runtime IO exception
+     */
+    Other
+
+
+    /**
      * 直接的获取status code
      */
     public int getStatusCode() ;

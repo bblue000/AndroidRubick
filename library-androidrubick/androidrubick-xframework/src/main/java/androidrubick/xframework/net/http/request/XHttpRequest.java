@@ -439,6 +439,10 @@ public class XHttpRequest {
         return mRequestService.performRequest(this);
     }
 
+    protected void callback() {
+
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
