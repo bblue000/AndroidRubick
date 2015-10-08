@@ -18,7 +18,7 @@ public class DummyRuntimeException extends RuntimeException {
     private Throwable mCause;
     public DummyRuntimeException(Throwable throwable) {
         super();
-        mCause = throwable;
+        mCause = Preconditions.checkNotNull(throwable, "throwable");
     }
 
     @Override

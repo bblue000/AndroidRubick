@@ -48,6 +48,8 @@ public class XHttps {
 
     private XHttps() { /* no instance needed */ }
 
+    public static final String TAG = "XHttp";
+
     public static final ByteArrayPool BYTE_ARRAY_POOL = XGlobals.BYTE_ARRAY_POOL;
     // static
     /**

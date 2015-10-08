@@ -1,16 +1,17 @@
 package androidrubick.net;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
+import androidrubick.collect.MapBuilder;
 import androidrubick.text.Charsets;
 import androidrubick.text.MapJoiner;
 import androidrubick.text.SimpleTokenizer;
-import androidrubick.utils.ArraysCompat;
+import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
-import androidrubick.collect.MapBuilder;
 
 /**
  * 媒体类型
@@ -35,11 +36,14 @@ public class MediaType {
     /**
      * 单纯含有{ charset : UTF-8 }的Map
      */
-    public static final Map<String, String> UTF_8_CONSTANT_PARAMETERS =
-            Collections.unmodifiableMap(MapBuilder.newHashMap(1)
-                    .put(HttpHeaderValues.P_CHARSET, Charsets.UTF_8.name()).build());
+    public static final Map<String, String> UTF_8_CONSTANT_PARAMETERS;
+    static {
+        HashMap<String, String> map = new HashMap<String, String>(1);
+        map.put(HttpHeaderValues.P_CHARSET, Charsets.UTF_8.name());
+        UTF_8_CONSTANT_PARAMETERS = Collections.unmodifiableMap(map);
+    }
 
-    private static final Map<MediaType, MediaType> KNOWN_TYPES = MapBuilder.newHashMap(16).build();
+    private static final Map<MediaType, MediaType> KNOWN_TYPES = new HashMap<MediaType, MediaType>(16);
 
     private static MediaType createConstant(String type, String subtype) {
         return addKnownType(new MediaType(type, subtype, null));
@@ -340,32 +344,38 @@ public class MediaType {
         Preconditions.checkNotNull(origin);
         SimpleTokenizer tokenizer = new SimpleTokenizer(origin);
         String type = tokenizer.consumeNonChar(TYPE_END_TOKENS);
-        Preconditions.checkArgument(!Objects.isEmpty(type), "no type found");
+        Preconditions.checkArgument(!Strings.isEmpty(type), "no type found");
         tokenizer.consumeChar(TYPE_END_TOKENS);
         Preconditions.checkArgument(tokenizer.hasMore(), "no subtype found");
         String subtype = tokenizer.consumeNonTokens(SUBTYPE_END_TOKENS);
-        Preconditions.checkArgument(!Objects.isEmpty(subtype), "no subtype found");
+        Preconditions.checkArgument(!Strings.isEmpty(subtype), "no subtype found");
         tokenizer.consumeTokens(SUBTYPE_END_TOKENS);
 
         if (!tokenizer.hasMore()) {
             return MediaType.of(type, subtype);
         }
 
-        MapBuilder mapBuilder = MapBuilder.newHashMap(4);
+        Map<String, String> paramMap = null;
         while (tokenizer.hasMore()) {
             String key = tokenizer.consumeNonTokens(PARAM_KEY_END_TOKENS);
-            Preconditions.checkArgument(!Objects.isEmpty(key), "err key");
+            Preconditions.checkArgument(!Strings.isEmpty(key), "err key");
             if (tokenizer.hasMore()) {
                 tokenizer.consumeTokens(PARAM_KEY_END_TOKENS);
             }
             Preconditions.checkArgument(tokenizer.hasMore(), "no value found of key %s", key);
             String value = tokenizer.consumeNonTokens(PARAM_VALUE_END_TOKENS);
-            Preconditions.checkArgument(!Objects.isEmpty(value), "no value found of key %s", key);
+            Preconditions.checkArgument(!Strings.isEmpty(value), "no value found of key %s", key);
             if (tokenizer.hasMore()) {
                 tokenizer.consumeTokens(PARAM_VALUE_END_TOKENS);
             }
-            mapBuilder.put(key, value);
+            if (Objects.isNull(paramMap)) {
+                paramMap = new HashMap<String, String>(2);
+            }
+            paramMap.put(key, value);
         }
-        return MediaType.of(type, subtype, mapBuilder.build());
+        if (Objects.isNull(paramMap)) {
+            return MediaType.of(type, subtype);
+        }
+        return MediaType.of(type, subtype, paramMap);
     }
 }

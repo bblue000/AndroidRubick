@@ -18,7 +18,7 @@ public class DummyException extends Exception {
     private Throwable mCause;
     public DummyException(Throwable throwable) {
         super();
-        mCause = throwable;
+        mCause = Preconditions.checkNotNull(throwable, "throwable");
     }
 
     @Override
