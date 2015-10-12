@@ -6,8 +6,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import androidrubick.collect.CollectionsCompat;
-import androidrubick.net.HttpUrls;
+import static androidrubick.net.HttpUrls.*;
 import androidrubick.text.Strings;
+import androidrubick.utils.Function;
 import androidrubick.xbase.util.JsonParser;
 import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.net.http.XHttps;
@@ -105,14 +106,24 @@ public class XHttpBodys {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // url encoded
-    public static String toUrlEncodedString(Map<String, ?> parameters, String charsetName) {
-        if (CollectionsCompat.isEmpty(parameters)) {
-            return Strings.EMPTY;
-        }
-        return HttpUrls.toUrlEncodedQueryString(parameters, charsetName);
+    public static byte[] toUrlEncodedByteArray(Map<String, ?> parameters,
+                                               Function<Object, String> toStringFunc,
+                                               String charsetName) {
+        return toByteArray(toUrlEncodedQueryString(parameters, toStringFunc), charsetName);
     }
 
     public static byte[] toUrlEncodedByteArray(Map<String, ?> parameters, String charsetName) {
-        return toByteArray(toUrlEncodedString(parameters, charsetName), charsetName);
+        return toByteArray(toUrlEncodedQueryString(parameters, charsetName), charsetName);
+    }
+
+    public static void writeUrlEncodedTo(OutputStream out, Map<String, ?> parameters,
+                                         String charsetName) throws IOException {
+        out.write(toUrlEncodedByteArray(parameters, charsetName));
+    }
+
+    public static void writeUrlEncodedTo(OutputStream out, Map<String, ?> parameters,
+                                         Function<Object, String> toStringFunc,
+                                         String charsetName) throws IOException {
+        out.write(toUrlEncodedByteArray(parameters, toStringFunc, charsetName));
     }
 }

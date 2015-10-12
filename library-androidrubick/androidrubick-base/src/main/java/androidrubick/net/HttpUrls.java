@@ -79,6 +79,10 @@ public class HttpUrls {
      * 使用简单的{@link URLEncoder}将参数Map转为url请求参数：
      *
      * <pre>
+     *     null --> ""
+     *
+     *     [] --> ""
+     *
      *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
      * </pre>
      */
@@ -86,14 +90,18 @@ public class HttpUrls {
         if (CollectionsCompat.isEmpty(params)) {
             return Strings.EMPTY;
         }
-        Function<Object, CharSequence> func = toUrlEncodedStringFunc(charsetName);
+        Function<Object, String> func = toUrlEncodedStringFunc(charsetName);
         return toUrlEncodedQueryString(params, func, func);
     }
 
-    public static Function<Object, CharSequence> toUrlEncodedStringFunc(final String charsetName) {
-        return new Function<Object, CharSequence>() {
+    /**
+     * 根据指定的字符编码返回方法
+     * @param charsetName 字符编码
+     */
+    public static Function<Object, String> toUrlEncodedStringFunc(final String charsetName) {
+        return new Function<Object, String>() {
             @Override
-            public CharSequence apply(Object input) {
+            public String apply(Object input) {
                 try {
                     return URLEncoder.encode(String.valueOf(input), charsetName);
                 } catch (UnsupportedEncodingException e) {
@@ -107,6 +115,26 @@ public class HttpUrls {
      * 使用自定义的toString函数将参数Map转为url请求参数：
      *
      * <pre>
+     *     null --> ""
+     *
+     *     [] --> ""
+     *
+     *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
+     * </pre>
+     */
+    public static String toUrlEncodedQueryString(Map<?, ?> params,
+                                                 Function<Object, ? extends CharSequence> toStringFunc) {
+        return toUrlEncodedQueryString(params, toStringFunc, toStringFunc);
+    }
+
+    /**
+     * 使用自定义的toString函数将参数Map转为url请求参数：
+     *
+     * <pre>
+     *     null --> ""
+     *
+     *     [] --> ""
+     *
      *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
      * </pre>
      */

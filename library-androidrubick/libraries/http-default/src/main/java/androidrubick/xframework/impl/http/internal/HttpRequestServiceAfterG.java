@@ -113,15 +113,6 @@ public class HttpRequestServiceAfterG implements XHttpRequestService {
     }
 
     protected void setEntityIfNonEmptyBody(HttpURLConnection connection, XHttpRequest request) throws IOException {
-        XHttpBody body = request.getBody();
-        if (Objects.isNull(body)) {
-            return ;
-        }
-        // Prepare output. There is no need to set Content-Length explicitly,
-        // since this is handled by HttpURLConnection using the size of the prepared
-        // output stream.
-        connection.setDoOutput(true);
-
         // set connection
         /**
          * set Content-Type
@@ -130,6 +121,15 @@ public class HttpRequestServiceAfterG implements XHttpRequestService {
         if (!Strings.isEmpty(contentType)) {
             connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
         }
+
+        XHttpBody body = request.getBody();
+        if (Objects.isNull(body)) {
+            return ;
+        }
+        // Prepare output. There is no need to set Content-Length explicitly,
+        // since this is handled by HttpURLConnection using the size of the prepared
+        // output stream.
+        connection.setDoOutput(true);
 
         body.writeTo(connection.getOutputStream());
     }

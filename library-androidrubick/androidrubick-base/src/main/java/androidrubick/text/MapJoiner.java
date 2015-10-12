@@ -91,11 +91,11 @@ public class MapJoiner {
             }
 
             private <K, V>void toStringOfEntry(Appendable appendable, Map.Entry<K, V> item) {
-                appendPreOrSuffixIfNeeded(appendable, mPrefix);
+                appendPreOrSuffixIfNeeded(appendable, mEntryPrefix);
                 appendResult(appendable, toStringOf(mToStringFuncOfKey, item.getKey(), mNullKeyText));
                 appendResult(appendable, mKeyValueSep);
                 appendResult(appendable, toStringOf(mToStringFuncOfValue, item.getValue(), mNullValueText));
-                appendPreOrSuffixIfNeeded(appendable, mSuffix);
+                appendPreOrSuffixIfNeeded(appendable, mEntrySuffix);
             }
         };
         mKeyValueSep = checkNotNull(keyValueSeparator, "keyValueSeparator is null");

@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import androidrubick.collect.CollectionsCompat;
 import androidrubick.utils.ArraysCompat;
+import androidrubick.utils.Exceptions;
 import androidrubick.utils.Function;
 import androidrubick.utils.Functions;
 import androidrubick.utils.Objects;
@@ -270,7 +271,7 @@ public class Joiner {
         try {
             appendable.append(result);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Exceptions.toRuntime(e);
         }
     }
 
