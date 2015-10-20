@@ -19,6 +19,8 @@ import androidrubick.utils.Preconditions;
  * <p/>
  *
  * Created by Yin Yong on 2015/5/17 0017.
+ *
+ * @since 1.0
  */
 public class MediaType {
 
@@ -30,11 +32,15 @@ public class MediaType {
     public static final String VIDEO_TYPE = "video";
     /**
      * 通配符
+     *
+     * @since 1.0
      */
     public static final String WILDCARD = "*";
 
     /**
      * 单纯含有{ charset : UTF-8 }的Map
+     *
+     * @since 1.0
      */
     public static final Map<String, String> UTF_8_CONSTANT_PARAMETERS;
     static {
@@ -56,31 +62,43 @@ public class MediaType {
 
     /**
      * 通配类型。
+     *
+     * @since 1.0
      */
     public static final MediaType ANY = createConstant(WILDCARD, WILDCARD);
 
     /**
      * 文本类型的通配类型。
+     *
+     * @since 1.0
      */
     public static final MediaType ANY_TEXT = createConstant(TEXT_TYPE, WILDCARD);
 
     /**
      * 图片类型的通配类型。
+     *
+     * @since 1.0
      */
     public static final MediaType ANY_IMAGE = createConstant(IMAGE_TYPE, WILDCARD);
 
     /**
      * 音频类型的通配类型。
+     *
+     * @since 1.0
      */
     public static final MediaType ANY_AUDIO = createConstant(AUDIO_TYPE, WILDCARD);
 
     /**
      * 视频类型的通配类型。
+     *
+     * @since 1.0
      */
     public static final MediaType ANY_VIDEO = createConstant(VIDEO_TYPE, WILDCARD);
 
     /**
      * 应用类型的通配类型。
+     *
+     * @since 1.0
      */
     public static final MediaType ANY_APPLICATION = createConstant(APPLICATION_TYPE, WILDCARD);
 
@@ -222,6 +240,8 @@ public class MediaType {
 
     /**
      * 获取该MediaType的名称，如text/plain
+     *
+     * @since 1.0
      */
     public String name() {
         return mDisplayName;
@@ -231,6 +251,8 @@ public class MediaType {
      * 附加一个新的参数
      *
      * @return 一个新的对象
+     *
+     * @since 1.0
      */
     public MediaType withParameter(String key, String value) {
         return withParameters(MapBuilder
@@ -243,6 +265,8 @@ public class MediaType {
      * 附加一些新的参数
      *
      * @return 一个新的对象，如果参数为空Map，则返回当前对象
+     *
+     * @since 1.0
      */
     public MediaType withParameters(Map<String, String> map) {
         if (CollectionsCompat.isEmpty(map)) {
@@ -255,6 +279,8 @@ public class MediaType {
      * 不包含当前对象参数的一个“新对象”
      *
      * @return 如果当前对象含有参数，则返回一个新的对象；如果参数为空Map，则返回当前对象
+     *
+     * @since 1.0
      */
     public MediaType withoutParameters() {
         if (CollectionsCompat.isEmpty(parameters)) {
@@ -267,24 +293,40 @@ public class MediaType {
      * 向当前对象添加/覆盖{@link HttpHeaderValues#P_CHARSET charset}参数
      *
      * @return 一个新的对象
+     *
+     * @since 1.0
      */
     public MediaType withCharset(String charset) {
         return withParameter(HttpHeaderValues.P_CHARSET, Preconditions.checkNotNull(charset));
     }
 
+    /**
+     *
+     * @since 1.0
+     */
     public String type() {
         return type;
     }
 
+    /**
+     *
+     * @since 1.0
+     */
     public String subtype() {
         return subtype;
     }
 
-    /** Returns true if either the type or subtype is the wildcard. */
+    /** Returns true if either the type or subtype is the wildcard.
+     *
+     * @since 1.0 */
     public boolean hasWildcard() {
         return WILDCARD.equals(type) || WILDCARD.equals(subtype);
     }
 
+    /**
+     *
+     * @since 1.0
+     */
     public String charset() {
         return CollectionsCompat.isEmpty(this.parameters) ? null :
                 this.parameters.get(HttpHeaderValues.P_CHARSET);
@@ -306,6 +348,8 @@ public class MediaType {
 
     /**
      * 当前对象是否属于{@code mediaTypeRange}，该方法仅仅比较类型和二级类型
+     *
+     * @since 1.0
      */
     public boolean is(MediaType mediaTypeRange) {
         return (Objects.equals(mediaTypeRange.type, WILDCARD) || Objects.equals(mediaTypeRange.type, this.type))
@@ -340,6 +384,11 @@ public class MediaType {
     private static final String SUBTYPE_END_TOKENS = "()<>@,;:\\\"/[]?= ";
     private static final String PARAM_KEY_END_TOKENS = SUBTYPE_END_TOKENS;
     private static final String PARAM_VALUE_END_TOKENS = PARAM_KEY_END_TOKENS;
+
+    /**
+     *
+     * @since 1.0
+     */
     public static MediaType parse(String origin) {
         Preconditions.checkNotNull(origin);
         SimpleTokenizer tokenizer = new SimpleTokenizer(origin);

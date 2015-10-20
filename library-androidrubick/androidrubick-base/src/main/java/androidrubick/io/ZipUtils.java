@@ -28,6 +28,8 @@ public class ZipUtils {
      * @param useBuf 使用提供的字节数组进行中间传输变量，
      *               为null时使用{@link IOConstants#DEF_BUFFER_SIZE}长度的字符数组
      * @return 如果成功解压文件，返回true（不论原文件有没有删除成功）
+     *
+     * @since 1.0
      */
     public static boolean unzip(File srcFile, boolean deleteSrc,
                                 File destDir, boolean coverIfExists,

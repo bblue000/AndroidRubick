@@ -10,14 +10,14 @@ package androidrubick.utils;
 public class Exceptions {
     private Exceptions() { }
 
-    public static RuntimeException toRuntime(Throwable e) {
+    public static RuntimeException asRuntime(Throwable e) {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
         }
         return new DummyRuntimeException(e);
     }
 
-    public static RuntimeException toRuntime(String msg) {
+    public static RuntimeException asRuntime(String msg) {
         return new RuntimeException(msg);
     }
 

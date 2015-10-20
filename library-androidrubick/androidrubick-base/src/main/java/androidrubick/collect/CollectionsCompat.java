@@ -24,6 +24,8 @@ public class CollectionsCompat {
 
     /**
      * 判断一个集合是否是空的
+     *
+     * @since 1.0
      */
     public static boolean isEmpty(Collection<?> c) {
         return getSize(c) == 0;
@@ -31,6 +33,8 @@ public class CollectionsCompat {
 
     /**
      * 判断一个Map是否是空的
+     *
+     * @since 1.0
      */
     public static boolean isEmpty(Map<?, ?> map) {
         return getSize(map) == 0;
@@ -41,6 +45,8 @@ public class CollectionsCompat {
      *
      * @param c 集合
      * @return 集合的长度
+     *
+     * @since 1.0
      */
     public static int getSize(Collection<?> c) {
         return Objects.isNull(c) ? 0 : c.size();
@@ -51,6 +57,8 @@ public class CollectionsCompat {
      *
      * @param map 集合
      * @return Map的长度
+     *
+     * @since 1.0
      */
     public static int getSize(Map<?, ?> map) {
         return Objects.isNull(map) ? 0 : map.size();
@@ -63,6 +71,8 @@ public class CollectionsCompat {
      * @param <E>
      * @param <R>
      * @return 目标集合
+     *
+     * @since 1.0
      */
     public static <E, R extends Collection<? super E>>R addAll(R dest, Collection<E> src) {
         if (Objects.isNull(dest) || isEmpty(src)) {
@@ -80,6 +90,8 @@ public class CollectionsCompat {
      * @param <E>
      * @param <R>
      * @return 目标集合
+     *
+     * @since 1.0
      */
     public static <E, R extends Collection<? super E>>R appendAll(R dest, E...src) {
         if (Objects.isNull(dest) || ArraysCompat.isEmpty(src)) {
@@ -99,6 +111,8 @@ public class CollectionsCompat {
      * @param <E>
      * @param <R>
      * @return 目标列表
+     *
+     * @since 1.0
      */
     public static <E, R extends List<? super E>>R addAll(R dest, int location, Collection<E> src) {
         if (Objects.isNull(dest) || isEmpty(src)) {
@@ -116,6 +130,8 @@ public class CollectionsCompat {
      * @param <E>
      * @param <R>
      * @return 目标列表
+     *
+     * @since 1.0
      */
     public static <E, R extends List<? super E>>R insertAll(R dest, int location, E...src) {
         if (Objects.isNull(dest) || ArraysCompat.isEmpty(src)) {
@@ -133,6 +149,8 @@ public class CollectionsCompat {
      * @param dest 目标列表
      * @param src 数据来源Map
      * @return 目标Map
+     *
+     * @since 1.0
      */
     public static <K, V, R extends Map<? super K, ? super V>>R putAll(R dest, Map<K, V> src) {
         if (Objects.isNull(dest) || isEmpty(src)) {
@@ -150,6 +168,8 @@ public class CollectionsCompat {
      * @param dest 目标列表
      * @param src 数据来源Map
      * @return 目标Map
+     *
+     * @since 1.0
      */
     public static <K, V, R extends Map<? super K, ? super V>>R putAllUnCover(R dest, Map<K, V> src) {
         if (Objects.isNull(dest) || isEmpty(src)) {
@@ -163,6 +183,8 @@ public class CollectionsCompat {
 
     /**
      * 如果<code>key</code>已存在，则覆盖
+     *
+     * @since 1.0
      */
     public static <K, V, R extends Map<? super K, ? super V>>boolean put(R map, K key, V value) {
         if (Objects.isNull(map)) {
@@ -174,6 +196,8 @@ public class CollectionsCompat {
 
     /**
      * 如果<code>key</code>已存在，则不添加
+     *
+     * @since 1.0
      */
     public static <K, V, R extends Map<? super K, ? super V>>boolean putUnCover(R map, K key, V value) {
         if (Objects.isNull(map)) {
@@ -186,6 +210,11 @@ public class CollectionsCompat {
         return true;
     }
 
+    /**
+     * 从<code>map</code>中获取<code>key</code>对应的值
+     *
+     * @since 1.0
+     */
     public static <K, V, R extends Map<? super K, V>, Result extends V>Result getValue(R map, K key) {
         if (Objects.isNull(map)) {
             return null;
@@ -193,6 +222,11 @@ public class CollectionsCompat {
         return (Result) map.get(key);
     }
 
+    /**
+     * 判断<code>map</code>中hi否有<code>key</code>
+     *
+     * @since 1.0
+     */
     public static <K, V, R extends Map<? super K, V>>boolean containsKey(R map, K key) {
         if (Objects.isNull(map)) {
             return false;
@@ -200,6 +234,11 @@ public class CollectionsCompat {
         return map.containsKey(key);
     }
 
+    /**
+     * 判断<code>map</code>中hi否有<code>value</code>
+     *
+     * @since 1.0
+     */
     public static <K, V, R extends Map<K, ? super V>>boolean containsValue(R map, V value) {
         if (Objects.isNull(map)) {
             return false;

@@ -12,6 +12,8 @@ import java.io.PrintWriter;
  * <p/>
  *
  * Created by Yin Yong on 2015/9/22.
+ *
+ * @since 1.0
  */
 public class DummyRuntimeException extends RuntimeException {
 

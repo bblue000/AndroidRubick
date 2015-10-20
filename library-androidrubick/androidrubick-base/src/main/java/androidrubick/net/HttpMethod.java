@@ -11,23 +11,54 @@ package androidrubick.net;
  */
 public enum HttpMethod {
 
+    /**
+     * @since 1.0
+     */
     GET("GET"),
+
+    /**
+     * @since 1.0
+     */
     POST("POST") {
         @Override
         public boolean canContainBody() {
             return true;
         }
     },
+
+    /**
+     * @since 1.0
+     */
     PUT("PUT") {
         @Override
         public boolean canContainBody() {
             return true;
         }
     },
+
+    /**
+     * @since 1.0
+     */
     DELETE("DELETE"),
+
+    /**
+     * @since 1.0
+     */
     HEAD("HEAD"),
+
+    /**
+     * @since 1.0
+     */
     OPTIONS("OPTIONS"),
+
+    /**
+     * @since 1.0
+     */
     TRACE("TRACE"),
+
+    /**
+     * @since 1.0
+     */
     PATCH("PATCH") {
         @Override
         public boolean canContainBody() {

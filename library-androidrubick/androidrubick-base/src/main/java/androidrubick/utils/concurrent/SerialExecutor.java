@@ -24,6 +24,11 @@ public class SerialExecutor extends AbsExecutorWrapper {
         super(base);
     }
 
+    /**
+     * 执行{@link Runnable}
+     *
+     * @since 1.0
+     */
     public synchronized void execute(final Runnable r) {
         mTasks.offer(new Runnable() {
             public void run() {

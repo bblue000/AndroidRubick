@@ -24,6 +24,8 @@ public class ArraysCompat {
 
     /**
      * 判断数组是否是空数组
+     *
+     * @since 1.0
      */
     public static boolean isEmpty(Object target) {
         if (isNull(target)) {
@@ -39,6 +41,8 @@ public class ArraysCompat {
      * 借用可变参数的便利性，生成一个由参数元素组成的数组
      *
      * @param elements 数组元素
+     *
+     * @since 1.0
      */
     public static <T>T[] by(T...elements) {
         return elements;
@@ -46,31 +50,63 @@ public class ArraysCompat {
 
     /**
      * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
      */
     public static int getLength(Object[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
 
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
+     */
     public static int getLength(int[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
 
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
+     */
     public static int getLength(char[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
 
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
+     */
     public static int getLength(byte[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
 
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
+     */
     public static int getLength(long[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
 
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
+     */
     public static int getLength(float[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
 
+    /**
+     * 获取数组的长度，如果数组为null，则返回0
+     *
+     * @since 1.0
+     */
     public static int getLength(double[] arr) {
         return isNull(arr) ? 0 : arr.length;
     }
@@ -90,7 +126,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(byte[] array, int startIndex, int endIndex, byte value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -126,7 +163,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(char[] array, int startIndex, int endIndex, char value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -162,7 +200,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(double[] array, int startIndex, int endIndex, double value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -209,7 +248,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(float[] array, int startIndex, int endIndex, float value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -256,7 +296,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(int[] array, int startIndex, int endIndex, int value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -292,7 +333,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(long[] array, int startIndex, int endIndex, long value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -331,7 +373,8 @@ public class ArraysCompat {
      *         implement {@code Comparable}, or cannot be compared to each other.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(Object[] array, int startIndex, int endIndex, Object value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -373,7 +416,8 @@ public class ArraysCompat {
      *         implement {@code Comparable}, or cannot be compared to each other.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static <T> int binarySearch(T[] array, int startIndex, int endIndex, T value,
                                        Comparator<? super T> comparator) {
@@ -414,7 +458,8 @@ public class ArraysCompat {
      *         is {@code -index - 1} where the element would be inserted.
      * @throws IllegalArgumentException if {@code startIndex > endIndex}
      * @throws ArrayIndexOutOfBoundsException if {@code startIndex < 0 || endIndex > array.length}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int binarySearch(short[] array, int startIndex, int endIndex, short value) {
         checkBinarySearchBounds(startIndex, endIndex, array.length);
@@ -484,7 +529,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static boolean[] copyOf(boolean[] original, int newLength) {
         if (newLength < 0) {
@@ -503,7 +549,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static byte[] copyOf(byte[] original, int newLength) {
         if (newLength < 0) {
@@ -522,7 +569,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static char[] copyOf(char[] original, int newLength) {
         if (newLength < 0) {
@@ -541,7 +589,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static double[] copyOf(double[] original, int newLength) {
         if (newLength < 0) {
@@ -560,7 +609,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static float[] copyOf(float[] original, int newLength) {
         if (newLength < 0) {
@@ -579,7 +629,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int[] copyOf(int[] original, int newLength) {
         if (newLength < 0) {
@@ -598,7 +649,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static long[] copyOf(long[] original, int newLength) {
         if (newLength < 0) {
@@ -617,7 +669,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static short[] copyOf(short[] original, int newLength) {
         if (newLength < 0) {
@@ -636,7 +689,8 @@ public class ArraysCompat {
      * @return the new array
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static <T> T[] copyOf(T[] original, int newLength) {
         if (original == null) {
@@ -660,7 +714,8 @@ public class ArraysCompat {
      * @throws NegativeArraySizeException if {@code newLength < 0}
      * @throws NullPointerException if {@code original == null}
      * @throws ArrayStoreException if a value in {@code original} is incompatible with T
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static <T, U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
         // We use the null pointer check in copyOfRange for exception priority compatibility.
@@ -683,7 +738,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static boolean[] copyOfRange(boolean[] original, int start, int end) {
         if (start > end) {
@@ -713,7 +769,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static byte[] copyOfRange(byte[] original, int start, int end) {
         if (start > end) {
@@ -743,7 +800,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static char[] copyOfRange(char[] original, int start, int end) {
         if (start > end) {
@@ -773,7 +831,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static double[] copyOfRange(double[] original, int start, int end) {
         if (start > end) {
@@ -803,7 +862,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static float[] copyOfRange(float[] original, int start, int end) {
         if (start > end) {
@@ -833,7 +893,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static int[] copyOfRange(int[] original, int start, int end) {
         if (start > end) {
@@ -863,7 +924,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static long[] copyOfRange(long[] original, int start, int end) {
         if (start > end) {
@@ -893,7 +955,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     public static short[] copyOfRange(short[] original, int start, int end) {
         if (start > end) {
@@ -923,7 +986,8 @@ public class ArraysCompat {
      * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
-     * @since 1.6
+     *
+     * @since 1.0
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] copyOfRange(T[] original, int start, int end) {
@@ -955,7 +1019,8 @@ public class ArraysCompat {
      * @throws IllegalArgumentException if {@code start > end}
      * @throws NullPointerException if {@code original == null}
      * @throws ArrayStoreException if a value in {@code original} is incompatible with T
-     * @since 1.6
+     *
+     * @since 1.0
      */
     @SuppressWarnings("unchecked")
     public static <T, U> T[] copyOfRange(U[] original, int start, int end, Class<? extends T[]> newType) {

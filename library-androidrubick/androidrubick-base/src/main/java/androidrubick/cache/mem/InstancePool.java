@@ -10,6 +10,8 @@ import androidrubick.utils.Recycleable;
  * <p/>
  *
  * Created by Yin Yong on 2015/9/1.
+ *
+ * @since 1.0
  */
 public abstract class InstancePool<E> implements Recycleable {
 
@@ -22,6 +24,8 @@ public abstract class InstancePool<E> implements Recycleable {
 
     /**
      * obtain an instance
+     *
+     * @since 1.0
      */
     public E obtain() {
         synchronized (mPoolList) {
@@ -34,6 +38,8 @@ public abstract class InstancePool<E> implements Recycleable {
 
     /**
      * max pool size
+     *
+     * @since 1.0
      */
     public final int poolSize() {
         return mPoolSize;
@@ -41,6 +47,8 @@ public abstract class InstancePool<E> implements Recycleable {
 
     /**
      * current pool size
+     *
+     * @since 1.0
      */
     public int size() {
         return CollectionsCompat.getSize(mPoolList);
@@ -48,6 +56,8 @@ public abstract class InstancePool<E> implements Recycleable {
 
     /**
      * 回收对象，如果对象池没有达到上限（{@link #poolSize()}），将加入到对象池中
+     *
+     * @since 1.0
      */
     public void returnInstance(E e) {
         if (Objects.isNull(e)) {
@@ -65,9 +75,16 @@ public abstract class InstancePool<E> implements Recycleable {
 
     /**
      * create a new instance
+     *
+     * @since 1.0
      */
     protected abstract E create();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 1.0
+     */
     @Override
     public void recycle() {
         if (null != mPoolList && !mPoolList.isEmpty()) {

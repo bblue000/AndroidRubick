@@ -1,7 +1,6 @@
 package androidrubicktest;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.UnsupportedCharsetException;
 
 import androidrubick.utils.Exceptions;
 
@@ -16,14 +15,14 @@ public class ExceptionsTest {
 
     public static void main(String args[]) throws Throwable {
 
-        Exceptions.toRuntime("1").printStackTrace();
+        Exceptions.asRuntime("1").printStackTrace();
 
         System.out.println();
 
         try {
             throw new UnsupportedEncodingException("");
         } catch (Exception e) {
-            Throwable my = Exceptions.toRuntime(e);
+            Throwable my = Exceptions.asRuntime(e);
             my.printStackTrace();
             throw my;
         }

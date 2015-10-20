@@ -17,6 +17,8 @@ public interface IOProgressCallback {
      *
      * @param readThisTime 上次回调结束到本地回调读取/写入的字节/字符数
      * @param readTotal 从开始到本次回调一共读取/写入的字节/字符数
+     *
+     * @since 1.0
      */
     void onProgress(long readThisTime, long readTotal);
 
@@ -24,6 +26,8 @@ public interface IOProgressCallback {
      * I/O操作结束时的回调
      *
      * @param readTotal 一共读取/写入的字节/字符数
+     *
+     * @since 1.0
      */
     void onComplete(long readTotal);
 }

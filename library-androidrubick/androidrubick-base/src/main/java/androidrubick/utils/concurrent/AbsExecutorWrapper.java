@@ -21,6 +21,11 @@ public abstract class AbsExecutorWrapper implements Executor {
         this.mBase = Preconditions.checkNotNull(base, "base Executor can not be null");
     }
 
+    /**
+     * @return base {@link Executor}
+     *
+     * @since 1.0
+     */
     public Executor getExecutor() {
         return mBase;
     }

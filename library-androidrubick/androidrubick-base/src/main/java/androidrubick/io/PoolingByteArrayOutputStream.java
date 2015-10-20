@@ -24,6 +24,8 @@ import androidrubick.cache.mem.ByteArrayPool;
 /**
  * A variation of {@link java.io.ByteArrayOutputStream} that uses a pool of byte[] buffers instead
  * of always allocating them fresh, saving on heap churn.
+ *
+ * @since 1.0
  */
 public class PoolingByteArrayOutputStream extends ByteArrayOutputStream implements IOConstants {
     /**
@@ -37,6 +39,8 @@ public class PoolingByteArrayOutputStream extends ByteArrayOutputStream implemen
     /**
      * Constructs a new PoolingByteArrayOutputStream with a default size. If more bytes are written
      * to this instance, the underlying byte array will expand.
+     *
+     * @since 1.0
      */
     public PoolingByteArrayOutputStream(ByteArrayPool pool) {
         this(pool, DEFAULT_SIZE);
@@ -49,12 +53,20 @@ public class PoolingByteArrayOutputStream extends ByteArrayOutputStream implemen
      *
      * @param size initial size for the underlying byte array. The value will be pinned to a default
      *        minimum size.
+     *
+     * @since 1.0
      */
     public PoolingByteArrayOutputStream(ByteArrayPool pool, int size) {
         mPool = pool;
         buf = mPool.getBuf(Math.max(size, 0));
     }
 
+    /**
+     *
+     * {@inheritDoc}
+     *
+     * @since 1.0
+     */
     @Override
     public void close() throws IOException {
         mPool.returnBuf(buf);
@@ -81,12 +93,24 @@ public class PoolingByteArrayOutputStream extends ByteArrayOutputStream implemen
         buf = newbuf;
     }
 
+    /**
+     *
+     * {@inheritDoc}
+     *
+     * @since 1.0
+     */
     @Override
     public synchronized void write(byte[] buffer, int offset, int len) {
         expand(len);
         super.write(buffer, offset, len);
     }
 
+    /**
+     *
+     * {@inheritDoc}
+     *
+     * @since 1.0
+     */
     @Override
     public synchronized void write(int oneByte) {
         expand(1);
