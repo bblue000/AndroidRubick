@@ -47,6 +47,9 @@ public interface XUICallback {
     void onDestroy(XUIComponent flow);
 
 
+    /**
+     * 简单实现
+     */
     public static class SimpleUICallback implements XUICallback {
         @Override
         public void onCreated(XUIComponent flow) { }

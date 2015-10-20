@@ -96,7 +96,7 @@ public class Reflects {
         try {
             result = (Result) method.invoke(target, params);
         } catch (Exception e) {
-            throw Exceptions.toRuntime(e);
+            throw Exceptions.asRuntime(e);
         } finally {
             if (!isAccessible) {
                 method.setAccessible(isAccessible);
@@ -122,6 +122,8 @@ public class Reflects {
 
     /**
      * 获取字段值
+     *
+     * @since 1.0
      */
     public static <Result>Result getFieldValue(Object target, Field field) {
         boolean isAccessible = field.isAccessible();
@@ -131,7 +133,7 @@ public class Reflects {
         try {
             return (Result) field.get(target);
         } catch (IllegalAccessException e) {
-            throw Exceptions.toRuntime(e);
+            throw Exceptions.asRuntime(e);
         } finally {
             if (!isAccessible) {
                 field.setAccessible(isAccessible);
@@ -139,6 +141,10 @@ public class Reflects {
         }
     }
 
+    /**
+     *
+     * @since 1.0
+     */
     public static boolean isModifierPresent(Member member, int modifier) {
         return (member.getModifiers() & modifier) == modifier;
     }

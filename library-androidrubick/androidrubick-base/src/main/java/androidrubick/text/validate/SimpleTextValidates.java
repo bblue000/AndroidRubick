@@ -54,6 +54,8 @@ public class SimpleTextValidates {
 
     /**
      * 是否是纯字母
+     *
+     * @since 1.0
      */
     public static boolean isPureLetter(CharSequence charSequence) {
         if (Strings.isEmpty(charSequence)) {
