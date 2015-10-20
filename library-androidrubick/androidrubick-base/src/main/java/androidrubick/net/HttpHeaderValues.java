@@ -17,7 +17,7 @@
 package androidrubick.net;
 
 /**
- * Contains constant definitions for the HTTP header field values & value fields. See:
+ * Contains constant definitions for the HTTP header field names. See:
  * <ul>
  * <li><a href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</a>
  * <li><a href="http://www.ietf.org/rfc/rfc2183.txt">RFC 2183</a>
@@ -36,15 +36,11 @@ public final class HttpHeaderValues {
 
     /**
      * @see androidrubick.net.HttpHeaders#CONNECTION
-     *
-     * @since 1.0
      */
     public static final String KEEP_ALIVE = "Keep-Alive";
 
     /**
      * @see androidrubick.net.HttpHeaders#CONTENT_ENCODING
-     *
-     * @since 1.0
      */
     public static final String CONTENT_ENCODING_GZIP = "gzip";
 
@@ -52,16 +48,12 @@ public final class HttpHeaderValues {
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // optional parameter keys
     /**
-     * 参数名 boundary
-     *
-     * @since 1.0
+     * 参数 boundary
      */
     public static final String P_BOUNDARY = "boundary";
 
     /**
-     * 参数名 charset
-     *
-     * @since 1.0
+     * 参数 charset
      */
     public static final String P_CHARSET = "charset";
 }

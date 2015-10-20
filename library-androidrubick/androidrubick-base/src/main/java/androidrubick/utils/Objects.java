@@ -15,8 +15,6 @@ import androidrubick.text.Strings;
  * <p/>
  *
  * Created by yong01.yin on 2014/12/30.
- *
- * @since 1.0
  */
 public class Objects {
 
@@ -27,8 +25,6 @@ public class Objects {
      * the result of {@link java.util.Arrays#equals} if both arguments are primitive arrays,
      * the result of {@link java.util.Arrays#deepEquals} if both arguments are arrays of reference types,
      * and the result of {@link #equals} otherwise.
-     *
-     * @since 1.0
      */
     public static boolean deepEquals(Object a, Object b) {
         if (a == null || b == null) {
@@ -57,8 +53,6 @@ public class Objects {
 
     /**
      * Null-safe equivalent of {@code a.equals(b)}.
-     *
-     * @since 1.0
      */
     public static boolean equals(Object a, Object b) {
         return (a == null) ? (b == null) : a.equals(b);
@@ -68,8 +62,6 @@ public class Objects {
      * Convenience wrapper for {@link Arrays#hashCode}, adding varargs.
      * This can be used to compute a hash code for an object's fields as follows:
      * {@code Objects.hash(a, b, c)}.
-     *
-     * @since 1.0
      */
     public static int hash(Object... values) {
         return Arrays.hashCode(values);
@@ -77,8 +69,6 @@ public class Objects {
 
     /**
      * Returns 0 for null or {@code o.hashCode()}.
-     *
-     * @since 1.0
      */
     public static int hashCode(Object o) {
         return (o == null) ? 0 : o.hashCode();
@@ -93,8 +83,6 @@ public class Objects {
 
     /**
      * Returns {@code nullString} for null or {@code o.toString()}.
-     *
-     * @since 1.0
      */
     public static String toString(Object o, String nullString) {
         return isNull(o) ? nullString : toStringInternal(o);
@@ -147,8 +135,6 @@ public class Objects {
      *
      * @param self the object to generate the string for (typically {@code this}),
      *        used only for its class name
-     *
-     * @since 1.0
      */
     public static ToStringHelper toStringHelper(Object self) {
         return new ToStringHelper(simpleName(self.getClass()));
@@ -162,8 +148,6 @@ public class Objects {
      * <p>Note that in GWT, class names are often obfuscated.
      *
      * @param clazz the {@link Class} of the instance
-     *
-     * @since 1.0
      */
     public static ToStringHelper toStringHelper(Class<?> clazz) {
         return new ToStringHelper(simpleName(clazz));
@@ -175,8 +159,6 @@ public class Objects {
      * of using an instance's {@link Object#getClass()}.
      *
      * @param className the name of the instance type
-     *
-     * @since 1.0
      */
     public static ToStringHelper toStringHelper(String className) {
         return new ToStringHelper(className);
@@ -185,8 +167,6 @@ public class Objects {
     /**
      * {@link Class#getSimpleName()} is not GWT compatible yet, so we
      * provide our own implementation.
-     *
-     * @since 1.0
      */
     private static String simpleName(Class<?> clazz) {
         String name = clazz.getName();
@@ -208,8 +188,6 @@ public class Objects {
 
     /**
      * 判断一个对象是否为空
-     *
-     * @since 1.0
      */
     public static boolean isNull(Object o) {
         return null == o;
@@ -217,8 +195,6 @@ public class Objects {
 
     /**
      * 判断一个对象是否为“空”——null 或者是对象意义上的空，如空字符串
-     *
-     * @since 1.0
      */
     public static boolean isEmpty(Object o) {
         if (isNull(o)) {
@@ -266,8 +242,6 @@ public class Objects {
      * @param o 目标对象
      * @param another 代替对象
      * @return 如果指定对象不为空，则返回原对象<code>o</code>；如果指定对象为空，则返回代替对象<code>another</code>。
-     *
-     * @since 1.0
      */
     public static <T, U extends T>T getOr(T o, U another) {
         return isNull(o) ? another : o;
@@ -275,8 +249,6 @@ public class Objects {
 
     /**
      * 如果指定对象不为空，则返回对象1；如果指定对象为空，则返回代替对象2
-     *
-     * @since 1.0
      */
     public static <T, U>U getOr(T o, U sth, U sthAnother) {
         return isNull(o) ? sth : sthAnother;

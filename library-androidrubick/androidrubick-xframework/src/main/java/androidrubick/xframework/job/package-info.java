@@ -57,7 +57,7 @@
  *                         mRetryPolicy.retry(e);
  *                         continue;
  *                     } catch (Throwable cannotRetryEx) {
- *                         throw Exceptions.asRuntime(cannotRetryEx);
+ *                         throw Exceptions.toRuntime(cannotRetryEx);
  *                     }
  *                 }
  *                 break;

@@ -45,8 +45,6 @@ public class Joiner {
      * 基于空字符串分割符的一个新的{@link Joiner}对象
      *
      * @return 基于指定的分割符一个新的{@link Joiner}对象
-     *
-     * @since 1.0
      */
     public static Joiner by() {
         return new Joiner(Strings.EMPTY);
@@ -59,8 +57,6 @@ public class Joiner {
      * @return 基于指定的分割符的一个新的{@link Joiner}对象
      *
      * @exception java.lang.NullPointerException
-     *
-     * @since 1.0
      */
     public static Joiner by(CharSequence sep) {
         return new Joiner(sep);
@@ -72,8 +68,6 @@ public class Joiner {
      *
      * @param sepChar 分割字符
      * @return 基于指定的分割字符的一个新的{@link Joiner}对象
-     *
-     * @since 1.0
      */
     public static Joiner by(char sepChar) {
         return new Joiner(String.valueOf(sepChar));
@@ -106,8 +100,6 @@ public class Joiner {
      *
      * @param prefix 前缀
      * @param suffix 后缀
-     *
-     * @since 1.0
      */
     public Joiner withPreAndSuffix(CharSequence prefix, CharSequence suffix) {
         mPrefix = prefix;
@@ -123,8 +115,6 @@ public class Joiner {
      * 如果{@link #useForNull(CharSequence)}在之前调用，则{@link #useForNull(CharSequence)}失效；
      * <br/>
      * 如果{@link #useForNull(CharSequence)}在之后调用，则该方法失效；
-     *
-     * @since 1.0
      */
     public Joiner skipNulls() {
         mSkipNulls = true;
@@ -150,8 +140,6 @@ public class Joiner {
      * 如果{@link #skipNulls()}在之后调用，则该方法失效；
      *
      * @throws java.lang.NullPointerException
-     *
-     * @since 1.0
      */
     public Joiner useForNull(final CharSequence nullText) {
         mSkipNulls = false;
@@ -161,8 +149,6 @@ public class Joiner {
 
     /**
      * 设置默认的{@link Object#toString()}函数，除非使用特定方法传入参数
-     *
-     * @since 1.0
      */
     public <T>Joiner withToStringFunc(Function<T, ? extends CharSequence> toStringFunc) {
         mToStringFunc = checkNotNull(toStringFunc);
@@ -285,7 +271,7 @@ public class Joiner {
         try {
             appendable.append(result);
         } catch (IOException e) {
-            throw Exceptions.asRuntime(e);
+            throw Exceptions.toRuntime(e);
         }
     }
 

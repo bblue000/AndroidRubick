@@ -246,7 +246,7 @@ public abstract class XHttpBody<R extends XHttpBody> {
             }
             writeEmpty(out);
         } catch (Exception e) {
-            throw Exceptions.asRuntime(e);
+            throw Exceptions.toRuntime(e);
         }
     }
 

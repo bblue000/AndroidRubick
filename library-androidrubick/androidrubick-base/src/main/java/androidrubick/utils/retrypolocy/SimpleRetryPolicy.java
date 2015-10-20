@@ -18,7 +18,7 @@ import androidrubick.utils.MathPreconditions;
  *                 // do core operations
  *                 ...
  *             } catch(XException ex) {
- *                 rp.retry(ex); // throw ex if no more retry times
+ *                 rp.retry(ex);
  *                 // do next loop
  *                 continue;
  *             }
@@ -31,40 +31,23 @@ import androidrubick.utils.MathPreconditions;
  * <p/>
  *
  * Created by Yin Yong on 2015/8/31.
- *
- * @since 1.0
  */
 public class SimpleRetryPolicy implements RetryPolicy {
 
     private final int mRetryCount;
     /** The current retry count. */
     private int mCurrentRetryCount;
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0
-     */
     public SimpleRetryPolicy(int retryCount) {
         mRetryCount = MathPreconditions.checkNoLessThanMin("retryCount", retryCount, 0);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0
-     */
     @Override
     public boolean hasAttemptRemaining() {
         return mCurrentRetryCount <= mRetryCount;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0
-     */
     @Override
-    public <Ex extends Throwable> void retry(Ex error) throws Ex {
+    public <Ex extends Throwable> void retry(Ex error) throws Throwable {
         mCurrentRetryCount ++;
         if (!hasAttemptRemaining()) {
             throw error;

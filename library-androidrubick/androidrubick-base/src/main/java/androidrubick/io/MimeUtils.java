@@ -10,10 +10,6 @@ import java.util.Properties;
 
 import androidrubick.utils.Objects;
 
-/**
- *
- * @since 1.0
- */
 public final class MimeUtils {
 	private static final Map<String, String> mimeTypeToExtensionMap = new HashMap<String, String>();
 
@@ -435,8 +431,6 @@ public final class MimeUtils {
 	 * @param mimeType
 	 *            A MIME type (i.e. text/plain)
 	 * @return True iff there is a mimeType entry in the map.
-	 *
-	 * @since 1.0
 	 */
 	public static boolean hasMimeType(String mimeType) {
 		if (Objects.isEmpty(mimeType)) {
@@ -451,8 +445,6 @@ public final class MimeUtils {
 	 * @param extension
 	 *            A file extension without the leading '.'
 	 * @return The MIME type for the given extension or null iff there is none.
-	 *
-	 * @since 1.0
 	 */
 	public static String guessMimeTypeFromExtension(String extension) {
 		if (Objects.isEmpty(extension)) {
@@ -467,8 +459,6 @@ public final class MimeUtils {
 	 * @param extension
 	 *            A file extension without the leading '.'
 	 * @return True iff there is an extension entry in the map.
-	 *
-	 * @since 1.0
 	 */
 	public static boolean hasExtension(String extension) {
 		if (Objects.isEmpty(extension)) {
@@ -485,8 +475,6 @@ public final class MimeUtils {
 	 * @param mimeType
 	 *            A MIME type (i.e. text/plain)
 	 * @return The extension for the given MIME type or null iff there is none.
-	 *
-	 * @since 1.0
 	 */
 
 	public static String guessExtensionFromMimeType(String mimeType) {
@@ -497,15 +485,6 @@ public final class MimeUtils {
 		// TODO Auto-generated method stub
 	}
 
-	/**
-	 * Returns the registered extension for the src's given MIME type.
-	 * Note that some MIME types map to multiple extensions. This call will return the most
-	 * common extension for the given MIME type.
-	 *
-	 * @return The extension for the given src's MIME type or null iff there is none.
-	 *
-	 * @since 1.0
-	 */
     public static String guessMimeTypeByGetExtensionFromSrc(String src) {
         if (Objects.isEmpty(src)) {
             return null;

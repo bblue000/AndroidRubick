@@ -36,21 +36,10 @@ import androidrubick.utils.Function;
  * <p/>
  *
  * Created by Yin Yong on 2015/9/10.
- *
- * @since 1.0
  */
 public class HttpUrls {
 
-    /**
-     *
-     * @since 1.0
-     */
     public static final char SEP_QUERY = '?';
-
-    /**
-     *
-     * @since 1.0
-     */
     public static final char SEP_FRAGMENT = '#';
 
     private HttpUrls() { /* no instance needed */ }
@@ -65,8 +54,6 @@ public class HttpUrls {
      *
      * @see #toUrlEncodedQueryString(java.util.Map, String)
      * @see #toUrlEncodedQueryString(java.util.Map, androidrubick.utils.Function, androidrubick.utils.Function)
-     *
-     * @since 1.0
      */
     public static String appendQueryString(String originUrl, String queryString) {
         if (Strings.isEmpty(queryString)) {
@@ -83,10 +70,6 @@ public class HttpUrls {
         return url;
     }
 
-    /**
-     *
-     * @since 1.0
-     */
     public static String appendParamsAsQueryString(String originUrl, Map<?, ?> params, final String charsetName) {
         String queryString = toUrlEncodedQueryString(params, charsetName);
         return appendQueryString(originUrl, queryString);
@@ -102,8 +85,6 @@ public class HttpUrls {
      *
      *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
      * </pre>
-     *
-     * @since 1.0
      */
     public static String toUrlEncodedQueryString(Map<?, ?> params, final String charsetName) {
         if (CollectionsCompat.isEmpty(params)) {
@@ -116,8 +97,6 @@ public class HttpUrls {
     /**
      * 根据指定的字符编码返回方法
      * @param charsetName 字符编码
-     *
-     * @since 1.0
      */
     public static Function<Object, String> toUrlEncodedStringFunc(final String charsetName) {
         return new Function<Object, String>() {
@@ -126,7 +105,7 @@ public class HttpUrls {
                 try {
                     return URLEncoder.encode(String.valueOf(input), charsetName);
                 } catch (UnsupportedEncodingException e) {
-                    throw Exceptions.asRuntime(e);
+                    throw Exceptions.toRuntime(e);
                 }
             }
         };
@@ -142,8 +121,6 @@ public class HttpUrls {
      *
      *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
      * </pre>
-     *
-     * @since 1.0
      */
     public static String toUrlEncodedQueryString(Map<?, ?> params,
                                                  Function<Object, ? extends CharSequence> toStringFunc) {
@@ -160,8 +137,6 @@ public class HttpUrls {
      *
      *     [{a1:1}, {a2:2}] --> a1=1&a2=2...
      * </pre>
-     *
-     * @since 1.0
      */
     public static String toUrlEncodedQueryString(Map<?, ?> params,
                                       Function<Object, ? extends CharSequence> toStringOfKey,

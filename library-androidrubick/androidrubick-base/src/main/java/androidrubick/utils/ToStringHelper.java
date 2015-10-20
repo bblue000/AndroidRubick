@@ -20,8 +20,6 @@ public class ToStringHelper {
 
     /**
      * Use {@link Objects#toStringHelper(Object)} to create an instance.
-     *
-     * @since 1.0
      */
     public ToStringHelper(String className) {
         this.className = checkNotNull(className);

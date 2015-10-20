@@ -19,51 +19,30 @@ import static androidrubick.collect.CollectionsCompat.*;
  */
 public class MapBuilder {
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newHashMap() {
         return newHashMap(DEFAULT_CAPACITY);
     }
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newHashMap(int capacity) {
         return new MapBuilder(new HashMap(capacity));
     }
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newWeakHashMap() {
         return new MapBuilder(new WeakHashMap());
     }
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newWeakHashMap(int capacity) {
         return new MapBuilder(new WeakHashMap(capacity));
     }
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newLinkedHashMap() {
         return newLinkedHashMap(DEFAULT_CAPACITY);
     }
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newLinkedHashMap(int capacity) {
         return new MapBuilder(new LinkedHashMap(capacity));
     }
 
-    /**
-     * @since 1.0
-     */
     public static MapBuilder newTreeMap() {
         return new MapBuilder(new TreeMap());
     }
@@ -80,25 +59,16 @@ public class MapBuilder {
         mMap = map;
     }
 
-    /**
-     * @since 1.0
-     */
     public MapBuilder put(Object key, Object value) {
         mMap.put(key, value);
         return this;
     }
 
-    /**
-     * @since 1.0
-     */
     public MapBuilder putAll(Map otherMap) {
         CollectionsCompat.putAll(mMap, otherMap);
         return this;
     }
 
-    /**
-     * @since 1.0
-     */
     public <T extends Map>T build() {
         return (T) mMap;
     }

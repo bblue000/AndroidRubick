@@ -52,8 +52,6 @@ import androidrubick.utils.Recycleable;
  * This class ensures that the total size of the buffers in its recycling pool never exceeds a
  * certain byte limit. When a buffer is returned that would cause the pool to exceed the limit,
  * least-recently-used buffers are disposed.
- *
- * @since 1.0
  */
 public class CharArrayPool implements Recycleable {
     /** The buffer pool, arranged both by last use and by buffer size */
@@ -79,8 +77,6 @@ public class CharArrayPool implements Recycleable {
 
     /**
      * @param sizeLimit the maximum size of the pool, in bytes
-     *
-     * @since 1.0
      */
     public CharArrayPool(int sizeLimit) {
         mSizeLimit = sizeLimit;
@@ -93,8 +89,6 @@ public class CharArrayPool implements Recycleable {
      * @param len the minimum size, in bytes, of the requested buffer. The returned buffer may be
      *        larger.
      * @return a byte[] buffer is always returned.
-     *
-     * @since 1.0
      */
     public synchronized char[] getBuf(int len) {
         for (int i = 0; i < mBuffersBySize.size(); i++) {
@@ -114,8 +108,6 @@ public class CharArrayPool implements Recycleable {
      * size.
      *
      * @param buf the buffer to return to the pool.
-     *
-     * @since 1.0
      */
     public synchronized void returnBuf(char[] buf) {
         if (buf == null || buf.length > mSizeLimit) {
@@ -133,8 +125,6 @@ public class CharArrayPool implements Recycleable {
 
     /**
      * Removes buffers from the pool until it is under its size limit.
-     *
-     * @since 1.0
      */
     private synchronized void trim() {
         while (mCurrentSize > mSizeLimit) {
@@ -144,11 +134,6 @@ public class CharArrayPool implements Recycleable {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0
-     */
     @Override
     public synchronized void recycle() {
         mBuffersByLastUse.clear();

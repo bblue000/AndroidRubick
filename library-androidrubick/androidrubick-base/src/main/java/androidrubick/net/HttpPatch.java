@@ -17,16 +17,10 @@ public class HttpPatch extends HttpEntityEnclosingRequestBase {
 
     public final static String METHOD_NAME = "PATCH";
 
-    /**
-     * @since 1.0
-     */
     public HttpPatch() {
         super();
     }
 
-    /**
-     * @since 1.0
-     */
     public HttpPatch(final URI uri) {
         super();
         setURI(uri);
@@ -34,19 +28,12 @@ public class HttpPatch extends HttpEntityEnclosingRequestBase {
 
     /**
      * @throws IllegalArgumentException if the uri is invalid.
-     *
-     * @since 1.0
      */
     public HttpPatch(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0
-     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

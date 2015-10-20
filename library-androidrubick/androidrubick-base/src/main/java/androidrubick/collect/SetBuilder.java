@@ -19,37 +19,22 @@ import static androidrubick.collect.CollectionsCompat.*;
  */
 public class SetBuilder {
 
-    /**
-     * @since 1.0
-     */
     public static SetBuilder newHashSet() {
         return newHashSet(DEFAULT_CAPACITY);
     }
 
-    /**
-     * @since 1.0
-     */
     public static SetBuilder newHashSet(int capacity) {
         return new SetBuilder(new HashSet(capacity));
     }
 
-    /**
-     * @since 1.0
-     */
     public static SetBuilder newLinkedHashSet() {
         return newLinkedHashSet(DEFAULT_CAPACITY);
     }
 
-    /**
-     * @since 1.0
-     */
     public static SetBuilder newLinkedHashSet(int capacity) {
         return new SetBuilder(new LinkedHashSet(capacity));
     }
 
-    /**
-     * @since 1.0
-     */
     public static SetBuilder newTreeSet() {
         return new SetBuilder(new TreeSet());
     }
@@ -66,33 +51,21 @@ public class SetBuilder {
         mCollection = c;
     }
 
-    /**
-     * @since 1.0
-     */
     public SetBuilder add(Object value) {
         mCollection.add(value);
         return this;
     }
 
-    /**
-     * @since 1.0
-     */
     public SetBuilder addAll(Collection otherCollection) {
         CollectionsCompat.addAll(mCollection, otherCollection);
         return this;
     }
 
-    /**
-     * @since 1.0
-     */
     public SetBuilder appendAll(Object...arr) {
         CollectionsCompat.appendAll(mCollection, arr);
         return this;
     }
 
-    /**
-     * @since 1.0
-     */
     public <T extends Set>T build() {
         return (T) mCollection;
     }

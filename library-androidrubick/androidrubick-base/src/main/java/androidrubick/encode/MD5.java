@@ -2,9 +2,6 @@ package androidrubick.encode;
 
 import java.security.MessageDigest;
 
-/**
- * @since 1.0
- */
 public class MD5 {
 	static final String algorithm = "MD5";
 

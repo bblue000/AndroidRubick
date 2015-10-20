@@ -46,8 +46,6 @@ public class MapJoiner {
      * @return 基于指定的分割符的一个新的{@link MapJoiner}对象
      *
      * @throws java.lang.NullPointerException
-     *
-     * @since 1.0
      */
     public static MapJoiner by(CharSequence sep, CharSequence keyValueSeparator) {
         return new MapJoiner(sep, keyValueSeparator);
@@ -110,8 +108,6 @@ public class MapJoiner {
      * 设置前缀、后缀（内容为空时也显示前缀后缀）
      * @param prefix 前缀
      * @param suffix 后缀
-     *
-     * @since 1.0
      */
     public MapJoiner withPreAndSuffix(CharSequence prefix, CharSequence suffix) {
         mJoiner.withPreAndSuffix(prefix, suffix);
@@ -122,8 +118,6 @@ public class MapJoiner {
      * 设置每一项的前缀、后缀
      * @param prefix 前缀
      * @param suffix 后缀
-     *
-     * @since 1.0
      */
     public MapJoiner withEntryPreAndSuffix(CharSequence prefix, CharSequence suffix) {
         mEntryPrefix = prefix;
@@ -139,8 +133,6 @@ public class MapJoiner {
      * 如果{@link #useForNullKey(CharSequence)}在之前调用，则{@link #useForNullKey(CharSequence)}失效；
      * <br/>
      * 如果{@link #useForNullKey(CharSequence)}在之后调用，则该方法失效；
-     *
-     * @since 1.0
      */
     public MapJoiner skipNullKeys() {
         mSkipNullKeys = true;
@@ -156,8 +148,6 @@ public class MapJoiner {
      * 如果{@link #useForNullValue(CharSequence)}在之前调用，则{@link #useForNullValue(CharSequence)}失效；
      * <br/>
      * 如果{@link #useForNullValue(CharSequence)}在之后调用，则该方法失效；
-     *
-     * @since 1.0
      */
     public MapJoiner skipNullValues() {
         mSkipNullValues = true;
@@ -183,8 +173,6 @@ public class MapJoiner {
      * 如果{@link #skipNullKeys()}在之后调用，则该方法失效；
      *
      * @throws java.lang.NullPointerException
-     *
-     * @since 1.0
      */
     public MapJoiner useForNullKey(CharSequence nullKeyText) {
         mSkipNullKeys = false;
@@ -206,8 +194,6 @@ public class MapJoiner {
      * <p/>
      *
      * @throws java.lang.NullPointerException
-     *
-     * @since 1.0
      */
     public MapJoiner useForNullValue(CharSequence nullValueText) {
         mSkipNullValues = false;

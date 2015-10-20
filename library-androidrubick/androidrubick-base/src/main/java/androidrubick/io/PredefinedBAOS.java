@@ -23,8 +23,6 @@ import java.io.ByteArrayOutputStream;
  * 
  * Return the buffered array as is if the predefined size matches exactly the result byte array length.
  * Reduce memory allocation by half by avoiding array expand and copy.
- *
- * @since 1.0
  * 
  */
 

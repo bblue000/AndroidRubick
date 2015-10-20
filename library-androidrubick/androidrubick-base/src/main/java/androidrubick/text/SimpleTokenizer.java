@@ -25,8 +25,6 @@ public class SimpleTokenizer {
      * 根据目标字符串创建实例
      *
      * @param input 目标字符串
-     *
-     * @since 1.0
      */
     public SimpleTokenizer(String input) {
         mInput = checkNotNull(input);
@@ -36,8 +34,6 @@ public class SimpleTokenizer {
      * 从当前位置A遍历，直到某个位置B字符不存在于<code>chars</code>中。
      *
      * @return A-B之间的字符。如果当前位置就不存在于<code>chars</code>中，返回空字符串
-     *
-     * @since 1.0
      */
     public String consumeTokens(char...chars) {
         checkState(hasMore());
@@ -56,8 +52,6 @@ public class SimpleTokenizer {
      * 从当前位置A遍历，直到某个位置B字符不是字符<code>c</code>。
      *
      * @return A-B之间的字符。如果当前位置就不是字符<code>c</code>，返回空字符串
-     *
-     * @since 1.0
      */
     public String consumeChar(char c) {
         checkState(hasMore());
@@ -75,8 +69,6 @@ public class SimpleTokenizer {
      * 从当前位置A遍历，直到某个位置B字符不存在于<code>tokens</code>中。
      *
      * @return A-B之间的字符。如果当前位置就不存在于<code>tokens</code>中，返回空字符串
-     *
-     * @since 1.0
      */
     public String consumeTokens(String tokens) {
         return consumeTokens(tokens.toCharArray());
@@ -86,8 +78,6 @@ public class SimpleTokenizer {
      * 从当前位置A遍历，直到某个位置B不是<code>target</code>。
      *
      * @return A-B之间的字符。如果当前位置就不是<code>target</code>,返回空字符串
-     *
-     * @since 1.0
      */
     public String consumeTarget(String target) {
         checkNotNull(target);
@@ -105,10 +95,6 @@ public class SimpleTokenizer {
         return lastPos == position ? Strings.EMPTY : mInput.substring(lastPos, position);
     }
 
-    /**
-     *
-     * @since 1.0
-     */
     public String consumeNonChar(char c) {
         checkState(hasMore());
         final int lastPos = position;
@@ -121,10 +107,6 @@ public class SimpleTokenizer {
         return lastPos == position ? Strings.EMPTY : mInput.substring(lastPos, position);
     }
 
-    /**
-     *
-     * @since 1.0
-     */
     public String consumeNonTokens(char...chars) {
         checkState(hasMore());
         Arrays.sort(chars);
@@ -138,18 +120,10 @@ public class SimpleTokenizer {
         return lastPos == position ? Strings.EMPTY : mInput.substring(lastPos, position);
     }
 
-    /**
-     *
-     * @since 1.0
-     */
     public String consumeNonTokens(String tokens) {
         return consumeNonTokens(tokens.toCharArray());
     }
 
-    /**
-     *
-     * @since 1.0
-     */
     public String consumeNonTarget(String target) {
         checkNotNull(target);
         if (Objects.isEmpty(target)) {
@@ -168,8 +142,6 @@ public class SimpleTokenizer {
 
     /**
      * preview char at current index
-     *
-     * @since 1.0
      */
     public char previewChar() {
         checkState(hasMore());
@@ -178,8 +150,6 @@ public class SimpleTokenizer {
 
     /**
      * 判断是否有更多的字符
-     *
-     * @since 1.0
      */
     public boolean hasMore() {
         return (position >= 0) && (position < mInput.length());
@@ -187,8 +157,6 @@ public class SimpleTokenizer {
 
     /**
      * 重置当前位置
-     *
-     * @since 1.0
      */
     public void reset() {
         this.position = 0;
