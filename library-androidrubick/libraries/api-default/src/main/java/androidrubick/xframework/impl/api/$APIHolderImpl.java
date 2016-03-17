@@ -7,7 +7,6 @@ import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.XLog;
 import androidrubick.xframework.api.XAPICallback;
-import androidrubick.xframework.api.XAPIError;
 import androidrubick.xframework.api.XAPIHolder;
 import androidrubick.xframework.api.XAPIStatus;
 import androidrubick.xframework.app.XGlobals;
@@ -174,16 +173,16 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
         protected $APIStatusImpl onNoMoreRetryOnHttpExc(XHttpRequest request, XHttpError exception) {
             switch (exception.getType()) {
                 case Timeout:
-                    return new $APIStatusImpl(XAPIError.ERR_TIMEOUT, exception.getMessage());
+                    return new $APIStatusImpl($APIStatusImpl.ERR_TIMEOUT, exception.getMessage());
                 case Auth:
                 case Server:
                     return new $APIStatusImpl(exception.getStatusCode(), exception.getMessage());
                 case Network:
                 case NoConnection:
-                    return new $APIStatusImpl(XAPIError.ERR_NETWORK, exception.getMessage());
+                    return new $APIStatusImpl($APIStatusImpl.ERR_NETWORK, exception.getMessage());
                 case Other:
                 default:
-                    return new $APIStatusImpl(XAPIError.ERR_OTHER, exception.getMessage());
+                    return new $APIStatusImpl($APIStatusImpl.ERR_OTHER, exception.getMessage());
             }
         }
 
@@ -195,7 +194,7 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
             if (!Objects.isNull(response) && !Strings.isEmpty(response.getStatusMessage())) {
                 message = response.getStatusMessage();
             }
-            return new $APIStatusImpl(XAPIError.ERR_CLIENT, message);
+            return new $APIStatusImpl($APIStatusImpl.ERR_CLIENT, message);
         }
 
     }

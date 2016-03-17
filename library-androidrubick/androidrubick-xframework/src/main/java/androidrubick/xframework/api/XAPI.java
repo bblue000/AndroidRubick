@@ -21,6 +21,22 @@ public class XAPI {
 
     private XAPI() { }
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // get
+    /**
+     *
+     * @param url 基础URL
+     * @param param 作为参数来源的对象，may be null
+     * @param result 作为结果输出的对象类型
+     * @param callback 请求的回调
+     *
+     * @return 返回API请求处理对象
+     */
+    public static <Result>XAPIHolder get(String url, Object param, Class<Result> result, XAPICallback<Result> callback) {
+        return XServiceLoader.load(XAPIService.class)
+                .doAPI(url, HttpMethod.GET, param, null, result, callback);
+    }
+
     /**
      *
      * @param url 基础URL
@@ -34,6 +50,24 @@ public class XAPI {
                                          Class<Result> result, XAPICallback<Result> callback) {
         return XServiceLoader.load(XAPIService.class)
                 .doAPI(url, HttpMethod.GET, param, extraHeaders, result, callback);
+    }
+
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // post
+    /**
+     *
+     * @param url 基础URL
+     * @param param 作为参数来源的对象，may be null
+     * @param result 作为结果输出的对象类型
+     * @param callback 请求的回调
+     *
+     * @return 返回API请求处理对象
+     */
+    public static <Result>XAPIHolder post(String url, Object param, Class<Result> result, XAPICallback<Result> callback) {
+        return XServiceLoader.load(XAPIService.class)
+                .doAPI(url, HttpMethod.POST, param, null, result, callback);
     }
 
     /**

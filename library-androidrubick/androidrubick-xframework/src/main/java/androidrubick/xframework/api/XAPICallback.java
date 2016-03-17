@@ -30,7 +30,7 @@ public interface XAPICallback<Result> {
      *
      * {@link XAPIStatus#getCode()} 为HTTP状态值，或者API错误码（视具体实现而定），或者
      *
-     * 是XAPI.ERR_*（特征是code<0）。
+     * 是{@link androidrubick.xframework.api.XAPIStatus}#ERR_*（特征是code<0）。
      *
      * @param status 错误信息对象
      */
