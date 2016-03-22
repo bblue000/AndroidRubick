@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import java.io.File;
 
 import androidrubick.io.FileUtils;
+import androidrubick.text.Strings;
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 import androidrubick.utils.StandardSystemProperty;
@@ -127,7 +127,7 @@ public class DeviceInfos {
      */
     public static String getDeviceModel() {
         String model = Build.MODEL;
-        if (TextUtils.isEmpty(model)) {
+        if (Strings.isEmpty(model)) {
             return Build.UNKNOWN;
         }
         return model;
@@ -140,7 +140,7 @@ public class DeviceInfos {
      */
     public static String getDeviceBrand() {
         String brand = Build.BRAND;
-        if (TextUtils.isEmpty(brand)) {
+        if (Strings.isEmpty(brand)) {
             return Build.UNKNOWN;
         }
         return brand;
@@ -153,7 +153,7 @@ public class DeviceInfos {
      */
     public static String getDeviceManufacturer() {
         String manufacturer = Build.MANUFACTURER;
-        if (TextUtils.isEmpty(manufacturer)) {
+        if (Strings.isEmpty(manufacturer)) {
             return Build.UNKNOWN;
         }
         return manufacturer;

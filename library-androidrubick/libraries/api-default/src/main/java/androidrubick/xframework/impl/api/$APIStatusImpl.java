@@ -18,6 +18,10 @@ public class $APIStatusImpl extends XAPIStatus {
         super(code, msg);
     }
 
+    public $APIStatusImpl(int code, int dc, String msg) {
+        super(code, dc, msg);
+    }
+
     /**
      * 成功时调用创建实现类对象
      * @param code 状态值

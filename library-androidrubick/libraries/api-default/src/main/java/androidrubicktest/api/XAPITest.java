@@ -2,6 +2,7 @@ package androidrubicktest.api;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import androidrubick.xframework.api.XAPI;
@@ -21,56 +22,90 @@ import androidrubick.xframework.impl.api.param.BaseParam;
 public class XAPITest {
 
     public static void test() {
-        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, new BaseParam(), null, JSONObject.class, new XAPICallback() {
-            @Override
-            public void onSuccess(Object result, XAPIStatus status) {
-                Log.d("yytest", "onSuccess result = " + result);
-                System.gc();
-            }
+//        XAPI.get("http://10.101.55.69:8088/test", new BaseParam(), JSONObject.class, new XAPICallback<JSONObject>() {
+//            @Override
+//            public void onSuccess(JSONObject jsonObject) {
+//                System.out.println(jsonObject);
+//            }
+//
+//            @Override
+//            public void onFailed(XAPIStatus status) {
+//                System.out.println(status);
+//            }
+//        });
 
-            @Override
-            public void onFailed(XAPIStatus status) {
-                Log.d("yytest", "onFailed status = " + status);
-            }
 
-            @Override
-            public void onCanceled(Object result, XAPIStatus status) {
-                Log.d("yytest", "onCanceled result = " + result);
-            }
-        });
-        holder.execute();
-        holder.execute();
-        holder.execute();
-        holder.execute();
-        holder.execute();
-        holder.execute();
+//        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, new BaseParam(), JSONObject.class, new XAPICallback<JSONObject>() {
+//            @Override
+//            public void onSuccess(JSONObject jsonObject) {
+//                Log.d("yytest", "onSuccess result = " + jsonObject);
+//                System.out.println(jsonObject);
+//            }
+//
+//            @Override
+//            public void onFailed(XAPIStatus status) {
+//                Log.d("yytest", "onFailed status = " + status);
+//            }
+//        });
+//
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+
+
+//        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, new BaseParam(), null, JSONObject.class, new XAPICallback() {
+//            @Override
+//            public void onSuccess(Object result) {
+//                Log.d("yytest", "onSuccess result = " + result);
+//                System.gc();
+//            }
+//
+//            @Override
+//            public void onFailed(XAPIStatus status) {
+//                Log.d("yytest", "onFailed status = " + status);
+//            }
+//
+//            @Override
+//            public void onCanceled(Object result, XAPIStatus status) {
+//                Log.d("yytest", "onCanceled result = " + result);
+//            }
+//        });
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
     }
 
     public static void testHolder() {
-        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, null, JSONObject.class, new XAPICallback() {
-            @Override
-            public void onSuccess(Object result, XAPIStatus status) {
-                Log.d("yytest", "testHolder onSuccess result = " + result);
-            }
-
-            @Override
-            public void onFailed(XAPIStatus status) {
-                Log.d("yytest", "testHolder onFailed status = " + status);
-            }
-
-            @Override
-            public void onCanceled(Object result, XAPIStatus status) {
-                Log.d("yytest", "testHolder onCanceled result = " + result);
-            }
-        });
-
-        holder.cancel();
-        holder.execute();
-        holder.execute();
-        holder.execute();
-        holder.execute();
-        holder.execute();
-        holder.execute();
+//        XAPIHolder holder = XAPI.get(APIConfig.GET_AREA_DATA, null, null, JSONObject.class, new XAPICallback() {
+//            @Override
+//            public void onSuccess(Object result) {
+//                Log.d("yytest", "testHolder onSuccess result = " + result);
+//            }
+//
+//            @Override
+//            public void onFailed(XAPIStatus status) {
+//                Log.d("yytest", "testHolder onFailed status = " + status);
+//            }
+//
+//            @Override
+//            public void onCanceled(Object result, XAPIStatus status) {
+//                Log.d("yytest", "testHolder onCanceled result = " + result);
+//            }
+//        });
+//
+//        holder.cancel();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
+//        holder.execute();
     }
 
 }

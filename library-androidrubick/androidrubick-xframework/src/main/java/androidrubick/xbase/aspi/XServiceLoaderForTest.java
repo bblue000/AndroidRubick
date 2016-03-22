@@ -1,11 +1,8 @@
 package androidrubick.xbase.aspi;
 
 import androidrubick.xbase.util.spi.XJsonParserService;
-import androidrubick.xframework.api.spi.XAPIService;
 import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
-import androidrubick.xframework.cache.mem.spi.XMemCacheService;
 import androidrubick.xframework.job.spi.XJobExecutorService;
-import androidrubick.xframework.net.http.spi.XHttpRequestService;
 
 /**
  * <p/>
@@ -25,18 +22,12 @@ class XServiceLoaderForTest<S extends XSpiService> extends XServiceLoader<S> {
 
     @Override
     protected void internalLoad() {
-        if (XMemCacheService.class.equals(this.mService)) {
-            mClassName = "androidrubick.xframework.impl.cache.mem.Impl$XMemCacheService";
-        } else if (XDiskCacheService.class.equals(this.mService)) {
+        if (XDiskCacheService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.cache.disk.Impl$XDiskCacheService";
         } else if (XJsonParserService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.json.Impl$XJsonParserService";
         } else if (XJobExecutorService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.job.Impl$XJobExecutorService";
-        } else if (XHttpRequestService.class.equals(this.mService)) {
-            mClassName = "androidrubick.xframework.impl.http.Impl$XHttpRequestService";
-        } else if (XAPIService.class.equals(this.mService)) {
-            mClassName = "androidrubick.xframework.impl.api.Impl$XAPIService";
         }
     }
 }

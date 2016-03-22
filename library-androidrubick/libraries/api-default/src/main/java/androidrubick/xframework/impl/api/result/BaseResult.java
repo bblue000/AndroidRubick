@@ -12,7 +12,7 @@ import androidrubick.xbase.annotation.Configurable;
  * @since 1.0
  */
 @Configurable
-/*package*/ class BaseResult<T> {
+public class BaseResult<T> {
 
     public int code;
 

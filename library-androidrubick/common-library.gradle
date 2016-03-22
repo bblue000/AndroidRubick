@@ -1,0 +1,58 @@
+// library的gradle中统一设置文件
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion TARGET_SDK_VERSION
+        versionName "1.0"
+        versionCode 1
+
+        buildConfigField "String", "ProjectEncoding", "\"UTF-8\""
+        //buildConfigField "String", "FOO", "\"bar\""
+        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:"default_channel" ] // manifest文件中的占位符${UMENG_CHANNEL_VALUE}
+
+        // 是否开启分包模式
+//        multiDexEnabled false
+    }
+
+    // 资源文件设置
+//    sourceSets {
+//        main {
+//            java {
+//                exclude ''
+//            }
+//        }
+//    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions{
+        abortOnError false
+    }
+
+    //解决项目方法数超过65535
+    // 设置dexOptions的，不做方法数限制的检查，这样做的缺点是apk无法再低版本的设备上面安装，会出现错误：
+    // |- INSTALL_FAILED_DEXOPT
+//    dexOptions {
+//        jumboMode = true
+//    }
+
+}

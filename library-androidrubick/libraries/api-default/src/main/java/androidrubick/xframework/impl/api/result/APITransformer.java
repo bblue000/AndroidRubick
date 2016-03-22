@@ -1,19 +1,19 @@
 package androidrubick.xframework.impl.api.result;
 
+import com.squareup.okhttp.Response;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import androidrubick.xframework.net.http.response.XHttpResponse;
-
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/9/18.
  */
-/*package*/ abstract class APITransformer<T> {
+public abstract class APITransformer<T> {
 
     private static final Map<Class, APITransformer> CACHED;
 
@@ -21,19 +21,19 @@ import androidrubick.xframework.net.http.response.XHttpResponse;
         CACHED = new HashMap<Class, APITransformer>();
         CACHED.put(byte[].class, new ByteArrTransformer());
         CACHED.put(String.class, new StringTransformer());
-        OrgJsonTransformer jsonTransformer = new OrgJsonTransformer();
+        JSONTokenerTransformer jsonTransformer = new JSONTokenerTransformer();
         CACHED.put(JSONObject.class, jsonTransformer);
         CACHED.put(JSONArray.class, jsonTransformer);
     }
 
-    static APITransformer getTransformer(Class clz) {
+    public static APITransformer getTransformer(Class clz) {
         return CACHED.get(clz);
     }
 
-    static boolean isBase(Class<?> clz) {
+    public static boolean isBase(Class<?> clz) {
         return CACHED.containsKey(clz);
     }
 
-    abstract T transform(XHttpResponse response) throws Throwable;
+    public abstract T transform(Response response) throws Throwable;
 
 }

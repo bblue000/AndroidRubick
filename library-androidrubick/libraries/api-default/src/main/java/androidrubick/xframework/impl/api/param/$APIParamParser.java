@@ -1,5 +1,9 @@
 package androidrubick.xframework.impl.api.param;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -13,10 +17,9 @@ import androidrubick.reflect.Reflects;
 import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
-import androidrubick.xframework.impl.api.APIConstants;
+import androidrubick.xframework.api.APIConstants;
 import androidrubick.xframework.impl.api.annotation.APIIgnoreField;
-import androidrubick.xframework.net.http.request.XHttpRequest;
-import androidrubick.xframework.net.http.request.body.XHttpBody;
+import androidrubick.xframework.net.http.XHttps;
 
 /**
  *
@@ -35,22 +38,24 @@ public class $APIParamParser {
 
     @Configurable
     private static void parseUrlAndBody(String baseUrl, HttpMethod method,
-                                        XHttpRequest request, Map<String, Object> paramMap) {
+                                        Request.Builder request, Map<String, Object> paramMap) {
         String charset = APIConstants.CHARSET;
         // add Accept-Charset Header
         request.header(HttpHeaders.ACCEPT_CHARSET, APIConstants.CHARSET);
         if (method.canContainBody()) {
             // 转为json格式的请求体
             request.url(baseUrl)
-                    .withBody(XHttpBody.newJsonBody().params(paramMap).paramCharset(charset));
+                    .method(method.getName(), RequestBody.create(
+                            MediaType.parse("application/json; charset=utf-8"), XHttps.toJsonString(paramMap)));
         } else {
             request.url(HttpUrls.appendParamsAsQueryString(baseUrl, paramMap, charset));
         }
     }
 
-    public static XHttpRequest parse(String baseUrl, HttpMethod method,
+    public static Request parse(String baseUrl, HttpMethod method,
                                      Object param, Map<String, String> extraHeaders) {
-        XHttpRequest request = XHttpRequest.by(baseUrl, method);
+        Request.Builder request = XHttps.newReqBuilder().url(baseUrl);
+
         Map<String, Object> paramMap = null;
         Class<?> paramClz = Objects.isNull(param) ? null : param.getClass();
         while (!Objects.isNull(paramClz) && BaseParam.class.isAssignableFrom(paramClz)) {
@@ -84,10 +89,8 @@ public class $APIParamParser {
         // 根据处理得到的参数，对URL或body进行处理
         parseUrlAndBody(baseUrl, method, request, paramMap);
 
-        request.connectionTimeout(APIConstants.DEFAULT_CONNECTION_TIMEOUT)
-                .socketTimeout(APIConstants.DEFAULT_SOCKET_TIMEOUT)
-                .headers(extraHeaders);
-        return request;
+        XHttps.drainHeadersTo(extraHeaders, request);
+        return request.build();
     }
 
 
