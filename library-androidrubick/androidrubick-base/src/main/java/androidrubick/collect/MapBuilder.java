@@ -68,13 +68,6 @@ public class MapBuilder {
         return new MapBuilder(new TreeMap());
     }
 
-//    /**
-//     * 回收最近一次创建的
-//     */
-//    public static void recycle() {
-//
-//    }
-
     protected Map mMap;
     protected MapBuilder(Map map) {
         mMap = map;

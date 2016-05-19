@@ -54,13 +54,6 @@ public class SetBuilder {
         return new SetBuilder(new TreeSet());
     }
 
-//    /**
-//     * 回收最近一次创建的
-//     */
-//    public static void recycle() {
-//
-//    }
-
     protected Set mCollection;
     protected SetBuilder(Set c) {
         mCollection = c;

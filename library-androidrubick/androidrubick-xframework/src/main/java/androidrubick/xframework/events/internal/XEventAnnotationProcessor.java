@@ -64,7 +64,7 @@ public class XEventAnnotationProcessor {
     static void injectTargetClassMethods(Object target, Class<?> targetClass) {
         Class<?> curClass = targetClass;
         while (!shouldFilterClass(curClass)) {
-            Method[] methods = Reflects.getDeclaredMehods(curClass);
+            Method[] methods = Reflects.getDeclaredMethods(curClass);
             if (!Objects.isEmpty(methods)) {
                 for (Method method : methods) {
                     injectTargetMethod(target, targetClass, method);

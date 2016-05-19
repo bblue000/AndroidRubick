@@ -26,8 +26,6 @@ import static androidrubick.io.IOUtils.*;
  */
 public class FileUtils {
 
-    private static final String TAG = FileUtils.class.getSimpleName();
-
 	private FileUtils() { /* no instance */ }
 
 	/**

@@ -24,6 +24,10 @@ import java.io.ByteArrayOutputStream;
  * Return the buffered array as is if the predefined size matches exactly the result byte array length.
  * Reduce memory allocation by half by avoiding array expand and copy.
  *
+ * 目的：减少内存，避免复制。
+ *
+ * 如果读取的字节数跟内部的byte array的长度一致，直接返回内部数组（默认实现是创建一个新的数组，复制数据后返回）
+ *
  * @since 1.0
  * 
  */

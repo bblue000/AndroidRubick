@@ -3,6 +3,7 @@ package androidrubick.reflect;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import androidrubick.utils.Exceptions;
 import androidrubick.utils.Objects;
@@ -38,16 +39,42 @@ public class Reflects {
         return values;
     }
 
-//    /**
-//     * 从<code>clz</code>指定的类遍历查找到{@linkplain java.lang.Object}
-//     * @param clz 指定类
-//     * @param methodName 方法名
-//     * @param params 方法参数类型
-//     * @return
-//     */
-//    public static Method getDeclaredMehod(Class<?> clz, String methodName, Class<?>...params) {
-//
-//    }
+    /**
+     * 从<code>clz</code>指定的类遍历查找到{@linkplain java.lang.Object}
+     * @param clz 指定类
+     * @param methodName 方法名
+     * @param params 方法参数类型
+     * @return 如果没有找到则返回null
+     */
+    public static Method getDeclaredMethod(Class<?> clz, String methodName, Class<?>...params) {
+        // 遍历当前类
+        if (null == clz) return null;
+        Method m = gdm_raw(clz, methodName, params);
+        if (null != m) return m;
+
+        // 如果是抽象类，则需要遍历所有的接口
+        if (isModifierPresent(clz, Modifier.ABSTRACT)) {
+            Class[] superIfs = clz.getInterfaces();
+            if (null != superIfs && superIfs.length > 0) {
+                for (Class<?> superIf : superIfs) {
+                    m = getDeclaredMethod(superIf, methodName, params);
+                    if (null != m) break;
+                }
+            }
+        }
+        if (null != m) return m;
+
+        // 遍历当前类的父类和父接口
+        return getDeclaredMethod(clz.getSuperclass(), methodName, params);
+    }
+
+    private static Method gdm_raw(Class<?> clz, String methodName, Class<?>...params) {
+        try {
+            return clz.getDeclaredMethod(methodName, params);
+        } catch (Exception e) {
+            return  null;
+        }
+    }
 
     /**
      * 调用方法
@@ -112,7 +139,7 @@ public class Reflects {
      *
      * @since 1.0
      */
-    public static Method[] getDeclaredMehods(Class<?> clz) {
+    public static Method[] getDeclaredMethods(Class<?> clz) {
         try {
             return clz.getDeclaredMethods();
         } catch (Exception e) {
@@ -142,11 +169,19 @@ public class Reflects {
     }
 
     /**
-     *
+     * 是否有某个修饰符
      * @since 1.0
      */
     public static boolean isModifierPresent(Member member, int modifier) {
-        return (member.getModifiers() & modifier) == modifier;
+        return (null != member) && (member.getModifiers() & modifier) == modifier;
+    }
+
+    /**
+     * 是否有某个修饰符
+     * @since 1.0
+     */
+    public static boolean isModifierPresent(Class<?> clz, int modifier) {
+        return (null != clz) && (clz.getModifiers() & modifier) == modifier;
     }
 
 }
