@@ -15,7 +15,8 @@ include ':androidrubick-base', ':androidrubick-xframework'
 def defaultImplForSpi = "libraries/";
 //def defaultImplLibPath = new File(defaultImplForSpi);
 //def spiProjects = defaultImplLibPath.list();
-def spiProjects = new File('./spi-modules.cfg').getText('UTF-8').split('[\\s]+');
+//def spiProjects = new File('./spi-modules.cfg').getText('UTF-8').split('[\\s]+');
+def spiProjects = XFR_MODULES.split('\\s*\\,\\s*');
 if (spiProjects) {
     spiProjects.each { String spiProjectDir ->
         println '************' + spiProjectDir + '************'

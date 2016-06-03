@@ -8,7 +8,6 @@ import android.os.*;
 import java.util.concurrent.Executor;
 
 import androidrubick.cache.mem.ByteArrayPool;
-import androidrubick.utils.Objects;
 import androidrubick.xbase.util.LazyHandler;
 import androidrubick.xframework.BuildConfig;
 
@@ -23,11 +22,7 @@ public class XGlobals {
 
     private XGlobals() { /* no instance needed */ }
 
-    /**
-     * 工程文件使用的字符集编码
-     */
-    public static final String ProjectEncoding = BuildConfig.ProjectEncoding;
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = BuildConfig.DEBUG;
     public static final ByteArrayPool BYTE_ARRAY_POOL = new ByteArrayPool(4096);
 
     private static Handler sHandler;
@@ -75,9 +70,9 @@ public class XGlobals {
     }
 
     private static void checkHandler() {
-        if (Objects.isNull(sHandler)) {
+        if (null == sHandler) {
             synchronized (XGlobals.class) {
-                if (Objects.isNull(sHandler)) {
+                if (null == sHandler) {
                     sHandler = new Handler(Looper.getMainLooper());
                 }
             }
@@ -98,9 +93,9 @@ public class XGlobals {
     }
 
     private static void checkBackgroundExecutor() {
-        if (Objects.isNull(sBackgroundExecutor)) {
+        if (null == sBackgroundExecutor) {
             synchronized (XGlobals.class) {
-                if (Objects.isNull(sBackgroundExecutor)) {
+                if (null == sBackgroundExecutor) {
                     sBackgroundExecutor = new LazyHandler();
                 }
             }
@@ -138,12 +133,11 @@ public class XGlobals {
             @Override
             public void run() {
                 try {
-                    killProcess();
-                    System.exit(0);
-
                     ActivityManager am = (ActivityManager) getAppContext().getSystemService(Context.ACTIVITY_SERVICE);
                     am.killBackgroundProcesses(getAppContext().getPackageName());
 
+                    killProcess();
+                    System.exit(0);
                 } catch (Exception e) { }
             }
         }, 500L);

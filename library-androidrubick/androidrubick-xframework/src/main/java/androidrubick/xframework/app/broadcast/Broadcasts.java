@@ -19,6 +19,16 @@ public class Broadcasts {
     /**
      * 注册广播，参数<code> actions </code> 为注册的行为
      */
+    public static void registerReceiver(BroadcastReceiver receiver, String action) {
+        if (Objects.isNull(receiver)) {
+            return ;
+        }
+        registerReceiver(receiver, new IntentFilter(action));
+    }
+
+    /**
+     * 注册广播，参数<code> actions </code> 为注册的行为
+     */
     public static void registerReceiver(BroadcastReceiver receiver, String...actions) {
         if (Objects.isNull(receiver) || Objects.isEmpty(actions)) {
             return ;
@@ -47,6 +57,19 @@ public class Broadcasts {
         try {
             XGlobals.getAppContext().unregisterReceiver(receiver);
         } catch (Exception e) { }
+    }
+
+    /**
+     * 注销指定广播
+     */
+    public static void unregisterReceiver(BroadcastReceiver...receivers) {
+        if (Objects.isEmpty(receivers)) {
+            return ;
+        }
+
+        for (BroadcastReceiver br : receivers) {
+            unregisterReceiver(br);
+        }
     }
 
     /**

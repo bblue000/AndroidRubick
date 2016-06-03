@@ -195,7 +195,7 @@ public class AndroidUtils {
 	 * 	该方法多在使用某种特定的功能时。
 	 * </p>
 	 */
-	public static void requestPermission(String permission) {
+	public static void checkPermission(String permission) {
 		Context context = XGlobals.getAppContext();
 		if (PackageManager.PERMISSION_GRANTED != 
 				context.getPackageManager().checkPermission(permission,

@@ -10,13 +10,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import androidrubick.utils.MathCompat;
-import androidrubick.utils.Objects;
 import androidrubick.utils.concurrent.SimpleThreadFactory;
 
 /**
- * Handy class for starting a new thread that has a looper. The looper can then be
- * used to create handler classes. Note that start() must still be called.
- *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/6.
@@ -57,11 +53,14 @@ public class LazyHandler implements Executor {
      */
     public void shutdown() {
         ThreadPoolExecutor executor = mExecutor;
-        if (Objects.isNull(executor)) {
+        if (null == executor) {
             return ;
         }
-        executor.shutdown();
-        mExecutor = null;
+        try {
+            executor.shutdown();
+        } finally {
+            mExecutor = null;
+        }
     }
 
     /**
@@ -80,7 +79,7 @@ public class LazyHandler implements Executor {
      */
     public List<Runnable> shutdownNow() {
         ThreadPoolExecutor executor = mExecutor;
-        if (Objects.isNull(executor)) {
+        if (null == executor) {
             return Collections.emptyList();
         }
         try {

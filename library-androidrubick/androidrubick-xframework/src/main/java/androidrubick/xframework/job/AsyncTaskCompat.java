@@ -31,8 +31,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import androidrubick.utils.Objects;
-import androidrubick.utils.Preconditions;
 import androidrubick.xbase.util.FrameworkLog;
 
 /**
@@ -184,7 +182,6 @@ import androidrubick.xbase.util.FrameworkLog;
     private static final int MESSAGE_POST_RESULT = 0x1;
     private static final int MESSAGE_POST_PROGRESS = 0x2;
 
-    private static volatile Executor sDefaultExecutor;
     private static InternalHandler sHandler;
 
     private final WorkerRunnable<Params, Result> mWorker;
@@ -204,15 +201,6 @@ import androidrubick.xbase.util.FrameworkLog;
         }
     }
 
-    protected static void setDefaultExecutor(Executor exec) {
-        sDefaultExecutor = exec;
-    }
-
-    protected static Executor getDefaultExecutor() {
-        Preconditions.checkNotNull(sDefaultExecutor, "should set default executor");
-        return sDefaultExecutor;
-    }
-
     /**
      * 因为{@link AsyncTaskCompat}对外不是一个{@link Runnable}，
      *
@@ -223,7 +211,7 @@ import androidrubick.xbase.util.FrameworkLog;
      */
     protected static <T extends AsyncTaskCompat>T asAsyncTask(Runnable run) {
         if (run instanceof LocalFutureTask) {
-            return (T) Objects.getAs(run, LocalFutureTask.class).owner;
+            return (T) ((LocalFutureTask) run).owner;
         }
         return null;
     }
@@ -492,11 +480,8 @@ import androidrubick.xbase.util.FrameworkLog;
      *         {@link XJobStatus#RUNNING} or {@link XJobStatus#FINISHED}.
      *
      * @see #executeOnExecutor(java.util.concurrent.Executor, Object[])
-     * @see #execute(Runnable)
      */
-    public AsyncTaskCompat<Params, Progress, Result> execute(Params... params) {
-        return executeOnExecutor(getDefaultExecutor(), params);
-    }
+    public abstract AsyncTaskCompat<Params, Progress, Result> execute(Params... params) ;
 
     /**
      * Executes the task with the specified parameters. The task returns
@@ -553,18 +538,6 @@ import androidrubick.xbase.util.FrameworkLog;
         exec.execute(mFuture);
 
         return this;
-    }
-
-    /**
-     * Convenience version of {@link #execute(Object...)} for use with
-     * a simple Runnable object. See {@link #execute(Object[])} for more
-     * information on the order of execution.
-     *
-     * @see #execute(Object[])
-     * @see #executeOnExecutor(java.util.concurrent.Executor, Object[])
-     */
-    protected static void execute(Runnable runnable) {
-        getDefaultExecutor().execute(runnable);
     }
 
     /**

@@ -252,20 +252,20 @@ public class AppInfos {
 
     @SuppressLint("NewApi")
     public static void printMemeory() {
-        FrameworkLog.w("memory", "getMemoryClass = " + getMemoryClass());
+        FrameworkLog.d("memory", "getMemoryClass = " + getMemoryClass());
         // 下面是系统的
         try {
             Context context = XGlobals.getAppContext();
             ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
             am.getMemoryInfo(memoryInfo);
-            FrameworkLog.w("memory", "availMem = " + memoryInfo.availMem);
-            FrameworkLog.w("memory", "threshold = " + memoryInfo.threshold);
-            FrameworkLog.w("memory", "totalMem = " + memoryInfo.totalMem);
+            FrameworkLog.d("memory", "availMem = " + memoryInfo.availMem);
+            FrameworkLog.d("memory", "threshold = " + memoryInfo.threshold);
+            FrameworkLog.d("memory", "totalMem = " + memoryInfo.totalMem);
         } catch (Exception e) { }
-        FrameworkLog.w("memory", "runtime maxMemory = " + Runtime.getRuntime().maxMemory());
-        FrameworkLog.w("memory", "runtime totalMemory = " + Runtime.getRuntime().totalMemory());
-        FrameworkLog.w("memory", "runtime freeMemory = " + Runtime.getRuntime().freeMemory());
+        FrameworkLog.d("memory", "runtime maxMemory = " + Runtime.getRuntime().maxMemory());
+        FrameworkLog.d("memory", "runtime totalMemory = " + Runtime.getRuntime().totalMemory());
+        FrameworkLog.d("memory", "runtime freeMemory = " + Runtime.getRuntime().freeMemory());
     }
     // end
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

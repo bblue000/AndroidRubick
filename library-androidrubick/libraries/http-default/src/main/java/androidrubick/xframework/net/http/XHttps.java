@@ -20,6 +20,7 @@ import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xbase.util.JsonParser;
+import androidrubick.xframework.BuildConfig;
 import androidrubick.xframework.app.XGlobals;
 
 /**
@@ -37,7 +38,9 @@ public class XHttps {
     public static final String TAG = "XHttp";
 
     private static final OkHttpClient sClient = new OkHttpClient();
+    static {
 
+    }
     // *********************************************
     // *********************************************
     // ok-http 封装
@@ -87,7 +90,7 @@ public class XHttps {
     /**
      * 客户端请求/接受的默认的字符集编码
      */
-    public static final String DEFAULT_CHARSET_NAME = XGlobals.ProjectEncoding;
+    public static final String DEFAULT_CHARSET_NAME = BuildConfig.ProjectEncoding;
     /**
      * 客户端请求/接受的默认的字符集对象
      */

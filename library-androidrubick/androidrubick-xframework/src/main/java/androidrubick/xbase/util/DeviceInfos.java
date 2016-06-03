@@ -181,7 +181,7 @@ public class DeviceInfos {
      * Return null if device ID is not available.
      */
     public static String getIMEI() {
-        AndroidUtils.requestPermission(android.Manifest.permission.READ_PHONE_STATE);
+        AndroidUtils.checkPermission(android.Manifest.permission.READ_PHONE_STATE);
         TelephonyManager tm = (TelephonyManager) XGlobals.getAppContext()
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (tm == null) {

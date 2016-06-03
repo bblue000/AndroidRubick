@@ -64,14 +64,6 @@ public abstract class XJob<Params, Progress, Result> extends AsyncTaskCompat<Par
         return AsyncTaskCompat.asAsyncTask(run);
     }
 
-    public static synchronized void setDefaultExecutor(Executor exec) {
-        AsyncTaskCompat.setDefaultExecutor(exec);
-    }
-
-    public static synchronized Executor getDefaultExecutor() {
-        return AsyncTaskCompat.getDefaultExecutor();
-    }
-
     /**
      * 获取当前时间。
      * <p/>

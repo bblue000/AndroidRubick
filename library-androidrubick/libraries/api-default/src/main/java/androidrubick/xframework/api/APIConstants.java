@@ -5,7 +5,7 @@ import com.squareup.okhttp.OkHttpClient;
 import java.util.concurrent.TimeUnit;
 
 import androidrubick.xbase.annotation.Configurable;
-import androidrubick.xframework.app.XGlobals;
+import androidrubick.xframework.BuildConfig;
 
 /**
  * <p/>
@@ -33,7 +33,7 @@ public abstract class APIConstants {
     /**
      * API请求的字符集编码
      */
-    public static final String CHARSET = XGlobals.ProjectEncoding;
+    public static final String CHARSET = BuildConfig.ProjectEncoding;
 
     /**
      * API中使用的{@link com.squareup.okhttp.OkHttpClient}，有自己的一套设置

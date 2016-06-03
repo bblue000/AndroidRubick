@@ -10,6 +10,8 @@ android {
         targetSdkVersion TARGET_SDK_VERSION
         versionCode VERSION_CODE.toInteger()
         versionName "${VERSION_NAME}"
+        buildConfigField "String", "ProjectEncoding", "\"${PROJECT_ENCODING}\""
+
     }
     buildTypes {
         debug {
@@ -25,19 +27,23 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // android framework
     compile project(':androidrubick-xframework')
-    compile 'com.google.guava:guava:16.0.1'
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.jakewharton:butterknife:5.1.1'
 
     // ********************************************
     // separator line
-    def spiProjects = SPI_INCLUDE_FILE.getText('UTF-8').split('[\\s]+');
+    def spiProjects = XFR_MODULES.split('\\s*\\,\\s*');
     if (spiProjects) {
         spiProjects.each { String spiProjectDir ->
             def spiProjectName = ':' + spiProjectDir;
             compile project(spiProjectName)
         }
     }
+
+    // APP 依赖库
+    compile 'com.google.guava:guava:16.0.1'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile NINEOLD_ANDROID_LIB
+    compile BUTTERKNIFE_LIB
 }

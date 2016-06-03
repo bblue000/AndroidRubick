@@ -144,7 +144,7 @@ public abstract class XBaseActivity extends FragmentActivity implements XUICompo
     }
 
     /**
-     * 这是后续Fragment版本增加的方法，super.startActivityFromFragment(fragment, intent, requestCode)
+     * 这是后续有Fragment的版本中增加的方法，super.startActivityFromFragment(fragment, intent, requestCode)
      * 调用的是super.startActivityForResult()，也就是原始Activity类的startActivityForResult
      * （此处是{@link android.support.v4.app.FragmentActivity v4包的FragmentActivity}）。
      *

@@ -3,10 +3,6 @@ package androidrubick.xbase.view.adapter;
 import android.util.SparseArray;
 import android.view.View;
 
-import androidrubick.xframework.R;
-import androidrubick.utils.Objects;
-import androidrubick.utils.Preconditions;
-
 /**
  * 工具类，用于直接获取内部View，内部封装了ViewHolder的逻辑。
  *
@@ -18,14 +14,33 @@ public class ViewHolderUtil {
 
     private ViewHolderUtil() { /* no instance needed */ }
 
+    /**
+     * NOTE: <b>该方法将会覆盖convert view的tag</b>
+     *
+     * @param view convert view
+     * @param id child view id
+     * @param <T>
+     * @return target view object
+     */
     public static <T extends View> T get(View view, int id) {
-        Preconditions.checkNotNull(view, "param view is null");
-        SparseArray<? extends View> sparseArray = Objects.getAs(view.getTag(R.id.org_androidrubick_view_adapter_viewholderutil));
-        if (Objects.isNull(view)) {
-            sparseArray = new SparseArray<View>(8);
-            view.setTag(R.id.org_androidrubick_view_adapter_viewholderutil, sparseArray);
+        if (null == view) {
+            throw new NullPointerException("param view is null");
         }
-        return (T) sparseArray.get(id);
+        Object tag = view.getTag();
+        if (!(tag instanceof SparseArray)) { // clear tag
+            view.setTag(null);
+        }
+        SparseArray<View> viewHolder = (SparseArray<View>) view.getTag();
+        if (null == viewHolder) {
+            viewHolder = new SparseArray<View>();
+            view.setTag(viewHolder);
+        }
+        View childView = viewHolder.get(id);
+        if (null == childView) {
+            childView = view.findViewById(id);
+            viewHolder.put(id, childView);
+        }
+        return (T) childView;
     }
 
 }

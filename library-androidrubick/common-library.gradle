@@ -11,7 +11,7 @@ android {
         versionName "1.0"
         versionCode 1
 
-        buildConfigField "String", "ProjectEncoding", "\"UTF-8\""
+        buildConfigField "String", "ProjectEncoding", "\"${PROJECT_ENCODING}\""
         //buildConfigField "String", "FOO", "\"bar\""
         //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:"default_channel" ] // manifest文件中的占位符${UMENG_CHANNEL_VALUE}
 

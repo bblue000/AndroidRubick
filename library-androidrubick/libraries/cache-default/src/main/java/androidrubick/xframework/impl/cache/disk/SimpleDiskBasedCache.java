@@ -15,9 +15,9 @@ import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.XLog;
-import androidrubick.xframework.app.XGlobals;
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
 import androidrubick.xframework.cache.disk.XDiskCaches;
+import androidrubick.xframework.impl.cache.BuildConfig;
 
 /**
  *
@@ -118,7 +118,7 @@ import androidrubick.xframework.cache.disk.XDiskCaches;
 
     @Override
     public boolean save(String fileName, String data, String charsetName) throws IOException {
-        return save(fileName, data.getBytes(Objects.getOr(charsetName, XGlobals.ProjectEncoding)));
+        return save(fileName, data.getBytes(Objects.getOr(charsetName, BuildConfig.ProjectEncoding)));
     }
 
     @Override

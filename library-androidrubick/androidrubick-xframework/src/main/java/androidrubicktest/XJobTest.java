@@ -21,7 +21,7 @@ public class XJobTest {
     }
 
     public static void testExecutor() {
-        Executor executor = XJob.getDefaultExecutor();
+        Executor executor = null; // XJob.getDefaultExecutor();
 
         Log.d("yytest", "Runtime.getRuntime().availableProcessors() = "
                 + Runtime.getRuntime().availableProcessors());

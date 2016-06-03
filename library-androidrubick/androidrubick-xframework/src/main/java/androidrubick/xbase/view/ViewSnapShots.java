@@ -22,6 +22,12 @@ public class ViewSnapShots {
 
     private ViewSnapShots() { /* no instance needed */ }
 
+    /**
+     * 创建
+     * @param context
+     * @return
+     * @throws Throwable
+     */
     public static Bitmap createSnapshot(Context context) throws Throwable{
         if (!(context instanceof Activity)) {
             return null;
@@ -29,6 +35,14 @@ public class ViewSnapShots {
         Activity activity = (Activity) context;
         // View是你需要截图的View
         View view = activity.getWindow().getDecorView();
+        return createSnapshot(view);
+    }
+
+    public static Bitmap createSnapshot(View view) throws Throwable {
+        if (null == view) {
+            return null;
+        }
+        Context context = view.getContext();
         try {
             return createSnapshot1(context, view, Bitmap.Config.ARGB_8888);
         } catch (Throwable e) {

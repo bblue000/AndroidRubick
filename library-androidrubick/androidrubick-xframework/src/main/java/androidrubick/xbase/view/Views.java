@@ -3,8 +3,6 @@ package androidrubick.xbase.view;
 import android.graphics.Rect;
 import android.view.View;
 
-import androidrubick.utils.Objects;
-
 /**
  * View或Widget的一些通用操作的工具类
  *
@@ -18,11 +16,17 @@ public class Views {
 
     private Views() { /*no instance*/ }
 
-    public static <V extends View>V setVisibility(V view, int visibility) {
-        if (!Objects.isNull(view)) {
-            view.setVisibility(visibility);
-        }
-        return view;
+    // visibility
+    public static <V extends View>V visible(V view, int visibility) {
+        return visibility(view, View.VISIBLE);
+    }
+
+    public static <V extends View>V invisible(V view, int visibility) {
+        return visibility(view, View.INVISIBLE);
+    }
+
+    public static <V extends View>V gone(V view, int visibility) {
+        return visibility(view, View.GONE);
     }
 
     /**
@@ -30,16 +34,15 @@ public class Views {
      *
      * 如果<code>show</code>为false，将<code>view</code>设置为{@link View#GONE}；
      */
-    public static <V extends View>V setVisibility(V view, boolean show) {
-        int visibility = show ? View.VISIBLE : View.GONE;
-        return setVisibility(view, visibility);
+    public static <V extends View>V visibility(V view, boolean show) {
+        return visibility(view, show ? View.VISIBLE : View.GONE);
     }
 
-    public static boolean isVisibilityEqual(View view, int visibility) {
-        if (Objects.isNull(view)) {
-            return false;
+    private static <V extends View>V visibility(V view, int visibility) {
+        if (null != view) {
+            view.setVisibility(visibility);
         }
-        return view.getVisibility() == visibility;
+        return view;
     }
 
     public static boolean isVisible(View view) {
@@ -54,18 +57,19 @@ public class Views {
         return isVisibilityEqual(view, View.GONE);
     }
 
-    public static <V extends View>V setVisible(V view) {
-        return setVisibility(view, View.VISIBLE);
+    private static boolean isVisibilityEqual(View view, int visibility) {
+        if (null == view) {
+            return false;
+        }
+        return view.getVisibility() == visibility;
     }
 
-    public static <V extends View>V setInvisible(V view) {
-        return setVisibility(view, View.INVISIBLE);
+    public static <V extends View>V clicked(V view, View.OnClickListener listener) {
+        if (null != view) {
+            view.setOnClickListener(listener);
+        }
+        return view;
     }
-
-    public static <V extends View>V setGone(V view) {
-        return setVisibility(view, View.GONE);
-    }
-
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // 获取View的显示区域
@@ -73,7 +77,7 @@ public class Views {
      * <code>view</code>在整个屏幕中的可视区域
      */
     public static boolean getGlobalVisibleRect(View view, Rect rect) {
-        if (Objects.isNull(view) || Objects.isNull(rect)) {
+        if (null == view || null == rect) {
             return false;
         }
         return view.getGlobalVisibleRect(rect);
@@ -83,7 +87,7 @@ public class Views {
      * <code>view</code>在父控件中的可视区域
      */
     public static boolean getLocalVisibleRect(View view, Rect rect) {
-        if (Objects.isNull(view) || Objects.isNull(rect)) {
+        if (null == view || null == rect) {
             return false;
         }
         return view.getLocalVisibleRect(rect);
@@ -139,8 +143,8 @@ public class Views {
      * @see View#MEASURED_SIZE_MASK
      * @see View#MEASURED_STATE_MASK
      */
-    public static int maxWidthOfView() {
-        return (0x1 << 25) - 1;
+    public static int maxWidth() {
+        return View.MEASURED_SIZE_MASK;
     }
 
     /**
@@ -151,8 +155,8 @@ public class Views {
      * @see View#MEASURED_SIZE_MASK
      * @see View#MEASURED_STATE_MASK
      */
-    public static int maxHeightOfView() {
-        return (0x1 << 25) - 1;
+    public static int maxHeight() {
+        return View.MEASURED_SIZE_MASK;
     }
 
 }
