@@ -1,6 +1,7 @@
 package androidrubick.xbase.aspi;
 
 import androidrubick.xbase.util.spi.XJsonParserService;
+import androidrubick.xframework.app.spi.XFloatUIService;
 import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
 import androidrubick.xframework.job.spi.XJobExecutorService;
 
@@ -28,6 +29,8 @@ class XServiceLoaderForTest<S extends XSpiService> extends XServiceLoader<S> {
             mClassName = "androidrubick.xframework.impl.json.Impl$XJsonParserService";
         } else if (XJobExecutorService.class.equals(this.mService)) {
             mClassName = "androidrubick.xframework.impl.job.Impl$XJobExecutorService";
+        } else if (XFloatUIService.class.equals(this.mService)) {
+            mClassName = "androidrubick.xframework.floatui.Impl$XFloatUIService";
         }
     }
 }

@@ -1,21 +1,12 @@
 package org.androidrubick.demo;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-import com.google.common.eventbus.SubscriberExceptionContext;
-import com.google.common.eventbus.SubscriberExceptionHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidrubick.xbase.util.AndroidUtils;
 import androidrubick.xbase.util.AppInfos;
-import androidrubick.xbase.util.ToastUtils;
+import androidrubick.xframework.app.XGlobalUIs;
 import androidrubick.xframework.app.ui.component.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
 import androidrubick.xframework.events.annotation.XEvent;
@@ -38,17 +29,6 @@ public class MainActivity extends XBaseActivity {
 
     @Override
     public void initView(View view, Bundle savedInstanceState) {
-        EventBus eventBus = new EventBus(new SubscriberExceptionHandler() {
-            @Override
-            public void handleException(Throwable exception, SubscriberExceptionContext context) {
-                ToastUtils.showToast(exception.getMessage());
-            }
-        });
-        eventBus.register(this);
-
-        List list = new ArrayList<String>();
-        list.add("");
-        eventBus.post(list);
         XEventAPI.register(this);
         new Thread("yytest") {
             @Override
@@ -65,15 +45,10 @@ public class MainActivity extends XBaseActivity {
 
     }
 
-    @Subscribe
-    void d(List list) {
-        Context context = (Context) list.get(0);
-    }
-
     @XEvent({"1", "2", "3"})
     void dd(String msg) {
         Log.d("Event", "" + AndroidUtils.isMainThread());
-        ToastUtils.showToast(msg);
+        XGlobalUIs.showTip(this, msg, msg);
     }
 
     @Override

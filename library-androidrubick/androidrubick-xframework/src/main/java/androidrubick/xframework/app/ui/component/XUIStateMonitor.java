@@ -3,9 +3,11 @@ package androidrubick.xframework.app.ui.component;
 import java.util.WeakHashMap;
 
 import androidrubick.collect.CollectionsCompat;
-import androidrubick.collect.MapBuilder;
 
 /**
+ *
+ * 用于注册和注销UI组件声明周期相关回调的工具类
+ *
  * <p/>
  *
  * Created by Yin Yong on 2015/9/10.
@@ -14,12 +16,13 @@ public class XUIStateMonitor {
 
     private XUIStateMonitor() { /* no instance needed */ }
 
-    static final WeakHashMap<XUICallback, Object> sCallbacks = MapBuilder.newWeakHashMap(4).build();
+    static WeakHashMap<XUICallback, Object> sCallbacks;
 
     /**
      * 注册UI状态回调
      */
     public static void registerUICallback(XUICallback callback) {
+        checkCallbacks();
         sCallbacks.put(callback, XUIStateMonitor.class);
     }
 
@@ -27,7 +30,23 @@ public class XUIStateMonitor {
      * 注销UI状态回调
      */
     public static void unregisterUICallback(XUICallback callback) {
+        if (CollectionsCompat.isEmpty(sCallbacks)) {
+            return;
+        }
         sCallbacks.remove(callback);
+        if (CollectionsCompat.isEmpty(sCallbacks)) {
+            sCallbacks = null;
+        }
+    }
+
+    private static void checkCallbacks() {
+        if (null == sCallbacks) {
+            synchronized (XUIStateMonitor.class) {
+                if (null == sCallbacks) {
+                    sCallbacks = new WeakHashMap<XUICallback, Object>(4);
+                }
+            }
+        }
     }
 
     /**

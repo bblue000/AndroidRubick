@@ -11,6 +11,4 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':androidrubick-xframework')
-    compile "${FRESCO_LIB}"
-    compile "${FRESCO_OKHTTP_IMAGEPIPLINE_LIB}"
 }

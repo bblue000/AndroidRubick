@@ -82,4 +82,5 @@
 -keep class * implements androidrubick.xframework.cache.spi.XMemCacheService
 -keep class * implements androidrubick.xframework.net.http.spi.XHttpRequestService
 -keep class * implements androidrubick.xframework.api.spi.XAPIService
+-keep class * implements androidrubick.xframework.app.spi.XFloatUIService
 

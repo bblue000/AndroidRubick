@@ -1,28 +1,29 @@
-package androidrubick.xframework.app.broadcast;
+package androidrubick.xframework.app.bc;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 
 import androidrubick.utils.Objects;
 import androidrubick.xframework.app.XGlobals;
 
 /**
- * 本地广播的封装
- * 
- * @author Yin Yong
+ * <p/>
  *
+ * Created by Yin Yong on 2015/3/23.
  */
-public class LocalBroadcasts {
+public class Broadcasts {
 
-    private LocalBroadcasts() {}
+    private Broadcasts() {}
 
-    private static LocalBroadcastManager sLocalBroadcastManager;
-    private synchronized static void checkLocalBroadcastManagerInstance() {
-        if (null == sLocalBroadcastManager) {
-            sLocalBroadcastManager = LocalBroadcastManager.getInstance(XGlobals.getAppContext());
+    /**
+     * 注册广播，参数<code> actions </code> 为注册的行为
+     */
+    public static void registerReceiver(BroadcastReceiver receiver, String action) {
+        if (Objects.isNull(receiver)) {
+            return ;
         }
+        registerReceiver(receiver, new IntentFilter(action));
     }
 
     /**
@@ -46,18 +47,29 @@ public class LocalBroadcasts {
         if (Objects.isNull(receiver) || Objects.isNull(filter)) {
             return ;
         }
-        checkLocalBroadcastManagerInstance();
-        sLocalBroadcastManager.registerReceiver(receiver, filter);
+        XGlobals.getAppContext().registerReceiver(receiver, filter);
     }
 
     /**
      * 注销指定广播
      */
     public static void unregisterReceiver(BroadcastReceiver receiver) {
-        checkLocalBroadcastManagerInstance();
         try {
-            sLocalBroadcastManager.unregisterReceiver(receiver);
+            XGlobals.getAppContext().unregisterReceiver(receiver);
         } catch (Exception e) { }
+    }
+
+    /**
+     * 注销指定广播
+     */
+    public static void unregisterReceiver(BroadcastReceiver...receivers) {
+        if (Objects.isEmpty(receivers)) {
+            return ;
+        }
+
+        for (BroadcastReceiver br : receivers) {
+            unregisterReceiver(br);
+        }
     }
 
     /**
@@ -65,7 +77,7 @@ public class LocalBroadcasts {
      */
     public static void sendBroadcast(String action) {
         sendBroadcast(new Intent(action));
-    };
+    }
 
     /**
      * 发送指定广播
@@ -74,8 +86,7 @@ public class LocalBroadcasts {
         if (Objects.isNull(intent)) {
             return ;
         }
-        checkLocalBroadcastManagerInstance();
-        sLocalBroadcastManager.sendBroadcast(intent);
+        XGlobals.getAppContext().sendBroadcast(intent);
     }
-	
+
 }

@@ -11,7 +11,7 @@ import androidrubick.utils.ArraysCompat;
 import androidrubick.utils.Objects;
 import androidrubick.xbase.util.DeviceInfos;
 import androidrubick.xframework.app.XGlobals;
-import androidrubick.xframework.app.broadcast.Broadcasts;
+import androidrubick.xframework.app.bc.Broadcasts;
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
 
 /**

@@ -11,6 +11,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':androidrubick-xframework')
-    compile project(':json-default')
-    compile project(':http-default')
+    compile project(":${XFR_HTTP_LIB}")
+    compile project(":${XFR_JSON_LIB}")
 }

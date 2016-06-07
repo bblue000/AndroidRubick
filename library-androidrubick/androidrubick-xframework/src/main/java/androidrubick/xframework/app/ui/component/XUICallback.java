@@ -46,7 +46,6 @@ public interface XUICallback {
      */
     void onDestroy(XUIComponent flow);
 
-
     /**
      * 简单实现
      */

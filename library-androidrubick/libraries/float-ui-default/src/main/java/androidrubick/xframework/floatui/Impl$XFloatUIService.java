@@ -1,0 +1,58 @@
+package androidrubick.xframework.floatui;
+
+import android.content.Context;
+
+import androidrubick.xbase.util.ToastUtils;
+import androidrubick.xframework.app.spi.XFloatUIService;
+import androidrubick.xframework.app.spi.XFloatUIToken;
+import androidrubick.xframework.app.spi.XProgressUIToken;
+
+/**
+ * Created by Yin Yong on 16/6/7.
+ */
+public class Impl$XFloatUIService implements XFloatUIService {
+    @Override
+    public XFloatUIToken buildTip(Context context, CharSequence title, final CharSequence message) {
+        return new XFloatUIToken() {
+            @Override
+            public void dismiss() {
+
+            }
+
+            @Override
+            public void show() {
+                ToastUtils.showToast(message);
+            }
+        };
+    }
+
+    @Override
+    public XFloatUIToken buildError(Context context, CharSequence title, final CharSequence message) {
+        return new XFloatUIToken() {
+            @Override
+            public void dismiss() {
+
+            }
+
+            @Override
+            public void show() {
+                ToastUtils.showToast(message);
+            }
+        };
+    }
+
+    @Override
+    public XProgressUIToken buildProgress(Context context, CharSequence title, CharSequence message) {
+        return null;
+    }
+
+    @Override
+    public void trimMemory() {
+
+    }
+
+    @Override
+    public boolean multiInstance() {
+        return false;
+    }
+}
