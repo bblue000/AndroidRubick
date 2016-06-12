@@ -24,9 +24,18 @@ import androidrubick.xframework.app.ui.XActivityCallbackDispatcher;
 public class XApplication extends Application {
 
     public XApplication() {
+        super();
         XGlobals.init(this);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p/>
+     *
+     * If you override this method, be sure to call super.onCreate().
+     *
+     */
     @Override
     public void onCreate() {
         super.onCreate();

@@ -7,29 +7,42 @@ import android.os.Message;
 import com.google.gson.internal.$Gson$Types;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import org.apache.http.HttpStatus;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.Map;
 
+import androidrubick.collect.CollectionsCompat;
+import androidrubick.collect.MapBuilder;
+import androidrubick.net.HttpHeaders;
 import androidrubick.net.HttpMethod;
+import androidrubick.net.HttpUrls;
+import androidrubick.reflect.Reflects;
+import androidrubick.utils.ArraysCompat;
+import androidrubick.utils.Objects;
 import androidrubick.xbase.annotation.Configurable;
 import androidrubick.xbase.util.JsonParser;
 import androidrubick.xframework.api.APICallback;
 import androidrubick.xframework.api.APIConstants;
 import androidrubick.xframework.api.APIToken;
+import androidrubick.xframework.impl.api.annotation.APIIgnoreField;
 import androidrubick.xframework.impl.api.annotation.NoneAPIResponse;
-import androidrubick.xframework.impl.api.param.$APIParamParser;
-import androidrubick.xframework.impl.api.result.APITransformer;
+import androidrubick.xframework.impl.api.param.BaseParam;
+import androidrubick.xframework.impl.api.result.trans.APITransformer;
 import androidrubick.xframework.impl.api.result.BaseResult;
-import androidrubick.xframework.impl.api.result.TransformException;
+import androidrubick.xframework.impl.api.result.trans.TransformException;
+import androidrubick.xframework.net.http.XHttps;
 
 /**
  * <p/>
@@ -56,7 +69,7 @@ public class $APITokenImpl implements APIToken {
         // 创建时的错误
         Request request = null;
         try {
-            request = $APIParamParser.parse(url, method, param, extraHeaders);
+            request = buildRequest(url, method, param, extraHeaders);
         } catch (Throwable e) {
             mInitErrCallback = new CallbackImpl(mCallback, null);
             mInitErrCallback.status = createFailAPIStatus(null, e, $APIStatusImpl.E_CLIENT);
@@ -81,6 +94,7 @@ public class $APITokenImpl implements APIToken {
         return null != result && HttpStatus.SC_OK == result.code;
     }
 
+    // implements APIToken start
     /**
      * 该处为了避免重复请求，如果正在处理请求则直接返回
      */
@@ -107,7 +121,69 @@ public class $APITokenImpl implements APIToken {
         restJob(mCall);
         return true;
     }
+    // implements APIToken end
 
+    // internal
+    // parse param start
+    private Request buildRequest(String baseUrl, HttpMethod method,
+                                 Object param, Map<String, String> extraHeaders) {
+        Request.Builder request = XHttps.newReqBuilder().url(baseUrl);
+
+        Map<String, Object> paramMap = null;
+        Class<?> paramClz = Objects.isNull(param) ? null : param.getClass();
+        while (!Objects.isNull(paramClz) && BaseParam.class.isAssignableFrom(paramClz)) {
+            // parse clz 的字段
+            Field[] fields = paramClz.getDeclaredFields();
+            int len = ArraysCompat.getLength(fields);
+            for (int i = 0; i < len; i++) {
+                Field field = fields[i];
+                // 如果是静态变量，则不处理
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                // 如果设置了“忽略”该字段，则不处理
+                if (field.isAnnotationPresent(APIIgnoreField.class)) {
+                    continue;
+                }
+                Object fieldVal = Reflects.getFieldValue(param, field);
+                // 如果为null，则不处理
+                if (Objects.isNull(fieldVal)) {
+                    continue;
+                }
+                if (Objects.isNull(paramMap)) {
+                    paramMap = MapBuilder.newHashMap(8).build();
+                }
+                CollectionsCompat.putUnCover(paramMap, field.getName(), fieldVal);
+            }
+            // 获取父类
+            paramClz = paramClz.getSuperclass();
+        }
+
+        // 根据处理得到的参数，对URL或body进行处理
+        parseUrlAndBody(baseUrl, method, request, paramMap);
+
+        XHttps.drainHeadersTo(extraHeaders, request);
+        return request.build();
+    }
+
+    @Configurable
+    private void parseUrlAndBody(String baseUrl, HttpMethod method,
+                                 Request.Builder request, Map<String, Object> paramMap) {
+        String charset = APIConstants.CHARSET;
+        // add Accept-Charset Header
+        request.header(HttpHeaders.ACCEPT_CHARSET, APIConstants.CHARSET);
+        if (method.canContainBody()) {
+            // 转为json格式的请求体
+            request.url(baseUrl)
+                    .method(method.getName(), RequestBody.create(
+                            MediaType.parse("application/json; charset=utf-8"), XHttps.toJsonString(paramMap)));
+        } else {
+            request.url(HttpUrls.appendParamsAsQueryString(baseUrl, paramMap, charset));
+        }
+    }
+    // parse param end
+
+    // perform request start
     private void executeInner() {
         if (null != mInitErrCallback) {
             sHandler.obtainMessage(FAILED, mInitErrCallback).sendToTarget();
@@ -210,7 +286,7 @@ public class $APITokenImpl implements APIToken {
         }
     }
 
-    private class CallbackImpl implements Callback {
+    public class CallbackImpl implements Callback {
         public APICallback callback;
         public Call call;
         public $APIStatusImpl status;

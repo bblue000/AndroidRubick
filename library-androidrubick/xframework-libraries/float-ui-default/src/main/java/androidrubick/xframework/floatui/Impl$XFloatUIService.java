@@ -43,7 +43,22 @@ public class Impl$XFloatUIService implements XFloatUIService {
 
     @Override
     public XProgressUIToken buildProgress(Context context, CharSequence title, CharSequence message) {
-        return null;
+        return new XProgressUIToken() {
+            @Override
+            public void updateProgress(int percent, float fraction) {
+
+            }
+
+            @Override
+            public void dismiss() {
+
+            }
+
+            @Override
+            public void show() {
+
+            }
+        };
     }
 
     @Override

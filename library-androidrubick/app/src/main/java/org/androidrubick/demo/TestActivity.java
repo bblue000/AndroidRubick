@@ -3,7 +3,7 @@ package org.androidrubick.demo;
 import android.os.Bundle;
 import android.view.View;
 
-import androidrubick.xframework.app.ui.component.XBaseActivity;
+import androidrubick.app.BaseActivity;
 
 /**
  * somthing
@@ -14,7 +14,7 @@ import androidrubick.xframework.app.ui.component.XBaseActivity;
  *
  * @since 1.0
  */
-public class TestActivity extends XBaseActivity {
+public class TestActivity extends BaseActivity {
 
 
     @Override

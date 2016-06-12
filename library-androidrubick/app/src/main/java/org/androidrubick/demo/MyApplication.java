@@ -1,6 +1,6 @@
 package org.androidrubick.demo;
 
-import androidrubick.xframework.app.XApplication;
+import androidrubick.app.BaseApplication;
 import androidrubick.xframework.impl.statistics.A;
 
 /**
@@ -8,7 +8,7 @@ import androidrubick.xframework.impl.statistics.A;
  *
  * Created by Yin Yong on 2015/9/9.
  */
-public class MyApplication extends XApplication {
+public class MyApplication extends BaseApplication {
 
     private A a;
     @Override

@@ -1,0 +1,30 @@
+apply from: '../../common-library.gradle'
+
+// 项目配置
+android {
+    // android项目默认参数，相对多渠道而言，如果多渠道没有设置相关参数，则使用该配置中的默认值
+    defaultConfig {
+    }
+}
+
+// 项目依赖
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // android framework
+    compile project(':xframework-android')
+
+    // ********************************************
+    // separator line
+    def spiProjects = XFR_MODULES.split('\\s*\\,\\s*');
+    if (spiProjects) {
+        spiProjects.each { String spiProjectDir ->
+            compile project(':' + spiProjectDir)
+        }
+    }
+
+    // APP 依赖库
+    compile NINEOLD_ANDROID_LIB
+    compile BUTTERKNIFE_LIB
+    compile SUPPORT_V4_LIB
+}

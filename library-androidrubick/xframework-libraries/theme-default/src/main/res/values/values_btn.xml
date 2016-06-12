@@ -7,24 +7,33 @@
         ***************************************
     -->
     <!-- 主按钮背景色 -->
-    <color name="primary_btn_bg_normal">@color/app_main</color>
-    <color name="primary_btn_bg_hover">@color/app_main_highlight</color>
-    <color name="primary_btn_bg_inactive">@color/app_inactive</color>
+    <color name="main_btn_bg_normal">@color/app_main</color>
+    <color name="main_btn_bg_hover">@color/app_main_highlight</color>
+    <color name="main_btn_bg_inactive">@color/app_inactive</color>
 
     <!-- 主按钮文字颜色 -->
-    <color name="primary_btn_textcolor_normal">@color/app_main_textcolor</color>
-    <color name="primary_btn_textcolor_hover">@color/app_main_highlight_textcolor</color>
-    <color name="primary_btn_textcolor_inactive">@color/app_inactive_textcolor</color>
+    <color name="main_btn_textcolor_normal">@color/app_main_textcolor</color>
+    <color name="main_btn_textcolor_hover">@color/app_main_highlight_textcolor</color>
+    <color name="main_btn_textcolor_inactive">@color/app_inactive_textcolor</color>
 
+
+    <!-- 辅按钮色调，与主按钮行程对比，一般比主按钮色值深 -->
+    <color name="dark_btn_bg_normal">@color/app_main_dark</color>
+    <color name="dark_btn_bg_hover">@color/app_main_dark_highlight</color>
+    <color name="dark_btn_bg_inactive">@color/app_inactive</color>
+
+    <color name="dark_btn_textcolor_normal">@color/app_main_dark_textcolor</color>
+    <color name="dark_btn_textcolor_hover">@color/app_main_dark_highlight_textcolor</color>
+    <color name="dark_btn_textcolor_inactive">@color/app_inactive_textcolor</color>
 
     <!-- 辅按钮色调，与主按钮行程对比，一般比主按钮色值浅 -->
-    <color name="secondary_btn_bg_normal">@color/app_main_light</color>
-    <color name="secondary_btn_bg_hover">@color/app_main_light_highlight</color>
-    <color name="secondary_btn_bg_inactive">@color/app_inactive</color>
+    <color name="light_btn_bg_normal">@color/app_main_light</color>
+    <color name="light_btn_bg_hover">@color/app_main_light_highlight</color>
+    <color name="light_btn_bg_inactive">@color/app_inactive</color>
 
-    <color name="secondary_btn_textcolor_normal">@color/app_main_light_textcolor</color>
-    <color name="secondary_btn_textcolor_hover">@color/app_main_light_highlight_textcolor</color>
-    <color name="secondary_btn_textcolor_inactive">@color/app_inactive_textcolor</color>
+    <color name="light_btn_textcolor_normal">@color/app_main_light_textcolor</color>
+    <color name="light_btn_textcolor_hover">@color/app_main_light_highlight_textcolor</color>
+    <color name="light_btn_textcolor_inactive">@color/app_inactive_textcolor</color>
 
 
 
@@ -37,20 +46,9 @@
                     尺寸
         ***************************************
     -->
-    <dimen name="content_primary_btn_height">40dp</dimen>
-    <dimen name="content_primary_btn_textsize">@dimen/content_primary_textsize</dimen>
-
+    <!-- 按钮的边角半径 -->
     <dimen name="content_btn_radius">@dimen/radius</dimen>
 
 
-
-
-
-
-    <!--
-        ***************************************
-                    样式
-        ***************************************
-    -->
 
 </resources>

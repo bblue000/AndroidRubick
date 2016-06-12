@@ -31,6 +31,10 @@
     <dimen name="mini_textsize">12sp</dimen>
     <!-- 超小字体 -->
     <dimen name="submini_textsize">10sp</dimen>
+    <!-- 大字体 -->
+    <dimen name="large_textsize">18sp</dimen>
+    <!-- 超大字体 -->
+    <dimen name="xlarge_textsize">22sp</dimen>
 
 
     <!--

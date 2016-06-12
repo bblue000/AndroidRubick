@@ -9,16 +9,14 @@
 
     <!-- 主内容背景 -->
     <color name="content_primary_bg">#f1f2f3</color>
-
-    <!-- 放在主内容背景下用于区分的二级背景，如分隔开的区块背景 -->
-    <color name="content_secondary_bg">#ffffff</color>
-
-
     <!-- 主内容背景在状态下的颜色， -->
     <color name="content_primary_bg_active">@color/app_main_highlight</color>
 
+    <!-- 放在主内容背景下用于区分的二级背景，如分隔开的区块背景 -->
+    <color name="content_secondary_bg">#ffffff</color>
     <!-- 放在主内容背景下用于区分的二级背景，多用于列表item背景 -->
     <color name="content_secondary_bg_active">@color/app_main_light_highlight</color>
+
 
 
     <!-- disable状态下的字体颜色 -->

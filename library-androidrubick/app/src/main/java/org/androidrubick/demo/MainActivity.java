@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidrubick.app.events.XEventAPI;
+import androidrubick.app.events.annotation.XEvent;
 import androidrubick.xbase.util.AndroidUtils;
 import androidrubick.xbase.util.AppInfos;
 import androidrubick.xframework.api.APICallback;
@@ -11,8 +13,6 @@ import androidrubick.xframework.api.APIStatus;
 import androidrubick.xframework.api.XAPI;
 import androidrubick.xframework.app.XGlobalUIs;
 import androidrubick.xframework.app.ui.component.XBaseActivity;
-import androidrubick.xframework.events.XEventAPI;
-import androidrubick.xframework.events.annotation.XEvent;
 import androidrubicktest.api.XAPITest;
 import butterknife.OnClick;
 
@@ -94,5 +94,10 @@ public class MainActivity extends XBaseActivity {
         getSupportFragmentManager().beginTransaction()
         .add(R.id.root, new Fa(), "")
         .commit();
+    }
+
+    @Override
+    public Object getUITag() {
+        return "main";
     }
 }

@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="XAFTheme" parent="android:Theme.NoTitleBar">
+    <style name="AppTheme" parent="android:Theme.NoTitleBar">
         <!-- cache color hint, like AbsListView's item -->
         <item name="android:colorBackgroundCacheHint">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
 
+        <item name="android:textAppearance">@style/XAF.TextAppearance</item>
+        <item name="android:textAppearanceLarge">@style/XAF.TextAppearance.Large</item>
+        <item name="android:textAppearanceMedium">@style/XAF.TextAppearance.Medium</item>
+        <item name="android:textAppearanceSmall">@style/XAF.TextAppearance.Small</item>
+
         <item name="android:textViewStyle">@style/XAF.TextView</item>
         <item name="android:editTextStyle">@style/XAF.EditText</item>
+        <item name="android:editTextBackground">@drawable/edittext_background</item>
+
         <item name="android:buttonStyle">@style/XAF.BTN</item>
+
         <item name="android:checkboxStyle">@style/XAF.CompoundButton.Checkbox</item>
         <item name="android:radioButtonStyle">@style/XAF.CompoundButton.RadioButton</item>
         <item name="android:scrollViewStyle">@style/XAF.ScrollView</item>
         <item name="android:horizontalScrollViewStyle">@style/XAF.HorizontalScrollView</item>
+
+
+        <item name="android:listDivider">@color/divider</item>
         <item name="android:absListViewStyle">@style/XAF.AbsListView</item>
         <item name="android:listViewStyle">@style/XAF.ListView</item>
         <item name="android:gridViewStyle">@style/XAF.GridView</item>
 
-        <item name="android:editTextBackground">@drawable/edittext_background</item>
 
         <!-- translucent system bars -->
         <item name="android:windowTranslucentStatus">true</item>

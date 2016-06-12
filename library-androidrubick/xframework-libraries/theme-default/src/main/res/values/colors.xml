@@ -28,7 +28,13 @@
     <color name="app_main_highlight">#448AFF</color>
     <color name="app_main_highlight_textcolor">@color/app_main_textcolor</color>
 
-    <!-- app_main_light 作为对比的强调色，置于主色调中也能一眼看到强调部分，一般用于 -->
+    <!-- app_main_dark 作为对比的强调色，置于主色调中也能一眼看到强调部分，
+        一般用于以app_main_dark为色值的组件活动状态下的色值 -->
+    <color name="app_main_dark_highlight">@color/app_main_highlight</color>
+    <color name="app_main_dark_highlight_textcolor">@color/app_main_highlight_textcolor</color>
+
+    <!-- app_main_light 作为对比的强调色，置于主色调中也能一眼看到强调部分，
+        一般用于以app_main_light为色值的组件活动状态下的色值 -->
     <color name="app_main_light_highlight">@color/app_main_highlight</color>
     <color name="app_main_light_highlight_textcolor">@color/app_main_highlight_textcolor</color>
 

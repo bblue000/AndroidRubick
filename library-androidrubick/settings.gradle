@@ -1,7 +1,7 @@
 include ':app'
 
 // basic libraries
-include ':xframework-java', ':xframework-android'
+include ':xframework-java', ':xframework-android', ":${XFR_BASE_APP_LIB}"
 
 
 
@@ -23,4 +23,6 @@ if (spiProjects) {
         project(spiProjectName).projectDir = new File(defaultImplForSpi + spiProjectDir);
     }
 }
+
+project(":${XFR_BASE_APP_LIB}").projectDir = new File(defaultImplForSpi + XFR_BASE_APP_LIB)
 
