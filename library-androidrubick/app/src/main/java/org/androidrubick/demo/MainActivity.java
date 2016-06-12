@@ -6,6 +6,9 @@ import android.view.View;
 
 import androidrubick.xbase.util.AndroidUtils;
 import androidrubick.xbase.util.AppInfos;
+import androidrubick.xframework.api.APICallback;
+import androidrubick.xframework.api.APIStatus;
+import androidrubick.xframework.api.XAPI;
 import androidrubick.xframework.app.XGlobalUIs;
 import androidrubick.xframework.app.ui.component.XBaseActivity;
 import androidrubick.xframework.events.XEventAPI;
@@ -42,6 +45,18 @@ public class MainActivity extends XBaseActivity {
 
         AppInfos.printMemeory();
 //        XApplication.is();
+
+        XAPI.get("http://n.myopen.vip.com/address/address", null, String.class, new APICallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                XEventAPI.post("1", s);
+            }
+
+            @Override
+            public void onFailed(APIStatus status) {
+                XEventAPI.post("1", status.message);
+            }
+        });
 
     }
 
