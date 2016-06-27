@@ -19,7 +19,7 @@ import java.io.Reader;
  *
  * Created by Yin Yong on 2015/9/16.
  */
-public abstract interface XDiskBasedCache {
+public abstract interface DiskBasedCache {
 
     /**
      * 获取该缓存的根目录；

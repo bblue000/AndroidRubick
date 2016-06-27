@@ -13,7 +13,7 @@ import androidrubick.xframework.cache.disk.XDiskBasedCache;
  *
  * Created by Yin Yong on 2015/9/7.
  */
-public interface XDiskCacheService extends XSpiService {
+public interface DiskCacheService extends XSpiService {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // cache，可以

@@ -8,7 +8,7 @@ package androidrubick.xframework.app.spi;
  *
  * Created by Yin Yong on 16/6/7.
  */
-public interface XFloatUIToken {
+public interface FloatUIToken {
 
     /**
      * 关闭

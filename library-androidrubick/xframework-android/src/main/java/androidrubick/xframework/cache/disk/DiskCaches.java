@@ -9,7 +9,7 @@ import androidrubick.utils.NumberUtils;
 import androidrubick.utils.Objects;
 import androidrubick.utils.Preconditions;
 import androidrubick.xbase.aspi.XServiceLoader;
-import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
+import androidrubick.xframework.cache.disk.spi.DiskCacheService;
 import androidrubick.xframework.job.XJob;
 
 /**
@@ -21,16 +21,16 @@ import androidrubick.xframework.job.XJob;
  *
  * @since 1.0
  */
-public class XDiskCaches {
+public class DiskCaches {
 
-    private XDiskCaches() { /* no instance needed */ }
+    private DiskCaches() { /* no instance needed */ }
 
     /**
      * 获取（如果不存在则创建新的）指定目录下的文件缓存对象。
      * @param subCacheDirName 在cache根目录下创建子文件夹
      */
-    public static XDiskBasedCache dirCache(String subCacheDirName) {
-        return XServiceLoader.load(XDiskCacheService.class).dirCache(subCacheDirName);
+    public static DiskBasedCache dirCache(String subCacheDirName) {
+        return XServiceLoader.load(DiskCacheService.class).dirCache(subCacheDirName);
     }
 
     /**
@@ -43,8 +43,8 @@ public class XDiskCaches {
      * 类似{@link android.content.Context#getFilesDir()}，与cache文件区分。
      *
      */
-    public static XDiskBasedCache fileDirPersist(String subFileDirName) {
-        return XServiceLoader.load(XDiskCacheService.class).fileDirPersist(subFileDirName);
+    public static DiskBasedCache fileDirPersist(String subFileDirName) {
+        return XServiceLoader.load(DiskCacheService.class).fileDirPersist(subFileDirName);
     }
 
     /**
@@ -67,7 +67,7 @@ public class XDiskCaches {
      */
     public static void getCacheSize(GetCacheSizeCallback callback, int flags) {
         new GetCacheSizeJob(callback, flags).execute(
-                XServiceLoader.load(XDiskCacheService.class).getCacheDirs());
+                XServiceLoader.load(DiskCacheService.class).getCacheDirs());
     }
 
     /**
@@ -174,7 +174,7 @@ public class XDiskCaches {
      * @param callback 不需要回调，则可以传null
      */
     public static void clearCache(ClearCacheCallback callback) {
-        new ClearCacheJob(callback).execute(XServiceLoader.load(XDiskCacheService.class).getCacheDirs());
+        new ClearCacheJob(callback).execute(XServiceLoader.load(DiskCacheService.class).getCacheDirs());
     }
 
     /**
@@ -192,7 +192,7 @@ public class XDiskCaches {
     /**
      * 清除缓存的回调
      *
-     * @see #clearCache(androidrubick.xframework.cache.disk.XDiskCaches.ClearCacheCallback)
+     * @see #clearCache(DiskCaches.ClearCacheCallback)
      */
     public interface ClearCacheCallback {
         /**

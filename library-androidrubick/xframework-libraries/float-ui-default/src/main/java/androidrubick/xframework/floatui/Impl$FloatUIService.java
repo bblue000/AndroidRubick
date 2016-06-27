@@ -3,14 +3,14 @@ package androidrubick.xframework.floatui;
 import android.content.Context;
 
 import androidrubick.xbase.util.ToastUtils;
-import androidrubick.xframework.app.spi.XFloatUIService;
+import androidrubick.xframework.app.spi.FloatUIService;
 import androidrubick.xframework.app.spi.XFloatUIToken;
 import androidrubick.xframework.app.spi.XProgressUIToken;
 
 /**
  * Created by Yin Yong on 16/6/7.
  */
-public class Impl$XFloatUIService implements XFloatUIService {
+public class Impl$FloatUIService implements FloatUIService {
     @Override
     public XFloatUIToken buildTip(Context context, CharSequence title, final CharSequence message) {
         return new XFloatUIToken() {

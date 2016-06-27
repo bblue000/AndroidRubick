@@ -10,7 +10,7 @@ import androidrubick.xbase.aspi.XSpiService;
  *
  * Created by Yin Yong on 2015/8/28.
  */
-public interface XJsonParserService extends XSpiService {
+public interface JsonParserService extends XSpiService {
 
     /**
      * 将对象转为Json。

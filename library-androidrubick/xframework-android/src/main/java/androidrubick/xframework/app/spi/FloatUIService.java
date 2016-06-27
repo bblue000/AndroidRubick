@@ -11,7 +11,7 @@ import androidrubick.xbase.aspi.XSpiService;
  *
  * Created by Yin Yong on 2015/4/29 0029.
  */
-public interface XFloatUIService extends XSpiService {
+public interface FloatUIService extends XSpiService {
 
     /**
      * 创建提示信息的UI，并返回一个能够操作它的对象

@@ -7,7 +7,7 @@ package androidrubick.xframework.app.spi;
  *
  * Created by Yin Yong on 16/6/7.
  */
-public interface XProgressUIToken extends XFloatUIToken {
+public interface ProgressUIToken extends FloatUIToken {
 
     /**
      * [0, 100]区间内，表示进度

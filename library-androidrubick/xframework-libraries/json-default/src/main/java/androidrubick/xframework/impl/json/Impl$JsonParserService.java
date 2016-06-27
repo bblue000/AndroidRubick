@@ -7,17 +7,17 @@ import java.lang.reflect.Type;
 
 import androidrubick.text.Strings;
 import androidrubick.utils.Objects;
-import androidrubick.xbase.util.spi.XJsonParserService;
+import androidrubick.xbase.util.spi.JsonParserService;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/8/28.
  */
-public class Impl$XJsonParserService implements XJsonParserService {
+public class Impl$JsonParserService implements JsonParserService {
 
     private Gson mGson;
-    public Impl$XJsonParserService() {
+    public Impl$JsonParserService() {
         mGson = new Gson();
     }
 

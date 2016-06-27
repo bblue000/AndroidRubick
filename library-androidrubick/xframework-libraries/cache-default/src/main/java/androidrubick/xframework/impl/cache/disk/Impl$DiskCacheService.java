@@ -3,17 +3,17 @@ package androidrubick.xframework.impl.cache.disk;
 import java.io.File;
 
 import androidrubick.xframework.cache.disk.XDiskBasedCache;
-import androidrubick.xframework.cache.disk.spi.XDiskCacheService;
+import androidrubick.xframework.cache.disk.spi.DiskCacheService;
 
 /**
  * <p/>
  *
  * Created by Yin Yong on 2015/9/7.
  */
-public class Impl$XDiskCacheService implements XDiskCacheService {
+public class Impl$DiskCacheService implements DiskCacheService {
 
     private CacheDirProvider mCacheDirProvider;
-    public Impl$XDiskCacheService() {
+    public Impl$DiskCacheService() {
         mCacheDirProvider = new CacheDirProvider();
     }
 
